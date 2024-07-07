@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+/workers/*/node_modules
+
 /.pnp
 .pnp.js
 .yarn/install-state.gz
@@ -25,8 +27,12 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
+# local production env files
 .env*.local
+.env.production
+*.env
+*.env.*
+
 
 # vercel
 .vercel
