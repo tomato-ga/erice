@@ -13,14 +13,6 @@ interface Article {
 	site_name: string;
 }
 
-interface QueryParams {
-	page: number;
-	limit: number;
-}
-
-const DEFAULT_PAGE = 1;
-const DEFAULT_LIMIT = 5;
-
 const handler = {
 	async fetch(request: Request, env: Env): Promise<Response> {
 		const headers = {
@@ -43,14 +35,6 @@ const handler = {
 		}
 
 		try {
-			const { searchParams } = new URL(request.url);
-			const queryParams: QueryParams = {
-				page: Math.max(1, parseInt(searchParams.get('page') || String(DEFAULT_PAGE), 10)),
-				limit: Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || String(DEFAULT_LIMIT), 10))),
-			};
-
-			const offset = (queryParams.page - 1) * queryParams.limit;
-
 			const query = `
 				SELECT 
 					a.id, 
@@ -69,31 +53,12 @@ const handler = {
 					i.url IS NOT NULL
 				ORDER BY 
 					a.created_at DESC
-				LIMIT ?
-				OFFSET ?
+				LIMIT 50
 			`;
 
-			const results = await env.DB.prepare(query).bind(queryParams.limit, offset).all<Article>();
+			const results = await env.DB.prepare(query).all<Article>();
 
-			const totalCount = (await env.DB.prepare(
-				`
-				SELECT COUNT(*) as count
-				FROM articles a
-				INNER JOIN images i ON a.id = i.article_id
-				WHERE i.url IS NOT NULL
-			`
-			).first('count')) as number;
-
-			const response = {
-				articles: results.results,
-				pagination: {
-					currentPage: queryParams.page,
-					totalPages: Math.ceil(totalCount / queryParams.limit),
-					totalItems: totalCount,
-				},
-			};
-
-			return new Response(JSON.stringify(response), {
+			return new Response(JSON.stringify({ articles: results.results }), {
 				status: 200,
 				headers,
 			});

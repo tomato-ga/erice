@@ -30,8 +30,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
 					<span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">
 						{article.site_name}
 					</span>
-					<h3 className="text-black text-lg md:text-xl font-semibold mb-2 mt-2">{article.title}</h3>
-					<p className="text-gray-700 mb-2 md:mb-4 overflow-hidden">{truncateDescription(article.title, 140)}</p>
+					<h2 className="text-black text-lg md:text-xl font-semibold mb-2 mt-2">{article.title}</h2>
 				</div>
 				<div className="px-4 py-4 mt-auto">
 					<div className="flex justify-between items-center">
