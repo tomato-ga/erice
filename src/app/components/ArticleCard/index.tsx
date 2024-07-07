@@ -10,7 +10,7 @@ interface ArticleCardProps {
 const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
 	return (
 		<div className="bg-white rounded-lg overflow-hidden shadow m-2 h-full flex flex-col justify-between">
-			<Link href={article.link} className="flex flex-col h-full">
+			<Link key={article.id} href={`/post/${article.id}`} className="flex flex-col h-full">
 				<div className="relative w-full h-48">
 					{article.image_url ? (
 						<Image
