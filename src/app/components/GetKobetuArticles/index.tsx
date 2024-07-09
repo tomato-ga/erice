@@ -1,35 +1,21 @@
-import { KobetuPageArticle } from "../../../../types/types"
+import { KobetuPageArticle, SingleArticleApiResponse } from '../../../../types/types'
 
-export async function getKobetuArticles(postId: string): Promise<KobetuPageArticle | null> {
+export async function getKobetuArticle(postId: string): Promise<KobetuPageArticle | null> {
 	const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/kobetupage?postId=${postId}`
 
 	try {
 		const res = await fetch(apiUrl, { cache: 'no-store' })
 		if (!res.ok) {
-			console.error('Failed to fetch articles', res.statusText)
-			return null
+			const errorText = await res.text()
+			console.error(`API error (${res.status}):`, errorText)
+			throw new Error(`API request failed with status ${res.status}: ${errorText}`)
 		}
-		const data = await res.json()
-		console.log('Fetched data:', JSON.stringify(data, null, 2)) // 詳細なレスポンスをログに出力
-
-		if (data.article) {
-			const article: KobetuPageArticle = {
-				id: data.article.id,
-				title: data.article.title,
-				link: data.article.link,
-				created_at: data.article.createdAt,
-				image_url: data.article.imageUrl,
-				site_name: data.article.siteName,
-				keywords: data.article.keywords.map((keyword: any) => ({
-					id: keyword.id,
-					keyword: keyword.keyword
-				}))
-			}
-			return article
-		} else {
-			console.error('Unexpected API response structure:', data)
-			return null
+		const data: SingleArticleApiResponse = await res.json()
+		if (!data.article) {
+			console.error('API response does not contain article data:', data)
+			throw new Error('Invalid API response format')
 		}
+		return data.article
 	} catch (error) {
 		console.error('Error fetching article:', error)
 		return null

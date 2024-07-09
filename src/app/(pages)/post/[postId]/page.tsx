@@ -1,6 +1,6 @@
 import { NextPage } from 'next'
 import { KobetuPageArticle, Keyword } from '../../../../../types/types'
-import { getKobetuArticles } from '@/app/components/GetKobetuArticles'
+import { getKobetuArticle } from '@/app/components/GetKobetuArticles'
 import Link from 'next/link'
 
 interface Props {
@@ -8,37 +8,59 @@ interface Props {
 }
 
 const KobetuArticlePage: NextPage<Props> = async ({ params }) => {
-	const article = await getKobetuArticles(params.postId)
+	try {
+		console.log('Received postId:', params.postId) // デバッグ用ログ
+		const article = await getKobetuArticle(params.postId)
 
-	if (!article) {
-		return <div>Article not found</div>
-	}
+		console.log('KobetuArticlePage article: ', article)
 
-	return (
-		<div className="bg-white min-h-screen">
-			<div className="container mx-auto px-4 py-8">
-				<KobetuArticleContent article={article} />
+		if (!article) {
+			return (
+				<div className="container mx-auto px-4 py-8">
+					<h1 className="text-2xl font-bold text-red-600">記事が見つかりませんでした</h1>
+					<p>指定された記事ID ({params.postId}) に対応する記事が存在しないか、取得中にエラーが発生しました。</p>
+				</div>
+			)
+		}
+
+		return (
+			<div className="bg-white min-h-screen">
+				<div className="container mx-auto px-4 py-8">
+					<ArticleContent article={article} />
+				</div>
 			</div>
-		</div>
-	)
+		)
+	} catch (error) {
+		console.error('Error in KobetuArticlePage:', error)
+		return (
+			<div className="container mx-auto px-4 py-8">
+				<h1 className="text-2xl font-bold text-red-600">エラーが発生しました</h1>
+				<p>記事の取得中に問題が発生しました。しばらくしてからもう一度お試しください。</p>
+				<p className="text-sm text-gray-600 mt-2">
+					エラー詳細: {error instanceof Error ? error.message : String(error)}
+				</p>
+				<p className="text-sm text-gray-600">PostID: {params.postId}</p>
+			</div>
+		)
+	}
 }
 
-const KobetuArticleContent: React.FC<{ article: KobetuPageArticle }> = ({ article }) => (
+const ArticleContent: React.FC<{ article: KobetuPageArticle }> = ({ article }) => (
 	<div className="bg-white">
 		<div className="relative">
 			<img src={article.image_url} alt={article.title} className="w-full h-auto rounded-lg sm:rounded-lg" />
 		</div>
 		<div className="p-8">
-			<KobetuArticleHeader article={article} />
+			<ArticleHeader article={article} />
 			<Link href={article.link} passHref className="hover:underline" target="_blank" rel="noopener noreferrer">
-				<h1 className="text-gray-600 text-2xl sm:text-4xl  py-4">{article.title}</h1>
+				<h1 className="text-gray-600 text-2xl sm:text-4xl py-4">{article.title}</h1>
 			</Link>
-			<KobetuArticleKeywords keywords={article.keywords} />
+			<ArticleKeywords keywords={article.keywords} />
 		</div>
 	</div>
 )
 
-const KobetuArticleHeader: React.FC<{ article: KobetuPageArticle }> = ({ article }) => (
+const ArticleHeader: React.FC<{ article: KobetuPageArticle }> = ({ article }) => (
 	<div className="flex items-center justify-between mb-4">
 		<div className="flex items-center">
 			<img
@@ -48,14 +70,15 @@ const KobetuArticleHeader: React.FC<{ article: KobetuPageArticle }> = ({ article
 			/>
 			<div>
 				<p className="text-gray-600 text-sm">{formatDate(article.created_at)}</p>
+				<p className="text-gray-600 text-sm">{article.site_name}</p>
 			</div>
 		</div>
 	</div>
 )
 
-const KobetuArticleKeywords: React.FC<{ keywords: Keyword[] }> = ({ keywords }) => (
+const ArticleKeywords: React.FC<{ keywords: Keyword[] }> = ({ keywords }) => (
 	<div className="bg-white rounded-lg py-2">
-		<h3 className="text-gray-600  py-4 text-lg">キーワード</h3>
+		<h3 className="text-gray-600 py-4 text-lg">キーワード</h3>
 		{keywords && keywords.length > 0 ? (
 			<ul className="space-y-4">
 				{keywords.map((keyword) => (

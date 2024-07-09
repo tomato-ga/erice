@@ -17,7 +17,7 @@ const ArticleCard: React.FC<ArticleCardProps> = React.memo(({ article }) => {
 						<Image
 							src={article.image_url}
 							alt={article.title}
-							layout="fill"
+							fill
 							sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 							className="object-cover"
 						/>

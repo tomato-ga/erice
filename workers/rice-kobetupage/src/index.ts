@@ -1,4 +1,4 @@
-import { D1Database } from '@cloudflare/workers-types';
+import { D1Database, D1Result } from '@cloudflare/workers-types';
 
 interface Env {
 	DB: D1Database;
@@ -9,20 +9,20 @@ interface BaseArticle {
 	id: number;
 	title: string;
 	link: string;
-	publishedAt: string;
-	createdAt: string;
-	updatedAt: string;
-	siteId: number;
-	siteUrl: string;
-	siteName: string;
-	imageUrl: string;
+	published_at: string;
+	created_at: string;
+	updated_at: string;
+	site_id: number;
+	site_url: string;
+	site_name: string;
+	image_url: string;
 }
 
 // キーワード情報
 interface Keyword {
 	id: number;
 	keyword: string;
-	createdAt: string;
+	created_at: string;
 }
 
 // 整形された記事データ（キーワードを含む）
@@ -32,9 +32,9 @@ interface ArticleWithKeywords extends BaseArticle {
 
 // データベースから取得した生のデータ
 interface RawArticleData extends BaseArticle {
-	keywordId: number | null;
+	keyword_id: number | null;
 	keyword: string | null;
-	keywordCreatedAt: string | null;
+	keyword_created_at: string | null;
 }
 
 const CORS_HEADERS = {
@@ -54,20 +54,19 @@ const handleOptionsRequest = (): Response => {
 
 const fetchArticleWithKeywords = async (env: Env, id: number): Promise<ArticleWithKeywords | null> => {
 	const query = `
-    SELECT
-      a.id, a.title, a.link, a.published_at AS publishedAt,
-      a.created_at AS createdAt, a.updated_at AS updatedAt,
-      s.id AS siteId, s.url AS siteUrl, s.name AS siteName,
-      i.url AS imageUrl,
-      k.id AS keywordId, k.keyword, k.created_at AS keywordCreatedAt
-    FROM
-      articles a
-    JOIN sites s ON a.site_id = s.id
-    LEFT JOIN images i ON a.id = i.article_id
-    LEFT JOIN article_keywords ak ON a.id = ak.article_id
-    LEFT JOIN keywords k ON ak.keyword_id = k.id
-    WHERE a.id = ?;
-  `;
+	SELECT
+	  a.id, a.title, a.link, a.published_at, a.created_at, a.updated_at,
+	  s.id AS site_id, s.url AS site_url, s.name AS site_name,
+	  i.url AS image_url,
+	  k.id AS keyword_id, k.keyword, k.created_at AS keyword_created_at
+	FROM
+	  articles a
+	JOIN sites s ON a.site_id = s.id
+	LEFT JOIN images i ON a.id = i.article_id
+	LEFT JOIN article_keywords ak ON a.id = ak.article_id
+	LEFT JOIN keywords k ON ak.keyword_id = k.id
+	WHERE a.id = ?
+	`;
 
 	const result = await env.DB.prepare(query).bind(id).all<RawArticleData>();
 
@@ -76,25 +75,32 @@ const fetchArticleWithKeywords = async (env: Env, id: number): Promise<ArticleWi
 	}
 
 	const articleData = result.results[0];
-	const keywords: Keyword[] = result.results
-		.filter((row) => row.keywordId !== null)
-		.map((row) => ({
-			id: row.keywordId!,
-			keyword: row.keyword!,
-			createdAt: row.keywordCreatedAt!,
-		}));
+	const keywords: Keyword[] = [];
+
+	const keywordMap = new Map<number, Keyword>();
+	result.results.forEach((row) => {
+		if (row.keyword_id !== null && row.keyword !== null && row.keyword_created_at !== null && !keywordMap.has(row.keyword_id)) {
+			keywordMap.set(row.keyword_id, {
+				id: row.keyword_id,
+				keyword: row.keyword,
+				created_at: row.keyword_created_at,
+			});
+		}
+	});
+
+	keywordMap.forEach((value) => keywords.push(value));
 
 	const article: ArticleWithKeywords = {
 		id: articleData.id,
 		title: articleData.title,
 		link: articleData.link,
-		publishedAt: articleData.publishedAt,
-		createdAt: articleData.createdAt,
-		updatedAt: articleData.updatedAt,
-		siteId: articleData.siteId,
-		siteUrl: articleData.siteUrl,
-		siteName: articleData.siteName,
-		imageUrl: articleData.imageUrl,
+		published_at: articleData.published_at,
+		created_at: articleData.created_at,
+		updated_at: articleData.updated_at,
+		site_id: articleData.site_id,
+		site_url: articleData.site_url,
+		site_name: articleData.site_name,
+		image_url: articleData.image_url,
 		keywords: keywords,
 	};
 

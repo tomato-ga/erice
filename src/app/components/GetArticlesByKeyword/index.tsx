@@ -13,12 +13,6 @@ export async function getArticlesByKeyword(keyword: string): Promise<HomePageApi
 		}
 		const data: HomePageApiResponse = await res.json()
 
-		if (data) {
-			const article = {
-				id: data.articles
-			}
-		}
-
 		if (!data.articles || !Array.isArray(data.articles)) {
 			console.error('Unexpected API response structure:', data)
 			return { articles: [] }
