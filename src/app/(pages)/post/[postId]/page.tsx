@@ -83,7 +83,7 @@ const ArticleKeywords: React.FC<{ keywords: Keyword[] }> = ({ keywords }) => (
 			<ul className="space-y-4">
 				{keywords.map((keyword) => (
 					<li key={keyword.id} className="flex items-center">
-						<Link href={`/tag/${keyword.keyword}`}>
+						<Link href={`/tag/${encodeURIComponent(keyword.keyword)}`}>
 							<span className="ml-2">{keyword.keyword}</span>
 						</Link>
 					</li>
