@@ -15,7 +15,7 @@ export async function getArticlesByKeyword(keyword: string): Promise<HomePageApi
 
 		if (data) {
 			const article = {
-				id: data.id
+				id: data.articles
 			}
 		}
 
