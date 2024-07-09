@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { HomePageApiResponse } from '../../types/types'
 import { getHomeArticles } from './components/GetHomeArticles'
-import ArticleCard from './components/ArticleCard'
+import ArticleCard from './components/Article/ArticleCard'
 
 function ArticleList({ articles }: { articles: HomePageApiResponse['articles'] }) {
 	if (articles.length === 0) {
@@ -32,7 +32,7 @@ export default function HomePage() {
 		<div className="min-h-screen ">
 			<div className="container mx-auto px-4 py-8">
 				<h1 className="text-3xl font-bold text-center mb-8">最新動画</h1>
-				<Suspense fallback={<div className="text-center">Loading...</div>}>
+				<Suspense fallback={<div className="text-center">動画をローディング中...</div>}>
 					<HomeContent />
 				</Suspense>
 			</div>

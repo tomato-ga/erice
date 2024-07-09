@@ -11,7 +11,7 @@ export async function getHomeArticles(): Promise<HomePageApiResponse> {
 
 	if (!data.articles || !Array.isArray(data.articles)) {
 		console.error('Unexpected API response structure:', data)
-		return { articles: [], pagination: { currentPage: 1, totalPages: 1, totalItems: 0 } }
+		return { articles: [] }
 	}
 
 	return data

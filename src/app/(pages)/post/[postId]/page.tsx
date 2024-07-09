@@ -1,93 +1,80 @@
-import React from 'react'
-import dynamic from 'next/dynamic'
-
-import { formatDate } from '@/app/utils/postUtils'
 import { NextPage } from 'next'
+import { KobetuPageArticle, Keyword } from '../../../../../types/types'
+import { getKobetuArticles } from '@/app/components/GetKobetuArticles'
+import Link from 'next/link'
 
-const PostPage: NextPage<{ params: { postId: string } }> = async ({ params }) => {
+interface Props {
+	params: { postId: string }
+}
+
+const KobetuArticlePage: NextPage<Props> = async ({ params }) => {
+	const article = await getKobetuArticles(params.postId)
+
+	if (!article) {
+		return <div>Article not found</div>
+	}
+
 	return (
 		<div className="bg-white min-h-screen">
 			<div className="container mx-auto px-4 py-8">
-				<PostContent />
+				<KobetuArticleContent article={article} />
 			</div>
 		</div>
 	)
 }
 
-const PostContent: React.FC = () => (
+const KobetuArticleContent: React.FC<{ article: KobetuPageArticle }> = ({ article }) => (
 	<div className="bg-white">
-		<div className="relative">{'パンくずとか'}</div>
+		<div className="relative">
+			<img src={article.image_url} alt={article.title} className="w-full h-auto rounded-lg sm:rounded-lg" />
+		</div>
 		<div className="p-8">
-			{/* <PostHeader post={post} isCurrentUser={isCurrentUser} /> */}
-			<h1 className="text-gray-600 text-2xl sm:text-4xl font-bold py-4">タイトル</h1>
-			{/* <PostParts part={post.part} /> */}
-			<p className="text-gray-600 leading-relaxed mb-8 py-4 whitespace-pre-wrap break-words">test</p>
+			<KobetuArticleHeader article={article} />
+			<Link href={article.link} passHref className="hover:underline" target="_blank" rel="noopener noreferrer">
+				<h1 className="text-gray-600 text-2xl sm:text-4xl  py-4">{article.title}</h1>
+			</Link>
+			<KobetuArticleKeywords keywords={article.keywords} />
 		</div>
 	</div>
 )
 
-// const PostHeader: React.FC<PostHeaderProps> = ({ post, isCurrentUser }) => (
-// 	<div className="flex items-center justify-between mb-4">
-// 		<div className="flex items-center">
-// 			<img
-// 				src={post.user.image || '/default-avatar.jpg'}
-// 				alt={post.user.profile?.screenName ?? 'スクリーンネームがありません'}
-// 				className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-4"
-// 			/>
-// 			<div>
-// 				<p className="text-gray-900 font-semibold">{post.user.profile?.screenName}</p>
-// 				{post.updatedat ? (
-// 					<p className="text-gray-600 text-sm">{formatDate(post.updatedat)}</p>
-// 				) : (
-// 					<p className="text-gray-600 text-sm">{formatDate(post.createdat)}</p>
-// 				)}
-// 			</div>
-// 		</div>
-// 		{isCurrentUser && (
-// 			<div className="relative">
-// 				<PostOptionsButton postId={post.id} screenName={post.user.profile?.screenName} />
-// 			</div>
-// 		)}
-// 	</div>
-// )
+const KobetuArticleHeader: React.FC<{ article: KobetuPageArticle }> = ({ article }) => (
+	<div className="flex items-center justify-between mb-4">
+		<div className="flex items-center">
+			<img
+				src={article.image_url || '/default-avatar.jpg'}
+				alt={article.title}
+				className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-4"
+			/>
+			<div>
+				<p className="text-gray-600 text-sm">{formatDate(article.created_at)}</p>
+			</div>
+		</div>
+	</div>
+)
 
-// const PostParts: React.FC<PostPartsProps> = ({ part }) => (
-// 	<div className="bg-white rounded-lg py-2">
-// 		{part && (
-// 			<ul className="space-y-4">
-// 				<li className="flex items-center">
-// 					<span className="font-semibold flex-shrink-0">ケース:</span>
-// 					<span className="ml-2">{part.case}</span>
-// 				</li>
-// 				<li className="flex items-center">
-// 					<span className="font-semibold flex-shrink-0">プレート:</span>
-// 					<span className="ml-2">{part.plate}</span>
-// 				</li>
-// 				<li className="flex items-center">
-// 					<span className="font-semibold flex-shrink-0">スイッチ:</span>
-// 					<span className="ml-2">{part.switches}</span>
-// 				</li>
-// 				<li className="flex items-center">
-// 					<span className="font-semibold flex-shrink-0">キーキャップ:</span>
-// 					<span className="ml-2">{part.keyCaps}</span>
-// 				</li>
-// 			</ul>
-// 		)}
-// 	</div>
-// )
+const KobetuArticleKeywords: React.FC<{ keywords: Keyword[] }> = ({ keywords }) => (
+	<div className="bg-white rounded-lg py-2">
+		<h3 className="text-gray-600  py-4 text-lg">キーワード</h3>
+		{keywords && keywords.length > 0 ? (
+			<ul className="space-y-4">
+				{keywords.map((keyword) => (
+					<li key={keyword.id} className="flex items-center">
+						<Link href={`/tag/${keyword.keyword}`}>
+							<span className="ml-2">{keyword.keyword}</span>
+						</Link>
+					</li>
+				))}
+			</ul>
+		) : (
+			<p className="text-gray-600">キーワードがありません</p>
+		)}
+	</div>
+)
 
-const linkifyText = (text: string) => {
-	const urlRegex = /(https?:\/\/[^\s]+)/g
-	return text.split(urlRegex).map((part, index) => {
-		if (part.match(urlRegex)) {
-			return (
-				<a key={index} href={part} target="_blank" rel="noopener noreferrer" className="underline hover:no-underline">
-					{part}
-				</a>
-			)
-		}
-		return part
-	})
+const formatDate = (dateString: string) => {
+	const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' }
+	return new Date(dateString).toLocaleDateString(undefined, options)
 }
 
-export default PostPage
+export default KobetuArticlePage
