@@ -38,3 +38,20 @@ export type KobetuPageApiResponse = ApiResponse<KobetuPageArticle>
 export interface SingleArticleApiResponse {
 	article: KobetuPageArticle
 }
+
+export interface PaginationArticle {
+	id: number
+	title: string
+	link: string
+	published_at: string
+	description: string
+	site_name: string
+	image_url: string | null
+}
+
+export interface PaginationArticleResponse {
+	articles: Article[]
+	total: number
+	totalPages: number
+	currentPage: number
+}
