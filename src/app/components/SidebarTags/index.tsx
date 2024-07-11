@@ -16,43 +16,36 @@ export default function TagCloud({ keywords: initialKeywords = [] }: TagCloudPro
 			try {
 				const response = await fetch('/api/poptags')
 				if (!response.ok) {
-					const errorData = await response.text()
-					throw new Error(errorData || 'Failed to fetch popular keywords')
+					throw new Error('Failed to fetch popular keywords')
 				}
 				const data = await response.json()
 				setKeywords(data)
-			} catch (error: unknown) {
-				if (error instanceof Error) {
-					setError(error.message)
-				} else {
-					setError('An unknown error occurred')
-				}
+			} catch (error) {
+				setError('An error occurred while fetching keywords')
 			}
 		}
 
 		fetchKeywords()
 	}, [])
 
-	const getRandomSize = () => {
-		const sizes = ['text-sm', 'text-base', 'text-lg']
-		return sizes[Math.floor(Math.random() * sizes.length)]
-	}
-
 	if (error) {
-		return <div className="text-red-600">Error: {error}</div>
+		return <div className="text-red-500 text-sm">{error}</div>
 	}
 
 	return (
-		<div className="flex flex-wrap justify-center gap-2">
+		<div className="flex flex-wrap gap-2 justify-center items-center -my-2">
+			<p>人気のキーワード</p>
 			{keywords.map((keyword, index) => (
-				<Link href={`/tag/${encodeURIComponent(keyword)}`} key={index}>
+				<Link href={`/tag/${encodeURIComponent(keyword)}`} key={index} className="my-1">
 					<span
-						className={`
-            ${getRandomSize()}
-            text-gray-700 hover:text-black
-            transition-colors duration-200
-            cursor-pointer
-          `}
+						className="
+            px-3 py-1
+            text-sm text-gray-700 
+            bg-pink-200 
+            rounded-md
+            transition-all duration-200 ease-in-out
+            hover:bg-gray-200 hover:text-gray-800
+          "
 					>
 						{keyword}
 					</span>
