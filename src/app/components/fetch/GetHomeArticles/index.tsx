@@ -1,4 +1,4 @@
-import { HomePageApiResponse } from '../../../../types/types'
+import { HomePageApiResponse } from '../../../../../types/types'
 
 export async function getHomeArticles(): Promise<HomePageApiResponse> {
 	const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/toppage`

@@ -1,58 +1,36 @@
-import ArticleList from '@/components/ArticleList'
-import { fetchArticles } from '@/lib/api'
-import { Metadata } from 'next'
+import { PaginationArticleResponse, HomePageArticle } from '../../../../../types/types'
+import ArticleList from '@/app/components/Article/ArticleList'
+import { getArticlesByKeyword } from '@/app/components/fetch/GetArticlesByKeyword'
+import PaginationComponent from '@/app/components/Pagination'
 
-interface Props {
+interface KeywordArticleListProps {
 	params: { keyword: string }
 	searchParams: { page?: string }
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-	const { keyword } = params
-	return {
-		title: `Articles about "${keyword}"`,
-		description: `Browse articles related to ${keyword}`
-	}
-}
+const DEFAULT_LIMIT = 30 // デフォルトで30件
 
-export default async function KeywordPage({ params, searchParams }: Props) {
-	const { keyword } = params
+async function KeywordArticleList({ params, searchParams }: KeywordArticleListProps) {
+	const keyword = decodeURIComponent(params.keyword)
 	const page = parseInt(searchParams.page || '1', 10)
-	const articlesData = await fetchArticles(keyword, page)
+
+	const data: PaginationArticleResponse = await getArticlesByKeyword(keyword, page, DEFAULT_LIMIT)
+
+	if (!data.articles || data.articles.length === 0) {
+		return (
+			<div className="text-center py-10">
+				<p className="text-xl text-gray-600">No articles found for this keyword.</p>
+			</div>
+		)
+	}
 
 	return (
-		<div className="container mx-auto px-4">
-			<h1 className="text-3xl font-bold my-4">Articles about &quot;{keyword}&quot;</h1>
-			<p className="mb-4">Total articles: {articlesData.total}</p>
-			<ArticleList initialData={articlesData} keyword={keyword} page={page} />
+		<div className="keyword-article-list">
+			<h1 className="text-2xl font-bold mb-4">Articles for: {keyword}</h1>
+			<ArticleList articles={data.articles as HomePageArticle[]} />
+			<PaginationComponent currentPage={data.currentPage} totalPages={data.totalPages} keyword={keyword} />
 		</div>
 	)
 }
 
-// MEMO 2024/07/09まで動作
-// import React from 'react'
-// import { getArticlesByKeyword } from '@/app/components/GetArticlesByKeyword'
-// import ArticleList from '@/app/components/Article/ArticleList'
-// import { HomePageArticle } from '../../../../../types/types'
-
-// interface KeywordPageProps {
-// 	params: { keyword: string }
-// }
-
-// export const revalidate = 60 // ISR (Incremental Static Regeneration) のためのオプション
-
-// const KeywordPage: React.FC<KeywordPageProps> = async ({ params }) => {
-// 	const decodedKeyword = decodeURIComponent(params.keyword)
-// 	const { articles } = await getArticlesByKeyword(decodedKeyword)
-
-// 	return (
-// 		<div className="min-h-screen bg-white">
-// 			<div className="container mx-auto px-4 py-8">
-// 				<h1 className="text-3xl font-bold text-center mb-8">Articles for: {decodedKeyword}</h1>
-// 				<ArticleList articles={articles} />
-// 			</div>
-// 		</div>
-// 	)
-// }
-
-// export default KeywordPage
+export default KeywordArticleList

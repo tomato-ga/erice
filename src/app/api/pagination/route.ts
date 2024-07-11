@@ -1,84 +1,59 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { D1Database } from '@cloudflare/workers-types'
+// /Users/ore/Documents/GitHub/rice/erice/src/app/api/pagination/route.ts
 
-// 注意: この環境変数の設定方法はプロジェクトの設定によって異なる可能性があります
-const db = process.env.DB as unknown as D1Database
+import { NextRequest, NextResponse } from 'next/server'
+
+const WORKER_URL = process.env.PAGINATION_KEYWORD_WORKER_URL
+
+if (!WORKER_URL) {
+	throw new Error('PAGINATION_KEYWORD_WORKER_URL is not defined in environment variables')
+}
 
 export async function GET(request: NextRequest) {
-	const searchParams = request.nextUrl.searchParams
+	const { searchParams } = new URL(request.url)
 	const keyword = searchParams.get('keyword')
-	const page = parseInt(searchParams.get('page') || '1', 10)
-	const limit = Math.min(parseInt(searchParams.get('limit') || '10', 10), 50)
+	const page = searchParams.get('page') || '1'
 
-	const offset = (page - 1) * limit
+	const workerParams = new URLSearchParams({ page })
+	if (keyword) {
+		workerParams.append('keyword', keyword)
+	}
 
 	try {
-		let countQuery, articlesQuery
-		let queryParams: any[] = []
+		const controller = new AbortController()
+		const timeoutId = setTimeout(() => controller.abort(), 5000) // 5秒タイムアウト
 
-		if (keyword) {
-			countQuery = `
-        SELECT COUNT(DISTINCT a.id) as total
-        FROM articles a
-        JOIN article_keywords ak ON a.id = ak.article_id
-        JOIN keywords k ON ak.keyword_id = k.id
-        WHERE k.keyword = ?
-      `
-			articlesQuery = `
-        SELECT a.id, a.title, a.link, a.published_at, a.description, s.name as site_name, i.url as image_url
-        FROM articles a
-        JOIN article_keywords ak ON a.id = ak.article_id
-        JOIN keywords k ON ak.keyword_id = k.id
-        JOIN sites s ON a.site_id = s.id
-        LEFT JOIN images i ON a.id = i.article_id
-        WHERE k.keyword = ?
-        ORDER BY a.published_at DESC
-        LIMIT ? OFFSET ?
-      `
-			queryParams = [keyword, limit, offset]
-		} else {
-			countQuery = `SELECT COUNT(*) as total FROM articles`
-			articlesQuery = `
-        SELECT a.id, a.title, a.link, a.published_at, a.description, s.name as site_name, i.url as image_url
-        FROM articles a
-        JOIN sites s ON a.site_id = s.id
-        LEFT JOIN images i ON a.id = i.article_id
-        ORDER BY a.published_at DESC
-        LIMIT ? OFFSET ?
-      `
-			queryParams = [limit, offset]
+		const response = await fetch(`${WORKER_URL}/articles?${workerParams}`, {
+			signal: controller.signal
+		})
+
+		clearTimeout(timeoutId)
+
+		if (!response.ok) {
+			const errorData = await response.json().catch(() => ({}))
+			console.error('Worker API error:', response.status, errorData)
+			return NextResponse.json(
+				{ error: 'Failed to fetch data from worker', details: errorData },
+				{ status: response.status }
+			)
 		}
 
-		const [countResult, articles] = await Promise.all([
-			db
-				.prepare(countQuery)
-				.bind(...queryParams.slice(0, 1))
-				.first<{ total: number }>(),
-			db
-				.prepare(articlesQuery)
-				.bind(...queryParams)
-				.all()
-		])
+		const data = await response.json()
+		console.log('api/pagination:', data)
 
-		const total = countResult?.total || 0
-		const totalPages = Math.ceil(total / limit)
+		if (!Array.isArray(data.articles) || typeof data.currentPage !== 'number' || typeof data.totalPages !== 'number') {
+			throw new Error('Invalid response format from worker')
+		}
 
-		return NextResponse.json(
-			{
-				articles: articles.results,
-				total,
-				totalPages,
-				currentPage: page,
-				keyword: keyword || null
-			},
-			{
-				headers: {
-					'Cache-Control': 'public, max-age=60, stale-while-revalidate=300'
-				}
+		return NextResponse.json(data, {
+			headers: {
+				'Cache-Control': 'public, max-age=60, stale-while-revalidate=300'
 			}
-		)
+		})
 	} catch (error) {
-		console.error('Database query error:', error)
-		return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+		console.error('Fetch error:', error)
+		return NextResponse.json(
+			{ error: 'Internal Server Error', details: error instanceof Error ? error.message : 'Unknown error' },
+			{ status: 500 }
+		)
 	}
 }

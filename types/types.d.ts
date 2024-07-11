@@ -39,19 +39,15 @@ export interface SingleArticleApiResponse {
 	article: KobetuPageArticle
 }
 
-export interface PaginationArticle {
-	id: number
-	title: string
-	link: string
+// PaginationArticle型を修正
+export interface PaginationArticle extends BaseArticle {
 	published_at: string
-	description: string
-	site_name: string
-	image_url: string | null
 }
 
+// PaginationArticleResponse型を修正
 export interface PaginationArticleResponse {
-	articles: Article[]
-	total: number
-	totalPages: number
+	articles: PaginationArticle[]
 	currentPage: number
+	totalPages: number
+	total: number
 }

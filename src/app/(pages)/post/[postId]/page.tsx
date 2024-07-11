@@ -1,6 +1,6 @@
 import { NextPage } from 'next'
 import { KobetuPageArticle, Keyword } from '../../../../../types/types'
-import { getKobetuArticle } from '@/app/components/GetKobetuArticles'
+import { getKobetuArticle } from '@/app/components/fetch/GetKobetuArticles'
 import Link from 'next/link'
 
 interface Props {

@@ -7,7 +7,7 @@ interface ArticleListProps {
 	articles: HomePageArticle[]
 }
 
-const ArticleList: React.FC<ArticleListProps> = React.memo(({ articles }) => {
+const ArticleList: React.FC<ArticleListProps> = React.memo(({  articles }) => {
 	if (articles.length === 0) {
 		return <p className="text-center text-gray-500">No articles available.</p>
 	}

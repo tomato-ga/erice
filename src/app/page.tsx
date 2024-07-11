@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { HomePageApiResponse } from '../../types/types'
-import { getHomeArticles } from './components/GetHomeArticles'
+import { getHomeArticles } from './components/fetch/GetHomeArticles'
 import ArticleCard from './components/Article/ArticleCard'
 
 function ArticleList({ articles }: { articles: HomePageApiResponse['articles'] }) {

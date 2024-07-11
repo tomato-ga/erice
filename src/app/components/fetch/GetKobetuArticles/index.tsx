@@ -1,4 +1,4 @@
-import { KobetuPageArticle, SingleArticleApiResponse } from '../../../../types/types'
+import { KobetuPageArticle, SingleArticleApiResponse } from '../../../../../types/types'
 
 export async function getKobetuArticle(postId: string): Promise<KobetuPageArticle | null> {
 	const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/kobetupage?postId=${postId}`
