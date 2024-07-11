@@ -2,6 +2,7 @@ import { D1Database } from '@cloudflare/workers-types';
 
 interface Env {
 	DB: D1Database;
+	API_KEY: string; // 環境変数としてAPI_KEYを追加
 }
 
 interface CountResult {
@@ -22,6 +23,12 @@ const worker = {
 		const keyword = url.searchParams.get('keyword');
 		const page = parseInt(url.searchParams.get('page') || '1', 10);
 		const pageSize = parseInt(url.searchParams.get('limit') || '10', 10); // 1ページあたりの記事数を動的に設定
+
+		// APIキーを検証
+		const apiKey = request.headers.get('Authorization');
+		if (!apiKey || apiKey !== `Bearer ${env.API_KEY}`) {
+			return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+		}
 
 		if (!keyword) {
 			return new Response(

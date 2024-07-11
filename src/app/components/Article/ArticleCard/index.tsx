@@ -28,7 +28,6 @@ const ArticleCard: React.FC<ArticleCardProps> = React.memo(({ article }) => {
 					)}
 				</div>
 				<div className="px-4 py-4 flex-grow">
-					<span className="bg-blue-100 text-blue-800 text-xs px-2.5 py-0.5 rounded">{article.site_name}</span>
 					<h2 className="text-black text-lg md:text-xl mb-2 mt-2">{article.title}</h2>
 				</div>
 				<div className="px-4 py-4 mt-auto">
