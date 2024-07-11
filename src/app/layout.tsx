@@ -12,7 +12,7 @@ import Sidebar from './layoutcomponents/Sidebar'
 const noto = Noto_Sans_JP({ subsets: ['latin'], weight: ['500'] })
 
 export const metadata: Metadata = {
-	title: 'keyboard sound',
+	title: 'erorice',
 	description: 'eroriceは無料エロ動画を思う存分楽しめるサイトです。',
 	openGraph: {
 		title: 'erorice',
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: 'summary_large_image',
-		title: 'keyboard sound',
+		title: 'erorice',
 		description: 'eroriceは無料エロ動画を思う存分楽しめるサイトです。',
 		images: [
 			{
@@ -41,17 +41,16 @@ export const metadata: Metadata = {
 	}
 }
 
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
 	return (
 		<html lang="ja">
-			<body className={noto.className}>
+			<body className={`${noto.className} flex flex-col min-h-screen`}>
 				<Header />
-
-				{/* <TopCopy /> */}
-
-				<div className="mx-auto flex flex-col md:flex-row min-h-screen bg-white">
-					<Sidebar />
-					<main className="flex-1 p-2 bg-white order-1 md:order-2">{children}</main>
+				<div className="flex-grow flex flex-col md:flex-row">
+					<aside className="order-2 md:order-1 w-full md:w-64 lg:w-80">
+						<Sidebar />
+					</aside>
+					<main className="order-1 md:order-2 flex-grow overflow-x-hidden p-4 md:p-6 lg:p-8">{children}</main>
 				</div>
 				<Footer />
 			</body>

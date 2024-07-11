@@ -4,7 +4,10 @@ export async function getKobetuArticle(postId: string): Promise<KobetuPageArticl
 	const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/kobetupage?postId=${postId}`
 
 	try {
-		const res = await fetch(apiUrl, { cache: 'no-store' })
+		const res = await fetch(
+			apiUrl
+			// { cache: 'no-store' }
+		)
 		if (!res.ok) {
 			const errorText = await res.text()
 			console.error(`API error (${res.status}):`, errorText)

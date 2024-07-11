@@ -28,17 +28,16 @@ export default async function TagCloud({ keywords: initialKeywords = [] }: TagCl
 
 	return (
 		<div className="flex flex-wrap gap-2 justify-center items-center -my-2">
-			<p className="w-full text-center mb-2">人気のキーワード</p>
+			<p className="w-full text-center mb-2 font-semibold">人気のキーワード</p>
 			{keywords.map((keyword: string, index: number) => (
 				<Link href={`/tag/${encodeURIComponent(keyword)}`} key={index} className="my-1">
 					<span
 						className="
               px-3 py-1
               text-sm text-gray-700 
-              bg-pink-200 
-              rounded-md
+              border-b-2 border-pink-200
               transition-all duration-200 ease-in-out
-              hover:bg-gray-200 hover:text-gray-800
+              hover:bg-gray-100 hover:text-gray-800
             "
 					>
 						{keyword}

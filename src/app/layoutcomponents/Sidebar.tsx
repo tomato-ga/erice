@@ -1,15 +1,13 @@
 import React from 'react'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import TagCloud from '../components/SidebarTags'
 
-const Sidebar = async () => {
+const Sidebar = () => {
 	return (
-		<div className="bg-white p-6 order-2 md:order-1 transform w-full md:w-80 border-r mt-2">
-			<div className="text-black space-y-6">
+		<aside className="w-full md:w-64 lg:w-80 flex-shrink-0 bg-white border-b md:border-r md:border-b-0 p-4 md:p-6 mt-2">
+			<div className="sticky top-4">
 				<TagCloud />
 			</div>
-		</div>
+		</aside>
 	)
 }
 

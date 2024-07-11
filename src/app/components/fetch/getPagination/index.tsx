@@ -15,8 +15,8 @@ export async function fetchPaginationArticles(
 		const response = await fetch(`/api/pagination?${params}`, {
 			headers: {
 				Accept: 'application/json'
-			},
-			next: { revalidate: 60 }
+			}
+			// next: { revalidate: 60 }
 		})
 
 		if (!response.ok) {

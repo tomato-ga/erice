@@ -12,7 +12,7 @@ export async function getArticlesByKeyword(
 
 	try {
 		const res = await fetch(apiUrl, {
-			cache: 'no-store',
+			// cache: 'no-store',
 			headers: {
 				Authorization: `Bearer ${process.env.D1_API_KEY}`
 			}
