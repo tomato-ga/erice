@@ -2,6 +2,7 @@ import { D1Database } from '@cloudflare/workers-types';
 
 interface Env {
 	DB: D1Database;
+	API_KEY: string;
 }
 
 interface Article {
@@ -13,8 +14,27 @@ interface Article {
 	site_name: string;
 }
 
+interface ApiResponse<T> {
+	articles: T[];
+	total_count?: number;
+	page_count?: number;
+}
+
+interface HomePageApiResponse extends ApiResponse<Article> {
+	totalPages: number;
+}
+
 const handler = {
 	async fetch(request: Request, env: Env): Promise<Response> {
+		const url = new URL(request.url);
+		const page = parseInt(url.searchParams.get('page') || '1', 10);
+		const limit = parseInt(url.searchParams.get('limit') || '10', 10);
+		const apiKey = request.headers.get('Authorization');
+
+		if (!apiKey || apiKey !== `Bearer ${env.API_KEY}`) {
+			return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+		}
+
 		const headers = {
 			'Access-Control-Allow-Origin': '*',
 			'Content-Type': 'application/json',
@@ -25,7 +45,7 @@ const handler = {
 				headers: {
 					...headers,
 					'Access-Control-Allow-Methods': 'GET, OPTIONS',
-					'Access-Control-Allow-Headers': 'Content-Type',
+					'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 				},
 			});
 		}
@@ -35,30 +55,43 @@ const handler = {
 		}
 
 		try {
+			const offset = (page - 1) * limit;
 			const query = `
-				SELECT 
-					a.id, 
-					a.title, 
-					a.link, 
-					a.created_at,
-					i.url AS image_url,
-					s.name AS site_name
-				FROM 
-					articles a
-				INNER JOIN 
-					images i ON a.id = i.article_id
-				INNER JOIN
-					sites s ON a.site_id = s.id
-				WHERE
-					i.url IS NOT NULL
-				ORDER BY 
-					a.created_at DESC
-				LIMIT 50
-			`;
+                SELECT 
+                    a.id, 
+                    a.title, 
+                    a.link, 
+                    a.created_at,
+                    i.url AS image_url,
+                    s.name AS site_name
+                FROM 
+                    articles a
+                INNER JOIN 
+                    images i ON a.id = i.article_id
+                INNER JOIN
+                    sites s ON a.site_id = s.id
+                WHERE
+                    i.url IS NOT NULL
+                ORDER BY 
+                    a.created_at DESC
+                LIMIT ? OFFSET ?
+            `;
+			const results = await env.DB.prepare(query).bind(limit, offset).all<Article>();
+			const countQuery = `SELECT COUNT(*) as total FROM articles WHERE id IN (SELECT article_id FROM images WHERE url IS NOT NULL)`;
+			const countResult = await env.DB.prepare(countQuery).first<{ total: number } | null>();
 
-			const results = await env.DB.prepare(query).all<Article>();
+			if (!countResult) {
+				return new Response(JSON.stringify({ error: 'No articles found' }), { status: 404, headers });
+			}
 
-			return new Response(JSON.stringify({ articles: results.results }), {
+			const totalPages = Math.ceil(countResult.total / limit);
+
+			const response: HomePageApiResponse = {
+				articles: results.results,
+				totalPages,
+			};
+
+			return new Response(JSON.stringify(response), {
 				status: 200,
 				headers,
 			});

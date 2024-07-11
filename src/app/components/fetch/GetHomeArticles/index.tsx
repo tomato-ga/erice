@@ -1,9 +1,12 @@
 import { HomePageApiResponse } from '../../../../../types/types'
 
-export async function getHomeArticles(): Promise<HomePageApiResponse> {
-	const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/toppage`
+export async function getHomeArticles(page: number, limit: number): Promise<HomePageApiResponse> {
+	const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/toppage?page=${page}&limit=${limit}`
 
-	const res = await fetch(apiUrl, { cache: 'no-store' })
+	const res = await fetch(apiUrl, {
+		cache: 'no-store',
+		headers: { Authorization: `Bearer ${process.env.D1_API_KEY}` }
+	})
 	if (!res.ok) {
 		throw new Error('Failed to fetch articles')
 	}
@@ -11,7 +14,7 @@ export async function getHomeArticles(): Promise<HomePageApiResponse> {
 
 	if (!data.articles || !Array.isArray(data.articles)) {
 		console.error('Unexpected API response structure:', data)
-		return { articles: [] }
+		return { articles: [], totalPages: 0 }
 	}
 
 	return data

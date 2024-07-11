@@ -31,7 +31,9 @@ export interface ApiResponse<T> {
 }
 
 // 各ページ用のAPIレスポンス型
-export type HomePageApiResponse = ApiResponse<HomePageArticle>
+export interface HomePageApiResponse extends ApiResponse<HomePageArticle> {
+	totalPages: number
+}
 export type KobetuPageApiResponse = ApiResponse<KobetuPageArticle>
 
 // 単一記事取得用のAPIレスポンス型

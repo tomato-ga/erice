@@ -13,7 +13,7 @@ import {
 interface PaginationComponentProps {
 	currentPage: number
 	totalPages: number
-	keyword: string
+	keyword?: string
 }
 
 const PaginationComponent: React.FC<PaginationComponentProps> = ({ currentPage, totalPages, keyword }) => {
@@ -22,22 +22,26 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({ currentPage, 
 		return Array.from({ length: Math.min(5, totalPages) }, (_, i) => start + i)
 	}, [currentPage, totalPages])
 
+	const getHref = (page: number) => {
+		if (keyword) {
+			return `/tag/${encodeURIComponent(keyword)}?page=${page}`
+		}
+		return `?page=${page}`
+	}
+
 	return (
 		<nav aria-label="Pagination" className="my-8">
 			<Pagination>
 				<PaginationContent>
 					{currentPage > 1 && (
 						<PaginationItem>
-							<PaginationPrevious
-								href={`/tag/${encodeURIComponent(keyword)}?page=${currentPage - 1}`}
-								aria-label="Go to previous page"
-							/>
+							<PaginationPrevious href={getHref(currentPage - 1)} aria-label="Go to previous page" />
 						</PaginationItem>
 					)}
 					{pageNumbers.map((pageNumber) => (
 						<PaginationItem key={pageNumber}>
 							<PaginationLink
-								href={`/tag/${encodeURIComponent(keyword)}?page=${pageNumber}`}
+								href={getHref(pageNumber)}
 								isActive={pageNumber === currentPage}
 								aria-label={`Go to page ${pageNumber}`}
 							>
@@ -47,10 +51,7 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({ currentPage, 
 					))}
 					{currentPage < totalPages && (
 						<PaginationItem>
-							<PaginationNext
-								href={`/tag/${encodeURIComponent(keyword)}?page=${currentPage + 1}`}
-								aria-label="Go to next page"
-							/>
+							<PaginationNext href={getHref(currentPage + 1)} aria-label="Go to next page" />
 						</PaginationItem>
 					)}
 				</PaginationContent>

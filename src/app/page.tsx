@@ -1,39 +1,25 @@
 import { Suspense } from 'react'
-import { HomePageApiResponse } from '../../types/types'
+import HomeContent from './components/Home/HomeContent'
+import PaginationComponent from './components/Pagination'
 import { getHomeArticles } from './components/fetch/GetHomeArticles'
-import ArticleCard from './components/Article/ArticleCard'
 
-function ArticleList({ articles }: { articles: HomePageApiResponse['articles'] }) {
-	if (articles.length === 0) {
-		return <p className="text-center text-gray-500">No articles available.</p>
-	}
-
-	return (
-		<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 p-8">
-			{articles.map((article) => (
-				<ArticleCard key={article.id} article={article} />
-			))}
-		</div>
-	)
+interface HomePageProps {
+	searchParams: { page?: string }
 }
 
-async function HomeContent() {
-	try {
-		const data = await getHomeArticles()
-		return <ArticleList articles={data.articles} />
-	} catch (error) {
-		console.error('Error fetching articles:', error)
-		return <p className="text-center text-red-500">Error loading articles. Please try again later.</p>
-	}
-}
+const DEFAULT_PAGE = 1
+const DEFAULT_LIMIT = 30
 
-export default function HomePage() {
+export default async function HomePage({ searchParams }: HomePageProps) {
+	const currentPage = parseInt(searchParams.page || `${DEFAULT_PAGE}`, 10)
+	const data = await getHomeArticles(currentPage, DEFAULT_LIMIT)
+
 	return (
-		<div className="min-h-screen ">
+		<div className="min-h-screen">
 			<div className="container mx-auto px-4 py-8">
 				<h1 className="text-3xl font-bold text-center mb-8">最新動画</h1>
 				<Suspense fallback={<div className="text-center">動画をローディング中...</div>}>
-					<HomeContent />
+					<HomeContent articles={data.articles} currentPage={currentPage} totalPages={data.totalPages} />
 				</Suspense>
 			</div>
 		</div>
