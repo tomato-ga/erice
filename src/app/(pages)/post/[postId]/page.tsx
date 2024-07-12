@@ -55,7 +55,16 @@ const ArticleContent: React.FC<{ article: KobetuPageArticle }> = ({ article }) =
 			<Link href={article.link} passHref className="hover:underline" target="_blank" rel="noopener noreferrer">
 				<h1 className="text-gray-600 text-2xl sm:text-4xl py-4">{article.title}</h1>
 			</Link>
+
 			<ArticleKeywords keywords={article.keywords} />
+
+			<div className="text-2xl p-5 m-1 text-white text-center font-semibold hover:bg-orange-700 rounded-md bg-gradient-to-r from-pink-400 to-violet-900">
+				<h3>
+					<Link href={article.link} target="_blank">
+						{article.title}のページを見る
+					</Link>
+				</h3>
+			</div>
 		</div>
 	</div>
 )
@@ -78,17 +87,18 @@ const ArticleHeader: React.FC<{ article: KobetuPageArticle }> = ({ article }) =>
 
 const ArticleKeywords: React.FC<{ keywords: Keyword[] }> = ({ keywords }) => (
 	<div className="bg-white rounded-lg py-2">
-		<h3 className="text-gray-600 py-4 text-lg">キーワード</h3>
 		{keywords && keywords.length > 0 ? (
-			<ul className="space-y-4">
+			<div className="flex flex-wrap items-start p-5 py-5">
 				{keywords.map((keyword) => (
-					<li key={keyword.id} className="flex items-center">
-						<Link href={`/tag/${encodeURIComponent(keyword.keyword)}`}>
-							<span className="ml-2">{keyword.keyword}</span>
-						</Link>
-					</li>
+					<Link
+						key={keyword.id}
+						className="relative px-1 py-1 m-2 rounded-md shadow-sm sm:py-2 sm:text-base ring ring-transparent group md:px-4 hover:ring hover:ring-opacity-50 focus:ring-opacity-50 hover:ring-pink-600 text-gray-900 bg-gray-100 dark:bg-gray-400 dark:text-gray-200"
+						href={`/tag/${encodeURIComponent(keyword.keyword)}`}
+					>
+						<span className="">#{keyword.keyword}</span>
+					</Link>
 				))}
-			</ul>
+			</div>
 		) : (
 			<p className="text-gray-600">キーワードがありません</p>
 		)}
