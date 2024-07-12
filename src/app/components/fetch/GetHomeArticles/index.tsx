@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache'
 import { HomePageApiResponse } from '../../../../../types/types'
 
 export async function getHomeArticles(page: number, limit: number): Promise<HomePageApiResponse> {
@@ -6,7 +7,7 @@ export async function getHomeArticles(page: number, limit: number): Promise<Home
 	const res = await fetch(
 		apiUrl,
 		// cache: 'no-store',
-		{ next: { revalidate: 10800 }, headers: { Authorization: `Bearer ${process.env.D1_API_KEY}` } }
+		{ cache: 'no-store', headers: { Authorization: `Bearer ${process.env.D1_API_KEY}` } }
 	)
 	if (!res.ok) {
 		throw new Error('Failed to fetch articles')

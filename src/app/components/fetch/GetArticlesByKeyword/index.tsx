@@ -11,16 +11,14 @@ export async function getArticlesByKeyword(
 	console.log('API URL:', apiUrl) // 確認用ログ
 
 	try {
-		const res = await fetch(
-			apiUrl,
-			// cache: 'no-store',
-			{
-				next: { revalidate: 10800 },
-				headers: {
-					Authorization: `Bearer ${process.env.D1_API_KEY}`
-				}
+		const res = await fetch(apiUrl, {
+			cache: 'no-store',
+
+			// next: { revalidate: 10800 },
+			headers: {
+				Authorization: `Bearer ${process.env.D1_API_KEY}`
 			}
-		)
+		})
 		if (!res.ok) {
 			const errorText = await res.text()
 			console.error('getArticlesByKeyword API Response:', errorText)

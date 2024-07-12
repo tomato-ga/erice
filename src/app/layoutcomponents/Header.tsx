@@ -35,7 +35,7 @@ const Header: React.FC = () => {
 		<header className="relative bg-white text-black w-full border-b border-gray-300">
 			<div className="flex items-center justify-between w-full h-12 px-3">
 				<div className="ml-4 h-full">
-					<Link href="/">
+					<Link href="/" replace>
 						<img src="/site.webp" className="h-full w-auto" alt="erorice" />
 					</Link>
 				</div>
@@ -55,31 +55,16 @@ const Header: React.FC = () => {
 					<button onClick={closeMenubar} className="self-end text-xl font-bold lg:hidden">
 						×
 					</button>
-					{/* <Link href="/search" onClick={handleLinkClick}>
-						<span className="px-2 py-1 rounded-md cursor-pointer font-semibold hover:bg-gray-200">検索</span>
-					</Link> */}
-					<Link href="/about" onClick={handleLinkClick}>
-						<span className="px-2 py-1 rounded-md cursor-pointer font-semibold hover:bg-gray-200">About</span>
+
+					<Link href="/" onClick={handleLinkClick}>
+						<span className="px-2 py-1 rounded-md cursor-pointer font-semibold hover:bg-gray-200">人気動画</span>
 					</Link>
-					(
-					<>
-						<Link href="/post/upload" onClick={handleLinkClick}>
-							<span className="px-2 py-1 rounded-md cursor-pointer font-semibold hover:bg-gray-200">音を投稿する</span>
-						</Link>
-						<Link href={`/profile/${screenName}`} onClick={handleLinkClick}>
-							<span className="px-2 py-1 rounded-md cursor-pointer font-semibold hover:bg-gray-200">プロフィール</span>
-						</Link>
-						<Link href="/logout" onClick={handleLinkClick}>
-							<span className="px-2 py-1 rounded-md cursor-pointer font-semibold hover:bg-gray-200">ログアウト</span>
-						</Link>
-					</>
-					) : (
-					<Link href="/login" onClick={handleLinkClick}>
-						<span className="px-2 py-1 rounded-md cursor-pointer font-semibold hover:bg-gray-200">
-							投稿するにはログインが必要です
-						</span>
+					<Link href="/" onClick={handleLinkClick}>
+						<span className="px-2 py-1 rounded-md cursor-pointer font-semibold hover:bg-gray-200">お気に入り</span>
 					</Link>
-					)
+					<Link href="/" onClick={handleLinkClick}>
+						<span className="px-2 py-1 rounded-md cursor-pointer font-semibold hover:bg-gray-200">閲覧履歴</span>
+					</Link>
 				</div>
 			</div>
 		</header>

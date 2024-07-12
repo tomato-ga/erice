@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "pnpm next dev",
+    "d": "pnpm next dev",
     "build": "pnpm next build",
     "start": "pnpm next start",
     "lint": "pnpm next lint",

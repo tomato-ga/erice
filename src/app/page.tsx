@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import Link from 'next/link' // Linkをインポート
 import { getHomeArticles } from './components/fetch/GetHomeArticles'
 import ArticleCard from './components/Article/ArticleCard'
 import PaginationComponent from './components/Pagination'
@@ -24,7 +25,9 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
 	return (
 		<section className="max-w-7xl mx-auto">
-			<h1 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">最新動画</h1>
+			<h1 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">
+				<Link href="/">最新動画</Link> {/* Linkを使用してルートディレクトリに移動 */}
+			</h1>
 			<Suspense fallback={<LoadingSpinner />}>
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
 					{data.articles.map((article) => (
