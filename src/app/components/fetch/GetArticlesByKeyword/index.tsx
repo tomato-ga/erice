@@ -12,9 +12,9 @@ export async function getArticlesByKeyword(
 
 	try {
 		const res = await fetch(apiUrl, {
-			cache: 'no-store',
+			// cache: 'no-store',
 
-			// next: { revalidate: 10800 },
+			next: { revalidate: 10800 },
 			headers: {
 				Authorization: `Bearer ${process.env.D1_API_KEY}`
 			}
@@ -25,7 +25,7 @@ export async function getArticlesByKeyword(
 			throw new Error(`Failed to fetch articles: ${res.status} ${res.statusText}. Response: ${errorText}`)
 		}
 		const data = await res.json()
-		console.log('getArticlesByKeyword API Response:', data) // 確認用ログ
+		// console.log('getArticlesByKeyword API Response:', data) // 確認用ログ
 
 		if (!data.articles || !Array.isArray(data.articles)) {
 			console.error('Unexpected API response structure:', data)
@@ -44,7 +44,7 @@ export async function getArticlesByKeyword(
 			total: data.total || data.articles.length
 		}
 
-		console.log('getArticlesByKeyword data:', paginatedData) // 確認用ログ
+		// console.log('getArticlesByKeyword data:', paginatedData) // 確認用ログ
 		return paginatedData
 	} catch (error) {
 		console.error('Error in getArticlesByKeyword:', error)

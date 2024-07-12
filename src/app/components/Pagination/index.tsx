@@ -24,9 +24,19 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({ currentPage, 
 
 	const getHref = (page: number) => {
 		if (keyword) {
-			return `/tag/${encodeURIComponent(keyword)}?page=${page}`
+			if (page === 1) {
+				return `/tag/${encodeURIComponent(keyword)}`
+			}
+			return `/tag/${encodeURIComponent(keyword)}/page/${page}`
 		}
-		return `?page=${page}`
+		if (page === 1) {
+			return '/'
+		}
+		return `/page/${page}`
+	}
+
+	if (totalPages <= 1) {
+		return null // ページが1つしかない場合はページネーションを表示しない
 	}
 
 	return (
