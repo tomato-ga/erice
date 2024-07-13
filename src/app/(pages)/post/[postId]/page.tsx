@@ -20,7 +20,7 @@ const KobetuArticlePage: NextPage<Props> = async ({ params }) => {
 			return (
 				<div className="container mx-auto px-4 py-8">
 					<h1 className="text-2xl font-bold text-red-600">記事が見つかりませんでした</h1>
-					<p>指定された記事ID ({params.postId}) に対応する記事が存在しないか、取得中にエラーが発生しました。</p>
+					<p>記事が存在しないか、取得中にエラーが発生しました。</p>
 				</div>
 			)
 		}
