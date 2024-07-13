@@ -79,18 +79,17 @@ async function getArticles(db: D1Database, keyword: string | null, pageSize: num
 	}
 
 	let query = `
-        SELECT a.id, a.title, a.created_at, i.url as image_url
-        FROM articles a
-        LEFT JOIN images i ON a.id = i.article_id
-        WHERE a.id IN (
-            SELECT ak.article_id
-            FROM article_keywords ak
-            JOIN keywords k ON ak.keyword_id = k.id
-            WHERE k.keyword = ?
-        )
-        ORDER BY a.created_at DESC
-        LIMIT ? OFFSET ?
-    `;
+		SELECT a.id, a.title, a.created_at, a.image_url
+		FROM articles a
+		WHERE a.id IN (
+			SELECT ak.article_id
+			FROM article_keywords ak
+			JOIN keywords k ON ak.keyword_id = k.id
+			WHERE k.keyword = ?
+		)
+		ORDER BY a.created_at DESC
+		LIMIT ? OFFSET ?
+	`;
 
 	const params: any[] = [keyword, pageSize, offset];
 

@@ -54,19 +54,17 @@ const handleOptionsRequest = (): Response => {
 
 const fetchArticleWithKeywords = async (env: Env, id: number): Promise<ArticleWithKeywords | null> => {
 	const query = `
-	SELECT
-	  a.id, a.title, a.link, a.published_at, a.created_at, a.updated_at,
-	  s.id AS site_id, s.url AS site_url, s.name AS site_name,
-	  i.url AS image_url,
-	  k.id AS keyword_id, k.keyword, k.created_at AS keyword_created_at
-	FROM
-	  articles a
-	JOIN sites s ON a.site_id = s.id
-	LEFT JOIN images i ON a.id = i.article_id
-	LEFT JOIN article_keywords ak ON a.id = ak.article_id
-	LEFT JOIN keywords k ON ak.keyword_id = k.id
-	WHERE a.id = ?
-	`;
+		SELECT
+		a.id, a.title, a.link, a.published_at, a.created_at, a.updated_at, a.image_url,
+		s.id AS site_id, s.url AS site_url, s.name AS site_name,
+		k.id AS keyword_id, k.keyword, k.created_at AS keyword_created_at
+		FROM
+		articles a
+		JOIN sites s ON a.site_id = s.id
+		LEFT JOIN article_keywords ak ON a.id = ak.article_id
+		LEFT JOIN keywords k ON ak.keyword_id = k.id
+		WHERE a.id = ?
+		`;
 
 	const result = await env.DB.prepare(query).bind(id).all<RawArticleData>();
 

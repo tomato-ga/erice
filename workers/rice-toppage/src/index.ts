@@ -62,22 +62,20 @@ const handler = {
                     a.title, 
                     a.link, 
                     a.created_at,
-                    i.url AS image_url,
+                    a.image_url,
                     s.name AS site_name
                 FROM 
                     articles a
-                INNER JOIN 
-                    images i ON a.id = i.article_id
                 INNER JOIN
                     sites s ON a.site_id = s.id
                 WHERE
-                    i.url IS NOT NULL
+                    a.image_url IS NOT NULL
                 ORDER BY 
                     a.created_at DESC
                 LIMIT ? OFFSET ?
             `;
 			const results = await env.DB.prepare(query).bind(limit, offset).all<Article>();
-			const countQuery = `SELECT COUNT(*) as total FROM articles WHERE id IN (SELECT article_id FROM images WHERE url IS NOT NULL)`;
+			const countQuery = `SELECT COUNT(*) as total FROM articles WHERE image_url IS NOT NULL`;
 			const countResult = await env.DB.prepare(countQuery).first<{ total: number } | null>();
 
 			if (!countResult) {

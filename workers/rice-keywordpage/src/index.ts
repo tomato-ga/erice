@@ -53,14 +53,13 @@ const fetchArticlesByKeyword = async (env: Env, keyword: string): Promise<Articl
 		a.title,
 		a.link,
 		a.created_at,
-		i.url AS image_url,
+		a.image_url,
 		s.name AS site_name,
 		k.id AS keyword_id, 
 		k.keyword
 	FROM
 		articles a
 	JOIN sites s ON a.site_id = s.id
-	LEFT JOIN images i ON a.id = i.article_id
 	LEFT JOIN article_keywords ak ON a.id = ak.article_id
 	LEFT JOIN keywords k ON ak.keyword_id = k.id
 	WHERE k.keyword = ?
