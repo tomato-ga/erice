@@ -2,10 +2,10 @@
 
 import { headers } from 'next/headers'
 
-export const handlePageClickCount = async (articleId: number) => {
+export const handleEXClickCount = async (articleId: number) => {
 	console.log('handleClickCount called with articleId:', articleId)
 
-	const apiUrl = process.env.PAGECLICK_WORKER_URL
+	const apiUrl = process.env.EXCLICK_WORKER_URL
 	const apiKey = process.env.D1_API_KEY
 
 	if (!apiUrl) {

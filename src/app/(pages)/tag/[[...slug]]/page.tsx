@@ -37,6 +37,7 @@ export default async function TagPage({ params }: PageProps) {
 	let data: { articles: HomePageArticle[]; totalPages: number; total: number }
 	try {
 		data = await getArticlesByKeyword(keyword, currentPage, DEFAULT_LIMIT)
+		console.log('pagination data 重複チェック: ', data)
 
 		if (currentPage > data.totalPages) {
 			notFound()

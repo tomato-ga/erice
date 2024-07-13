@@ -2,6 +2,8 @@ import { NextPage } from 'next'
 import { KobetuPageArticle, Keyword } from '../../../../../types/types'
 import { getKobetuArticle } from '@/app/components/fetch/GetKobetuArticles'
 import Link from 'next/link'
+import { handleEXClickCount } from '@/app/components/handleexclick'
+import ArticleLinks from '@/app/components/Article/ArticleContent'
 
 interface Props {
 	params: { postId: string }
@@ -45,29 +47,20 @@ const KobetuArticlePage: NextPage<Props> = async ({ params }) => {
 	}
 }
 
-const ArticleContent: React.FC<{ article: KobetuPageArticle }> = ({ article }) => (
-	<div className="bg-white">
-		<div className="relative">
-			<img src={article.image_url} alt={article.title} className="w-full h-auto rounded-lg sm:rounded-lg" />
-		</div>
-		<div className="p-8">
-			<ArticleHeader article={article} />
-			<Link href={article.link} passHref className="hover:underline" target="_blank" rel="noopener noreferrer">
-				<h1 className="text-gray-600 text-2xl sm:text-4xl py-4">{article.title}</h1>
-			</Link>
+const ArticleContent: React.FC<{ article: KobetuPageArticle }> = ({ article }) => {
+	return (
+		<div className="bg-white">
+			<div className="relative">
+				<img src={article.image_url} alt={article.title} className="w-full h-auto rounded-lg sm:rounded-lg" />
+			</div>
+			<div className="p-8">
+				<ArticleHeader article={article} />
 
-			<ArticleKeywords keywords={article.keywords} />
-
-			<div className="text-2xl p-5 m-1 text-white text-center font-semibold hover:bg-orange-700 rounded-md bg-gradient-to-r from-pink-400 to-violet-900">
-				<h3>
-					<Link href={article.link} target="_blank">
-						{article.title}のページを見る
-					</Link>
-				</h3>
+				<ArticleLinks article={article} />
 			</div>
 		</div>
-	</div>
-)
+	)
+}
 
 const ArticleHeader: React.FC<{ article: KobetuPageArticle }> = ({ article }) => (
 	<div className="flex items-center justify-between mb-4">
@@ -85,7 +78,7 @@ const ArticleHeader: React.FC<{ article: KobetuPageArticle }> = ({ article }) =>
 	</div>
 )
 
-const ArticleKeywords: React.FC<{ keywords: Keyword[] }> = ({ keywords }) => (
+export const ArticleKeywords: React.FC<{ keywords: Keyword[] }> = ({ keywords }) => (
 	<div className="bg-white rounded-lg py-2">
 		{keywords && keywords.length > 0 ? (
 			<div className="flex flex-wrap items-start p-5 py-5">

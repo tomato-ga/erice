@@ -27,19 +27,11 @@ export default async function TagCloud({ keywords: initialKeywords = [] }: TagCl
 	}
 
 	return (
-		<div className="flex flex-wrap gap-2 justify-center items-center -my-2">
+		<div className="flex flex-wrap gap-2 justify-center items-center -my-1">
 			<p className="w-full text-center mb-2 font-semibold">人気のキーワード</p>
 			{keywords.map((keyword: string, index: number) => (
-				<Link href={`/tag/${encodeURIComponent(keyword)}`} key={index} className="my-1">
-					<span
-						className="
-              px-3 py-1
-              text-sm text-gray-700 
-              border-b-2 border-pink-200
-              transition-all duration-200 ease-in-out
-              hover:bg-gray-100 hover:text-gray-800
-            "
-					>
+				<Link href={`/tag/${encodeURIComponent(keyword)}`} key={index} className="my-4">
+					<span className="relative px-1 py-1 m-1 rounded-md shadow-sm sm:py-2 sm:text-base ring ring-transparent group md:px-4 hover:ring hover:ring-opacity-50 focus:ring-opacity-50 hover:ring-pink-600 text-gray-900 bg-gray-100 dark:bg-gray-400 dark:text-gray-200">
 						{keyword}
 					</span>
 				</Link>
@@ -47,3 +39,9 @@ export default async function TagCloud({ keywords: initialKeywords = [] }: TagCl
 		</div>
 	)
 }
+
+// px-3 py-1
+// text-sm text-gray-700
+// border-b-2 border-pink-200
+// transition-all duration-200 ease-in-out
+// hover:bg-gray-100 hover:text-gray-800

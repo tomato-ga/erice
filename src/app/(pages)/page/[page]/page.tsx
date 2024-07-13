@@ -32,6 +32,8 @@ export default async function PaginatedPage({ params }: PageProps) {
 		return <ErrorDisplay message="記事の取得に失敗しました。後でもう一度お試しください。" />
 	}
 
+	console.log('pagination data 重複チェック: ', data)
+
 	return (
 		<section className="max-w-7xl mx-auto">
 			{/* <ClientDebugger currentPage={currentPage} articlesCount={data.articles.length} /> */}

@@ -3,8 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { HomePageArticle } from '../../../../../types/types' // 適切なパスに調整してください
-
-import { handleClickCount } from '../../handleclick'
+import { handlePageClickCount } from '../../handleclick'
 
 interface ArticleCardProps {
 	article: HomePageArticle
@@ -12,7 +11,7 @@ interface ArticleCardProps {
 
 const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
 	const handleClick = () => {
-		handleClickCount(article.id).catch((error) => console.error('Failed to record click:', error))
+		handlePageClickCount(article.id).catch((error) => console.error('Failed to record click:', error))
 	}
 
 	return (
