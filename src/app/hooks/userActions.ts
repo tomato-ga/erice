@@ -6,6 +6,7 @@ export function useUserActions() {
 	const recordAction = useCallback(async (type: 'article_view' | 'keyword_view' | 'external_click', data: any) => {
 		const userId = getUserId()
 		try {
+			console.log(`Attempting to record action: ${type}`, data) // デバッグ用ログ
 			const response = await fetch('/api/record-action', {
 				method: 'POST',
 				headers: {
@@ -15,10 +16,12 @@ export function useUserActions() {
 			})
 			if (!response.ok) {
 				const errorData = await response.json()
-				throw new Error(errorData.error || 'Failed to record action')
+				throw new Error(errorData.error || `Failed to record action: ${response.statusText}`)
 			}
+			console.log(`Action recorded successfully: ${type}`) // 成功時のログ
 		} catch (error) {
 			console.error('Error recording user action:', error)
+			// ここでユーザーに通知したり、エラー追跡サービスに報告したりできます
 		}
 	}, [])
 
