@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { handleEXClickCount } from '../../handleexclick'
 import { KobetuPageArticle } from '../../../../../types/types'
 
-import { ArticleKeywords } from '@/app/(pages)/post/[postId]/page'
+import ArticleKeywords from '../ArticleKeywords'
 
 const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = ({ article }) => {
 	const handleClick = () => {
