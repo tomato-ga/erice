@@ -16,7 +16,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
 
 	return (
 		<div onClick={() => handleClick()}>
-			<Link href={`/post/${article.id}`} className="block h-full">
+			<Link href={`/post/${article.id}`} className="block h-full" prefetch={true}>
 				<div className="bg-white rounded-lg shadow-md overflow-hidden h-full flex flex-col">
 					<div className="relative pb-[56.25%]">
 						<img src={article.image_url} alt={article.title} className="absolute inset-0 w-full h-full object-cover" />
