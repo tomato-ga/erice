@@ -83,4 +83,6 @@ const formatDate = (dateString: string) => {
 	return new Date(dateString).toLocaleDateString(undefined, options)
 }
 
+export const runtime = 'edge'
+
 export default KobetuArticlePage

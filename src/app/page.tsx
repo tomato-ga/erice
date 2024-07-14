@@ -70,3 +70,5 @@ function ErrorDisplay({ message }: { message: string }) {
 		</div>
 	)
 }
+
+export const runtime = 'edge'
