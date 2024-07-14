@@ -14,7 +14,7 @@ export async function getArticlesByKeyword(
 		const res = await fetch(apiUrl, {
 			// cache: 'no-store',
 
-			next: { revalidate: 10800 },
+			next: { revalidate: 1800 },
 			headers: {
 				Authorization: `Bearer ${process.env.D1_API_KEY}`
 			}
