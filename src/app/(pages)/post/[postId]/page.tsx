@@ -55,7 +55,6 @@ const ArticleContent: React.FC<{ article: KobetuPageArticle }> = ({ article }) =
 			</div>
 			<div className="p-8">
 				<ArticleHeader article={article} />
-
 				<ArticleLinks article={article} />
 			</div>
 		</div>

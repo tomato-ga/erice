@@ -1,14 +1,20 @@
 'use client'
 
+import { useEffect } from 'react'
 import Link from 'next/link'
-import { handleEXClickCount } from '../../handleexclick'
 import { KobetuPageArticle } from '../../../../../types/types'
-
+import { useUserActions } from '../../../hooks/userActions'
 import ArticleKeywords from '../ArticleKeywords'
 
 const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = ({ article }) => {
+	const { recordArticleView, recordExternalClick } = useUserActions()
+
+	useEffect(() => {
+		recordArticleView(article)
+	}, [article, recordArticleView])
+
 	const handleClick = () => {
-		handleEXClickCount(article.id).catch((error) => console.error('Failed to record click:', error))
+		recordExternalClick(article.id, article.link)
 	}
 
 	return (
