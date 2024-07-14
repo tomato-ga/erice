@@ -51,7 +51,7 @@ export default async function TagPage({ params }: PageProps) {
 
 	return (
 		<section className="max-w-7xl mx-auto">
-			<ClientDebugger currentPage={currentPage} articlesCount={data.articles.length} />
+			{/* <ClientDebugger currentPage={currentPage} articlesCount={data.articles.length} /> */}
 			<h1 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">{pageTitle}</h1>
 			{currentPage > 1 && (
 				<div className="text-center mb-4">
