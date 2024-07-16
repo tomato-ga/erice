@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid'
+import { v7 as uuidv7 } from 'uuid'
 import Cookies from 'js-cookie'
 import CryptoJS from 'crypto-js'
 
@@ -15,7 +15,7 @@ export const getUserId = (): string => {
 
 	if (!ENCRYPTION_KEY) {
 		console.error('ENCRYPTION_KEY is not set')
-		return uuidv4() // 暗号化キーがない場合は新しいUUIDを生成して返す
+		return uuidv7() // 暗号化キーがない場合は新しいUUIDを生成して返す
 	}
 
 	let encryptedUserId = Cookies.get(USER_ID_COOKIE)
@@ -29,7 +29,7 @@ export const getUserId = (): string => {
 	}
 
 	// 新しいUUIDを生成し、暗号化して保存
-	const userId = uuidv4()
+	const userId = uuidv7()
 	encryptedUserId = encrypt(userId)
 	Cookies.set(USER_ID_COOKIE, encryptedUserId, {
 		expires: COOKIE_EXPIRY,

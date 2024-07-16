@@ -1,8 +1,24 @@
-import React from 'react'
+'use client'
+
+import React, { useCallback, useEffect } from 'react'
 import Link from 'next/link' // Make sure you have imported Link from 'next/link'
 import { Keyword } from '../../../../../types/types'
 
+import { useUserActions } from '@/app/hooks/userActions'
+
 const ArticleKeywords: React.FC<{ keywords: Keyword[] }> = ({ keywords }) => {
+	// const { recordKeywordView } = useUserActions()
+
+	// const recordKeywords = useCallback(() => {
+	// 	if (keywords && keywords.length > 0) {
+	// 		recordKeywordView(keywords)
+	// 	}
+	// }, [keywords, recordKeywordView])
+
+	// useEffect(() => {
+	// 	recordKeywords()
+	// }, [recordKeywords])
+
 	return (
 		<div className="bg-white rounded-lg py-2">
 			{keywords && keywords.length > 0 ? (

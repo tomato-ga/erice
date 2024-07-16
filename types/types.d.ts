@@ -1,4 +1,4 @@
-// 基本的な記事情報を含む共通インターフェース
+// 既存の型定義
 export interface BaseArticle {
 	id: number
 	title: string
@@ -8,48 +8,74 @@ export interface BaseArticle {
 	site_name: string
 }
 
-// キーワード情報
 export interface Keyword {
 	id: number
 	keyword: string
 	created_at?: string // オプショナルな追加情報
 }
 
-// ホームページ用の記事インターフェース
 export interface HomePageArticle extends BaseArticle {}
 
-// 個別ページ用の記事インターフェース
 export interface KobetuPageArticle extends BaseArticle {
 	keywords: Keyword[]
 }
 
-// APIレスポンスの型定義
 export interface ApiResponse<T> {
 	articles: T[]
 	total_count?: number
 	page_count?: number
 }
 
-// 各ページ用のAPIレスポンス型
 export interface HomePageApiResponse extends ApiResponse<HomePageArticle> {
 	totalPages: number
 }
 export type KobetuPageApiResponse = ApiResponse<KobetuPageArticle>
 
-// 単一記事取得用のAPIレスポンス型
 export interface SingleArticleApiResponse {
 	article: KobetuPageArticle
 }
 
-// PaginationArticle型を修正
 export interface PaginationArticle extends BaseArticle {
 	published_at: string
 }
 
-// PaginationArticleResponse型を修正
 export interface PaginationArticleResponse {
 	articles: PaginationArticle[]
 	currentPage: number
 	totalPages: number
 	total: number
+}
+
+// ユーザーアクション追跡システム用の新しい型定義
+export type ActionType = 'article_view' | 'keyword_view' | 'external_click'
+
+export interface UserAction {
+	userId: string
+	type: ActionType
+	data: ArticleViewData | KeywordViewData | ExternalClickData
+}
+
+export interface ArticleViewData {
+	article_id: number
+	title: string
+	site_name: string
+	viewed_at: string
+}
+
+export interface KeywordViewData {
+	keyword_id: number
+	keyword: string
+	viewed_at: string
+}
+
+export interface ExternalClickData {
+	article_id: number
+	link: string
+	clicked_at: string
+}
+
+export interface UserHistory {
+	article_views: ArticleViewData[]
+	keyword_views: KeywordViewData[]
+	external_clicks: ExternalClickData[]
 }
