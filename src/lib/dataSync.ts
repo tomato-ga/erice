@@ -48,22 +48,20 @@ const decrypt = (ciphertext: string): string => {
 	return bytes.toString(CryptoJS.enc.Utf8)
 }
 
-function isArticleViewData(data: any): data is ArticleViewData {
-	return 'article_id' in data && 'title' in data && 'site_name' in data && 'viewed_at' in data
-}
-
 class DataSyncManager {
 	private userId: string
 	private buffer: UserAction[] = []
 	private syncInterval: number = 30000 // 30秒
 	private bufferThreshold: number = 7
 	private storageKey: string = 'user_actions_buffer'
+	private viewedArticles: Set<number> = new Set()
 
 	constructor() {
 		this.userId = getUserId()
 		this.loadBufferFromStorage()
 		this.setupIntervalSync()
 		this.setupUnloadSync()
+		this.loadViewedArticles()
 	}
 
 	private loadBufferFromStorage() {
@@ -85,26 +83,35 @@ class DataSyncManager {
 		window.addEventListener('beforeunload', () => this.syncData())
 	}
 
+	private loadViewedArticles() {
+		const viewedArticles = localStorage.getItem('viewed_articles')
+		if (viewedArticles) {
+			this.viewedArticles = new Set(JSON.parse(viewedArticles))
+		}
+	}
+
+	private saveViewedArticles() {
+		localStorage.setItem('viewed_articles', JSON.stringify(Array.from(this.viewedArticles)))
+	}
+
 	public addArticleView(articleViewData: ArticleViewData) {
-		const existingAction = this.buffer.find(
-			(action) =>
-				action.type === 'article_view' &&
-				isArticleViewData(action.data) &&
-				action.data.article_id === articleViewData.article_id
-		)
+		if (this.viewedArticles.has(articleViewData.article_id)) {
+			console.log(`Article ${articleViewData.article_id} already viewed. Skipping.`)
+			return
+		}
 
-		if (!existingAction) {
-			const userAction: UserAction = {
-				userId: this.userId,
-				type: 'article_view',
-				data: articleViewData
-			}
-			this.buffer.push(userAction)
-			this.saveBufferToStorage()
+		const userAction: UserAction = {
+			userId: this.userId,
+			type: 'article_view',
+			data: articleViewData
+		}
+		this.buffer.push(userAction)
+		this.viewedArticles.add(articleViewData.article_id)
+		this.saveBufferToStorage()
+		this.saveViewedArticles()
 
-			if (this.buffer.length >= this.bufferThreshold) {
-				this.syncData()
-			}
+		if (this.buffer.length >= this.bufferThreshold) {
+			this.syncData()
 		}
 	}
 
@@ -153,3 +160,5 @@ if (typeof window !== 'undefined') {
 if (typeof window !== 'undefined' && !ENCRYPTION_KEY) {
 	console.error('ENCRYPTION_KEY is not set in the environment variables')
 }
+
+export default DataSyncManager
