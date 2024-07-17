@@ -1,7 +1,6 @@
 import { v7 as uuidv7 } from 'uuid'
 import Cookies from 'js-cookie'
 import CryptoJS from 'crypto-js'
-import { ArticleViewData, SyncData, UserAction } from '../../types/types'
 
 const USER_ID_COOKIE = 'uid'
 const COOKIE_EXPIRY = 365 * 3
@@ -9,156 +8,177 @@ const ENCRYPTION_KEY = process.env.NEXT_PUBLIC_ENCRYPTION_KEY
 
 export const getUserId = (): string => {
 	if (typeof window === 'undefined') {
+		console.log('サーバーサイドでgetUserIdが呼び出されました。一時的なIDを返します。')
 		return 'server-side-temp-id'
 	}
 
 	if (!ENCRYPTION_KEY) {
-		console.error('ENCRYPTION_KEY is not set')
+		console.error('環境変数ENCRYPTION_KEYが設定されていません。暗号化なしで新しいユーザーIDを生成します。')
 		return uuidv7()
 	}
 
 	let encryptedUserId = Cookies.get(USER_ID_COOKIE)
 	if (encryptedUserId) {
+		console.log('暗号化されたユーザーIDがクッキーから見つかりました。復号を試みます。')
 		try {
-			return decrypt(encryptedUserId)
+			const decryptedId = decrypt(encryptedUserId)
+			if (decryptedId) {
+				console.log('ユーザーIDの復号に成功しました。')
+				return decryptedId
+			}
 		} catch (error) {
-			console.error('Failed to decrypt user ID:', error)
+			console.error('ユーザーIDの復号に失敗しました:', error)
 		}
 	}
 
+	console.log('新しいユーザーIDを生成します。')
 	const userId = uuidv7()
-	encryptedUserId = encrypt(userId)
-	Cookies.set(USER_ID_COOKIE, encryptedUserId, {
-		expires: COOKIE_EXPIRY,
-		secure: true,
-		sameSite: 'strict'
-	})
+	try {
+		const encryptedNewId = encrypt(userId)
+		console.log('新しいユーザーIDを暗号化し、クッキーに保存します。')
+		Cookies.set(USER_ID_COOKIE, encryptedNewId, {
+			expires: COOKIE_EXPIRY,
+			secure: true,
+			sameSite: 'strict'
+		})
+	} catch (error) {
+		console.error('新しいユーザーIDの暗号化と保存に失敗しました:', error)
+	}
 
 	return userId
 }
 
 const encrypt = (text: string): string => {
-	if (!ENCRYPTION_KEY) throw new Error('ENCRYPTION_KEY is not set')
-	return CryptoJS.AES.encrypt(text, ENCRYPTION_KEY).toString()
+	if (!ENCRYPTION_KEY) throw new Error('ENCRYPTION_KEYが設定されていません')
+	try {
+		console.log('テキストを暗号化します。')
+		return CryptoJS.AES.encrypt(text, ENCRYPTION_KEY).toString()
+	} catch (error) {
+		console.error('暗号化に失敗しました:', error)
+		throw error
+	}
 }
 
 const decrypt = (ciphertext: string): string => {
-	if (!ENCRYPTION_KEY) throw new Error('ENCRYPTION_KEY is not set')
-	const bytes = CryptoJS.AES.decrypt(ciphertext, ENCRYPTION_KEY)
-	return bytes.toString(CryptoJS.enc.Utf8)
+	if (!ENCRYPTION_KEY) throw new Error('ENCRYPTION_KEYが設定されていません')
+	try {
+		console.log('暗号文を復号します。')
+		const bytes = CryptoJS.AES.decrypt(ciphertext, ENCRYPTION_KEY)
+		const decrypted = bytes.toString(CryptoJS.enc.Utf8)
+		if (!decrypted) {
+			throw new Error('復号結果が空文字列です')
+		}
+		return decrypted
+	} catch (error) {
+		console.error('復号に失敗しました:', error)
+		throw error
+	}
 }
-
 class DataSyncManager {
 	private userId: string
-	private buffer: UserAction[] = []
+	private articleViews: Set<number> = new Set()
 	private syncInterval: number = 30000 // 30秒
-	private bufferThreshold: number = 7
-	private storageKey: string = 'user_actions_buffer'
-	private viewedArticles: Set<number> = new Set()
+	private storageKey: string = 'article_view'
 
 	constructor() {
+		console.log('DataSyncManagerを初期化します。')
 		this.userId = getUserId()
-		this.loadBufferFromStorage()
+		this.loadArticleViews()
 		this.setupIntervalSync()
 		this.setupUnloadSync()
-		this.loadViewedArticles()
 	}
 
-	private loadBufferFromStorage() {
-		const storedBuffer = localStorage.getItem(this.storageKey)
-		if (storedBuffer) {
-			this.buffer = JSON.parse(storedBuffer)
+	private loadArticleViews() {
+		console.log('ローカルストレージから記事閲覧履歴を読み込みます。')
+		const storedViews = localStorage.getItem(this.storageKey)
+		if (storedViews) {
+			this.articleViews = new Set(JSON.parse(storedViews))
+			console.log(`${this.articleViews.size}件の記事閲覧履歴を読み込みました。`)
+		} else {
+			console.log('記事閲覧履歴がありません。')
 		}
 	}
 
-	private saveBufferToStorage() {
-		localStorage.setItem(this.storageKey, JSON.stringify(this.buffer))
+	private saveArticleViews() {
+		console.log(`${this.articleViews.size}件の記事閲覧履歴をローカルストレージに保存します。`)
+		localStorage.setItem(this.storageKey, JSON.stringify(Array.from(this.articleViews)))
 	}
 
-	private setupIntervalSync() {
-		setInterval(() => this.syncData(), this.syncInterval)
+	public addArticleView(articleId: number) {
+		console.log(`記事ID ${articleId} の閲覧を記録します。`)
+		this.articleViews.delete(articleId) // 既存のエントリを削除（存在しない場合は何もしない）
+		this.articleViews.add(articleId) // 新しいエントリを先頭に追加
+		this.trimArticleViews()
+		this.saveArticleViews()
+		this.syncData()
 	}
 
-	private setupUnloadSync() {
-		window.addEventListener('beforeunload', () => this.syncData())
-	}
-
-	private loadViewedArticles() {
-		const viewedArticles = localStorage.getItem('viewed_articles')
-		if (viewedArticles) {
-			this.viewedArticles = new Set(JSON.parse(viewedArticles))
-		}
-	}
-
-	private saveViewedArticles() {
-		localStorage.setItem('viewed_articles', JSON.stringify(Array.from(this.viewedArticles)))
-	}
-
-	public addArticleView(articleViewData: ArticleViewData) {
-		if (this.viewedArticles.has(articleViewData.article_id)) {
-			console.log(`Article ${articleViewData.article_id} already viewed. Skipping.`)
-			return
-		}
-
-		const userAction: UserAction = {
-			userId: this.userId,
-			type: 'article_view',
-			data: articleViewData
-		}
-		this.buffer.push(userAction)
-		this.viewedArticles.add(articleViewData.article_id)
-		this.saveBufferToStorage()
-		this.saveViewedArticles()
-
-		if (this.buffer.length >= this.bufferThreshold) {
-			this.syncData()
+	private trimArticleViews() {
+		if (this.articleViews.size > 50) {
+			console.log('閲覧履歴が50件を超えたため、古い履歴を削除します。')
+			const sortedViews = Array.from(this.articleViews).sort((a, b) => b - a)
+			this.articleViews = new Set(sortedViews.slice(0, 50))
 		}
 	}
 
 	private async syncData() {
-		if (this.buffer.length === 0) return
+		if (this.articleViews.size === 0) return
 
+		console.log('サーバーとデータを同期します。')
 		try {
-			await this.sendDataToServer(this.buffer)
-			this.buffer = []
-			this.saveBufferToStorage()
+			const syncData = {
+				userId: this.userId,
+				viewedArticles: Array.from(this.articleViews)
+			}
+			console.log('送信データ:', JSON.stringify(syncData, null, 2))
+
+			const response = await fetch('/api/viewed-articles', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(syncData)
+			})
+
+			if (!response.ok) {
+				const errorText = await response.text()
+				throw new Error(`サーバーとの同期に失敗しました。ステータス: ${response.status}, エラー: ${errorText}`)
+			}
+
+			console.log('サーバーとの同期が完了しました。')
+			// ローカルデータはクリアせず、維持します
 		} catch (error) {
 			console.error('同期エラー:', error)
 		}
 	}
 
-	private async sendDataToServer(actions: UserAction[]): Promise<void> {
-		const syncData: SyncData = {
-			userId: this.userId,
-			actions: actions
-		}
+	private setupIntervalSync() {
+		console.log(`${this.syncInterval / 1000}秒ごとの定期同期を設定します。`)
+		setInterval(() => this.syncData(), this.syncInterval)
+	}
 
-		const response = await fetch('/api/record-article', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(syncData)
-		})
-
-		if (!response.ok) {
-			throw new Error('Failed to send data to server')
-		}
+	private setupUnloadSync() {
+		console.log('ページアンロード時の同期を設定します。')
+		window.addEventListener('beforeunload', () => this.syncData())
 	}
 }
 
-declare global {
-	interface Window {
-		dataSyncManager: DataSyncManager
+let instance: DataSyncManager | null = null
+
+export function initDataSyncManager() {
+	if (typeof window !== 'undefined' && !instance) {
+		console.log('DataSyncManagerを初期化します。')
+		instance = new DataSyncManager()
+		;(window as any).dataSyncManager = instance
 	}
 }
 
-if (typeof window !== 'undefined') {
-	window.dataSyncManager = new DataSyncManager()
+export function getDataSyncManager(): DataSyncManager | null {
+	return instance
 }
 
 if (typeof window !== 'undefined' && !ENCRYPTION_KEY) {
-	console.error('ENCRYPTION_KEY is not set in the environment variables')
+	console.error('環境変数にENCRYPTION_KEYが設定されていません')
 }
 
 export default DataSyncManager

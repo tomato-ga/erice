@@ -1,25 +1,34 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { KobetuPageArticle } from '../../../../../types/types'
-import { useUserActions } from '../../../hooks/userActions'
 import ArticleKeywords from '../ArticleKeywords'
+import { initDataSyncManager, getDataSyncManager } from '../../../../lib/dataSync'
 
 const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = ({ article }) => {
-	const { recordArticleView } = useUserActions()
-	const recordedRef = useRef(false)
+	const [isDataSyncManagerReady, setIsDataSyncManagerReady] = useState(false)
 
 	useEffect(() => {
-		const storageKey = `viewed_article_${article.id}`
-		const isViewed = localStorage.getItem(storageKey)
+		console.log('ArticleLinks: コンポーネントがマウントされました。')
+		initDataSyncManager()
+		setIsDataSyncManagerReady(true)
+	}, [])
 
-		if (!isViewed && !recordedRef.current) {
-			recordArticleView(article)
-			localStorage.setItem(storageKey, 'true')
-			recordedRef.current = true
+	useEffect(() => {
+		if (isDataSyncManagerReady) {
+			console.log(`ArticleLinks: 記事ID ${article.id} のuseEffectが実行されました。`)
+			const dataSyncManager = getDataSyncManager()
+			if (dataSyncManager) {
+				console.log(`ArticleLinks: 記事ID ${article.id} の閲覧をDataSyncManagerに記録します。`)
+				dataSyncManager.addArticleView(article.id)
+			} else {
+				console.warn('ArticleLinks: DataSyncManagerが利用できません。閲覧履歴の記録をスキップします。')
+			}
 		}
-	}, [article, recordArticleView])
+	}, [article.id, isDataSyncManagerReady])
+
+	console.log(`ArticleLinks: 記事「${article.title}」のレンダリングを開始します。`)
 
 	return (
 		<>
@@ -41,5 +50,7 @@ const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = ({ article }) => 
 		</>
 	)
 }
+
+console.log('ArticleLinks: コンポーネントの定義が完了しました。')
 
 export default ArticleLinks
