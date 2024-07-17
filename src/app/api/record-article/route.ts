@@ -1,27 +1,23 @@
-// pages/api/record-user-actions.ts
+// src/app/api/record-user-actions/route.ts
 
-import { NextApiRequest, NextApiResponse } from 'next'
-import { SyncData, UserAction } from '../../../../types/types'
+import { NextRequest, NextResponse } from 'next/server'
+import { SyncData } from '../../../../types/types'
 
 const API_ENDPOINT = process.env.USER_ACTION_WORKER_URL
 const API_KEY = process.env.D1_API_KEY
 
-export default async function POST(req: NextApiRequest, res: NextApiResponse) {
-	if (req.method !== 'POST') {
-		return res.status(405).json({ error: 'Method Not Allowed' })
-	}
-
+export async function POST(request: NextRequest) {
 	if (!API_ENDPOINT || !API_KEY) {
 		console.error('サーバー設定エラー: API_ENDPOINTまたはAPI_KEYが設定されていません')
-		return res.status(500).json({ error: 'サーバー設定エラー' })
+		return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 500 })
 	}
 
 	try {
-		const { userId, actions } = req.body as SyncData
+		const { userId, actions } = (await request.json()) as SyncData
 
 		if (!userId || !actions || !Array.isArray(actions)) {
 			console.error('不正なリクエスト:', { userId, actions })
-			return res.status(400).json({ error: '不正なリクエスト' })
+			return NextResponse.json({ error: '不正なリクエスト' }, { status: 400 })
 		}
 
 		console.log(`ユーザー ${userId} の ${actions.length} 件のアクションを記録します`)
@@ -42,9 +38,9 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
 		}
 
 		console.log(`ユーザー ${userId} のアクションを正常に記録しました`)
-		res.status(200).json({ status: 'OK' })
+		return NextResponse.json({ status: 'OK' })
 	} catch (error) {
 		console.error('ユーザーアクションの記録中にエラーが発生しました:', error)
-		res.status(500).json({ error: '内部サーバーエラー' })
+		return NextResponse.json({ error: '内部サーバーエラー' }, { status: 500 })
 	}
 }
