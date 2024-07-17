@@ -56,7 +56,7 @@ const Header: React.FC = () => {
 						×
 					</button>
 
-					<Link href="/" onClick={handleLinkClick}>
+					{/* <Link href="/" onClick={handleLinkClick}>
 						<span className="px-2 py-1 rounded-md cursor-pointer font-semibold hover:bg-gray-200">人気動画</span>
 					</Link>
 					<Link href="/" onClick={handleLinkClick}>
@@ -64,7 +64,7 @@ const Header: React.FC = () => {
 					</Link>
 					<Link href="/" onClick={handleLinkClick}>
 						<span className="px-2 py-1 rounded-md cursor-pointer font-semibold hover:bg-gray-200">閲覧履歴</span>
-					</Link>
+					</Link> */}
 				</div>
 			</div>
 		</header>
