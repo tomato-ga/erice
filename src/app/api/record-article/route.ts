@@ -6,7 +6,7 @@ import { SyncData, UserAction } from '../../../../types/types'
 const API_ENDPOINT = process.env.USER_ACTION_WORKER_URL
 const API_KEY = process.env.D1_API_KEY
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function POST(req: NextApiRequest, res: NextApiResponse) {
 	if (req.method !== 'POST') {
 		return res.status(405).json({ error: 'Method Not Allowed' })
 	}
