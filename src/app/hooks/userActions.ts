@@ -26,7 +26,7 @@ export function useUserActions() {
 				throw new Error('Failed to record article view')
 			}
 
-			console.log(`Article view recorded: ${article.id} - ${article.title}`)
+			// console.log(`Article view recorded: ${article.id} - ${article.title}`)
 		} catch (error) {
 			console.error('Error recording article view:', error)
 		}
