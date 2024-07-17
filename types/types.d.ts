@@ -79,3 +79,15 @@ export interface UserHistory {
 	keyword_views: KeywordViewData[]
 	external_clicks: ExternalClickData[]
 }
+
+// 同期データ用の新しい型定義
+export interface SyncData {
+	userId: string
+	actions: UserAction[]
+}
+
+// KVに保存されるデータの構造
+export interface StoredUserHistory {
+	history: UserHistory
+	lastUpdated: string
+}
