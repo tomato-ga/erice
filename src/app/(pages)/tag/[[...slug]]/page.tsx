@@ -5,15 +5,65 @@ import { getArticlesByKeyword } from '@/app/components/fetch/GetArticlesByKeywor
 import ArticleCard from '@/app/components/Article/ArticleCard'
 import PaginationComponent from '@/app/components/Pagination'
 import { HomePageArticle } from '../../../../../types/types'
-import ClientDebugger from '@/app/Clientdebugger'
+import { Metadata } from 'next'
 
 interface PageProps {
 	params: { slug?: string[] }
 }
 
 const DEFAULT_LIMIT = 30
+const SITE_NAME = 'erice'
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+	console.log('generateMetadata called with params:', params)
+
+	const [keyword, , page] = params.slug || []
+	const currentPage = page ? parseInt(page, 10) : 1
+
+	console.log('Parsed keyword:', keyword, 'currentPage:', currentPage)
+
+	if (!keyword) {
+		console.log('No keyword found, returning default metadata')
+		return {
+			title: 'ページが見つかりません | ' + SITE_NAME,
+			description: '指定されたページは存在しません。'
+		}
+	}
+
+	try {
+		const data = await getArticlesByKeyword(keyword, currentPage, DEFAULT_LIMIT)
+		console.log('Data fetched for metadata:', data)
+
+		const pageTitle = `「${keyword}」の動画${currentPage > 1 ? ` - ページ ${currentPage}` : ''}`
+		const description = `「${keyword}」に関連する動画一覧です。${currentPage}ページ目を表示しています。全${
+			data.total
+		}件中${(currentPage - 1) * DEFAULT_LIMIT + 1}~${Math.min(currentPage * DEFAULT_LIMIT, data.total)}件を表示中。`
+
+		console.log('Returning metadata:', { title: pageTitle, description })
+		return {
+			title: pageTitle,
+			description: description,
+			openGraph: {
+				title: pageTitle,
+				description: description
+			},
+			twitter: {
+				title: pageTitle,
+				description: description
+			}
+		}
+	} catch (error) {
+		console.error('[Server] Failed to fetch articles for metadata:', error)
+		return {
+			title: `「${keyword}」の動画`,
+			description: `「${keyword}」に関連する動画一覧です。`
+		}
+	}
+}
 
 export default async function TagPage({ params }: PageProps) {
+	console.log('TagPage rendered with params:', params)
+
 	const { slug = [] } = params
 	let currentPage = 1
 	let keyword: string | undefined
@@ -51,7 +101,6 @@ export default async function TagPage({ params }: PageProps) {
 
 	return (
 		<section className="max-w-7xl mx-auto">
-			{/* <ClientDebugger currentPage={currentPage} articlesCount={data.articles.length} /> */}
 			<h1 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">{pageTitle}</h1>
 			{currentPage > 1 && (
 				<div className="text-center mb-4">
@@ -90,24 +139,4 @@ function ErrorDisplay({ message }: { message: string }) {
 			<p>{message}</p>
 		</div>
 	)
-}
-
-export async function generateMetadata({ params }: PageProps) {
-	const { slug = [] } = params
-	let currentPage = 1
-	let keyword: string | undefined
-
-	if (slug.length >= 1) {
-		keyword = decodeURIComponent(slug[0])
-		if (slug.length === 3 && slug[1] === 'page') {
-			currentPage = parseInt(slug[2], 10)
-		}
-	}
-
-	const pageTitle = `「${keyword}」の動画${currentPage > 1 ? ` - ページ ${currentPage}` : ''}`
-
-	return {
-		title: `${pageTitle} | サイト名`,
-		description: `「${keyword}」に関連する動画一覧です。${currentPage}ページ目を表示しています。`
-	}
 }

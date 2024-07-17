@@ -1,4 +1,3 @@
-// /Users/donbe/Codes/keysound/src/app/layout.tsx
 import type { Metadata } from 'next'
 import { Noto_Sans_JP } from 'next/font/google'
 import { Inter } from 'next/font/google'
@@ -9,19 +8,23 @@ import Sidebar from './layoutcomponents/Sidebar'
 
 import { GoogleAnalytics } from '@next/third-parties/google'
 
-// import TopCopy from './components/Copy/index'
-
 const noto = Noto_Sans_JP({ subsets: ['latin'], weight: ['500'] })
 
 export const metadata: Metadata = {
-	title: 'erorice',
+	title: {
+		default: 'erorice',
+		template: '%s | erorice'
+	},
 	description: 'eroriceは無料エロ動画を思う存分楽しめるサイトです。',
 	openGraph: {
-		title: 'erorice',
+		title: {
+			default: 'erorice',
+			template: '%s | erorice'
+		},
 		description: 'eroriceは無料エロ動画を思う存分楽しめるサイトです。',
 		images: [
 			{
-				url: 'https://keyboard-sound.net/opengraph-image.jpg', // ここで画像のパスを指定
+				url: 'https://keyboard-sound.net/opengraph-image.jpg',
 				width: 1280,
 				height: 720,
 				alt: 'Open Graph Image'
@@ -30,11 +33,14 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: 'summary_large_image',
-		title: 'erorice',
+		title: {
+			default: 'erorice',
+			template: '%s | erorice'
+		},
 		description: 'eroriceは無料エロ動画を思う存分楽しめるサイトです。',
 		images: [
 			{
-				url: 'https://keyboard-sound.net/twitter-image.jpg', // ここで画像のパスを指定
+				url: 'https://keyboard-sound.net/twitter-image.jpg',
 				width: 1280,
 				height: 720,
 				alt: 'Twitter Image'

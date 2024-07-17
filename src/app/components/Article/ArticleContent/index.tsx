@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useMemo } from 'react'
+import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { KobetuPageArticle } from '../../../../../types/types'
 import { useUserActions } from '../../../hooks/userActions'
@@ -11,38 +11,20 @@ const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = ({ article }) => 
 	const recordedRef = useRef(false)
 
 	useEffect(() => {
-		if (!recordedRef.current) {
+		const storageKey = `viewed_article_${article.id}`
+		const isViewed = localStorage.getItem(storageKey)
+
+		if (!isViewed && !recordedRef.current) {
 			recordArticleView(article)
+			localStorage.setItem(storageKey, 'true')
 			recordedRef.current = true
 		}
 	}, [article, recordArticleView])
 
-	// useEffect(() => {
-	// 	if (!recordedRef.current) {
-	// 		console.log('記事ビューを記録します:', memoizedArticle.id, memoizedArticle.title, memoizedArticle.site_name)
-	// 		recordArticleView(memoizedArticle)
-	// 		if (memoizedArticle.keywords && memoizedArticle.keywords.length > 0) {
-	// 			recordKeywordView(memoizedArticle.keywords)
-	// 		}
-	// 		recordedRef.current = true
-	// 	}
-	// }, [memoizedArticle, recordArticleView, recordKeywordView])
-
-	// const handleClick = () => {
-	// 	recordExternalClick(article.id, article.link)
-	// }
-
 	return (
 		<>
 			<div>
-				<Link
-					href={article.link}
-					passHref
-					className="hover:underline"
-					target="_blank"
-					rel="noopener noreferrer"
-					// onClick={handleClick}
-				>
+				<Link href={article.link} passHref className="hover:underline" target="_blank" rel="noopener noreferrer">
 					<h1 className="text-gray-600 text-2xl sm:text-4xl py-4">{article.title}</h1>
 				</Link>
 			</div>

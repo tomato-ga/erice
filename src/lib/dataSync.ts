@@ -1,5 +1,3 @@
-// clientSideSync.ts
-
 import { v7 as uuidv7 } from 'uuid'
 import Cookies from 'js-cookie'
 import CryptoJS from 'crypto-js'
@@ -50,6 +48,10 @@ const decrypt = (ciphertext: string): string => {
 	return bytes.toString(CryptoJS.enc.Utf8)
 }
 
+function isArticleViewData(data: any): data is ArticleViewData {
+	return 'article_id' in data && 'title' in data && 'site_name' in data && 'viewed_at' in data
+}
+
 class DataSyncManager {
 	private userId: string
 	private buffer: UserAction[] = []
@@ -84,16 +86,25 @@ class DataSyncManager {
 	}
 
 	public addArticleView(articleViewData: ArticleViewData) {
-		const userAction: UserAction = {
-			userId: this.userId,
-			type: 'article_view',
-			data: articleViewData
-		}
-		this.buffer.push(userAction)
-		this.saveBufferToStorage()
+		const existingAction = this.buffer.find(
+			(action) =>
+				action.type === 'article_view' &&
+				isArticleViewData(action.data) &&
+				action.data.article_id === articleViewData.article_id
+		)
 
-		if (this.buffer.length >= this.bufferThreshold) {
-			this.syncData()
+		if (!existingAction) {
+			const userAction: UserAction = {
+				userId: this.userId,
+				type: 'article_view',
+				data: articleViewData
+			}
+			this.buffer.push(userAction)
+			this.saveBufferToStorage()
+
+			if (this.buffer.length >= this.bufferThreshold) {
+				this.syncData()
+			}
 		}
 	}
 
@@ -115,7 +126,7 @@ class DataSyncManager {
 			actions: actions
 		}
 
-		const response = await fetch('/api/record-user-actions', {
+		const response = await fetch('/api/record-article', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'

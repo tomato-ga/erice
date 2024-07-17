@@ -1,12 +1,52 @@
-import { NextPage } from 'next'
-import { KobetuPageArticle, Keyword } from '../../../../../types/types'
+import { Metadata, NextPage } from 'next'
+import { KobetuPageArticle } from '../../../../../types/types'
 import { getKobetuArticle } from '@/app/components/fetch/GetKobetuArticles'
-import Link from 'next/link'
-import { handleEXClickCount } from '@/app/components/handleexclick'
 import ArticleLinks from '@/app/components/Article/ArticleContent'
 
 interface Props {
 	params: { postId: string }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+	try {
+		const article = await getKobetuArticle(params.postId)
+
+		if (!article) {
+			return {
+				title: '記事が見つかりません',
+				description: '指定された記事は存在しないか、取得できませんでした。'
+			}
+		}
+
+		return {
+			title: article.title,
+			description: article.title, // 記事の説明やサマリーがある場合はそれを使用
+			openGraph: {
+				title: article.title,
+				description: article.title, // 記事の説明やサマリーがある場合はそれを使用
+				images: [
+					{
+						url: article.image_url,
+						width: 1200,
+						height: 630,
+						alt: article.title
+					}
+				]
+			},
+			twitter: {
+				card: 'summary_large_image',
+				title: article.title,
+				description: article.title, // 記事の説明やサマリーがある場合はそれを使用
+				images: [article.image_url]
+			}
+		}
+	} catch (error) {
+		console.error('Error in generateMetadata:', error)
+		return {
+			title: 'エラーが発生しました',
+			description: '記事の取得中に問題が発生しました。'
+		}
+	}
 }
 
 const KobetuArticlePage: NextPage<Props> = async ({ params }) => {

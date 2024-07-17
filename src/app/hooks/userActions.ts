@@ -2,9 +2,11 @@
 
 import { useCallback } from 'react'
 import { KobetuPageArticle, ArticleViewData, UserAction } from '../../../types/types'
+import { getUserId } from '@/lib/dataSync'
 
 export function useUserActions() {
 	const recordArticleView = useCallback(async (article: KobetuPageArticle) => {
+		const userId = getUserId()
 		const articleViewData: ArticleViewData = {
 			article_id: article.id,
 			title: article.title,
@@ -13,7 +15,7 @@ export function useUserActions() {
 		}
 
 		const userAction: UserAction = {
-			userId: 'temp-user-id', // 実際のユーザーIDを取得するロジックが必要
+			userId,
 			type: 'article_view',
 			data: articleViewData
 		}
@@ -24,13 +26,13 @@ export function useUserActions() {
 				console.log(`記事ビューをバッファに追加しました: ${article.id} - ${article.title}`)
 			} else {
 				console.warn('DataSyncManagerが利用できません。直接APIを呼び出します。')
-				const response = await fetch('/api/record-user-actions', {
+				const response = await fetch('/api/record-article', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json'
 					},
 					body: JSON.stringify({
-						userId: userAction.userId,
+						userId,
 						actions: [userAction]
 					})
 				})
