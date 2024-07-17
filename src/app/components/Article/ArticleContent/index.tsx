@@ -10,25 +10,25 @@ const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = ({ article }) => 
 	const [isDataSyncManagerReady, setIsDataSyncManagerReady] = useState(false)
 
 	useEffect(() => {
-		console.log('ArticleLinks: コンポーネントがマウントされました。')
+		// console.log('ArticleLinks: コンポーネントがマウントされました。')
 		initDataSyncManager()
 		setIsDataSyncManagerReady(true)
 	}, [])
 
 	useEffect(() => {
 		if (isDataSyncManagerReady) {
-			console.log(`ArticleLinks: 記事ID ${article.id} のuseEffectが実行されました。`)
+			// console.log(`ArticleLinks: 記事ID ${article.id} のuseEffectが実行されました。`)
 			const dataSyncManager = getDataSyncManager()
 			if (dataSyncManager) {
-				console.log(`ArticleLinks: 記事ID ${article.id} の閲覧をDataSyncManagerに記録します。`)
+				// console.log(`ArticleLinks: 記事ID ${article.id} の閲覧をDataSyncManagerに記録します。`)
 				dataSyncManager.addArticleView(article.id)
 			} else {
-				console.warn('ArticleLinks: DataSyncManagerが利用できません。閲覧履歴の記録をスキップします。')
+				// console.warn('ArticleLinks: DataSyncManagerが利用できません。閲覧履歴の記録をスキップします。')
 			}
 		}
 	}, [article.id, isDataSyncManagerReady])
 
-	console.log(`ArticleLinks: 記事「${article.title}」のレンダリングを開始します。`)
+	// console.log(`ArticleLinks: 記事「${article.title}」のレンダリングを開始します。`)
 
 	return (
 		<>
@@ -51,6 +51,6 @@ const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = ({ article }) => 
 	)
 }
 
-console.log('ArticleLinks: コンポーネントの定義が完了しました。')
+// console.log('ArticleLinks: コンポーネントの定義が完了しました。')
 
 export default ArticleLinks
