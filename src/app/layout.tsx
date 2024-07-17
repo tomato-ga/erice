@@ -7,6 +7,8 @@ import Header from './layoutcomponents/Header'
 import Footer from './layoutcomponents/Footer'
 import Sidebar from './layoutcomponents/Sidebar'
 
+import { GoogleAnalytics } from '@next/third-parties/google'
+
 // import TopCopy from './components/Copy/index'
 
 const noto = Noto_Sans_JP({ subsets: ['latin'], weight: ['500'] })
@@ -54,6 +56,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 				</div>
 				<Footer />
 			</body>
+			{!!process.env.GAID && <GoogleAnalytics gaId={process.env.GAID} />}
 		</html>
 	)
 }
