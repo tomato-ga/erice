@@ -1,7 +1,7 @@
 import { Metadata, NextPage } from 'next'
 import { KobetuPageArticle } from '../../../../../types/types'
 import { getKobetuArticle } from '@/app/components/fetch/GetKobetuArticles'
-import ArticleLinks from '@/app/components/Article/ArticleContent'
+import ArticleLinks from '@/app/components/Article/ArticleLinks'
 
 interface Props {
 	params: { postId: string }
