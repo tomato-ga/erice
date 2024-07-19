@@ -1,3 +1,5 @@
+// /Volumes/SSD_1TB/erice/src/app/sitemap.ts
+
 import { MetadataRoute } from 'next'
 
 const WORKER_URL = process.env.SITEMAP_WORKER_URL
