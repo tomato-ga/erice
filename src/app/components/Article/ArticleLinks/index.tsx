@@ -72,7 +72,7 @@ const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = React.memo(({ art
 				</h3>
 			</div>
 
-			{loadArticles.length > 0 && (
+			{/* {loadArticles.length > 0 && (
 				<div className="mt-4 p-4 bg-yellow-100 rounded-md">
 					<p>保存している記事数: {loadArticles.length}</p>
 					<ul>
@@ -83,7 +83,7 @@ const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = React.memo(({ art
 						))}
 					</ul>
 				</div>
-			)}
+			)} */}
 		</>
 	)
 })
