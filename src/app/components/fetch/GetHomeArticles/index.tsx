@@ -8,7 +8,7 @@ export async function getHomeArticles(page: number, limit: number): Promise<Home
 	const startTime = Date.now()
 	const res = await fetch(apiUrl, {
 		// cache: 'no-store',
-		next: { revalidate: 1800 },
+		next: { revalidate: 3600 },
 		headers: { Authorization: `Bearer ${process.env.D1_API_KEY}` }
 	})
 	const endTime = Date.now()
