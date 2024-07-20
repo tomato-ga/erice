@@ -7,7 +7,7 @@ export async function getKobetuArticle(postId: string): Promise<KobetuPageArticl
 		const res = await fetch(
 			apiUrl,
 			// { next: { revalidate: 10800 } }
-			{ next: { revalidate: false }, cache: 'force-cache' }
+			{ next: { revalidate: false } }
 		)
 		if (!res.ok) {
 			const errorText = await res.text()
