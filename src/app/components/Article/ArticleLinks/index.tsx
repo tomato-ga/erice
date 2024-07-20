@@ -7,7 +7,7 @@ import ArticleKeywords from '../ArticleKeywords'
 import { initDatabase, loadArticleViews, recordArticleView, ArticleView } from '../../../../lib/articleViewSync'
 
 const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = React.memo(({ article }) => {
-	const [unsyncedArticles, setUnsyncedArticles] = useState<ArticleView[]>([])
+	const [loadArticles, setloadArticles] = useState<ArticleView[]>([])
 	const isInitialMount = useRef(true)
 
 	const writeArticleView = useCallback(async () => {
@@ -20,13 +20,14 @@ const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = React.memo(({ art
 		}
 	}, [article.id])
 
-	const fetchUnsyncedArticles = useCallback(async () => {
+	//  MEMO 最近見た記事コンポーネントで使用する
+	const getLoadArticles = useCallback(async () => {
 		try {
 			const loadedArticles = await loadArticleViews()
-			setUnsyncedArticles(loadedArticles)
+			setloadArticles(loadedArticles)
 		} catch (error) {
 			// console.error('未同期の記事の取得に失敗しました:', error)
-			setUnsyncedArticles([])
+			setloadArticles([])
 		}
 	}, [])
 
@@ -35,14 +36,14 @@ const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = React.memo(({ art
 		const fetchData = async () => {
 			if (isMounted) {
 				await writeArticleView()
-				await fetchUnsyncedArticles()
+				await getLoadArticles()
 			}
 		}
 		fetchData()
 		return () => {
 			isMounted = false
 		}
-	}, [article.id, writeArticleView, fetchUnsyncedArticles])
+	}, [article.id, writeArticleView, getLoadArticles])
 
 	useEffect(() => {
 		if (isInitialMount.current) {
@@ -51,7 +52,7 @@ const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = React.memo(({ art
 			// console.log('未同期の記事数:', unsyncedArticles.length)
 			// console.log('未同期の記事データ:', unsyncedArticles)
 		}
-	}, [unsyncedArticles])
+	}, [getLoadArticles])
 
 	return (
 		<>
@@ -71,18 +72,18 @@ const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = React.memo(({ art
 				</h3>
 			</div>
 
-			{/* {unsyncedArticles.length > 0 && (
+			{loadArticles.length > 0 && (
 				<div className="mt-4 p-4 bg-yellow-100 rounded-md">
-					<p>未同期の記事数: {unsyncedArticles.length}</p>
+					<p>保存している記事数: {loadArticles.length}</p>
 					<ul>
-						{unsyncedArticles.map((unsynced) => (
+						{loadArticles.map((unsynced: any) => (
 							<li key={unsynced.id}>
 								記事ID: {unsynced.articleId}, タイムスタンプ: {new Date(unsynced.timestamp).toLocaleString()}
 							</li>
 						))}
 					</ul>
 				</div>
-			)} */}
+			)}
 		</>
 	)
 })

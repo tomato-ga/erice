@@ -103,15 +103,13 @@ class DatabaseManager {
 		}
 
 		try {
-			const unsyncedRecords = await this.db.transaction('readonly', this.db.viewedArticles, async () => {
+			const allRecords = await this.db.transaction('readonly', this.db.viewedArticles, async () => {
 				// console.log('未同期の閲覧記録の読み取りを開始します')
-				const records = await this.db!.viewedArticles.where('synced')
-					.equals(0) // falseの代わりに0を使用
-					.toArray()
+				const records = await this.db!.viewedArticles.toArray()
 				// console.log(`${records.length}件の未同期閲覧記録を取得しました`)
 				return records
 			})
-			return unsyncedRecords
+			return allRecords
 		} catch (error) {
 			// console.error('閲覧記録の読み取りにエラーが発生しました', error)
 			throw error
