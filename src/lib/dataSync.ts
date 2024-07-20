@@ -6,7 +6,7 @@ const USER_ID_COOKIE = 'uid'
 const COOKIE_EXPIRY = 365 * 3
 const ENCRYPTION_KEY = process.env.NEXT_PUBLIC_ENCRYPTION_KEY
 
-export const getUserId = (): string => {
+export const getUserId = async (): Promise<string> => {
 	if (typeof window === 'undefined') {
 		// console.log('サーバーサイドでgetUserIdが呼び出されました。一時的なIDを返します。')
 		return 'server-side-temp-id'
@@ -74,111 +74,111 @@ const decrypt = (ciphertext: string): string => {
 		throw error
 	}
 }
-class DataSyncManager {
-	private userId: string
-	private articleViews: Set<number> = new Set()
-	private syncInterval: number = 30000 // 30秒
-	private storageKey: string = 'article_view'
+// class DataSyncManager {
+// 	private userId: string
+// 	private articleViews: Set<number> = new Set()
+// 	private syncInterval: number = 30000 // 30秒
+// 	private storageKey: string = 'article_view'
 
-	constructor() {
-		// console.log('DataSyncManagerを初期化します。')
-		this.userId = getUserId()
-		this.loadArticleViews()
-		this.setupIntervalSync()
-		this.setupUnloadSync()
-	}
+// 	constructor() {
+// 		// console.log('DataSyncManagerを初期化します。')
+// 		this.userId = getUserId()
+// 		this.loadArticleViews()
+// 		this.setupIntervalSync()
+// 		this.setupUnloadSync()
+// 	}
 
-	private loadArticleViews() {
-		// console.log('ローカルストレージから記事閲覧履歴を読み込みます。')
-		const storedViews = localStorage.getItem(this.storageKey)
-		if (storedViews) {
-			this.articleViews = new Set(JSON.parse(storedViews))
-			// console.log(`${this.articleViews.size}件の記事閲覧履歴を読み込みました。`)
-		} else {
-			// console.log('記事閲覧履歴がありません。')
-		}
-	}
+// 	private loadArticleViews() {
+// 		// console.log('ローカルストレージから記事閲覧履歴を読み込みます。')
+// 		const storedViews = localStorage.getItem(this.storageKey)
+// 		if (storedViews) {
+// 			this.articleViews = new Set(JSON.parse(storedViews))
+// 			// console.log(`${this.articleViews.size}件の記事閲覧履歴を読み込みました。`)
+// 		} else {
+// 			// console.log('記事閲覧履歴がありません。')
+// 		}
+// 	}
 
-	private saveArticleViews() {
-		// console.log(`${this.articleViews.size}件の記事閲覧履歴をローカルストレージに保存します。`)
-		localStorage.setItem(this.storageKey, JSON.stringify(Array.from(this.articleViews)))
-	}
+// 	private saveArticleViews() {
+// 		// console.log(`${this.articleViews.size}件の記事閲覧履歴をローカルストレージに保存します。`)
+// 		localStorage.setItem(this.storageKey, JSON.stringify(Array.from(this.articleViews)))
+// 	}
 
-	public addArticleView(articleId: number) {
-		// console.log(`記事ID ${articleId} の閲覧を記録します。`)
-		this.articleViews.delete(articleId) // 既存のエントリを削除（存在しない場合は何もしない）
-		this.articleViews.add(articleId) // 新しいエントリを先頭に追加
-		this.trimArticleViews()
-		this.saveArticleViews()
-		this.syncData()
-	}
+// 	public addArticleView(articleId: number) {
+// 		// console.log(`記事ID ${articleId} の閲覧を記録します。`)
+// 		this.articleViews.delete(articleId) // 既存のエントリを削除（存在しない場合は何もしない）
+// 		this.articleViews.add(articleId) // 新しいエントリを先頭に追加
+// 		this.trimArticleViews()
+// 		this.saveArticleViews()
+// 		this.syncData()
+// 	}
 
-	private trimArticleViews() {
-		if (this.articleViews.size > 50) {
-			// console.log('閲覧履歴が50件を超えたため、古い履歴を削除します。')
-			const sortedViews = Array.from(this.articleViews).sort((a, b) => b - a)
-			this.articleViews = new Set(sortedViews.slice(0, 50))
-		}
-	}
+// 	private trimArticleViews() {
+// 		if (this.articleViews.size > 50) {
+// 			// console.log('閲覧履歴が50件を超えたため、古い履歴を削除します。')
+// 			const sortedViews = Array.from(this.articleViews).sort((a, b) => b - a)
+// 			this.articleViews = new Set(sortedViews.slice(0, 50))
+// 		}
+// 	}
 
-	private async syncData() {
-		if (this.articleViews.size === 0) return
+// 	private async syncData() {
+// 		if (this.articleViews.size === 0) return
 
-		// console.log('サーバーとデータを同期します。')
-		try {
-			const syncData = {
-				userId: this.userId,
-				viewedArticles: Array.from(this.articleViews)
-			}
-			// console.log('送信データ:', JSON.stringify(syncData, null, 2))
+// 		// console.log('サーバーとデータを同期します。')
+// 		try {
+// 			const syncData = {
+// 				userId: this.userId,
+// 				viewedArticles: Array.from(this.articleViews)
+// 			}
+// 			// console.log('送信データ:', JSON.stringify(syncData, null, 2))
 
-			const response = await fetch('/api/viewed-articles', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(syncData)
-			})
+// 			const response = await fetch('/api/viewed-articles', {
+// 				method: 'POST',
+// 				headers: {
+// 					'Content-Type': 'application/json'
+// 				},
+// 				body: JSON.stringify(syncData)
+// 			})
 
-			if (!response.ok) {
-				const errorText = await response.text()
-				throw new Error(`サーバーとの同期に失敗しました。ステータス: ${response.status}, エラー: ${errorText}`)
-			}
+// 			if (!response.ok) {
+// 				const errorText = await response.text()
+// 				throw new Error(`サーバーとの同期に失敗しました。ステータス: ${response.status}, エラー: ${errorText}`)
+// 			}
 
-			// console.log('サーバーとの同期が完了しました。')
-			// ローカルデータはクリアせず、維持します
-		} catch (error) {
-			// console.error('同期エラー:', error)
-		}
-	}
+// 			// console.log('サーバーとの同期が完了しました。')
+// 			// ローカルデータはクリアせず、維持します
+// 		} catch (error) {
+// 			// console.error('同期エラー:', error)
+// 		}
+// 	}
 
-	private setupIntervalSync() {
-		// console.log(`${this.syncInterval / 1000}秒ごとの定期同期を設定します。`)
-		setInterval(() => this.syncData(), this.syncInterval)
-	}
+// 	private setupIntervalSync() {
+// 		// console.log(`${this.syncInterval / 1000}秒ごとの定期同期を設定します。`)
+// 		setInterval(() => this.syncData(), this.syncInterval)
+// 	}
 
-	private setupUnloadSync() {
-		// console.log('ページアンロード時の同期を設定します。')
-		window.addEventListener('beforeunload', () => this.syncData())
-	}
-}
+// 	private setupUnloadSync() {
+// 		// console.log('ページアンロード時の同期を設定します。')
+// 		window.addEventListener('beforeunload', () => this.syncData())
+// 	}
+// }
 
-let instance: DataSyncManager | null = null
+// let instance: DataSyncManager | null = null
 
-export function initDataSyncManager() {
-	if (typeof window !== 'undefined' && !instance) {
-		// console.log('DataSyncManagerを初期化します。')
-		instance = new DataSyncManager()
-		;(window as any).dataSyncManager = instance
-	}
-}
+// export function initDataSyncManager() {
+// 	if (typeof window !== 'undefined' && !instance) {
+// 		// console.log('DataSyncManagerを初期化します。')
+// 		instance = new DataSyncManager()
+// 		;(window as any).dataSyncManager = instance
+// 	}
+// }
 
-export function getDataSyncManager(): DataSyncManager | null {
-	return instance
-}
+// export function getDataSyncManager(): DataSyncManager | null {
+// 	return instance
+// }
 
-if (typeof window !== 'undefined' && !ENCRYPTION_KEY) {
-	// console.error('環境変数にENCRYPTION_KEYが設定されていません')
-}
+// if (typeof window !== 'undefined' && !ENCRYPTION_KEY) {
+// 	// console.error('環境変数にENCRYPTION_KEYが設定されていません')
+// }
 
-export default DataSyncManager
+// export default DataSyncManager

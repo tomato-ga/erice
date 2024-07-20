@@ -1,34 +1,57 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { KobetuPageArticle } from '../../../../../types/types'
 import ArticleKeywords from '../ArticleKeywords'
-import { initDataSyncManager, getDataSyncManager } from '../../../../lib/dataSync'
+import { initDatabase, loadArticleViews, recordArticleView, ArticleView } from '../../../../lib/articleViewSync'
 
-const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = ({ article }) => {
-	const [isDataSyncManagerReady, setIsDataSyncManagerReady] = useState(false)
+const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = React.memo(({ article }) => {
+	const [unsyncedArticles, setUnsyncedArticles] = useState<ArticleView[]>([])
+	const isInitialMount = useRef(true)
 
-	useEffect(() => {
-		// console.log('ArticleLinks: コンポーネントがマウントされました。')
-		initDataSyncManager()
-		setIsDataSyncManagerReady(true)
+	const writeArticleView = useCallback(async () => {
+		try {
+			await initDatabase()
+			await recordArticleView(article.id)
+			// console.log(`記事ID ${article.id} の閲覧が記録されました`)
+		} catch (error) {
+			// console.error('記事閲覧の記録に失敗しました:', error)
+		}
+	}, [article.id])
+
+	const fetchUnsyncedArticles = useCallback(async () => {
+		try {
+			const loadedArticles = await loadArticleViews()
+			setUnsyncedArticles(loadedArticles)
+		} catch (error) {
+			// console.error('未同期の記事の取得に失敗しました:', error)
+			setUnsyncedArticles([])
+		}
 	}, [])
 
 	useEffect(() => {
-		if (isDataSyncManagerReady) {
-			// console.log(`ArticleLinks: 記事ID ${article.id} のuseEffectが実行されました。`)
-			const dataSyncManager = getDataSyncManager()
-			if (dataSyncManager) {
-				// console.log(`ArticleLinks: 記事ID ${article.id} の閲覧をDataSyncManagerに記録します。`)
-				dataSyncManager.addArticleView(article.id)
-			} else {
-				// console.warn('ArticleLinks: DataSyncManagerが利用できません。閲覧履歴の記録をスキップします。')
+		let isMounted = true
+		const fetchData = async () => {
+			if (isMounted) {
+				await writeArticleView()
+				await fetchUnsyncedArticles()
 			}
 		}
-	}, [article.id, isDataSyncManagerReady])
+		fetchData()
+		return () => {
+			isMounted = false
+		}
+	}, [article.id, writeArticleView, fetchUnsyncedArticles])
 
-	// console.log(`ArticleLinks: 記事「${article.title}」のレンダリングを開始します。`)
+	useEffect(() => {
+		if (isInitialMount.current) {
+			isInitialMount.current = false
+		} else {
+			// console.log('未同期の記事数:', unsyncedArticles.length)
+			// console.log('未同期の記事データ:', unsyncedArticles)
+		}
+	}, [unsyncedArticles])
 
 	return (
 		<>
@@ -47,10 +70,23 @@ const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = ({ article }) => 
 					</Link>
 				</h3>
 			</div>
+
+			{/* {unsyncedArticles.length > 0 && (
+				<div className="mt-4 p-4 bg-yellow-100 rounded-md">
+					<p>未同期の記事数: {unsyncedArticles.length}</p>
+					<ul>
+						{unsyncedArticles.map((unsynced) => (
+							<li key={unsynced.id}>
+								記事ID: {unsynced.articleId}, タイムスタンプ: {new Date(unsynced.timestamp).toLocaleString()}
+							</li>
+						))}
+					</ul>
+				</div>
+			)} */}
 		</>
 	)
-}
+})
 
-// console.log('ArticleLinks: コンポーネントの定義が完了しました。')
+ArticleLinks.displayName = 'ArticleLinks'
 
 export default ArticleLinks

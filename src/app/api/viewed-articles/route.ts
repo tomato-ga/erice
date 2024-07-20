@@ -1,3 +1,5 @@
+// /Volumes/SSD_1TB/erice/src/app/api/viewed-articles/route.ts
+
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
