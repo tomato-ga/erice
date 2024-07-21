@@ -1,5 +1,5 @@
 // src/store/articleViewStore.ts
-import create from 'zustand'
+import { create } from 'zustand'
 import { loadArticleViews, ArticleView } from '@/lib/articleViewSync'
 import { RelatedArticle } from '../../../types/types'
 

@@ -18,6 +18,9 @@ export interface HomePageArticle extends BaseArticle {}
 export interface RelatedArticle extends BaseArticle {
 	keywords: Keyword[]
 }
+export interface KeywordArticle extends BaseArticle {
+	keywords: Keyword[]
+}
 
 export interface KobetuPageArticle extends BaseArticle {
 	keywords: Keyword[]
@@ -33,6 +36,10 @@ export interface HomePageApiResponse extends ApiResponse<HomePageArticle> {
 	totalPages: number
 }
 export type KobetuPageApiResponse = ApiResponse<KobetuPageArticle>
+
+export interface KeywordArticleApiResponse {
+	articles: KeywordArticle[]
+}
 
 export interface SingleArticleApiResponse {
 	article: KobetuPageArticle
