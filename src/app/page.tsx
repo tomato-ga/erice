@@ -6,6 +6,7 @@ import ArticleCard from './components/Article/ArticleCard'
 import PaginationComponent from './components/Pagination'
 import { HomePageArticle } from '../../types/types'
 import ClientDebugger from './Clientdebugger'
+import ScrollPosition from './components/ScrollPosition'
 
 interface HomePageProps {
 	searchParams: { page?: string }
@@ -34,24 +35,27 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 	}
 
 	return (
-		<section className="max-w-7xl mx-auto">
-			{/* <ClientDebugger currentPage={currentPage} articlesCount={data.articles.length} /> */}
-			<h1 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">
-				<Link href="/">最新動画</Link>
-			</h1>
-			<Suspense fallback={<LoadingSpinner />}>
-				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-					{data.articles.map((article) => (
-						<div key={article.id} className="aspect-w-16 aspect-h-9">
-							<ArticleCard article={article} isSmallThumbnail={false} />
-						</div>
-					))}
-				</div>
-				<div className="mt-8 md:mt-12">
-					<PaginationComponent currentPage={currentPage} totalPages={data.totalPages} />
-				</div>
-			</Suspense>
-		</section>
+		<>
+			<ScrollPosition />
+			<section className="max-w-7xl mx-auto">
+				{/* <ClientDebugger currentPage={currentPage} articlesCount={data.articles.length} /> */}
+				<h1 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">
+					<Link href="/">最新動画</Link>
+				</h1>
+				<Suspense fallback={<LoadingSpinner />}>
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+						{data.articles.map((article) => (
+							<div key={article.id} className="aspect-w-16 aspect-h-9">
+								<ArticleCard article={article} isSmallThumbnail={false} />
+							</div>
+						))}
+					</div>
+					<div className="mt-8 md:mt-12">
+						<PaginationComponent currentPage={currentPage} totalPages={data.totalPages} />
+					</div>
+				</Suspense>
+			</section>
+		</>
 	)
 }
 
