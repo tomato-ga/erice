@@ -8,18 +8,8 @@ import { RelatedArticle } from '../../../../../types/types'
 const ArticleLoad: React.FC = () => {
 	const [loadArticles, setLoadArticles] = useState<ArticleView[]>([])
 	const [articleDetails, setArticleDetails] = useState<RelatedArticle[]>([])
-	const [isIndexedDBSupported, setIsIndexedDBSupported] = useState<boolean | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
-
-	const isIndexedDBSupportedCheck = (): boolean => {
-		try {
-			return 'indexedDB' in window && !!window.indexedDB
-		} catch (e) {
-			console.error('IndexedDBのサポートチェック中にエラーが発生しました:', e)
-			return false
-		}
-	}
 
 	const getLoadArticles = useCallback(async () => {
 		try {
@@ -69,7 +59,6 @@ const ArticleLoad: React.FC = () => {
 	}
 
 	useEffect(() => {
-		setIsIndexedDBSupported(isIndexedDBSupportedCheck())
 		getLoadArticles()
 			.then(fetchArticleDetails)
 			.catch((error) => {
@@ -99,7 +88,7 @@ const ArticleLoad: React.FC = () => {
 					</div>
 				</>
 			) : (
-				<p>閲覧履歴がありません。</p>
+				<p>閲覧履歴がありません</p>
 			)}
 		</>
 	)
