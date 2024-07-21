@@ -4,7 +4,7 @@ export async function getKeywordArticle(word: string): Promise<KeywordArticle[] 
 	const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/onekeyword?keyword=${word}`
 
 	try {
-		const res = await fetch(apiUrl, { next: { revalidate: false } })
+		const res = await fetch(apiUrl, { cache: 'no-store' })
 		if (!res.ok) {
 			const errorText = await res.text()
 			console.error(`API error (${res.status}):`, errorText)
