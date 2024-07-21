@@ -18,7 +18,6 @@ export const handleEXClickCount = async (articleId: number) => {
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: `Bearer ${apiKey}`,
-				// Cloudflare Workersでリクエスト元を識別するために使用
 				'X-Forwarded-For': headers().get('x-forwarded-for') ?? 'unknown',
 				'User-Agent': headers().get('user-agent') ?? 'unknown'
 			},
@@ -30,7 +29,7 @@ export const handleEXClickCount = async (articleId: number) => {
 		}
 
 		const data = await response.json()
-		console.log('Click recorded successfully:', data)
+		console.log('EX Click recorded successfully:', data)
 		return data
 	} catch (error) {
 		console.error('Error recording click:', error)

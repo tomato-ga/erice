@@ -18,7 +18,6 @@ export const handlePageClickCount = async (articleId: number) => {
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: `Bearer ${apiKey}`,
-				// Cloudflare Workersでリクエスト元を識別するために使用
 				'X-Forwarded-For': headers().get('x-forwarded-for') ?? 'unknown',
 				'User-Agent': headers().get('user-agent') ?? 'unknown'
 			},
