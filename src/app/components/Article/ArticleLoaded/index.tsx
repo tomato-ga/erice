@@ -26,7 +26,8 @@ const ArticleLoad: React.FC<ArticleLoadProps> = ({ viewrireki = false, keywordar
 			{viewrireki && (
 				<>
 					<h3 className="text-center pt-4 text-xl">最近チェックした記事</h3>
-					<div className="mt-1.5 p-0.5 bg-pink-50 rounded-md">
+					{/* bg-pink-50 を濃いピンクから薄いピンクへのグラデーションに変更 */}
+					<div className="mt-1.5 p-0.5 rounded-md bg-gradient-to-b from-pink-400 to-pink-100">
 						{articles.length === 0 ? (
 							<p>最近チェックした記事がありません</p>
 						) : (
@@ -45,7 +46,8 @@ const ArticleLoad: React.FC<ArticleLoadProps> = ({ viewrireki = false, keywordar
 			{keywordarticledata && keywordarticledata.length > 0 && (
 				<>
 					<h3 className="text-center pt-4 text-xl">この記事を見た人はこんな記事を見ています</h3>
-					<div className="mt-1.5 p-0.5 bg-blue-50 rounded-md">
+					{/* 濃い青から薄い青へのグラデーションに変更 */}
+					<div className="mt-1.5 p-0.5 rounded-md bg-gradient-to-b from-blue-500 to-blue-100">
 						<ul>
 							{keywordarticledata.map((keyarti: KeywordArticle) => (
 								<li key={keyarti.id} className="p-1.5">
