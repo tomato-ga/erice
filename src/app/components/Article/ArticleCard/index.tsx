@@ -33,9 +33,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSmallThumbnail = f
 						/>
 					</div>
 					<div className={`p-4 flex-grow ${isSmallThumbnail ? 'w-2/3' : ''}`}>
-						<h2 className={`font-semibold mb-2 line-clamp-2 ${isSmallThumbnail ? 'text-sm' : 'text-lg'}`}>
-							{article.title}
-						</h2>
+						<h2 className={`font-semibold mb-2 line-clamp-2 text-lg`}>{article.title}</h2>
 						<p className="text-sm text-gray-600">{new Date(article.created_at).toLocaleDateString()}</p>
 					</div>
 				</div>

@@ -19,10 +19,10 @@ const ArticleLoad: React.FC = () => {
 	return (
 		<>
 			<h3 className="text-center pt-4 text-xl">閲覧履歴</h3>
-			<div className="mt-4 p-4 bg-pink-50 rounded-md">
+			<div className="mt-1.5 p-0.5 bg-orange-50 rounded-md">
 				<ul>
 					{articles.slice(0, 5).map((article: RelatedArticle) => (
-						<li key={article.id} className="p-2">
+						<li key={article.id} className="p-1.5">
 							<ArticleCard article={article} isSmallThumbnail={true} />
 						</li>
 					))}
