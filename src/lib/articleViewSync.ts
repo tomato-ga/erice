@@ -120,7 +120,7 @@ class DatabaseManager {
 
 	async syncWithCFKV() {
 		if (this.syncInProgress) {
-			console.log('同期が既に進行中です。スキップします。')
+			// console.log('同期が既に進行中です。スキップします。')
 			return
 		}
 
@@ -159,12 +159,12 @@ class DatabaseManager {
 			}
 
 			const result = await response.json()
-			console.log('同期結果:', result)
+			// console.log('同期結果:', result)
 
 			// 同期成功したレコードを更新
 			const ids = unsyncedRecords.map((r) => r.id).filter((id): id is number => id !== undefined)
 			await this.db.viewedArticles.where('id').anyOf(ids).modify({ synced: 1 })
-			console.log(`${unsyncedRecords.length}件のレコードを同期しました`)
+			// console.log(`${unsyncedRecords.length}件のレコードを同期しました`)
 		} catch (error) {
 			console.error('同期中にエラーが発生しました:', error)
 			// エラーハンドリングとリトライロジックをここに実装
@@ -207,5 +207,6 @@ export const syncArticleKV = async () => {
 }
 
 export const loadArticleViews = async (): Promise<ArticleView[]> => {
-	return dbManager.loadArticleView()
+	const allRecords = await dbManager.loadArticleView()
+	return allRecords.sort((a, b) => b.timestamp - a.timestamp)
 }
