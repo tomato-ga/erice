@@ -9,6 +9,8 @@ const ArticleLoad: React.FC = () => {
 	const [loadArticles, setLoadArticles] = useState<ArticleView[]>([])
 	const [articleDetails, setArticleDetails] = useState<RelatedArticle[]>([])
 	const [isIndexedDBSupported, setIsIndexedDBSupported] = useState<boolean | null>(null)
+	const [isLoading, setIsLoading] = useState(true)
+	const [error, setError] = useState<string | null>(null)
 
 	const isIndexedDBSupportedCheck = (): boolean => {
 		try {
@@ -21,18 +23,28 @@ const ArticleLoad: React.FC = () => {
 
 	const getLoadArticles = useCallback(async () => {
 		try {
+			console.log('記事の読み込みを開始します')
 			const loadedArticles = await loadArticleViews()
+			console.log('読み込まれた記事:', loadedArticles)
 			setLoadArticles(loadedArticles)
 			return loadedArticles
 		} catch (error) {
 			console.error('未同期の記事の取得に失敗しました:', error)
+			setError('記事の読み込みに失敗しました')
 			setLoadArticles([])
 			return []
 		}
 	}, [])
 
 	const fetchArticleDetails = async (articles: ArticleView[]) => {
+		if (articles.length === 0) {
+			console.log('記事がありません。APIリクエストをスキップします。')
+			setIsLoading(false)
+			return
+		}
+
 		try {
+			console.log('記事詳細の取得を開始します')
 			const response = await fetch('/api/load-articles', {
 				method: 'POST',
 				headers: {
@@ -46,31 +58,34 @@ const ArticleLoad: React.FC = () => {
 			}
 
 			const data = await response.json()
+			console.log('取得した記事詳細:', data)
 			setArticleDetails(data.articles.results)
-			console.log('data', data)
 		} catch (error) {
 			console.error('記事詳細の取得に失敗しました:', error)
+			setError('記事詳細の取得に失敗しました')
+		} finally {
+			setIsLoading(false)
 		}
 	}
 
 	useEffect(() => {
 		setIsIndexedDBSupported(isIndexedDBSupportedCheck())
-		getLoadArticles().then(fetchArticleDetails)
+		getLoadArticles()
+			.then(fetchArticleDetails)
+			.catch((error) => {
+				console.error('エラーが発生しました:', error)
+				setError('データの取得中にエラーが発生しました')
+				setIsLoading(false)
+			})
 	}, [getLoadArticles])
 
 	return (
 		<>
-			<div className="mb-4 p-2 bg-blue-100 rounded-md">
-				<p>
-					IndexedDB サポート状況:{' '}
-					{isIndexedDBSupported === null
-						? '確認中...'
-						: isIndexedDBSupported
-						? 'サポートされています'
-						: 'サポートされていません'}
-				</p>
-			</div>
-			{articleDetails.length > 0 && (
+			{isLoading ? (
+				<p>データを読み込み中...</p>
+			) : error ? (
+				<p className="text-red-500">{error}</p>
+			) : articleDetails.length > 0 ? (
 				<>
 					<h3 className="text-center pt-4 text-xl">閲覧履歴</h3>
 					<div className="mt-4 p-4 bg-pink-50 rounded-md">
@@ -78,19 +93,13 @@ const ArticleLoad: React.FC = () => {
 							{articleDetails.slice(0, 5).map((article: RelatedArticle) => (
 								<li key={article.id} className="p-2">
 									<ArticleCard article={article} isSmallThumbnail={true} />
-									<div className="mt-2 p-2 border border-gray-300 rounded-md">
-										<p>
-											<strong>記事ID:</strong> {article.id}
-											<br />
-											<strong>タイトル:</strong> {article.title}
-											<br />
-										</p>
-									</div>
 								</li>
 							))}
 						</ul>
 					</div>
 				</>
+			) : (
+				<p>閲覧履歴がありません。</p>
 			)}
 		</>
 	)
