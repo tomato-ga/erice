@@ -36,7 +36,7 @@ const Header: React.FC = () => {
 			<div className="flex items-center justify-between w-full h-12 px-3">
 				<div className="ml-4 h-full">
 					<Link href="/">
-						<img src="/site.webp" className="h-full w-auto" alt="erorice" />
+						<img src="/site.webp" className="h-full w-auto" alt="エロコメスト" />
 					</Link>
 				</div>
 				<div className="flex items-center justify-end flex-grow">

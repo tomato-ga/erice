@@ -12,18 +12,19 @@ const noto = Noto_Sans_JP({ subsets: ['latin'], weight: ['500'] })
 
 export const metadata: Metadata = {
 	title: {
-		default: 'erorice',
-		template: '%s | erorice'
+		default: 'エロコメスト',
+		template: '%s | エロコメスト'
 	},
-	description: 'eroriceは無料エロ動画を思う存分楽しめるサイトです。',
+	description: 'エロコメストは無料エロ動画を思う存分楽しめるサイトです。',
 	openGraph: {
 		title: {
-			default: 'erorice',
-			template: '%s | erorice'
+			default: 'エロコメスト',
+			template: '%s | エロコメスト'
 		},
-		description: 'eroriceは無料エロ動画を思う存分楽しめるサイトです。',
+		description: 'エロコメストは無料エロ動画を思う存分楽しめるサイトです。',
 		images: [
 			{
+				// TODO opengraph image作成 GIMP
 				url: 'https://keyboard-sound.net/opengraph-image.jpg',
 				width: 1280,
 				height: 720,
@@ -34,10 +35,10 @@ export const metadata: Metadata = {
 	twitter: {
 		card: 'summary_large_image',
 		title: {
-			default: 'erorice',
-			template: '%s | erorice'
+			default: 'エロコメスト',
+			template: '%s | エロコメスト'
 		},
-		description: 'eroriceは無料エロ動画を思う存分楽しめるサイトです。',
+		description: 'エロコメストは無料エロ動画を思う存分楽しめるサイトです。',
 		images: [
 			{
 				url: 'https://keyboard-sound.net/twitter-image.jpg',
