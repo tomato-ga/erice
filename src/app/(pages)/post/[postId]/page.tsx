@@ -2,6 +2,7 @@ import { Metadata, NextPage } from 'next'
 import { KobetuPageArticle } from '../../../../../types/types'
 import { getKobetuArticle } from '@/app/components/fetch/GetKobetuArticles'
 import ArticleLinks from '@/app/components/Article/ArticleLinks'
+import ArticleLoad from '@/app/components/Article/ArticleLoaded'
 
 interface Props {
 	params: { postId: string }
@@ -93,9 +94,10 @@ const ArticleContent: React.FC<{ article: KobetuPageArticle }> = ({ article }) =
 			<div className="relative">
 				<img src={article.image_url} alt={article.title} className="w-full h-auto rounded-lg sm:rounded-lg" />
 			</div>
-			<div className="p-8">
+			<div className="p-4">
 				<ArticleHeader article={article} />
 				<ArticleLinks article={article} />
+				<ArticleLoad />
 			</div>
 		</div>
 	)

@@ -15,6 +15,9 @@ export interface Keyword {
 }
 
 export interface HomePageArticle extends BaseArticle {}
+export interface RelatedArticle extends BaseArticle {
+	keywords: Keyword[]
+}
 
 export interface KobetuPageArticle extends BaseArticle {
 	keywords: Keyword[]

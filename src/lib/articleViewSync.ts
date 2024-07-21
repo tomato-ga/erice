@@ -50,7 +50,7 @@ class DatabaseManager {
 		}
 	}
 
-	async recordArticleView(articleId: number) {
+	async recordArticleView(articleId: number): Promise<{ process: boolean }> {
 		if (!this.db) {
 			throw new Error('データベースが初期化されていません。initDatabase()を先に呼び出してください。')
 		}
@@ -91,9 +91,11 @@ class DatabaseManager {
 				// 50件を超えるレコードがある場合、古いものから削除
 				await this.cleanupExcessRecords()
 			})
+			// ArticleLinksの呼び出し元にtrueを返す
+			return { process: true }
 		} catch (error) {
 			// console.error(`記事閲覧の記録に失敗しました: articleId=${articleId}`, error)
-			throw error
+			return { process: false }
 		}
 	}
 
@@ -196,11 +198,11 @@ export const initDatabase = async () => {
 	await dbManager.initDatabase()
 }
 
-export const recordArticleView = async (articleId: number) => {
-	await dbManager.recordArticleView(articleId)
+export const recordArticleView = async (articleId: number): Promise<{ process: boolean }> => {
+	return await dbManager.recordArticleView(articleId)
 }
 
-export const syncArticleViews = async () => {
+export const syncArticleKV = async () => {
 	await dbManager.syncWithCFKV()
 }
 
