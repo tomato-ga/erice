@@ -132,18 +132,13 @@ const ArticleHeader: React.FC<{ article: KobetuPageArticle }> = ({ article }) =>
 				className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-4"
 			/>
 			<div>
-				<p className="text-gray-600 text-sm">{formatDate(article.created_at)}</p>
+				{/* TODO 日付をYYYY/MM/DDにする */}
+				<p className="text-gray-600 text-sm">{new Date(article.created_at).toLocaleDateString()}</p>
 				<p className="text-gray-600 text-sm">{article.site_name}</p>
 			</div>
 		</div>
 	</div>
 )
-
-// 日付をフォーマットする関数
-const formatDate = (dateString: string) => {
-	const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' }
-	return new Date(dateString).toLocaleDateString(undefined, options)
-}
 
 // このページでEdgeランタイムを使用することを指定
 export const runtime = 'edge'
