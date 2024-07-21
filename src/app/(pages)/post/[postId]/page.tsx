@@ -59,7 +59,7 @@ const KobetuArticlePage: NextPage<Props> = async ({ params }) => {
 
 		if (!article) {
 			return (
-				<div className="container mx-auto px-4 py-8">
+				<div className="container mx-auto px-2 py-6">
 					<h1 className="text-2xl font-bold text-red-600">記事が見つかりませんでした</h1>
 					<p>記事が存在しないか、取得中にエラーが発生しました。</p>
 				</div>
@@ -68,7 +68,7 @@ const KobetuArticlePage: NextPage<Props> = async ({ params }) => {
 
 		return (
 			<div className="bg-white min-h-screen">
-				<div className="container mx-auto px-4 py-8">
+				<div className="container mx-auto px-2 py-6">
 					<ArticleContent article={article} />
 				</div>
 			</div>
@@ -76,7 +76,7 @@ const KobetuArticlePage: NextPage<Props> = async ({ params }) => {
 	} catch (error) {
 		console.error('Error in KobetuArticlePage:', error)
 		return (
-			<div className="container mx-auto px-4 py-8">
+			<div className="container mx-auto px-2 py-6">
 				<h1 className="text-2xl font-bold text-red-600">エラーが発生しました</h1>
 				<p>記事の取得中に問題が発生しました。しばらくしてからもう一度お試しください。</p>
 				<p className="text-sm text-gray-600 mt-2">
