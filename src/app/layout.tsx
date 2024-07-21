@@ -7,6 +7,7 @@ import Footer from './layoutcomponents/Footer'
 import Sidebar from './layoutcomponents/Sidebar'
 
 import { GoogleAnalytics } from '@next/third-parties/google'
+import ScrollPosition from './components/ScrollPosition'
 
 const noto = Noto_Sans_JP({ subsets: ['latin'], weight: ['500'] })
 
@@ -53,6 +54,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
 	return (
 		<html lang="ja">
+			<ScrollPosition />
 			<body className={`${noto.className} flex flex-col min-h-screen`}>
 				<Header />
 				<div className="flex-grow flex flex-col md:flex-row">

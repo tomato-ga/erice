@@ -6,7 +6,6 @@ import ArticleCard from './components/Article/ArticleCard'
 import PaginationComponent from './components/Pagination'
 import { HomePageArticle } from '../../types/types'
 import ClientDebugger from './Clientdebugger'
-import ScrollPosition from './components/ScrollPosition'
 
 interface HomePageProps {
 	searchParams: { page?: string }
@@ -36,7 +35,6 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
 	return (
 		<>
-			<ScrollPosition />
 			<section className="max-w-7xl mx-auto">
 				{/* <ClientDebugger currentPage={currentPage} articlesCount={data.articles.length} /> */}
 				<h1 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">
