@@ -1,24 +1,24 @@
 import React from 'react'
-import Link from 'next/link' // Make sure you have imported Link from 'next/link'
+import Link from 'next/link'
 import { Keyword } from '../../../../../types/types'
 
 const ArticleKeywords: React.FC<{ keywords: Keyword[] }> = ({ keywords }) => {
 	return (
-		<div className="bg-white rounded-lg py-2">
+		<div className="rounded-lg p-4 ">
 			{keywords && keywords.length > 0 ? (
-				<div className="flex flex-wrap items-start p-5 py-5">
+				<div className="flex flex-wrap justify-center gap-2">
 					{keywords.map((keyword) => (
 						<Link
 							key={keyword.id}
-							className="relative px-1 py-1 m-2 rounded-md shadow-sm sm:py-2 sm:text-base ring ring-transparent group md:px-4 hover:ring hover:ring-opacity-50 focus:ring-opacity-50 hover:ring-pink-600 text-gray-900 bg-gray-100 dark:bg-gray-400 dark:text-gray-200"
+							className="px-3 py-1 rounded-full text-sm md:text-base font-semibold text-slate-800 bg-gradient-to-r from-purple-200 to-pink-300 hover:from-purple-300 hover:to-pink-400 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg shadow-sm"
 							href={`/tag/${encodeURIComponent(keyword.keyword)}`}
 						>
-							<span className="">#{keyword.keyword}</span>
+							#{keyword.keyword}
 						</Link>
 					))}
 				</div>
 			) : (
-				<p className="text-gray-600">キーワードがありません</p>
+				<p className="text-gray-600 text-center">キーワードがありません</p>
 			)}
 		</div>
 	)

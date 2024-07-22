@@ -55,7 +55,7 @@ const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = React.memo(({ art
 
 			<ArticleKeywords keywords={article.keywords} />
 
-			<div className="text-2xl p-5 m-1 text-white text-center font-semibold hover:bg-orange-700 rounded-md bg-gradient-to-r from-pink-400 to-violet-900">
+			<div className="text-lg p-5 m-1 text-slate-700 text-center font-semibold rounded-md bg-red-50">
 				<h3 onClick={handleClick}>
 					<Link href={article.link} target="_blank">
 						{article.title}のページを見る
