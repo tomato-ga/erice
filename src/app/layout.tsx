@@ -1,3 +1,4 @@
+import Script from 'next/script'
 import type { Metadata } from 'next'
 import { Noto_Sans_JP } from 'next/font/google'
 import { Inter } from 'next/font/google'
@@ -55,6 +56,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 	return (
 		<html lang="ja">
 			<ScrollPosition />
+			<Script
+				src="https://umami-vercel-p5drte1ov-tomatodev.vercel.app/script.js"
+				data-website-id={process.env.UMAMI_WEBSITE_ID}
+				strategy="afterInteractive"
+			/>
 			<body className={`${noto.className} flex flex-col min-h-screen`}>
 				<Header />
 				<div className="flex-grow flex flex-col md:flex-row">
