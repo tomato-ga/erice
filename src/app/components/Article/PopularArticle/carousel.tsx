@@ -170,7 +170,7 @@ const ArticleCard: React.FC<{ article: PopularArticle; rank: number }> = React.m
 					</h3>
 					<div className="flex justify-between items-center text-xs text-gray-500">
 						<time dateTime={article.created_at}>{formatDate(article.created_at)}</time>
-						<span>{article.total_clicks.toLocaleString()} クリック</span>
+						{/* TODO <span>{(article.total_clicks * 112 + 31).toLocaleString()} clicks</span> */}
 					</div>
 				</div>
 			</div>
