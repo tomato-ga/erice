@@ -48,9 +48,9 @@ const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = React.memo(({ art
 	return (
 		<>
 			<div onClick={handleClick}>
-				<Link href={article.link} passHref className="hover:underline" target="_blank" rel="noopener noreferrer">
-					<h1 className="text-gray-600 text-2xl sm:text-4xl py-4">{article.title}</h1>
-				</Link>
+				{/* 2024/07/22 リンク除外設定にした <Link href={article.link} passHref className="hover:underline" target="_blank" rel="noopener noreferrer"> */}
+				<h1 className="text-gray-600 text-2xl sm:text-4xl py-4">{article.title}</h1>
+				{/* </Link> */}
 			</div>
 
 			<ArticleKeywords keywords={article.keywords} />

@@ -57,7 +57,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 		<html lang="ja">
 			<ScrollPosition />
 			<Script
-				src="https://umami-vercel-p5drte1ov-tomatodev.vercel.app/script.js"
+				src="https://umami-vercel-puce-ten.vercel.app/script.js"
 				data-website-id={process.env.UMAMI_WEBSITE_ID}
 				strategy="afterInteractive"
 			/>
