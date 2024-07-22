@@ -165,7 +165,7 @@ const ArticleCard: React.FC<{ article: PopularArticle; rank: number }> = React.m
 					</span>
 				</div>
 				<div className="p-3">
-					<h3 id={`article-${article.id}-title`} className="font-semibold text-sm mb-2 line-clamp-2">
+					<h3 id={`article-${article.id}-title`} className="text-sm mb-2 line-clamp-2">
 						{article.title}
 					</h3>
 					<div className="flex justify-between items-center text-xs text-gray-500">
