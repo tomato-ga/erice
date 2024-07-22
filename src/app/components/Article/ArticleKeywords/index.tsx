@@ -10,7 +10,7 @@ const ArticleKeywords: React.FC<{ keywords: Keyword[] }> = ({ keywords }) => {
 					{keywords.map((keyword) => (
 						<Link
 							key={keyword.id}
-							className="px-3 py-1 rounded-full text-sm md:text-base font-semibold text-slate-800 bg-gradient-to-r from-purple-200 to-pink-300 hover:from-purple-300 hover:to-pink-400 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg shadow-sm"
+							className="px-3 py-1 rounded-full text-sm md:text-sm font-medium text-slate-800 bg-gradient-to-r from-purple-200 to-pink-300 hover:from-purple-300 hover:to-pink-400 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg shadow-sm"
 							href={`/tag/${encodeURIComponent(keyword.keyword)}`}
 						>
 							#{keyword.keyword}

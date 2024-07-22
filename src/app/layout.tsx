@@ -1,7 +1,5 @@
 import Script from 'next/script'
 import type { Metadata } from 'next'
-import { Noto_Sans_JP } from 'next/font/google'
-import { Inter } from 'next/font/google'
 import './globals.css'
 import Header from './layoutcomponents/Header'
 import Footer from './layoutcomponents/Footer'
@@ -9,8 +7,6 @@ import Sidebar from './layoutcomponents/Sidebar'
 
 import { GoogleAnalytics } from '@next/third-parties/google'
 import ScrollPosition from './components/ScrollPosition'
-
-const noto = Noto_Sans_JP({ subsets: ['latin'], weight: ['500'] })
 
 export const metadata: Metadata = {
 	title: {
@@ -26,7 +22,6 @@ export const metadata: Metadata = {
 		description: 'エロコメストは無料エロ動画を思う存分楽しめるサイトです。',
 		images: [
 			{
-				// TODO opengraph image作成 GIMP
 				url: 'https://keyboard-sound.net/opengraph-image.jpg',
 				width: 1280,
 				height: 720,
@@ -70,7 +65,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             })(window, document, "clarity", "script", "nbajc9ngtj");
           `}
 			</Script>
-			<body className={`${noto.className} flex flex-col min-h-screen`}>
+			<body className="font-sans flex flex-col min-h-screen">
 				<Header />
 				<div className="flex-grow flex flex-col md:flex-row">
 					<aside className="order-2 md:order-1 w-full md:w-64 lg:w-80">
