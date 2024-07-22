@@ -1,7 +1,19 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
-import { PopularArticle } from '../../../../../types/types'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
+
+import { formatDate } from '@/app/utils/postUtils'
+
+// PopularArticle 型の定義
+export interface PopularArticle {
+	id: number
+	title: string
+	link: string
+	created_at: string
+	image_url: string
+	site_name: string
+	total_clicks: number
+}
 
 interface CarouselProps {
 	articles: PopularArticle[]
@@ -97,11 +109,11 @@ const Carousel: React.FC<CarouselProps> = ({ articles }) => {
 const getRankColor = (rank: number): string => {
 	switch (rank) {
 		case 1:
-			return 'bg-gold-500 text-black'
+			return 'bg-rank-gold text-black'
 		case 2:
-			return 'bg-silver-400 text-black'
+			return 'bg-rank-silver text-black'
 		case 3:
-			return 'bg-bronze-300 text-black'
+			return 'bg-rank-bronze text-black'
 		default:
 			return 'bg-gray-200 text-gray-700'
 	}
@@ -110,47 +122,61 @@ const getRankColor = (rank: number): string => {
 const getRankBorderColor = (rank: number): string => {
 	switch (rank) {
 		case 1:
-			return 'border-gold-500'
+			return 'border-rank-gold'
 		case 2:
-			return 'border-silver-400'
+			return 'border-rank-silver'
 		case 3:
-			return 'border-bronze-300'
+			return 'border-rank-bronze'
 		default:
 			return 'border-gray-200'
 	}
 }
 
-const ArticleCard: React.FC<{ article: PopularArticle; rank: number }> = React.memo(({ article, rank }) => (
-	<a href={article.link} className="block group" aria-labelledby={`article-${article.id}-title`}>
-		<div
-			className={`relative border-2 ${getRankBorderColor(
-				rank
-			)} rounded-lg overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300 transform group-hover:scale-105`}
+const ArticleCard: React.FC<{ article: PopularArticle; rank: number }> = React.memo(({ article, rank }) => {
+	const rankColor = useMemo(() => getRankColor(rank), [rank])
+	const rankBorderColor = useMemo(() => getRankBorderColor(rank), [rank])
+
+	return (
+		<a
+			href={article.link}
+			className="block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+			aria-labelledby={`article-${article.id}-title`}
 		>
-			<div className="relative pt-[56.25%]">
-				<img src={article.image_url} alt="" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
-				<div
-					className={`absolute top-0 left-0 ${getRankColor(rank)} px-3 py-1 text-sm font-bold ${
-						rank <= 3 ? 'ribbon' : ''
-					}`}
-					aria-label={`ランキング ${rank}位`}
-				>
-					{rank}
+			<div
+				className={`relative border-2 ${rankBorderColor} rounded-lg overflow-hidden shadow-lg transition-shadow duration-300`}
+			>
+				<div className="relative pt-[56.25%]">
+					<img
+						src={article.image_url}
+						alt=""
+						className="absolute inset-0 w-full h-full object-cover"
+						loading="lazy"
+						onError={(e) => {
+							const target = e.target as HTMLImageElement
+							target.src = '/path/to/fallback-image.jpg' // フォールバック画像のパスを指定
+						}}
+					/>
+					<span
+						className={`absolute top-0 left-0 ${rankColor} px-3 py-1 text-sm font-bold ${rank <= 3 ? 'ribbon' : ''}`}
+						aria-label={`ランキング ${rank}位`}
+					>
+						{rank}
+					</span>
+				</div>
+				<div className="p-3">
+					<h3 id={`article-${article.id}-title`} className="font-semibold text-sm mb-2 line-clamp-2">
+						{article.title}
+					</h3>
+					<p className="text-xs text-gray-600 mb-2">{article.site_name}</p>
+					<div className="flex justify-between items-center text-xs text-gray-500">
+						<time dateTime={article.created_at}>{formatDate(article.created_at)}</time>
+						<span>{article.total_clicks.toLocaleString()} クリック</span>
+					</div>
 				</div>
 			</div>
-			<div className="p-3">
-				<h3 id={`article-${article.id}-title`} className="font-semibold text-sm mb-2 line-clamp-2">
-					{article.title}
-				</h3>
-				<p className="text-xs text-gray-600 mb-2">{article.site_name}</p>
-				<div className="flex justify-between items-center text-xs text-gray-500">
-					<time dateTime={article.created_at}>{new Date(article.created_at).toLocaleDateString()}</time>
-					<span>{article.total_clicks.toLocaleString()} クリック</span>
-				</div>
-			</div>
-		</div>
-	</a>
-))
+		</a>
+	)
+})
 
 ArticleCard.displayName = 'ArticleCard'
 
