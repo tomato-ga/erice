@@ -4,6 +4,7 @@ import { getKobetuArticle } from '@/app/components/fetch/GetKobetuArticles'
 import ArticleLinks from '@/app/components/Article/ArticleLinks'
 import ArticleLoad from '@/app/components/Article/ArticleLoaded'
 import { getKeywordArticle } from '@/app/components/fetch/GetOneKeywordArticles'
+import PopularArticles from '@/app/components/Article/PopularArticle'
 
 interface Props {
 	params: { postId: string }
@@ -116,6 +117,7 @@ const ArticleContent: React.FC<{ article: KobetuPageArticle }> = async ({ articl
 			<div className="p-4">
 				<ArticleHeader article={article} />
 				<ArticleLinks article={article} />
+				<PopularArticles />
 				<ArticleLoad viewrireki={true} keywordarticledata={keywordArticles} />
 			</div>
 		</div>

@@ -32,6 +32,18 @@ export interface ApiResponse<T> {
 	page_count?: number
 }
 
+export interface PopularArticle extends BaseArticle {
+	total_clicks: number
+}
+
+export interface PopularArticlesResponse {
+	success: boolean
+	data: {
+		timestamp: string
+		articles: PopularArticle[]
+	}
+}
+
 export interface HomePageApiResponse extends ApiResponse<HomePageArticle> {
 	totalPages: number
 }
