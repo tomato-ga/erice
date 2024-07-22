@@ -71,7 +71,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 				</div>
 				<Footer />
 			</body>
-			{/* {!!process.env.GAID && <GoogleAnalytics gaId={process.env.GAID} />} */}
+			{!!process.env.GAID && <GoogleAnalytics gaId={process.env.GAID} />}
 		</html>
 	)
 }
