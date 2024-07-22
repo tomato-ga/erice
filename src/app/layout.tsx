@@ -76,7 +76,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 					<aside className="order-2 md:order-1 w-full md:w-64 lg:w-80">
 						<Sidebar />
 					</aside>
-					<main className="order-1 md:order-2 flex-grow overflow-x-hidden p-4 md:p-6 lg:p-8">{children}</main>
+					<main className="order-1 md:order-2 flex-grow overflow-x-hidden p-2 md:p-2 lg:p-2">{children}</main>
 				</div>
 				<Footer />
 			</body>

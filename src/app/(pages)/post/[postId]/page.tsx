@@ -114,7 +114,7 @@ const ArticleContent: React.FC<{ article: KobetuPageArticle }> = async ({ articl
 			<div className="relative">
 				<img src={article.image_url} alt={article.title} className="w-full h-auto rounded-lg sm:rounded-lg" />
 			</div>
-			<div className="p-4">
+			<div className="py-2">
 				<ArticleHeader article={article} />
 				<ArticleLinks article={article} />
 				<PopularArticles />

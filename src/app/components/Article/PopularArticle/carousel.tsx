@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 
 import { formatDate } from '@/app/utils/postUtils'
+import Link from 'next/link'
 
 // PopularArticle 型の定義
 export interface PopularArticle {
@@ -94,7 +95,7 @@ const Carousel: React.FC<CarouselProps> = ({ articles }) => {
 						onMouseMove={handleMouseMove}
 					>
 						{articles.map((article, index) => (
-							<div key={article.id} className="w-3/4 sm:w-1/2 md:w-1/3 lg:w-1/4 flex-shrink-0 snap-start px-2">
+							<div key={article.id} className="w-[85%] sm:w-3/5 md:w-1/2 lg:w-1/3 flex-shrink-0 snap-start px-2">
 								<ArticleCard article={article} rank={index + 1} />
 							</div>
 						))}
@@ -137,8 +138,8 @@ const ArticleCard: React.FC<{ article: PopularArticle; rank: number }> = React.m
 	const rankBorderColor = useMemo(() => getRankBorderColor(rank), [rank])
 
 	return (
-		<a
-			href={article.link}
+		<Link
+			href={`/post/${article.id}`}
 			className="block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
 			aria-labelledby={`article-${article.id}-title`}
 		>
@@ -167,14 +168,13 @@ const ArticleCard: React.FC<{ article: PopularArticle; rank: number }> = React.m
 					<h3 id={`article-${article.id}-title`} className="font-semibold text-sm mb-2 line-clamp-2">
 						{article.title}
 					</h3>
-					<p className="text-xs text-gray-600 mb-2">{article.site_name}</p>
 					<div className="flex justify-between items-center text-xs text-gray-500">
 						<time dateTime={article.created_at}>{formatDate(article.created_at)}</time>
 						<span>{article.total_clicks.toLocaleString()} クリック</span>
 					</div>
 				</div>
 			</div>
-		</a>
+		</Link>
 	)
 })
 
