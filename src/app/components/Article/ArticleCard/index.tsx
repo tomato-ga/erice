@@ -22,6 +22,9 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSmallThumbnail = f
 					className={`bg-white rounded-lg shadow-md overflow-hidden h-full flex ${
 						isSmallThumbnail ? 'flex-row' : 'flex-col'
 					}`}
+					data-umami-event="Article Click"
+					data-umami-event-article-id={article.id}
+					data-umami-event-article-title={article.title}
 				>
 					<div className={`relative ${isSmallThumbnail ? 'w-1/3' : 'pb-[56.25%]'}`}>
 						<img
