@@ -11,20 +11,38 @@ interface ArticleCardProps {
 }
 
 const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSmallThumbnail = false }) => {
-	const handleClick = () => {
+	const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+		e.preventDefault() // デフォルトの動作を防止
+
+		// Umamiトラッキングの明示的な呼び出し
+		if (typeof window !== 'undefined' && window.umami) {
+			window.umami.track('Article Click', {
+				article_id: article.id,
+				article_title: article.title
+			})
+		}
+
+		// クリックカウントの処理
 		handlePageClickCount(article.id).catch((error) => console.error('Failed to record click:', error))
+
+		// 短いタイムアウト後にナビゲーションを実行
+		setTimeout(() => {
+			window.location.href = `/post/${article.id}`
+		}, 100)
 	}
 
 	return (
-		<div onClick={handleClick}>
-			<Link href={`/post/${article.id}`} className="block h-full" prefetch={true}>
+		<div
+			onClick={handleClick}
+			data-umami-event="Article Click"
+			data-umami-event-article-id={article.id}
+			data-umami-event-article-title={article.title}
+		>
+			<Link href={`/post/${article.id}`} className="block h-full" prefetch={false}>
 				<div
 					className={`bg-white rounded-lg shadow-md overflow-hidden h-full flex ${
 						isSmallThumbnail ? 'flex-row' : 'flex-col'
 					}`}
-					data-umami-event="Article Click"
-					data-umami-event-article-id={article.id}
-					data-umami-event-article-title={article.title}
 				>
 					<div className={`relative ${isSmallThumbnail ? 'w-1/3' : 'pb-[56.25%]'}`}>
 						<img

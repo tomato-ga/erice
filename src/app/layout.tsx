@@ -54,6 +54,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 			<Script
 				src="https://analytics.erice.cloud/script.js"
 				data-website-id={process.env.UMAMI_WEBSITE_ID}
+				data-do-not-track="true"
+				data-auto-track="true"
 				strategy="afterInteractive"
 			/>
 			<Script id="microsoft-clarity" strategy="afterInteractive">
