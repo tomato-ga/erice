@@ -30,7 +30,7 @@ const ArticleLoad: React.FC<ArticleLoadProps> = ({ viewrireki = false, keywordar
 						この動画を見た人はこんな動画を見ています
 					</h3>
 					{/* 濃い青から薄い青へのグラデーションに変更 */}
-					<div className="mt-1.5 p-0.5 rounded-md bg-gradient-to-b from-blue-100 to-blue-400">
+					<div className="mt-1.5 p-0.5 rounded-md bg-gradient-to-b from-pink-100 to-pink-200">
 						<ul>
 							{keywordarticledata.map((keyarti: KeywordArticle) => (
 								<li key={keyarti.id} className="p-1.5">
@@ -48,7 +48,7 @@ const ArticleLoad: React.FC<ArticleLoadProps> = ({ viewrireki = false, keywordar
 						最近チェックした動画
 					</h3>
 					{/* bg-pink-50 を濃いピンクから薄いピンクへのグラデーションに変更 */}
-					<div className="mt-1.5 p-0.5 rounded-md bg-gradient-to-b from-pink-100 to-pink-400">
+					<div className="mt-1.5 p-0.5 rounded-md bg-gradient-to-b from-pink-100 to-pink-200">
 						{articles.length === 0 ? (
 							<p>最近チェックした動画がありません</p>
 						) : (
