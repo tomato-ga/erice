@@ -47,20 +47,34 @@ const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = React.memo(({ art
 
 	return (
 		<>
-			{/* <div onClick={handleClick}> */}
-			{/* 2024/07/22 リンク除外設定にした <Link href={article.link} passHref className="hover:underline" target="_blank" rel="noopener noreferrer"> */}
+			<div className="relative py-2">
+				<Link href={article.link} target="_blank" onClick={handleClick} aria-label={`${article.title}の記事を開く`}>
+					<img src={article.image_url} alt={article.title} className="w-full h-auto rounded-lg sm:rounded-lg" />
+				</Link>
+			</div>
+			<div className="flex items-center justify-between mb-4">
+				<div className="flex items-center">
+					<img
+						src={article.image_url || '/default-avatar.jpg'}
+						alt={article.title}
+						className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-4 cursor-pointer"
+					/>
+
+					<div>
+						<p className="text-gray-600 text-sm">{new Date(article.created_at).toLocaleDateString()}</p>
+						<p className="text-gray-600 text-sm">{article.site_name}</p>
+					</div>
+				</div>
+			</div>
+
 			<h1 className="text-gray-600 font-semibold text-2xl sm:text-4xl py-4">{article.title}</h1>
-			{/* </Link> */}
-			{/* </div> */}
 
 			<ArticleKeywords keywords={article.keywords} />
 
 			<div className="text-lg p-5 m-1 text-slate-700 text-center font-semibold rounded-md bg-red-50">
-				<h3 onClick={handleClick}>
-					<Link href={article.link} target="_blank">
-						{article.title}のページを見る
-					</Link>
-				</h3>
+				<Link href={article.link} target="_blank" onClick={handleClick} legacyBehavior>
+					<a>{article.title}のページを見る</a>
+				</Link>
 			</div>
 		</>
 	)

@@ -5,6 +5,7 @@ import ArticleLinks from '@/app/components/Article/ArticleLinks'
 import ArticleLoad from '@/app/components/Article/ArticleLoaded'
 import { getKeywordArticle } from '@/app/components/fetch/GetOneKeywordArticles'
 import PopularArticles from '@/app/components/Article/PopularArticle'
+import Link from 'next/link'
 
 interface Props {
 	params: { postId: string }
@@ -111,11 +112,8 @@ const ArticleContent: React.FC<{ article: KobetuPageArticle }> = async ({ articl
 
 	return (
 		<div className="bg-white">
-			<div className="relative">
-				<img src={article.image_url} alt={article.title} className="w-full h-auto rounded-lg sm:rounded-lg" />
-			</div>
+
 			<div className="py-2">
-				<ArticleHeader article={article} />
 				<ArticleLinks article={article} />
 				<PopularArticles />
 				<ArticleLoad viewrireki={true} keywordarticledata={keywordArticles} />
@@ -123,24 +121,6 @@ const ArticleContent: React.FC<{ article: KobetuPageArticle }> = async ({ articl
 		</div>
 	)
 }
-
-// 記事のヘッダー部分を表示するコンポーネント
-const ArticleHeader: React.FC<{ article: KobetuPageArticle }> = ({ article }) => (
-	<div className="flex items-center justify-between mb-4">
-		<div className="flex items-center">
-			<img
-				src={article.image_url || '/default-avatar.jpg'}
-				alt={article.title}
-				className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-4"
-			/>
-			<div>
-				{/* TODO 日付をYYYY/MM/DDにする */}
-				<p className="text-gray-600 text-sm">{new Date(article.created_at).toLocaleDateString()}</p>
-				<p className="text-gray-600 text-sm">{article.site_name}</p>
-			</div>
-		</div>
-	</div>
-)
 
 // このページでEdgeランタイムを使用することを指定
 export const runtime = 'edge'
