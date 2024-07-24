@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 
 		const data: KeywordArticleApiResponse = await response.json()
 
-		console.log('APIルートキーワード関連記事', data)
+		// console.log('APIルートキーワード関連記事', data)
 
 		return NextResponse.json(data)
 	} catch (error) {
