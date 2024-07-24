@@ -2,12 +2,12 @@ import Dexie from 'dexie'
 import { getUserId } from './dataSync'
 
 class KeywordViewDatabase extends Dexie {
-	keywordViews!: Dexie.Table<number, number>
+	keywordViews!: Dexie.Table<{ id?: number; keywordId: number; timestamp: string }, number>
 
 	constructor() {
 		super('KeywordViewDatabase')
-		this.version(2).stores({
-			keywordViews: '++id'
+		this.version(1).stores({
+			keywordViews: '++id, keywordId, timestamp'
 		})
 	}
 }
@@ -47,20 +47,20 @@ class KeywordDatabaseManager {
 		}
 
 		try {
-			await this.db.transaction('rw', this.db.keywordViews, async () => {
-				const count = await this.db!.keywordViews.count()
-				if (count >= this.MAX_RECORDS) {
-					const oldestId = await this.db!.keywordViews.orderBy(':id').first()
-					if (oldestId !== undefined) {
-						await this.db!.keywordViews.delete(oldestId)
-					}
-				}
-
-				await this.db!.keywordViews.add(keywordId)
+			const timestamp = new Date().toISOString()
+			await this.db.keywordViews.add({
+				keywordId,
+				timestamp
 			})
+			console.log(`キーワード閲覧を記録しました: ${keywordId}`)
 			return { process: true }
 		} catch (error) {
 			console.error(`キーワード閲覧の記録に失敗しました:`, error)
+			// エラーの詳細をログに出力
+			if (error instanceof Error) {
+				console.error(`エラーメッセージ: ${error.message}`)
+				console.error(`スタックトレース: ${error.stack}`)
+			}
 			return { process: false }
 		}
 	}
@@ -71,7 +71,8 @@ class KeywordDatabaseManager {
 		}
 
 		try {
-			return await this.db.keywordViews.reverse().toArray()
+			const views = await this.db.keywordViews.reverse().toArray()
+			return views.map((view) => view.keywordId)
 		} catch (error) {
 			console.error('キーワード閲覧記録の読み取りにエラーが発生しました', error)
 			throw error
