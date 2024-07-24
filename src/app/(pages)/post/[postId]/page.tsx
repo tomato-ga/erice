@@ -122,6 +122,6 @@ const ArticleContent: React.FC<{ article: KobetuPageArticle }> = async ({ articl
 }
 
 // このページでEdgeランタイムを使用することを指定
-// export const runtime = 'edge'
+export const runtime = 'edge'
 
 export default KobetuArticlePage
