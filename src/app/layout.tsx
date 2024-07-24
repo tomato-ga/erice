@@ -6,7 +6,7 @@ import Footer from './layoutcomponents/Footer'
 import Sidebar from './layoutcomponents/Sidebar'
 
 import { GoogleAnalytics } from '@next/third-parties/google'
-import ScrollPosition from './components/ScrollPosition'
+
 
 export const metadata: Metadata = {
 	title: {
@@ -50,7 +50,6 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
 	return (
 		<html lang="ja">
-			<ScrollPosition />
 			<Script
 				src="https://analytics.erice.cloud/script.js"
 				data-website-id={process.env.UMAMI_WEBSITE_ID}

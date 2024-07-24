@@ -14,10 +14,10 @@ interface ArticleLoadProps {
 const ArticleLoad: React.FC<ArticleLoadProps> = ({ viewrireki = false, keywordarticledata }) => {
 	const { articles, isLoading, error, fetchArticles } = useArticleViewStore()
 
-	useEffect(() => {
-		window.scrollTo(0, 0)
-		fetchArticles()
-	}, [fetchArticles])
+	// useEffect(() => {
+	// 	window.scrollTo(0, 0)
+	// 	fetchArticles()
+	// }, [fetchArticles])
 
 	if (isLoading) return <p>最近チェックした動画を読み込んでいます...</p>
 	if (error) return <p className="text-red-500">{error}</p>

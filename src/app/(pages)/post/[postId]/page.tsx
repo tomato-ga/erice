@@ -112,7 +112,6 @@ const ArticleContent: React.FC<{ article: KobetuPageArticle }> = async ({ articl
 
 	return (
 		<div className="bg-white">
-
 			<div className="py-2">
 				<ArticleLinks article={article} />
 				<PopularArticles />
