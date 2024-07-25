@@ -6,7 +6,6 @@ import ArticleLoad from '@/app/components/Article/ArticleLoaded'
 import { getKeywordArticle } from '@/app/components/fetch/GetOneKeywordArticles'
 import PopularArticles from '@/app/components/Article/PopularArticle'
 import Link from 'next/link'
-import DebugLogger from '@/app/components/DebugLogger'
 
 interface Props {
 	params: { postId: string }
@@ -59,7 +58,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	}
 }
 
-// TODO 1回でブラウザバックできなくなってる
 // 個別記事ページのメインコンポーネント
 const KobetuArticlePage: NextPage<Props> = async ({ params }) => {
 	try {
@@ -82,7 +80,6 @@ const KobetuArticlePage: NextPage<Props> = async ({ params }) => {
 		// 記事が見つかった場合、ArticleContentコンポーネントを表示
 		return (
 			<div className="bg-white min-h-screen">
-				<DebugLogger postId={params.postId} />
 				<div className="container mx-auto px-2 py-6">
 					<ArticleContent article={article} />
 				</div>
@@ -113,6 +110,7 @@ const ArticleContent: React.FC<{ article: KobetuPageArticle }> = async ({ articl
 		keywordArticles = await getKeywordArticle(firstKeyword)
 	}
 
+	// TODO コンポーネント読み込みを減らしてPCブラウザバックをテストしてみる
 	return (
 		<div className="bg-white">
 			<div className="py-2">
