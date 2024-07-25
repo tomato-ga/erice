@@ -40,7 +40,7 @@ export async function getKeywordArticle(word: string): Promise<KeywordArticle[]>
 			throw new Error(`API request failed with status ${res.status}: ${errorText}`)
 		}
 		const data: KeywordArticleApiResponse = await res.json()
-		console.log('getKeywordArticle - Received data:', JSON.stringify(data, null, 2)) // デバッグログ
+		// console.log('getKeywordArticle - Received data:', JSON.stringify(data, null, 2)) // デバッグログ
 		if (!data || !data.articles) {
 			console.error('getKeywordArticle - API response does not contain article data:', data)
 			throw new Error('Invalid API response format')
