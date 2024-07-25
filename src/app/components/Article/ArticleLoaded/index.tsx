@@ -11,11 +11,11 @@ interface ArticleLoadProps {
 const ArticleLoad: React.FC<ArticleLoadProps> = ({ viewrireki = false, keywordarticledata }) => {
 	return (
 		<>
-			{/* {keywordarticledata && keywordarticledata.length > 0 && (
+			{keywordarticledata && keywordarticledata.length > 0 && (
 				<KeywordRelatedArticles keywordarticledata={keywordarticledata} />
 			)} */}
 
-			{/* {viewrireki && <RecentlyViewedArticles />} */}
+			{/* {viewrireki && <RecentlyViewedArticles />}
 		</>
 	)
 }

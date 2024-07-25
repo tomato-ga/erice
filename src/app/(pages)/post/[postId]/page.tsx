@@ -7,6 +7,8 @@ import { KobetuPageArticle } from '../../../../../types/types'
 import ErrorBoundary from '@/app/components/Article/PopularArticle/Error'
 import PopularArticle from '@/app/components/Article/PopularArticle'
 import { getPopularArticles } from '@/app/components/fetch/GetPopularArticles'
+import { getKeywordArticle } from '@/app/components/fetch/GetOneKeywordArticles'
+import { KeywordRelatedArticles } from '@/app/components/Article/ArticleLoaded/KeywordRelated'
 
 interface Props {
 	params: { postId: string }
@@ -47,7 +49,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function KobetuArticlePage({ params }: Props) {
-	const [article, popularArticlesData] = await Promise.all([getKobetuArticle(params.postId), getPopularArticles()])
+	const [article, popularArticlesData, keywordArticles] = await Promise.all([
+		getKobetuArticle(params.postId),
+		getPopularArticles(),
+		getKeywordArticle(params.postId) // 記事IDをキーワードとして使用
+	])
 
 	if (!article) {
 		return (
@@ -67,6 +73,11 @@ export default async function KobetuArticlePage({ params }: Props) {
 				<ErrorBoundary fallback={<div>人気記事の読み込みに失敗しました。</div>}>
 					<Suspense fallback={<LoadingSpinner />}>
 						<PopularArticle articles={popularArticlesData.data.articles} />
+					</Suspense>
+				</ErrorBoundary>
+				<ErrorBoundary fallback={<div>関連記事の読み込みに失敗しました。</div>}>
+					<Suspense fallback={<LoadingSpinner />}>
+						<KeywordRelatedArticles keywordarticledata={keywordArticles} />
 					</Suspense>
 				</ErrorBoundary>
 			</div>

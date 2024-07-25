@@ -19,8 +19,6 @@ const ArticleContent: React.FC<ArticleContentProps> = ({ article }) => {
 			<div className="py-2">
 				<h1 className="text-3xl font-bold mb-4">{article.title}</h1>
 				<ArticleLinks article={article} />
-				{/* <PopularArticles /> */}
-				{/* <ArticleLoad viewrireki={true} keyworda /> */}
 			</div>
 		</div>
 	)
