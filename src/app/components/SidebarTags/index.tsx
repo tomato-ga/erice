@@ -1,53 +1,59 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 
-interface TagCloudProps {
-	keywords?: string[]
+async function getKeywords(): Promise<string[]> {
+	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/poptags`)
+	if (!response.ok) {
+		throw new Error(`HTTP error! status: ${response.status}`)
+	}
+	const data = await response.json()
+	if (!Array.isArray(data)) {
+		throw new Error('Data is not an array')
+	}
+	return data
 }
 
-// カスタムフックを作成してデータフェッチングロジックを移動
-const useKeywords = (initialKeywords: string[] = []) => {
-	const [keywords, setKeywords] = useState<string[]>(initialKeywords)
+const TagCloud = () => {
+	const [keywords, setKeywords] = useState<string[]>([])
+	const [error, setError] = useState<string | null>(null)
 
 	useEffect(() => {
 		const fetchKeywords = async () => {
 			try {
-				const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/poptags', { next: { revalidate: 3600 } })
-				if (!response.ok) {
-					throw new Error('Failed to fetch popular keywords')
-				}
-				const data = await response.json()
+				const data = await getKeywords()
 				setKeywords(data)
-			} catch (error) {
-				console.error('Error fetching keywords:', error)
+			} catch (err) {
+				console.error('Error fetching keywords:', err)
+				setError('キーワードの取得に失敗しました。')
+			} finally {
 			}
 		}
 
 		fetchKeywords()
 	}, [])
 
-	return keywords
-}
-
-export default function TagCloud({ keywords: initialKeywords = [] }: TagCloudProps) {
-	const keywords = useKeywords(initialKeywords)
-
-	if (keywords.length === 0) {
-		return <div className="text-gray-500 text-sm">No keywords available at the moment.</div>
+	if (error) {
+		return <div className="text-red-500 text-sm">{error}</div>
 	}
 
 	return (
-		<div className="flex flex-wrap gap-2 justify-center items-center -my-1">
-			<p className="w-full text-center mb-2 font-semibold">人気のキーワード</p>
-			{keywords.map((keyword: string, index: number) => (
-				<Link href={`/tag/${encodeURIComponent(keyword)}`} key={index} className="my-4">
-					<span className="relative px-1 py-1 m-1 rounded-md shadow-sm sm:py-2 sm:text-base ring ring-transparent group md:px-4 hover:ring hover:ring-opacity-50 focus:ring-opacity-50 hover:ring-pink-600 text-gray-900 bg-gray-100 dark:bg-gray-400 dark:text-gray-200">
+		<div className="mb-4 bg-white p-4 rounded-lg shadow">
+			<h2 className="text-lg font-semibold mb-2">人気のキーワード</h2>
+			<div className="flex flex-wrap gap-2">
+				{keywords.map((keyword, index) => (
+					<Link
+						href={`/tag/${encodeURIComponent(keyword)}`}
+						key={index}
+						className="bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs px-2 py-1 rounded transition duration-300"
+					>
 						{keyword}
-					</span>
-				</Link>
-			))}
+					</Link>
+				))}
+			</div>
 		</div>
 	)
 }
+
+export default TagCloud

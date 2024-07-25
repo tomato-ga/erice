@@ -3,6 +3,7 @@
 import React from 'react'
 import { KeywordArticle } from '../../../../../types/types'
 import ArticleCard from '../ArticleCard'
+import Link from 'next/link'
 
 interface KeywordRelatedArticlesProps {
 	keywordarticledata: KeywordArticle[] | null
