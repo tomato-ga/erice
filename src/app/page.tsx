@@ -1,3 +1,5 @@
+// /Volumes/SSD_1TB/erice2/erice/src/app/page.tsx
+
 import { Suspense } from 'react'
 import Link from 'next/link'
 import { headers } from 'next/headers'

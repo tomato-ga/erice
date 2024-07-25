@@ -10,6 +10,20 @@ interface ArticleViewState {
 	fetchArticles: () => Promise<void>
 }
 
+/**
+ * Cloudflare KVから閲覧履歴を取得し、グローバルに管理するためのZustandストア
+ *
+ * このストアは以下の機能を提供します：
+ * - 閲覧履歴の非同期取得
+ * - 取得した記事データの状態管理
+ * - ローディング状態とエラー状態の管理
+ *
+ * @property {RelatedArticle[]} articles - 取得した記事データの配列
+ * @property {boolean} isLoading - データ取得中かどうかを示すフラグ
+ * @property {string | null} error - エラーメッセージ（エラーがない場合はnull）
+ * @property {() => Promise<void>} fetchArticles - 閲覧履歴を取得する非同期関数
+ */
+
 export const useArticleViewStore = create<ArticleViewState>((set) => ({
 	articles: [],
 	isLoading: false,

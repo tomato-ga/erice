@@ -52,31 +52,41 @@ class DatabaseManager {
 
 	async recordArticleView(articleId: number): Promise<{ process: boolean }> {
 		if (!this.db) {
+			console.error('データベースが初期化されていません。initDatabase()を先に呼び出してください。')
 			throw new Error('データベースが初期化されていません。initDatabase()を先に呼び出してください。')
 		}
 
 		const timestamp = Date.now()
+		console.log(`記事閲覧の記録を開始します: articleId=${articleId}, timestamp=${timestamp}`)
 
 		try {
 			await this.db.transaction('rw', this.db.viewedArticles, async () => {
+				console.log(`トランザクションを開始しました: articleId=${articleId}`)
 				const existingView = await this.db!.viewedArticles.where('articleId').equals(articleId).first()
 
 				if (existingView) {
-					// console.log(`既存の閲覧記録が見つかりました: articleId=${articleId}`)
+					console.log(`既存の閲覧記録が見つかりました: articleId=${articleId}, oldTimestamp=${existingView.timestamp}`)
 					await this.db!.viewedArticles.update(existingView.id!, {
 						timestamp: timestamp,
 						synced: 0
 					})
-					// console.log(`閲覧記録を更新しました: articleId=${articleId}, newTimestamp=${timestamp}`)
+					console.log(
+						`閲覧記録を更新しました: articleId=${articleId}, newTimestamp=${timestamp}, id=${existingView.id}`
+					)
 				} else {
+					console.log(`新しい閲覧記録を作成します: articleId=${articleId}`)
 					// レコード数をチェック
 					const count = await this.db!.viewedArticles.count()
+					console.log(`現在のレコード数: ${count}`)
 					if (count >= this.MAX_RECORDS) {
+						console.log(`最大レコード数(${this.MAX_RECORDS})に達しました。最も古いレコードを削除します。`)
 						// 最も古いレコードを削除
 						const oldestRecord = await this.db!.viewedArticles.orderBy('timestamp').first()
 						if (oldestRecord && oldestRecord.id !== undefined) {
 							await this.db!.viewedArticles.delete(oldestRecord.id)
-							// console.log(`最も古いレコードを削除しました: articleId=${oldestRecord.articleId}`)
+							console.log(
+								`最も古いレコードを削除しました: articleId=${oldestRecord.articleId}, id=${oldestRecord.id}, timestamp=${oldestRecord.timestamp}`
+							)
 						}
 					}
 
@@ -85,17 +95,22 @@ class DatabaseManager {
 						timestamp,
 						synced: 0
 					})
-					// console.log(`新しい閲覧記録を追加しました: articleId=${articleId}, id=${id}, timestamp=${timestamp}`)
+					console.log(`新しい閲覧記録を追加しました: articleId=${articleId}, id=${id}, timestamp=${timestamp}`)
 				}
 
-				// 50件を超えるレコードがある場合、古いものから削除
+				console.log('過剰なレコードのクリーンアップを開始します')
 				await this.cleanupExcessRecords()
+				console.log('クリーンアップが完了しました')
 			})
+			console.log(`記事閲覧の記録が成功しました: articleId=${articleId}`)
 			// ArticleLinksの呼び出し元にtrueを返す
 			return { process: true }
 		} catch (error) {
-			// console.error(`記事閲覧の記録に失敗しました: articleId=${articleId}`, error)
+			console.error(`記事閲覧の記録に失敗しました: articleId=${articleId}`, error)
+			console.error('エラーの詳細:', JSON.stringify(error, null, 2))
 			return { process: false }
+		} finally {
+			console.log(`記事閲覧の記録処理が完了しました: articleId=${articleId}`)
 		}
 	}
 
