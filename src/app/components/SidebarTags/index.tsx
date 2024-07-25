@@ -1,10 +1,9 @@
-'use client'
-
-import React, { useState, useEffect } from 'react'
+// TagCloud.tsx
+import React from 'react'
 import Link from 'next/link'
 
 async function getKeywords(): Promise<string[]> {
-	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/poptags`)
+	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/poptags`, { next: { revalidate: 3600 } })
 	if (!response.ok) {
 		throw new Error(`HTTP error! status: ${response.status}`)
 	}
@@ -15,43 +14,35 @@ async function getKeywords(): Promise<string[]> {
 	return data
 }
 
-const TagCloud = () => {
-	const [keywords, setKeywords] = useState<string[]>([])
-	const [error, setError] = useState<string | null>(null)
+const TagCloud = async () => {
+	let keywords: string[] = []
+	let error: string | null = null
 
-	useEffect(() => {
-		const fetchKeywords = async () => {
-			try {
-				const data = await getKeywords()
-				setKeywords(data)
-			} catch (err) {
-				console.error('Error fetching keywords:', err)
-				setError('キーワードの取得に失敗しました。')
-			} finally {
-			}
-		}
-
-		fetchKeywords()
-	}, [])
+	try {
+		keywords = await getKeywords()
+	} catch (err) {
+		console.error('Error fetching keywords:', err)
+		error = 'キーワードの取得に失敗しました。'
+	}
 
 	if (error) {
 		return <div className="text-red-500 text-sm">{error}</div>
 	}
 
+	if (keywords.length === 0) {
+		return <div className="text-gray-500 text-sm">キーワードがありません。</div>
+	}
+
 	return (
-		<div className="mb-4 bg-white p-4 rounded-lg shadow">
-			<h2 className="text-lg font-semibold mb-2">人気のキーワード</h2>
-			<div className="flex flex-wrap gap-2">
-				{keywords.map((keyword, index) => (
-					<Link
-						href={`/tag/${encodeURIComponent(keyword)}`}
-						key={index}
-						className="bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs px-2 py-1 rounded transition duration-300"
-					>
+		<div className="flex flex-wrap gap-2 justify-center items-center -my-1">
+			<p className="w-full text-center mb-2 font-semibold">人気のキーワード</p>
+			{keywords.map((keyword: string, index: number) => (
+				<Link href={`/tag/${encodeURIComponent(keyword)}`} key={index} className="my-4">
+					<span className="relative px-1 py-1 m-1 rounded-md shadow-sm sm:py-2 sm:text-base ring ring-transparent group md:px-4 hover:ring hover:ring-opacity-50 focus:ring-opacity-50 hover:ring-pink-600 text-gray-900 bg-gray-100 dark:bg-gray-400 dark:text-gray-200">
 						{keyword}
-					</Link>
-				))}
-			</div>
+					</span>
+				</Link>
+			))}
 		</div>
 	)
 }
