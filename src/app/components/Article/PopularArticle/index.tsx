@@ -1,8 +1,10 @@
 'use client'
 
 import React from 'react'
-import Carousel from './carousel'
+import dynamic from 'next/dynamic'
 import { PopularArticle as PopularArticleType } from '../../../../../types/types'
+
+const Carousel = dynamic(() => import('./carousel'), { ssr: false })
 
 interface PopularArticleProps {
 	articles: PopularArticleType[]

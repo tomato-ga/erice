@@ -1,11 +1,9 @@
 'use client'
 
-import React, { useState, useEffect, useRef, useMemo } from 'react'
-
+import React, { useState, useEffect, useRef } from 'react'
 import { formatDate } from '@/app/utils/postUtils'
 import Link from 'next/link'
 
-// PopularArticle 型の定義
 export interface PopularArticle {
 	id: number
 	title: string
@@ -75,7 +73,7 @@ const Carousel: React.FC<CarouselProps> = ({ articles }) => {
 		if (!isDragging) return
 		e.preventDefault()
 		const x = e.pageX - (carouselRef.current?.offsetLeft || 0)
-		const walk = (x - startX) * 2 // スクロール速度を調整
+		const walk = (x - startX) * 2
 		if (carouselRef.current) {
 			carouselRef.current.scrollLeft = scrollLeft - walk
 		}
@@ -134,8 +132,8 @@ const getRankBorderColor = (rank: number): string => {
 }
 
 const ArticleCard: React.FC<{ article: PopularArticle; rank: number }> = React.memo(({ article, rank }) => {
-	const rankColor = useMemo(() => getRankColor(rank), [rank])
-	const rankBorderColor = useMemo(() => getRankBorderColor(rank), [rank])
+	const rankColor = React.useMemo(() => getRankColor(rank), [rank])
+	const rankBorderColor = React.useMemo(() => getRankBorderColor(rank), [rank])
 
 	return (
 		<Link
@@ -154,7 +152,7 @@ const ArticleCard: React.FC<{ article: PopularArticle; rank: number }> = React.m
 						loading="lazy"
 						onError={(e) => {
 							const target = e.target as HTMLImageElement
-							target.src = '/path/to/fallback-image.jpg' // フォールバック画像のパスを指定
+							target.src = '/path/to/fallback-image.jpg'
 						}}
 					/>
 					<span
@@ -170,7 +168,6 @@ const ArticleCard: React.FC<{ article: PopularArticle; rank: number }> = React.m
 					</h3>
 					<div className="flex justify-between items-center text-xs text-gray-500">
 						<time dateTime={article.created_at}>{formatDate(article.created_at)}</time>
-						{/* TODO <span>{(article.total_clicks * 112 + 31).toLocaleString()} clicks</span> */}
 					</div>
 				</div>
 			</div>

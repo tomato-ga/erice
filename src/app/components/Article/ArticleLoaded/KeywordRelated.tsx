@@ -1,7 +1,14 @@
-import { KeywordArticle } from "../../../../../types/types"
-import ArticleCard from "../ArticleCard"
+'use client'
 
-export const KeywordRelatedArticles: React.FC<{ keywordarticledata: KeywordArticle[] | null }> = ({ keywordarticledata }) => {
+import React from 'react'
+import { KeywordArticle } from '../../../../../types/types'
+import ArticleCard from '../ArticleCard'
+
+interface KeywordRelatedArticlesProps {
+	keywordarticledata: KeywordArticle[] | null
+}
+
+const KeywordRelatedArticles: React.FC<KeywordRelatedArticlesProps> = ({ keywordarticledata }) => {
 	if (!keywordarticledata || keywordarticledata.length === 0) return null
 
 	return (
@@ -21,3 +28,5 @@ export const KeywordRelatedArticles: React.FC<{ keywordarticledata: KeywordArtic
 		</>
 	)
 }
+
+export default KeywordRelatedArticles

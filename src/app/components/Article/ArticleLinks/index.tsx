@@ -7,7 +7,7 @@ import ArticleKeywords from '../ArticleKeywords'
 import { handleEXClickCount } from '../../handleexclick'
 import { initDatabase, recordArticleView, syncArticleKV } from '../../../../lib/articleViewSync'
 
-const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = ({ article }) => {
+const ArticleLBasic: React.FC<{ article: KobetuPageArticle }> = ({ article }) => {
 	// const recordView = useCallback(async () => {
 	// 	console.log(`記事閲覧の記録を開始します: articleId=${article.id}`)
 	// 	try {
@@ -75,4 +75,4 @@ const ArticleLinks: React.FC<{ article: KobetuPageArticle }> = ({ article }) => 
 	)
 }
 
-export default ArticleLinks
+export default ArticleLBasic

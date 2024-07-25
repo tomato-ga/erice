@@ -1,14 +1,16 @@
 import { Suspense } from 'react'
 import { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 import { getKobetuArticle } from '@/app/components/fetch/GetKobetuArticles'
-import ArticleContent from '@/app/components/Article/ArticleContent'
+import ArticleBasicContent from '@/app/components/Article/ArticleContent'
 import LoadingSpinner from '@/app/components/Article/ArticleContent/loadingspinner'
 import { KobetuPageArticle } from '../../../../../types/types'
-import ErrorBoundary from '@/app/components/Article/PopularArticle/Error'
-import PopularArticle from '@/app/components/Article/PopularArticle'
 import { getPopularArticles } from '@/app/components/fetch/GetPopularArticles'
 import { getKeywordArticle } from '@/app/components/fetch/GetOneKeywordArticles'
-import { KeywordRelatedArticles } from '@/app/components/Article/ArticleLoaded/KeywordRelated'
+import ArticleLBasic from '@/app/components/Article/ArticleLinks'
+
+const PopularArticle = dynamic(() => import('@/app/components/Article/PopularArticle'))
+const KeywordRelatedArticles = dynamic(() => import('@/app/components/Article/ArticleLoaded/KeywordRelated'))
 
 interface Props {
 	params: { postId: string }
@@ -20,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	if (!article) {
 		return {
 			title: '記事が見つかりません',
-			description: '指定された記事は存在しないか、取得できませんでした。'
+			description: '指定された記事は存しないか、取得でき���せんでした。'
 		}
 	}
 
@@ -49,11 +51,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function KobetuArticlePage({ params }: Props) {
-	const [article, popularArticlesData, keywordArticles] = await Promise.all([
-		getKobetuArticle(params.postId),
-		getPopularArticles(),
-		getKeywordArticle(params.postId) // 記事IDをキーワードとして使用
-	])
+	const [article, popularArticlesData] = await Promise.all([getKobetuArticle(params.postId), getPopularArticles()])
+
+	// console.log('KobetuArticlePage - Fetched keywordArticles:', JSON.stringify(keywordArticles, null, 2)) // デバッグログ
 
 	if (!article) {
 		return (
@@ -64,22 +64,20 @@ export default async function KobetuArticlePage({ params }: Props) {
 		)
 	}
 
+	// キーワード関連記事を取得
+	const keywordArticles =
+		article.keywords && article.keywords.length > 0 ? await getKeywordArticle(article.keywords[0].keyword) : []
+
 	return (
 		<div className="bg-white min-h-screen">
 			<div className="container mx-auto px-2 py-6">
+				<ArticleLBasic article={article} />
 				<Suspense fallback={<LoadingSpinner />}>
-					<ArticleContent article={article} />
+					<PopularArticle articles={popularArticlesData.data.articles} />
 				</Suspense>
-				<ErrorBoundary fallback={<div>人気記事の読み込みに失敗しました。</div>}>
-					<Suspense fallback={<LoadingSpinner />}>
-						<PopularArticle articles={popularArticlesData.data.articles} />
-					</Suspense>
-				</ErrorBoundary>
-				<ErrorBoundary fallback={<div>関連記事の読み込みに失敗しました。</div>}>
-					<Suspense fallback={<LoadingSpinner />}>
-						<KeywordRelatedArticles keywordarticledata={keywordArticles} />
-					</Suspense>
-				</ErrorBoundary>
+				<Suspense fallback={<LoadingSpinner />}>
+					<KeywordRelatedArticles keywordarticledata={keywordArticles} />
+				</Suspense>
 			</div>
 		</div>
 	)
