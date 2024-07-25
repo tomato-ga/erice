@@ -147,6 +147,25 @@ class DatabaseManager {
 		}
 	}
 
+	async loadArticleView(): Promise<ArticleView[]> {
+		if (!this.db) {
+			throw new Error('データベースが初期化されていません。initDatabase()を先に呼び出してください。')
+		}
+
+		try {
+			const allRecords = await this.db.transaction('readonly', this.db.viewedArticles, async () => {
+				// console.log('未同期の閲覧記録の読み取りを開始します')
+				const records = await this.db!.viewedArticles.toArray()
+				// console.log(`${records.length}件の未同期閲覧記録を取得しました`)
+				return records
+			})
+			return allRecords
+		} catch (error) {
+			// console.error('閲覧記録の読み取りにエラーが発生しました', error)
+			throw error
+		}
+	}
+
 	private async cleanupExcessRecords(): Promise<void> {
 		if (!this.db) {
 			throw new ArticleViewError('データベースが初期化されていません', 'DB_NOT_INITIALIZED')
@@ -175,4 +194,9 @@ export const recordArticleView = async (articleId: number): Promise<{ process: b
 
 export const syncArticleKV = async (): Promise<void> => {
 	await dbManager.syncWithCFKV()
+}
+
+export const loadArticleViews = async (): Promise<ArticleView[]> => {
+	const allRecords = await dbManager.loadArticleView()
+	return allRecords.sort((a, b) => b.timestamp - a.timestamp)
 }
