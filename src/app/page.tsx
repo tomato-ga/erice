@@ -1,4 +1,27 @@
-// /Volumes/SSD_1TB/erice2/erice/src/app/page.tsx
+/**
+ * HomePage コンポーネント
+ *
+ * このコンポーネントは、エロコメストのホームページを表示します。
+ * 最新の動画記事をページネーションで表示し、各記事はArticleCardコンポーネントで表現されます。
+ *
+ * @component
+ * @param {Object} props - コンポーネントのプロパティ
+ * @param {Object} props.searchParams - URLのクエリパラメータ
+ * @param {string} [props.searchParams.page] - 現在のページ番号（オプション、デフォルトは1）
+ *
+ * @returns {JSX.Element} レンダリングされたホームページ
+ *
+ * 主な機能:
+ * - getHomeArticles関数を使用して最新の記事データを取得
+ * - 記事データをグリッドレイアウトで表示
+ * - ページネーション機能の提供
+ * - エラー処理とローディング状態の表示
+ *
+ * 注意事項:
+ * - このコンポーネントはサーバーサイドでレンダリングされます
+ * - デフォルトで1ページあたり30記事を表示
+ * - ユーザーエージェントとリファラー情報をログに記録
+ */
 
 import { Suspense } from 'react'
 import Link from 'next/link'

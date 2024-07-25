@@ -1,5 +1,21 @@
 import { HomePageApiResponse } from '../../../../../types/types'
 
+/**
+ * ホームページの記事を取得する関数
+ *
+ * @param {number} page - 取得するページ番号
+ * @param {number} limit - 1ページあたりの記事数
+ * @returns {Promise<HomePageApiResponse>} 記事データとページ情報を含むレスポンス
+ *
+ * @description
+ * この関数は、指定されたページと制限に基づいてホームページの記事を取得します。
+ * APIリクエストを送信し、結果を処理して返します。
+ * エラー処理とログ記録も行います。
+ *
+ * @example
+ * const { articles, totalPages } = await getHomeArticles(1, 10);
+ */
+
 export async function getHomeArticles(page: number, limit: number): Promise<HomePageApiResponse> {
 	const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/toppage?page=${page}&limit=${limit}`
 
@@ -8,7 +24,7 @@ export async function getHomeArticles(page: number, limit: number): Promise<Home
 	const startTime = Date.now()
 	const res = await fetch(apiUrl, {
 		// cache: 'no-store',
-		next: { revalidate: 3600 },
+		next: { revalidate: 3600 }, // 1時間ごとにキャッシュを再検証
 		headers: { Authorization: `Bearer ${process.env.D1_API_KEY}` }
 	})
 	const endTime = Date.now()
