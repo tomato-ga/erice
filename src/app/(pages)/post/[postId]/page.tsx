@@ -116,7 +116,8 @@ const ArticleContent: React.FC<{ article: KobetuPageArticle }> = async ({ articl
 			<div className="py-2">
 				<ArticleLinks article={article} />
 				<PopularArticles />
-				{/* <ArticleLoad viewrireki={true} keywordarticledata={keywordArticles} /> */}
+
+				{/* TODO 関連記事でブラウザバックできてなかった <ArticleLoad viewrireki={true} keywordarticledata={keywordArticles} /> */}
 			</div>
 		</div>
 	)
