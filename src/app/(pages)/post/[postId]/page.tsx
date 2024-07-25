@@ -4,6 +4,9 @@ import { getKobetuArticle } from '@/app/components/fetch/GetKobetuArticles'
 import ArticleContent from '@/app/components/Article/ArticleContent'
 import LoadingSpinner from '@/app/components/Article/ArticleContent/loadingspinner'
 import { KobetuPageArticle } from '../../../../../types/types'
+import ErrorBoundary from '@/app/components/Article/PopularArticle/Error'
+import PopularArticle from '@/app/components/Article/PopularArticle'
+import { getPopularArticles } from '@/app/components/fetch/GetPopularArticles'
 
 interface Props {
 	params: { postId: string }
@@ -44,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function KobetuArticlePage({ params }: Props) {
-	const article = await getKobetuArticle(params.postId)
+	const [article, popularArticlesData] = await Promise.all([getKobetuArticle(params.postId), getPopularArticles()])
 
 	if (!article) {
 		return (
@@ -61,6 +64,11 @@ export default async function KobetuArticlePage({ params }: Props) {
 				<Suspense fallback={<LoadingSpinner />}>
 					<ArticleContent article={article} />
 				</Suspense>
+				<ErrorBoundary fallback={<div>人気記事の読み込みに失敗しました。</div>}>
+					<Suspense fallback={<LoadingSpinner />}>
+						<PopularArticle articles={popularArticlesData.data.articles} />
+					</Suspense>
+				</ErrorBoundary>
 			</div>
 		</div>
 	)

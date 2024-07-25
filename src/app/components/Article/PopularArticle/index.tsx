@@ -1,11 +1,14 @@
-import { getPopularArticles } from '../../fetch/GetPopularArticles'
+'use client'
+
+import React from 'react'
 import Carousel from './carousel'
-import { PopularArticle } from '../../../../../types/types'
+import { PopularArticle as PopularArticleType } from '../../../../../types/types'
 
-const PopularArticles = async () => {
-	const data = await getPopularArticles()
-	const articles: PopularArticle[] = data.data.articles
+interface PopularArticleProps {
+	articles: PopularArticleType[]
+}
 
+const PopularArticle: React.FC<PopularArticleProps> = ({ articles }) => {
 	return (
 		<section className="container mx-auto px-1 py-8" aria-labelledby="popular-articles-heading">
 			<h3
@@ -19,4 +22,4 @@ const PopularArticles = async () => {
 	)
 }
 
-export default PopularArticles
+export default PopularArticle
