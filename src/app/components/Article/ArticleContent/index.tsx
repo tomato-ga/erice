@@ -12,7 +12,7 @@ interface ArticleContentProps {
 }
 
 const ArticleContent: React.FC<ArticleContentProps> = ({ article }) => {
-	useArticleView(article.id)
+	// useArticleView(article.id)
 
 	return (
 		<div className="bg-white">
