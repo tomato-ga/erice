@@ -15,12 +15,12 @@ const DEFAULT_LIMIT = 30
 const SITE_NAME = 'erice'
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-	console.log('generateMetadata called with params:', params)
+	// console.log('generateMetadata called with params:', params)
 
 	const [keyword, , page] = params.slug || []
 	const currentPage = page ? parseInt(page, 10) : 1
 
-	console.log('Parsed keyword:', keyword, 'currentPage:', currentPage)
+	// console.log('Parsed keyword:', keyword, 'currentPage:', currentPage)
 
 	if (!keyword) {
 		console.log('No keyword found, returning default metadata')
@@ -32,14 +32,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 	try {
 		const data = await getArticlesByKeyword(keyword, currentPage, DEFAULT_LIMIT)
-		console.log('Data fetched for metadata:', data)
+		// console.log('Data fetched for metadata:', data)
 
 		const pageTitle = `「${keyword}」の動画${currentPage > 1 ? ` - ページ ${currentPage}` : ''}`
 		const description = `「${keyword}」に関連する動画一覧です。${currentPage}ページ目を表示しています。全${
 			data.total
 		}件中${(currentPage - 1) * DEFAULT_LIMIT + 1}~${Math.min(currentPage * DEFAULT_LIMIT, data.total)}件を表示中。`
 
-		console.log('Returning metadata:', { title: pageTitle, description })
+		// console.log('Returning metadata:', { title: pageTitle, description })
 		return {
 			title: pageTitle,
 			description: description,
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function TagPage({ params }: PageProps) {
-	console.log('TagPage rendered with params:', params)
+	// console.log('TagPage rendered with params:', params)
 
 	const { slug = [] } = params
 	let currentPage = 1

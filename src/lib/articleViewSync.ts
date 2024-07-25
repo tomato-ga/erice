@@ -1,4 +1,4 @@
-import Dexie from 'dexie'
+import Dexie, { Table } from 'dexie'
 import { getUserId } from './dataSync'
 
 export interface ArticleView {
@@ -8,8 +8,15 @@ export interface ArticleView {
 	synced: number
 }
 
+export class ArticleViewError extends Error {
+	constructor(message: string, public code: string) {
+		super(message)
+		this.name = 'ArticleViewError'
+	}
+}
+
 class ArticleViewDatabase extends Dexie {
-	viewedArticles!: Dexie.Table<ArticleView, number>
+	viewedArticles!: Table<ArticleView, number>
 
 	constructor() {
 		super('ArticleViewDatabase')
@@ -34,25 +41,21 @@ class DatabaseManager {
 		return DatabaseManager.instance
 	}
 
-	async initDatabase() {
-		if (this.db) {
-			// console.log('データベースは既に初期化されています')
-			return
-		}
+	async initDatabase(): Promise<void> {
+		if (this.db) return
 
 		try {
 			this.db = new ArticleViewDatabase()
 			await this.db.open()
-			// console.log('データベースが正常に初期化されました')
 		} catch (error) {
 			// console.error('データベースの初期化に失敗しました:', error)
-			throw error
+			throw new ArticleViewError('データベースの初期化に失敗しました', 'DB_INIT_FAILURE')
 		}
 	}
 
 	async recordArticleView(articleId: number): Promise<{ process: boolean }> {
 		if (!this.db) {
-			throw new Error('データベースが初期化されていません。initDatabase()を先に呼び出してください。')
+			throw new ArticleViewError('データベースが初期化されていません', 'DB_NOT_INITIALIZED')
 		}
 
 		const timestamp = Date.now()
@@ -62,40 +65,85 @@ class DatabaseManager {
 				const existingView = await this.db!.viewedArticles.where('articleId').equals(articleId).first()
 
 				if (existingView) {
-					// console.log(`既存の閲覧記録が見つかりました: articleId=${articleId}`)
 					await this.db!.viewedArticles.update(existingView.id!, {
 						timestamp: timestamp,
 						synced: 0
 					})
-					// console.log(`閲覧記録を更新しました: articleId=${articleId}, newTimestamp=${timestamp}`)
 				} else {
-					// レコード数をチェック
-					const count = await this.db!.viewedArticles.count()
-					if (count >= this.MAX_RECORDS) {
-						// 最も古いレコードを削除
-						const oldestRecord = await this.db!.viewedArticles.orderBy('timestamp').first()
-						if (oldestRecord && oldestRecord.id !== undefined) {
-							await this.db!.viewedArticles.delete(oldestRecord.id)
-							// console.log(`最も古いレコードを削除しました: articleId=${oldestRecord.articleId}`)
-						}
-					}
-
-					const id = await this.db!.viewedArticles.add({
+					await this.db!.viewedArticles.add({
 						articleId,
 						timestamp,
 						synced: 0
 					})
-					// console.log(`新しい閲覧記録を追加しました: articleId=${articleId}, id=${id}, timestamp=${timestamp}`)
 				}
 
-				// 50件を超えるレコードがある場合、古いものから削除
 				await this.cleanupExcessRecords()
 			})
-			// ArticleLinksの呼び出し元にtrueを返す
 			return { process: true }
 		} catch (error) {
-			// console.error(`記事閲覧の記録に失敗しました: articleId=${articleId}`, error)
+			// console.error('記事ビューの記録に失敗しました:', error)
 			return { process: false }
+		}
+	}
+
+	async syncWithCFKV(): Promise<void> {
+		if (this.syncInProgress) return
+
+		this.syncInProgress = true
+
+		try {
+			if (!this.db) {
+				throw new ArticleViewError('データベースが初期化されていません', 'DB_NOT_INITIALIZED')
+			}
+
+			const unsyncedRecords = await this.db.viewedArticles.where('synced').equals(0).toArray()
+
+			if (unsyncedRecords.length === 0) {
+				// console.log('同期する記事ビューがありません')
+				return
+			}
+
+			// console.log(`${unsyncedRecords.length}件の未同期記事ビューを同期します`)
+
+			const syncData = {
+				userId: await getUserId(),
+				viewedArticles: unsyncedRecords.map((record: ArticleView) => ({
+					articleId: record.articleId,
+					timestamp: record.timestamp
+				}))
+			}
+
+			// console.log('APIにデータを送信します:', JSON.stringify(syncData))
+
+			const response = await fetch('/api/viewed-articles', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(syncData)
+			})
+
+			if (!response.ok) {
+				const errorText = await response.text()
+				// console.error('APIレスポンスエラー:', response.status, errorText)
+				throw new ArticleViewError(`サーバーとの同期に失敗しました: ${response.statusText}`, 'SYNC_FAILURE')
+			}
+
+			const result = await response.json()
+			// console.log('APIレスポンス:', result)
+
+			if (result.status === 'OK') {
+				const ids = unsyncedRecords.map((r: ArticleView) => r.id).filter((id): id is number => id !== undefined)
+				await this.db.viewedArticles.where('id').anyOf(ids).modify({ synced: 1 })
+				// console.log(`${ids.length}件の記事ビューを同期済みにマークしました`)
+			} else {
+				throw new ArticleViewError('同期に失敗しました: ' + (result.message || '不明なエラー'), 'SYNC_FAILURE')
+			}
+		} catch (error) {
+			// console.error('同期中にエラーが発生しました:', error)
+			throw error
+		} finally {
+			this.syncInProgress = false
 		}
 	}
 
@@ -118,64 +166,9 @@ class DatabaseManager {
 		}
 	}
 
-	async syncWithCFKV() {
-		if (this.syncInProgress) {
-			// console.log('同期が既に進行中です。スキップします。')
-			return
-		}
-
-		this.syncInProgress = true
-
-		try {
-			if (!this.db) {
-				throw new Error('データベースが初期化されていません。同期をスキップします。')
-			}
-
-			const unsyncedRecords = await this.db.viewedArticles.where('synced').equals(0).toArray()
-
-			if (unsyncedRecords.length === 0) {
-				console.log('同期するレコードがありません。')
-				return
-			}
-
-			const syncData = {
-				userId: await getUserId(),
-				viewedArticles: unsyncedRecords.map((record) => ({
-					articleId: record.articleId,
-					timestamp: record.timestamp
-				}))
-			}
-
-			const response = await fetch('/api/viewed-articles', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(syncData)
-			})
-
-			if (!response.ok) {
-				throw new Error(`サーバーとの同期に失敗しました: ${response.statusText}`)
-			}
-
-			const result = await response.json()
-			// console.log('同期結果:', result)
-
-			// 同期成功したレコードを更新
-			const ids = unsyncedRecords.map((r) => r.id).filter((id): id is number => id !== undefined)
-			await this.db.viewedArticles.where('id').anyOf(ids).modify({ synced: 1 })
-			// console.log(`${unsyncedRecords.length}件のレコードを同期しました`)
-		} catch (error) {
-			console.error('同期中にエラーが発生しました:', error)
-			// エラーハンドリングとリトライロジックをここに実装
-		} finally {
-			this.syncInProgress = false
-		}
-	}
-
-	private async cleanupExcessRecords() {
+	private async cleanupExcessRecords(): Promise<void> {
 		if (!this.db) {
-			throw new Error('データベースが初期化されていません。クリーンアップをスキップします。')
+			throw new ArticleViewError('データベースが初期化されていません', 'DB_NOT_INITIALIZED')
 		}
 
 		const count = await this.db.viewedArticles.count()
@@ -183,18 +176,15 @@ class DatabaseManager {
 			const excessCount = count - this.MAX_RECORDS
 			const oldestRecords = await this.db.viewedArticles.orderBy('timestamp').limit(excessCount).toArray()
 
-			const ids = oldestRecords.map((r) => r.id).filter((id): id is number => id !== undefined)
+			const ids = oldestRecords.map((r: ArticleView) => r.id).filter((id): id is number => id !== undefined)
 			await this.db.viewedArticles.bulkDelete(ids)
-			console.log(`${excessCount}件の古いレコードを削除しました`)
 		}
 	}
 }
 
-// DatabaseManagerのインスタンスを作成
 const dbManager = DatabaseManager.getInstance()
 
-// エクスポートする関数
-export const initDatabase = async () => {
+export const initDatabase = async (): Promise<void> => {
 	await dbManager.initDatabase()
 }
 
@@ -202,7 +192,7 @@ export const recordArticleView = async (articleId: number): Promise<{ process: b
 	return await dbManager.recordArticleView(articleId)
 }
 
-export const syncArticleKV = async () => {
+export const syncArticleKV = async (): Promise<void> => {
 	await dbManager.syncWithCFKV()
 }
 

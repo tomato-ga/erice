@@ -4,7 +4,7 @@ import ArticleCard from '../../components/Article/ArticleCard'
 import { PopularArticlesResponse } from '../../../../types/types'
 
 export default async function PopularArticlesPage() {
-	const popularArticles = await getPopularArticles()
+	const popularArticles: PopularArticlesResponse = await getPopularArticles()
 	// 人気記事の順位を付ける
 	const rankedArticles = popularArticles.data.articles.map((article, index) => ({
 		...article,

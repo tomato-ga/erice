@@ -1,127 +1,84 @@
-import { Metadata, NextPage } from 'next'
-import { KeywordArticle, KobetuPageArticle } from '../../../../../types/types'
+import { Suspense } from 'react'
+import { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 import { getKobetuArticle } from '@/app/components/fetch/GetKobetuArticles'
-import ArticleLinks from '@/app/components/Article/ArticleLinks'
-import ArticleLoad from '@/app/components/Article/ArticleLoaded'
+import ArticleBasicContent from '@/app/components/Article/ArticleContent'
+import LoadingSpinner from '@/app/components/Article/ArticleContent/loadingspinner'
+import { KobetuPageArticle } from '../../../../../types/types'
+import { getPopularArticles } from '@/app/components/fetch/GetPopularArticles'
 import { getKeywordArticle } from '@/app/components/fetch/GetOneKeywordArticles'
-import PopularArticles from '@/app/components/Article/PopularArticle'
-import Link from 'next/link'
+import ArticleLBasic from '@/app/components/Article/ArticleLinks'
+
+const PopularArticle = dynamic(() => import('@/app/components/Article/PopularArticle'))
+const KeywordRelatedArticles = dynamic(() => import('@/app/components/Article/ArticleLoaded/KeywordRelated'))
 
 interface Props {
 	params: { postId: string }
 }
 
-// メタデータを生成する関数
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-	try {
-		// 記事IDを使って個別記事データを取得
-		const article = await getKobetuArticle(params.postId)
+	const article = await getKobetuArticle(params.postId)
 
-		if (!article) {
-			// 記事が見つからない場合のメタデータ
-			return {
-				title: '記事が見つかりません',
-				description: '指定された記事は存在しないか、取得できませんでした。'
-			}
-		}
-
-		// 記事が見つかった場合のメタデータ
+	if (!article) {
 		return {
+			title: '記事が見つかりません',
+			description: '指定された記事は存しないか、取得でき���せんでした。'
+		}
+	}
+
+	return {
+		title: article.title,
+		description: article.title,
+		openGraph: {
 			title: article.title,
-			description: article.title, // 記事の説明やサマリーがある場合はそれを使用
-			openGraph: {
-				title: article.title,
-				description: article.title, // 記事の説明やサマリーがある場合はそれを使用
-				images: [
-					{
-						url: article.image_url,
-						width: 1200,
-						height: 630,
-						alt: article.title
-					}
-				]
-			},
-			twitter: {
-				card: 'summary_large_image',
-				title: article.title,
-				description: article.title, // 記事の説明やサマリーがある場合はそれを使用
-				images: [article.image_url]
-			}
-		}
-	} catch (error) {
-		console.error('Error in generateMetadata:', error)
-		// エラーが発生した場合のメタデータ
-		return {
-			title: 'エラーが発生しました',
-			description: '記事の取得中に問題が発生しました。'
+			description: article.title,
+			images: [
+				{
+					url: article.image_url,
+					width: 1200,
+					height: 630,
+					alt: article.title
+				}
+			]
+		},
+		twitter: {
+			card: 'summary_large_image',
+			title: article.title,
+			description: article.title,
+			images: [article.image_url]
 		}
 	}
 }
 
-// 個別記事ページのメインコンポーネント
-const KobetuArticlePage: NextPage<Props> = async ({ params }) => {
-	try {
-		console.log('Received postId:', params.postId) // デバッグ用ログ
-		// 記事IDを使って個別記事データを取得
-		const article = await getKobetuArticle(params.postId)
+export default async function KobetuArticlePage({ params }: Props) {
+	const [article, popularArticlesData] = await Promise.all([getKobetuArticle(params.postId), getPopularArticles()])
 
-		console.log('KobetuArticlePage article: ', article)
+	// console.log('KobetuArticlePage - Fetched keywordArticles:', JSON.stringify(keywordArticles, null, 2)) // デバッグログ
 
-		if (!article) {
-			// 記事が見つからない場合のエラー表示
-			return (
-				<div className="container mx-auto px-2 py-6">
-					<h1 className="text-2xl font-bold text-red-600">記事が見つかりませんでした</h1>
-					<p>記事が存在しないか、取得中にエラーが発生しました。</p>
-				</div>
-			)
-		}
-
-		// 記事が見つかった場合、ArticleContentコンポーネントを表示
-		return (
-			<div className="bg-white min-h-screen">
-				<div className="container mx-auto px-2 py-6">
-					<ArticleContent article={article} />
-				</div>
-			</div>
-		)
-	} catch (error) {
-		// エラーが発生した場合のエラー表示
-		console.error('Error in KobetuArticlePage:', error)
+	if (!article) {
 		return (
 			<div className="container mx-auto px-2 py-6">
-				<h1 className="text-2xl font-bold text-red-600">エラーが発生しました</h1>
-				<p>記事の取得中に問題が発生しました。しばらくしてからもう一度お試しください。</p>
-				<p className="text-sm text-gray-600 mt-2">
-					エラー詳細: {error instanceof Error ? error.message : String(error)}
-				</p>
-				<p className="text-sm text-gray-600">PostID: {params.postId}</p>
+				<h1 className="text-2xl font-bold text-red-600">記事が見つかりませんでした</h1>
+				<p>記事が存在しないか、取得中にエラーが発生しました。</p>
 			</div>
 		)
 	}
-}
 
-// 記事の内容を表示するコンポーネント
-const ArticleContent: React.FC<{ article: KobetuPageArticle }> = async ({ article }) => {
-	let keywordArticles: KeywordArticle[] | null = null
-
-	if (article.keywords.length > 0) {
-		const firstKeyword = article.keywords[0].keyword
-		keywordArticles = await getKeywordArticle(firstKeyword)
-	}
+	// キーワード関連記事を取得
+	const keywordArticles =
+		article.keywords && article.keywords.length > 0 ? await getKeywordArticle(article.keywords[0].keyword) : []
 
 	return (
-		<div className="bg-white">
-			<div className="py-2">
-				<ArticleLinks article={article} />
-				<PopularArticles />
-				<ArticleLoad viewrireki={true} keywordarticledata={keywordArticles} />
+		<div className="bg-white min-h-screen">
+			<div className="container mx-auto px-2 py-6">
+				<ArticleLBasic article={article} />
+				<Suspense fallback={<LoadingSpinner />}>
+					<PopularArticle articles={popularArticlesData.data.articles} />
+				</Suspense>
+				<Suspense fallback={<LoadingSpinner />}>
+					<KeywordRelatedArticles keywordarticledata={keywordArticles} />
+				</Suspense>
 			</div>
 		</div>
 	)
 }
-
-// このページでEdgeランタイムを使用することを指定
-// export const runtime = 'edge'
-
-export default KobetuArticlePage

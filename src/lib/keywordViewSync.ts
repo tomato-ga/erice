@@ -52,7 +52,7 @@ class KeywordDatabaseManager {
 				keywordId,
 				timestamp
 			})
-			console.log(`キーワード閲覧を記録しました: ${keywordId}`)
+			// console.log(`キーワード閲覧を記録しました: ${keywordId}`)
 			return { process: true }
 		} catch (error) {
 			console.error(`キーワード閲覧の記録に失敗しました:`, error)

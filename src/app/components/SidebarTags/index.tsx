@@ -1,29 +1,36 @@
-import { cache } from 'react'
+// TagCloud.tsx
+import React from 'react'
 import Link from 'next/link'
 
-interface TagCloudProps {
-	keywords?: string[]
+async function getKeywords(): Promise<string[]> {
+	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/poptags`, { next: { revalidate: 3600 } })
+	if (!response.ok) {
+		throw new Error(`HTTP error! status: ${response.status}`)
+	}
+	const data = await response.json()
+	if (!Array.isArray(data)) {
+		throw new Error('Data is not an array')
+	}
+	return data
 }
 
-const fetchKeywords = cache(async () => {
-	try {
-		// Use an absolute URL or a base URL + relative path
-		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/poptags', { next: { revalidate: 3600 } })
-		if (!response.ok) {
-			throw new Error('Failed to fetch popular keywords')
-		}
-		return response.json()
-	} catch (error) {
-		console.error('Error fetching keywords:', error)
-		return [] // Return an empty array in case of error
-	}
-})
+const TagCloud = async () => {
+	let keywords: string[] = []
+	let error: string | null = null
 
-export default async function TagCloud({ keywords: initialKeywords = [] }: TagCloudProps) {
-	const keywords = (await fetchKeywords()) || initialKeywords
+	try {
+		keywords = await getKeywords()
+	} catch (err) {
+		console.error('Error fetching keywords:', err)
+		error = 'キーワードの取得に失敗しました。'
+	}
+
+	if (error) {
+		return <div className="text-red-500 text-sm">{error}</div>
+	}
 
 	if (keywords.length === 0) {
-		return <div className="text-gray-500 text-sm">No keywords available at the moment.</div>
+		return <div className="text-gray-500 text-sm">キーワードがありません。</div>
 	}
 
 	return (
@@ -40,8 +47,4 @@ export default async function TagCloud({ keywords: initialKeywords = [] }: TagCl
 	)
 }
 
-// px-3 py-1
-// text-sm text-gray-700
-// border-b-2 border-pink-200
-// transition-all duration-200 ease-in-out
-// hover:bg-gray-100 hover:text-gray-800
+export default TagCloud

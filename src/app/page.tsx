@@ -1,3 +1,5 @@
+// /Volumes/SSD_1TB/erice2/erice/src/app/page.tsx
+
 import { Suspense } from 'react'
 import Link from 'next/link'
 import { headers } from 'next/headers'
@@ -37,9 +39,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 		<>
 			<section className="max-w-7xl mx-auto">
 				{/* <ClientDebugger currentPage={currentPage} articlesCount={data.articles.length} /> */}
-				<h1 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">
-					<Link href="/">最新動画</Link>
-				</h1>
+				<h1 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">最新動画</h1>
 				<Suspense fallback={<LoadingSpinner />}>
 					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
 						{data.articles.map((article) => (
