@@ -1,21 +1,21 @@
 /**
  * ArticleCard コンポーネント
- * 
+ *
  * このコンポーネントは、記事のカード表示を行います。ホームページや関連記事一覧で使用されます。
- * 
+ *
  * @component
  * @param {Object} props - コンポーネントのプロパティ
  * @param {HomePageArticle | RelatedArticle} props.article - 表示する記事の情報
  * @param {boolean} [props.isSmallThumbnail=false] - サムネイルを小さく表示するかどうか
- * 
+ *
  * @example
  * <ArticleCard article={articleData} isSmallThumbnail={true} />
- * 
+ *
  * 主な機能:
  * - 記事のサムネイル画像、タイトル、作成日を表示
  * - クリック時のイベント処理（Umamiトラッキング、クリックカウント）
  * - レスポンシブなレイアウト（通常サイズと小さいサイズのサムネイル）
- * 
+ *
  * 注意事項:
  * - このコンポーネントはクライアントサイドでレンダリングされます（'use client'ディレクティブ）
  * - クリック時に短いディレイ（100ms）を挟んでナビゲーションを行います
@@ -61,7 +61,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSmallThumbnail = f
 			data-umami-event-article-id={article.id}
 			data-umami-event-article-title={article.title}
 		>
-			<Link href={`/post/${article.id}`} className="block h-full" prefetch={false}>
+			<Link href={`/post/${article.id}`} className="block h-full" prefetch={true}>
 				<div
 					className={`bg-white rounded-lg shadow-md overflow-hidden h-full flex ${
 						isSmallThumbnail ? 'flex-row' : 'flex-col'
