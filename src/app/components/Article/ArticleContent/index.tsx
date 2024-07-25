@@ -5,7 +5,6 @@ import { KobetuPageArticle } from '../../../../../types/types'
 import ArticleLinks from '../ArticleLinks'
 import { useArticleView } from '@/app/hooks/useArticleView'
 import PopularArticles from '../PopularArticle'
-import ArticleLoad from '../ArticleLoaded'
 
 interface ArticleContentProps {
 	article: KobetuPageArticle
