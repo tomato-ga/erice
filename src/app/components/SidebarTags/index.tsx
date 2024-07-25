@@ -1,26 +1,38 @@
-import { cache } from 'react'
+'use client'
+
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 interface TagCloudProps {
 	keywords?: string[]
 }
 
-const fetchKeywords = cache(async () => {
-	try {
-		// Use an absolute URL or a base URL + relative path
-		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/poptags', { next: { revalidate: 3600 } })
-		if (!response.ok) {
-			throw new Error('Failed to fetch popular keywords')
-		}
-		return response.json()
-	} catch (error) {
-		console.error('Error fetching keywords:', error)
-		return [] // Return an empty array in case of error
-	}
-})
+// カスタムフックを作成してデータフェッチングロジックを移動
+const useKeywords = (initialKeywords: string[] = []) => {
+	const [keywords, setKeywords] = useState<string[]>(initialKeywords)
 
-export default async function TagCloud({ keywords: initialKeywords = [] }: TagCloudProps) {
-	const keywords = (await fetchKeywords()) || initialKeywords
+	useEffect(() => {
+		const fetchKeywords = async () => {
+			try {
+				const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/poptags', { next: { revalidate: 3600 } })
+				if (!response.ok) {
+					throw new Error('Failed to fetch popular keywords')
+				}
+				const data = await response.json()
+				setKeywords(data)
+			} catch (error) {
+				console.error('Error fetching keywords:', error)
+			}
+		}
+
+		fetchKeywords()
+	}, [])
+
+	return keywords
+}
+
+export default function TagCloud({ keywords: initialKeywords = [] }: TagCloudProps) {
+	const keywords = useKeywords(initialKeywords)
 
 	if (keywords.length === 0) {
 		return <div className="text-gray-500 text-sm">No keywords available at the moment.</div>
@@ -39,9 +51,3 @@ export default async function TagCloud({ keywords: initialKeywords = [] }: TagCl
 		</div>
 	)
 }
-
-// px-3 py-1
-// text-sm text-gray-700
-// border-b-2 border-pink-200
-// transition-all duration-200 ease-in-out
-// hover:bg-gray-100 hover:text-gray-800
