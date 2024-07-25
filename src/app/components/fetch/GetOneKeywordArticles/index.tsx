@@ -33,7 +33,7 @@ export async function getKeywordArticle(word: string): Promise<KeywordArticle[]>
 	console.log('getKeywordArticle - Fetching from URL:', apiUrl) // デバッグログ
 
 	try {
-		const res = await fetch(apiUrl, { cache: 'no-store' })
+		const res = await fetch(apiUrl, { next: { revalidate: 3600 } })
 		if (!res.ok) {
 			const errorText = await res.text()
 			console.error(`getKeywordArticle - API error (${res.status}):`, errorText)
