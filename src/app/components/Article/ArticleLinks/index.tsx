@@ -1,51 +1,11 @@
 'use client'
 
-import React, { useEffect, useCallback } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import { KobetuPageArticle } from '../../../../../types/types'
 import ArticleKeywords from '../ArticleKeywords'
-import { handleEXClickCount } from '../../handleexclick'
-import { initDatabase, recordArticleView, syncArticleKV } from '../../../../lib/articleViewSync'
 
 const ArticleLBasic: React.FC<{ article: KobetuPageArticle }> = ({ article }) => {
-	// const recordView = useCallback(async () => {
-	// 	// console.log(`記事閲覧の記録を開始します: articleId=${article.id}`)
-	// 	try {
-	// 		// console.log('データベースの初期化を開始します...')
-	// 		await initDatabase()
-	// 		// console.log('データベースの初期化が完了しました')
-
-	// 		// console.log(`記事閲覧をデータベースに記録します: articleId=${article.id}`)
-	// 		const recordResult = await recordArticleView(article.id)
-	// 		// console.log(`記事閲覧の記録結果: ${JSON.stringify(recordResult)}`)
-
-	// 		if (recordResult.process) {
-	// 			// console.log('Cloudflare KVとの同期を開始します...')
-	// 			await syncArticleKV()
-	// 			// console.log('Cloudflare KVとの同期が完了しました')
-	// 		} else {
-	// 			// console.log('記事閲覧の記録処理がスキップされました')
-	// 		}
-	// 	} catch (err) {
-	// 		// console.error('記事閲覧の記録に失敗しました:', err)
-	// 		console.error('エラーの詳細:', JSON.stringify(err, null, 2))
-	// 	} finally {
-	// 		// console.log(`記事閲覧の記録処理が完了しました: articleId=${article.id}`)
-	// 	}
-	// }, [article.id])
-
-	// useEffect(() => {
-	// 	recordView()
-	// }, [recordView])
-
-	// const handleClick = async () => {
-	// 	try {
-	// 		await handleEXClickCount(article.id)
-	// 	} catch (err) {
-	// 		// console.error('クリックの記録に失敗しました:', err)
-	// 	}
-	// }
-
 	return (
 		<article className="flex flex-col space-y-4">
 			<Link href={article.link} target="_blank" rel="noopener">
