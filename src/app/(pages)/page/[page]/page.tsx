@@ -5,7 +5,6 @@ import { getHomeArticles } from '@/app/components/fetch/GetHomeArticles'
 import ArticleCard from '@/app/components/Article/ArticleCard'
 import PaginationComponent from '@/app/components/Pagination'
 import { HomePageArticle } from '../../../../../types/types'
-import ClientDebugger from '@/app/Clientdebugger'
 
 interface PageProps {
 	params: { page: string }
