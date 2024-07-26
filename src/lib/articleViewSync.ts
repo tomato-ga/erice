@@ -1,3 +1,5 @@
+// /Volumes/SSD_1TB/erice2/erice/src/lib/articleViewSync.ts
+
 import Dexie, { Table } from 'dexie'
 import { getUserId } from './dataSync'
 

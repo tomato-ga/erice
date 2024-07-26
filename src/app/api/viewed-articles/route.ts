@@ -1,23 +1,18 @@
-// /Volumes/SSD_1TB/erice/src/app/api/viewed-articles/route.ts
-
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
 	const API_KEY = process.env.D1_API_KEY
 	const WORKER_URL = process.env.USER_ACTION_ARTICLE_WORKER_URL
 
-	if (!API_KEY) {
-		throw new Error('D1_API_KEY is not set in the environment variables')
+	if (!API_KEY || !WORKER_URL) {
+		console.error('必要な環境変数が設定されていません')
+		process.exit(1)
 	}
 
-	if (!WORKER_URL) {
-		throw new Error('USER_ACTION_ARTICLE_WORKER_URL is not set in the environment variables')
-	}
 	try {
 		const body = await request.json()
 		console.log('API: 受信したデータ:', JSON.stringify(body, null, 2))
 
-		// データの形式を検証
 		if (!body.userId || !Array.isArray(body.viewedArticles)) {
 			return NextResponse.json({ error: '無効なデータ形式です' }, { status: 400 })
 		}
@@ -32,10 +27,10 @@ export async function POST(request: NextRequest) {
 		})
 
 		if (!response.ok) {
-			const errorData = await response.json().catch(() => null)
+			const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
 			console.error('Worker API error:', response.status, errorData)
 			return NextResponse.json(
-				{ error: 'Failed to sync viewed articles', details: errorData?.error || response.statusText },
+				{ error: 'Failed to sync viewed articles', details: errorData.error },
 				{ status: response.status }
 			)
 		}

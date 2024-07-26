@@ -43,23 +43,39 @@ class KeywordDatabaseManager {
 
 	async recordKeywordView(keywordId: number): Promise<{ process: boolean }> {
 		if (!this.db) {
+			// console.error('データベースが初期化されていません。initKeywordDatabase()を先に呼び出してください。')
 			throw new Error('データベースが初期化されていません。initKeywordDatabase()を先に呼び出してください。')
 		}
 
+		// console.log(`キーワード閲覧の記録を開始します。キーワードID: ${keywordId}`)
+
 		try {
 			const timestamp = new Date().toISOString()
-			await this.db.keywordViews.add({
-				keywordId,
-				timestamp
+			// console.log(`現在のタイムスタンプ: ${timestamp}`)
+
+			await this.db.transaction('rw', this.db.keywordViews, async () => {
+				const existingRecord = await this.db!.keywordViews.where('keywordId').equals(keywordId).first()
+
+				if (existingRecord) {
+					// console.log(`既存のレコードが見つかりました。更新します。ID: ${existingRecord.id}`)
+					await this.db!.keywordViews.update(existingRecord.id!, { timestamp })
+					// console.log(`レコードを更新しました。ID: ${existingRecord.id}, 新しいタイムスタンプ: ${timestamp}`)
+				} else {
+					// console.log(`新しいレコードを作成します。`)
+					const newRecordId = await this.db!.keywordViews.add({ keywordId, timestamp })
+					// console.log(
+					// 	`新しいレコードを作成しました。ID: ${newRecordId}, キーワードID: ${keywordId}, タイムスタンプ: ${timestamp}`
+					// )
+				}
 			})
-			// console.log(`キーワード閲覧を記録しました: ${keywordId}`)
+
+			// console.log(`キーワード閲覧の記録が完了しました。キーワードID: ${keywordId}`)
 			return { process: true }
 		} catch (error) {
-			console.error(`キーワード閲覧の記録に失敗しました:`, error)
-			// エラーの詳細をログに出力
+			// console.error(`キーワード閲覧の記録に失敗しました:`, error)
 			if (error instanceof Error) {
-				console.error(`エラーメッセージ: ${error.message}`)
-				console.error(`スタックトレース: ${error.stack}`)
+				// console.error(`エラーメッセージ: ${error.message}`)
+				// console.error(`スタックトレース: ${error.stack}`)
 			}
 			return { process: false }
 		}
