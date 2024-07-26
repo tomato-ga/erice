@@ -28,7 +28,7 @@ const ArticleLBasic: React.FC<{ article: KobetuPageArticle }> = ({ article }) =>
 			}
 		} catch (err) {
 			// console.error('記事閲覧の記録に失敗しました:', err)
-			// console.error('エラーの詳細:', JSON.stringify(err, null, 2))
+			console.error('エラーの詳細:', JSON.stringify(err, null, 2))
 		} finally {
 			// console.log(`記事閲覧の記録処理が完了しました: articleId=${article.id}`)
 		}
