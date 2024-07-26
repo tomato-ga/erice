@@ -30,7 +30,6 @@ import { getHomeArticles } from './components/fetch/GetHomeArticles'
 import ArticleCard from './components/Article/ArticleCard'
 import PaginationComponent from './components/Pagination'
 import { HomePageArticle } from '../../types/types'
-import ClientDebugger from './Clientdebugger'
 
 interface HomePageProps {
 	searchParams: { page?: string }

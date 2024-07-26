@@ -7,7 +7,6 @@ import Sidebar from './layoutcomponents/Sidebar'
 
 import { GoogleAnalytics } from '@next/third-parties/google'
 
-
 export const metadata: Metadata = {
 	title: {
 		default: 'エロコメスト',

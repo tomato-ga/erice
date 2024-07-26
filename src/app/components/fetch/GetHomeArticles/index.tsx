@@ -1,5 +1,3 @@
-import { HomePageApiResponse } from '../../../../../types/types'
-
 /**
  * ホームページの記事を取得する関数
  *
@@ -15,6 +13,28 @@ import { HomePageApiResponse } from '../../../../../types/types'
  * @example
  * const { articles, totalPages } = await getHomeArticles(1, 10);
  */
+
+// import { useQuery } from '@tanstack/react-query'
+import { HomePageApiResponse } from '../../../../../types/types'
+
+// const fetchHomeArticles = async (page: number, limit: number): Promise<HomePageApiResponse> => {
+// 	const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/toppage?page=${page}&limit=${limit}`
+// 	const res = await fetch(apiUrl, {
+// 		headers: { Authorization: `Bearer ${process.env.NEXT_PUBLIC_D1_API_KEY}` }
+// 	})
+// 	if (!res.ok) {
+// 		throw new Error('Failed to fetch articles')
+// 	}
+// 	return res.json()
+// }
+
+// export const useHomeArticles = (page: number, limit: number) => {
+// 	return useQuery({
+// 		queryKey: ['homeArticles', page, limit],
+// 		queryFn: () => fetchHomeArticles(page, limit),
+// 		staleTime: 60 * 1000 // 1分
+// 	})
+// }
 
 export async function getHomeArticles(page: number, limit: number): Promise<HomePageApiResponse> {
 	const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/toppage?page=${page}&limit=${limit}`
