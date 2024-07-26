@@ -29,11 +29,13 @@ export async function getKobetuArticle(postId: string): Promise<KobetuPageArticl
 	const apiUrl = `${process.env.APIROUTE_URL}/api/kobetupage?postId=${postId}`
 
 	try {
-		const res = await fetch(
-			apiUrl,
-			// { next: { revalidate: 10800 } }
-			{ next: { revalidate: false } }
-		)
+		const res = await fetch(apiUrl, {
+			next: {
+				revalidate: 3600, // 1時間キャッシュ
+				tags: [`article-${postId}`] // 記事ごとにタグを設定
+			}
+		})
+
 		if (!res.ok) {
 			const errorText = await res.text()
 			console.error(`API error (${res.status}):`, errorText)
