@@ -8,6 +8,7 @@ import ArticleLBasic from '@/app/components/Article/ArticleLinks'
 import ErrorBoundary from './Errorb'
 import KeywordRelatedArticles from '@/app/components/Article/ArticleLoaded/KeywordRelated'
 import { getKeywordArticle } from '@/app/components/fetch/GetOneKeywordArticles'
+import RecentlyViewedArticles from '@/app/components/Article/ArticleLoaded/RecentlyViewedArticle'
 
 const PopularArticle = dynamic(() => import('@/app/components/Article/PopularArticle'))
 
@@ -73,6 +74,9 @@ export default async function KobetuArticlePage({ params }: Props) {
 					</Suspense>
 					<Suspense fallback={<LoadingSpinner />}>
 						<KeywordRelatedArticles keywordarticledata={keywordArticles} />
+					</Suspense>
+					<Suspense fallback={<LoadingSpinner />}>
+						<RecentlyViewedArticles />
 					</Suspense>
 				</div>
 			</div>
