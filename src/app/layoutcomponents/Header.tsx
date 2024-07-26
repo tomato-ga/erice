@@ -61,10 +61,10 @@ const Header: React.FC = () => {
 							人気動画ランキング
 						</span>
 					</Link>
-					{/* <Link href="/" onClick={handleLinkClick}>
-						<span className="px-2 py-1 rounded-md cursor-pointer font-semibold hover:bg-gray-200">人気動画</span>
+					<Link href="/rireki" onClick={handleLinkClick}>
+						<span className="px-2 py-1 text-slate-700 rounded-md cursor-pointer font-semibold">最近見た動画</span>
 					</Link>
-					<Link href="/" onClick={handleLinkClick}>
+					{/*<Link href="/" onClick={handleLinkClick}>
 						<span className="px-2 py-1 rounded-md cursor-pointer font-semibold hover:bg-gray-200">お気に入り</span>
 					</Link>
 					<Link href="/" onClick={handleLinkClick}>

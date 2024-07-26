@@ -44,6 +44,15 @@ export interface PopularArticlesResponse {
 	}
 }
 
+export interface RirekiArticle extends BaseArticle {
+	timestamp: number
+}
+
+export interface RirekiArticleResponse {
+	success: string
+	history: RirekiArticle[]
+}
+
 export interface HomePageApiResponse extends ApiResponse<HomePageArticle> {
 	totalPages: number
 }
