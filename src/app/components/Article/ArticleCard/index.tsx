@@ -27,6 +27,7 @@ import React from 'react'
 import Link from 'next/link'
 import { HomePageArticle, RelatedArticle } from '../../../../../types/types'
 import { handlePageClickCount } from '../../handleclick'
+import FavoriteButton from '../../Fav/FavButton'
 
 interface ArticleCardProps {
 	article: HomePageArticle | RelatedArticle
@@ -55,6 +56,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSmallThumbnail = f
 			data-umami-event="Article Click"
 			data-umami-event-article-id={article.id}
 			data-umami-event-article-title={article.title}
+			className="relative"
 		>
 			<Link href={`/post/${article.id}`} className="block h-full" prefetch={true}>
 				<div
@@ -73,7 +75,10 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSmallThumbnail = f
 					</div>
 					<div className={`p-4 flex-grow ${isSmallThumbnail ? 'w-2/3' : ''}`}>
 						<h2 className={`mb-2 line-clamp-2 text-lg`}>{article.title}</h2>
-						<p className="text-sm text-gray-600">{new Date(article.created_at).toLocaleDateString()}</p>
+						<div className="flex justify-between items-center">
+							<p className="text-sm text-gray-600">{new Date(article.created_at).toLocaleDateString()}</p>
+							<FavoriteButton articleId={article.id} />
+						</div>
 					</div>
 				</div>
 			</Link>
