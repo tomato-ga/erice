@@ -11,6 +11,7 @@ import ArticleLBasic from '@/app/components/Article/ArticleLinks'
 
 const PopularArticle = dynamic(() => import('@/app/components/Article/PopularArticle'))
 const KeywordRelatedArticles = dynamic(() => import('@/app/components/Article/ArticleLoaded/KeywordRelated'))
+const RecentlyViewedArticles = dynamic(() => import('@/app/components/Article/ArticleLoaded/RecentlyViewedArticle'))
 
 interface Props {
 	params: { postId: string }
@@ -77,6 +78,9 @@ export default async function KobetuArticlePage({ params }: Props) {
 				</Suspense>
 				<Suspense fallback={<LoadingSpinner />}>
 					<KeywordRelatedArticles keywordarticledata={keywordArticles} />
+				</Suspense>
+				<Suspense fallback={<LoadingSpinner />}>
+					<RecentlyViewedArticles />
 				</Suspense>
 			</div>
 		</div>

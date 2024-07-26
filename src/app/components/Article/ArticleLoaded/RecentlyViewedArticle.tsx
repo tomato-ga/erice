@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 import { RelatedArticle } from '../../../../../types/types'
 import ArticleCard from '../ArticleCard'
 
-export const RecentlyViewedArticles: React.FC = () => {
+const RecentlyViewedArticles: React.FC = () => {
 	const { articles, isLoading, error, fetchArticles } = useArticleViewStore()
 
 	useEffect(() => {
@@ -34,3 +34,5 @@ export const RecentlyViewedArticles: React.FC = () => {
 		</>
 	)
 }
+
+export default RecentlyViewedArticles
