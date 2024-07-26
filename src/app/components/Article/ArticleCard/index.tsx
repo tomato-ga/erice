@@ -47,11 +47,6 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSmallThumbnail = f
 
 		// クリックカウントの処理
 		handlePageClickCount(article.id).catch((error) => console.error('Failed to record click:', error))
-
-		// 短いタイムアウト後にナビゲーションを実行
-		setTimeout(() => {
-			window.location.href = `/post/${article.id}`
-		}, 100)
 	}
 
 	return (

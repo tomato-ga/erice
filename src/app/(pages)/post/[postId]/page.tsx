@@ -6,6 +6,8 @@ import LoadingSpinner from '@/app/components/Article/ArticleContent/loadingspinn
 import { getPopularArticles } from '@/app/components/fetch/GetPopularArticles'
 import ArticleLBasic from '@/app/components/Article/ArticleLinks'
 import ErrorBoundary from './Errorb'
+import KeywordRelatedArticles from '@/app/components/Article/ArticleLoaded/KeywordRelated'
+import { getKeywordArticle } from '@/app/components/fetch/GetOneKeywordArticles'
 
 const PopularArticle = dynamic(() => import('@/app/components/Article/PopularArticle'))
 
@@ -59,6 +61,8 @@ export default async function KobetuArticlePage({ params }: Props) {
 		)
 	}
 
+	const keywordArticles = await getKeywordArticle(article.keywords[0].keyword)
+
 	return (
 		<ErrorBoundary>
 			<div className="bg-white min-h-screen">
@@ -66,6 +70,9 @@ export default async function KobetuArticlePage({ params }: Props) {
 					<ArticleLBasic article={article} />
 					<Suspense fallback={<LoadingSpinner />}>
 						<PopularArticle articles={popularArticlesData.data.articles} />
+					</Suspense>
+					<Suspense fallback={<LoadingSpinner />}>
+						<KeywordRelatedArticles keywordarticledata={keywordArticles} />
 					</Suspense>
 				</div>
 			</div>
