@@ -8,6 +8,7 @@ import { KobetuPageArticle } from '../../../../../types/types'
 import { getPopularArticles } from '@/app/components/fetch/GetPopularArticles'
 import { getKeywordArticle } from '@/app/components/fetch/GetOneKeywordArticles'
 import ArticleLBasic from '@/app/components/Article/ArticleLinks'
+import ErrorBoundary from './Errorb'
 
 const PopularArticle = dynamic(() => import('@/app/components/Article/PopularArticle'))
 const KeywordRelatedArticles = dynamic(() => import('@/app/components/Article/ArticleLoaded/KeywordRelated'))
@@ -70,19 +71,21 @@ export default async function KobetuArticlePage({ params }: Props) {
 		article.keywords && article.keywords.length > 0 ? await getKeywordArticle(article.keywords[0].keyword) : []
 
 	return (
-		<div className="bg-white min-h-screen">
-			<div className="container mx-auto px-2 py-6">
-				<ArticleLBasic article={article} />
-				<Suspense fallback={<LoadingSpinner />}>
-					<PopularArticle articles={popularArticlesData.data.articles} />
-				</Suspense>
-				{/* MEMO いったんデバッグで除外 <Suspense fallback={<LoadingSpinner />}>
-					<KeywordRelatedArticles keywordarticledata={keywordArticles} />
-				</Suspense>
-				 <Suspense fallback={<LoadingSpinner />}>
-					<RecentlyViewedArticles />
-				</Suspense> */}
+		<ErrorBoundary>
+			<div className="bg-white min-h-screen">
+				<div className="container mx-auto px-2 py-6">
+					<ArticleLBasic article={article} />
+					<Suspense fallback={<LoadingSpinner />}>
+						<PopularArticle articles={popularArticlesData.data.articles} />
+					</Suspense>
+					<Suspense fallback={<LoadingSpinner />}>
+						<KeywordRelatedArticles keywordarticledata={keywordArticles} />
+					</Suspense>
+					{/* <Suspense fallback={<LoadingSpinner />}>
+						<RecentlyViewedArticles />
+					</Suspense> */}
+				</div>
 			</div>
-		</div>
+		</ErrorBoundary>
 	)
 }

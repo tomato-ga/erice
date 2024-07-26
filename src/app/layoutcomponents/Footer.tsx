@@ -19,7 +19,7 @@ const Footer = () => {
 									ホーム
 								</Link>
 							</li>
-							<li>
+							{/* <li>
 								<Link href="/about" className="hover:text-cyan-400">
 									About
 								</Link>
@@ -33,7 +33,7 @@ const Footer = () => {
 								<Link href="/terms" className="hover:text-cyan-400">
 									利用規約
 								</Link>
-							</li>
+							</li> */}
 						</ul>
 					</div>
 					<div>

@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
 
 		const data: KeywordArticleApiResponse = await response.json()
 
-		console.log('API Route - Received data from worker:', JSON.stringify(data, null, 2)) // デバッグログ
+		// console.log('API Route - Received data from worker:', JSON.stringify(data, null, 2)) // デバッグログ
 
 		return NextResponse.json(data)
 	} catch (error) {
