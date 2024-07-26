@@ -30,10 +30,7 @@ export async function getKobetuArticle(postId: string): Promise<KobetuPageArticl
 
 	try {
 		const res = await fetch(apiUrl, {
-			next: {
-				revalidate: 3600, // 1時間キャッシュ
-				tags: [`article-${postId}`] // 記事ごとにタグを設定
-			}
+			cache: 'force-cache' // 永続的にキャッシュ
 		})
 
 		if (!res.ok) {
