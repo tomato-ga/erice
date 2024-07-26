@@ -20,8 +20,6 @@ export default function ClientRirekiComp() {
 				}
 				const rirekiArticles: RirekiArticleResponse = await response.json()
 
-				console.log('rirekiArticles: ', rirekiArticles)
-
 				// timestampの降順でソート
 				const sorted = rirekiArticles.history.sort((a, b) => b.timestamp - a.timestamp)
 				setSortedArticles(sorted)

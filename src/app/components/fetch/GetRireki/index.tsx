@@ -32,8 +32,6 @@ export const getRirekiArticles = cache(async (userId: string): Promise<RirekiArt
 
 		const data: RirekiArticleResponse = await res.json()
 
-		console.log('Rireki data: ', data)
-
 		return data
 	} catch (error) {
 		console.error('履歴の取得中にエラーが発生しました:', error)
