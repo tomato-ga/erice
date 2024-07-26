@@ -76,12 +76,12 @@ export default async function KobetuArticlePage({ params }: Props) {
 				<Suspense fallback={<LoadingSpinner />}>
 					<PopularArticle articles={popularArticlesData.data.articles} />
 				</Suspense>
-				<Suspense fallback={<LoadingSpinner />}>
+				{/* MEMO いったんデバッグで除外 <Suspense fallback={<LoadingSpinner />}>
 					<KeywordRelatedArticles keywordarticledata={keywordArticles} />
 				</Suspense>
-				<Suspense fallback={<LoadingSpinner />}>
+				 <Suspense fallback={<LoadingSpinner />}>
 					<RecentlyViewedArticles />
-				</Suspense>
+				</Suspense> */}
 			</div>
 		</div>
 	)
