@@ -10,7 +10,6 @@ interface ErrorBoundaryState {
 	hasError: boolean
 	error: Error | null
 	errorInfo: ErrorInfo | null
-	navigationError: string | null
 }
 
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
@@ -19,32 +18,8 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 		this.state = {
 			hasError: false,
 			error: null,
-			errorInfo: null,
-			navigationError: null
+			errorInfo: null
 		}
-	}
-
-	componentDidMount() {
-		// 現在のページの履歴を追加
-		window.history.pushState(null, '', window.location.href)
-
-		// popstateイベントリスナーを追加
-		window.addEventListener('popstate', this.handlePopState)
-	}
-
-	componentWillUnmount() {
-		// イベントリスナーを削除
-		window.removeEventListener('popstate', this.handlePopState)
-	}
-
-	handlePopState = () => {
-		// ブラウザバックが試行されたときの処理
-		const navigationError = 'ブラウザバックが試行されましたが、処理できませんでした。'
-		console.error(navigationError)
-		this.setState({ navigationError })
-
-		// 現在のページの履歴を再度追加して、ブラウザバックを防止
-		window.history.pushState(null, '', window.location.href)
 	}
 
 	static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
@@ -60,11 +35,10 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 	}
 
 	render() {
-		if (this.state.hasError || this.state.navigationError) {
+		if (this.state.hasError) {
 			return (
 				<div>
 					<h1>エラーが発生しました</h1>
-					{this.state.navigationError && <p>ナビゲーションエラー: {this.state.navigationError}</p>}
 					{this.state.error && (
 						<details style={{ whiteSpace: 'pre-wrap' }}>
 							<summary>エラーの詳細</summary>
