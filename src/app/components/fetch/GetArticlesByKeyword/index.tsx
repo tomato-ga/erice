@@ -8,7 +8,6 @@ export async function getArticlesByKeyword(
 	const apiUrl = `${process.env.PAGINATION_KEYWORD_WORKER_URL}/articles?keyword=${encodeURIComponent(
 		keyword
 	)}&page=${page}&limit=${limit}`
-	console.log('API URL:', apiUrl) // 確認用ログ
 
 	try {
 		const res = await fetch(apiUrl, {

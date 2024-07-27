@@ -2,8 +2,6 @@ import { RirekiArticleResponse } from '../../../../../types/types'
 import { cache } from 'react'
 
 export const getRirekiArticles = cache(async (userId: string): Promise<RirekiArticleResponse> => {
-	console.log('userId:', userId)
-
 	const API_KEY = process.env.D1_API_KEY
 	const WORKER_URL = process.env.USER_HISTORY_WORKER_URL
 

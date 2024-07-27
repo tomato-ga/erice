@@ -8,5 +8,4 @@ export const handleUmamiClick = (type: string, article: HomePageArticle | Relate
 			article_title: article.title
 		})
 	}
-	console.log('handleUmamiClickクリックしました', type + 'click')
 }
