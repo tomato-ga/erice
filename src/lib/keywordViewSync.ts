@@ -40,8 +40,16 @@ class KeywordDatabaseManager {
 		try {
 			this.db = new KeywordViewDatabase()
 
-			await this.db.open()
-			console.log('データベースの初期化が完了しました。')
+			const connection = await this.db.open()
+			const currentVersion = connection.verno
+
+			if (currentVersion === 1) {
+				console.log('新しいデータベースを作成しました。')
+			} else if (currentVersion < 2) {
+				console.log(`データベースをバージョン${currentVersion}から2にアップグレードしました。`)
+			} else {
+				console.log('既存のデータベース（最新バージョン）を開きました。')
+			}
 		} catch (error) {
 			console.error('キーワードデータベースの初期化に失敗しました:', error)
 			throw error
