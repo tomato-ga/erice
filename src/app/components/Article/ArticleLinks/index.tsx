@@ -8,6 +8,7 @@ import { handleEXClickCount } from '../../handleexclick'
 import { initDatabase, recordArticleView, syncArticleKV } from '../../../../lib/articleViewSync'
 import { initKeywordDatabase, recordKeywordView, syncKeywordKV } from '../../../../lib/keywordViewSync'
 import { BreadcrumbWithCustomSeparator } from '../../Breadcrumb'
+import { handleUmamiClick } from '@/lib/umamiTracking'
 
 const ArticleLBasic: React.FC<{ article: KobetuPageArticle }> = ({ article }) => {
 	const recordArticles = useCallback(async () => {
@@ -50,6 +51,7 @@ const ArticleLBasic: React.FC<{ article: KobetuPageArticle }> = ({ article }) =>
 	const handleClick = async () => {
 		try {
 			await handleEXClickCount(article.id)
+			handleUmamiClick('Kobetu-EXclick', article)
 		} catch (err) {
 			// console.error('クリックの記録に失敗しました:', err)
 		}
