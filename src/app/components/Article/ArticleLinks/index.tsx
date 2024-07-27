@@ -7,6 +7,7 @@ import ArticleKeywords from '../ArticleKeywords'
 import { handleEXClickCount } from '../../handleexclick'
 import { initDatabase, recordArticleView, syncArticleKV } from '../../../../lib/articleViewSync'
 import { initKeywordDatabase, recordKeywordView, syncKeywordKV } from '../../../../lib/keywordViewSync'
+import { BreadcrumbWithCustomSeparator } from '../../Breadcrumb'
 
 const ArticleLBasic: React.FC<{ article: KobetuPageArticle }> = ({ article }) => {
 	const recordArticles = useCallback(async () => {
@@ -53,13 +54,23 @@ const ArticleLBasic: React.FC<{ article: KobetuPageArticle }> = ({ article }) =>
 			// console.error('クリックの記録に失敗しました:', err)
 		}
 	}
+
+	const breadcrumbItems = [
+		{ href: '/', label: 'ホーム' },
+		{ href: `/tag/${article.keywords[0].keyword}`, label: article.keywords[0].keyword },
+		{ label: article.title }
+	]
+
 	return (
 		<article className="flex flex-col space-y-4">
-			<Link href={article.link} target="_blank" rel="noopener" onClick={handleClick}>
-				<div className="relative">
+			<div className="bg-white p-2">
+				<BreadcrumbWithCustomSeparator items={breadcrumbItems} />
+			</div>
+			<div className="relative">
+				<Link href={article.link} target="_blank" rel="noopener" onClick={handleClick}>
 					<img src={article.image_url} alt={article.title} className="w-full h-auto rounded-lg" />
-				</div>
-			</Link>
+				</Link>
+			</div>
 
 			<div className="flex items-center space-x-4">
 				<img src={article.image_url || '/default-avatar.jpg'} alt={article.title} className="w-12 h-12 rounded-full" />
