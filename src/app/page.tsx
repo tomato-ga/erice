@@ -24,8 +24,6 @@
  */
 
 import { Suspense } from 'react'
-import Link from 'next/link'
-import { headers } from 'next/headers'
 import { getHomeArticles } from './components/fetch/GetHomeArticles'
 import ArticleCard from './components/Article/ArticleCard'
 import PaginationComponent from './components/Pagination'
@@ -40,18 +38,10 @@ const DEFAULT_LIMIT = 30
 
 export default async function HomePage({ searchParams }: HomePageProps) {
 	const currentPage = parseInt(searchParams.page || `${DEFAULT_PAGE}`, 10)
-	const headersList = headers()
-	const userAgent = headersList.get('user-agent')
-	const referer = headersList.get('referer')
-
-	console.log(`[Server] Rendering HomePage. Page: ${currentPage}, UserAgent: ${userAgent}, Referer: ${referer}`)
 
 	let data: { articles: HomePageArticle[]; totalPages: number }
-	const startTime = Date.now()
 	try {
 		data = await getHomeArticles(currentPage, DEFAULT_LIMIT)
-		const endTime = Date.now()
-		console.log(`[Server] Data fetched. Time taken: ${endTime - startTime}ms. Articles count: ${data.articles.length}`)
 	} catch (error) {
 		console.error('[Server] Failed to fetch articles:', error)
 		return <ErrorDisplay message="記事の取得に失敗しました。後でもう一度お試しください。" />
@@ -77,14 +67,6 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 	)
 }
 
-function LoadingSpinner() {
-	return (
-		<div className="flex justify-center items-center h-64" aria-label="読み込み中">
-			<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
-		</div>
-	)
-}
-
 function ErrorDisplay({ message }: { message: string }) {
 	return (
 		<div className="text-center text-red-600 py-8" role="alert">
@@ -92,5 +74,3 @@ function ErrorDisplay({ message }: { message: string }) {
 		</div>
 	)
 }
-
-// export const runtime = 'edge'
