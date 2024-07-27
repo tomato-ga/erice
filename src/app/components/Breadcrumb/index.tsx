@@ -28,7 +28,7 @@ export function BreadcrumbWithCustomSeparator({ items }: BreadcrumbProps) {
 					<React.Fragment key={index}>
 						<BreadcrumbItem>
 							{item.href ? (
-								<BreadcrumbLink>
+								<BreadcrumbLink asChild>
 									<Link href={item.href}>{item.label}</Link>
 								</BreadcrumbLink>
 							) : (

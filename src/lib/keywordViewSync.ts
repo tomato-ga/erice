@@ -44,11 +44,11 @@ class KeywordDatabaseManager {
 			const currentVersion = connection.verno
 
 			if (currentVersion === 1) {
-				console.log('新しいデータベースを作成しました。')
+				// console.log('新しいデータベースを作成しました。')
 			} else if (currentVersion < 2) {
-				console.log(`データベースをバージョン${currentVersion}から2にアップグレードしました。`)
+				// console.log(`データベースをバージョン${currentVersion}から2にアップグレードしました。`)
 			} else {
-				console.log('既存のデータベース（最新バージョン）を開きました。')
+				// console.log('既存のデータベース（最新バージョン）を開きました。')
 			}
 		} catch (error) {
 			console.error('キーワードデータベースの初期化に失敗しました:', error)
