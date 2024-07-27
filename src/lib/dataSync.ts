@@ -6,6 +6,48 @@ const USER_ID_COOKIE = 'uid'
 const COOKIE_EXPIRY = 365 * 3
 const ENCRYPTION_KEY = process.env.NEXT_PUBLIC_ENCRYPTION_KEY
 
+/**
+ * ユーザーIDを取得または生成する非同期関数
+ * 
+ * この関数は以下の動作を行います：
+ * 1. サーバーサイドで実行された場合、一時的なIDを返します。
+ * 2. ENCRYPTION_KEYが設定されていない場合、新しいUUIDv7を生成して返します。
+ * 3. クッキーに暗号化されたユーザーIDが存在する場合、それを復号して返します。
+ * 4. クッキーにユーザーIDが存在しない場合、新しいUUIDv7を生成し、暗号化してクッキーに保存します。
+ * 
+ * 使用方法：
+ * この関数はクライアントサイドコンポーネントで使用することを想定しています。
+ * Reactコンポーネント内でuseEffect()フックと組み合わせて使用するのが一般的です。
+ * 
+ * 例：
+ * ```typescript
+ * import { useEffect, useState } from 'react'
+ * import { getUserId } from '@/lib/dataSync'
+ * 
+ * function MyComponent() {
+ *   const [userId, setUserId] = useState<string | null>(null)
+ * 
+ *   useEffect(() => {
+ *     const fetchUserId = async () => {
+ *       const id = await getUserId()
+ *       setUserId(id)
+ *     }
+ *     fetchUserId()
+ *   }, [])
+ * 
+ *   if (!userId) return <div>Loading...</div>
+ * 
+ *   return <div>User ID: {userId}</div>
+ * }
+ * ```
+ * 
+ * 注意：
+ * - この関数はクライアントサイドでのみ完全に機能します。サーバーサイドレンダリング時には一時的なIDを返します。
+ * - NEXT_PUBLIC_ENCRYPTION_KEYが環境変数として設定されていることを確認してください。
+ * 
+ * @returns {Promise<string>} ユーザーID
+ * @throws {Error} 暗号化や復号に失敗した場合
+ */
 export const getUserId = async (): Promise<string> => {
 	if (typeof window === 'undefined') {
 		// console.log('サーバーサイドでgetUserIdが呼び出されました。一時的なIDを返します。')

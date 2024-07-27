@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useFavoriteStore } from '../stores/favStore'
+import { getUserId } from '@/lib/dataSync'
 
 interface UseFavoriteResult {
 	isFavorite: boolean
@@ -24,13 +25,19 @@ export const useFavorite = (articleId: number): UseFavoriteResult => {
 		setIsLoading(true)
 		setError(null)
 		try {
+			const userId = await getUserId()
 			const action = isFavorite ? 'remove' : 'add'
-			const response = await fetch('/api/favorite', {
+			const response = await fetch('/api/save-fav', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({ articleId, action })
+				body: JSON.stringify({
+					userId,
+					articleId,
+					action,
+					timestamp: Date.now()
+				})
 			})
 
 			if (!response.ok) {
