@@ -3,6 +3,7 @@
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react'
 import { formatDate } from '@/app/utils/postUtils'
 import Link from 'next/link'
+import { handleUmamiClick } from '@/lib/umamiTracking'
 
 export interface PopularArticle {
 	id: number
@@ -132,6 +133,7 @@ const ArticleCard: React.FC<{ article: PopularArticle; rank: number }> = React.m
 			href={`/post/${article.id}`}
 			className="block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
 			aria-labelledby={`article-${article.id}-title`}
+			onClick={() => handleUmamiClick('Kobetu-PopularArticle', 'Article', article)}
 		>
 			<div
 				className={`relative border-2 ${rankBorderColor} rounded-lg overflow-hidden shadow-lg transition-shadow duration-300 hover:shadow-xl`}
