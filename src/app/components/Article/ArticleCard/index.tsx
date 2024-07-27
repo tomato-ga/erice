@@ -33,7 +33,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSmallThumbnail = f
 						<h2 className={`mb-2 line-clamp-2 text-lg`}>{article.title}</h2>
 						<div className="flex justify-between items-center">
 							<p className="text-sm text-gray-600">{formatDate(article.created_at)}</p>
-							<FavoriteButton articleId={article.id} />
+							{/* <FavoriteButton articleId={article.id} /> */}
 						</div>
 					</div>
 				</div>
