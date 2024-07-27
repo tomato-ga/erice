@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 		description: 'エロコメストは無料エロ動画を思う存分楽しめるサイトです。',
 		images: [
 			{
-				url: 'https://keyboard-sound.net/opengraph-image.jpg',
+				url: 'opengraph-image.jpg',
 				width: 1280,
 				height: 720,
 				alt: 'Open Graph Image'
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 		description: 'エロコメストは無料エロ動画を思う存分楽しめるサイトです。',
 		images: [
 			{
-				url: 'https://keyboard-sound.net/twitter-image.jpg',
+				url: 'twitter-image.jpg',
 				width: 1280,
 				height: 720,
 				alt: 'Twitter Image'
