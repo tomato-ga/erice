@@ -1,0 +1,74 @@
+User-Agent: *
+Disallow: /api
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: Yandex
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-Agent: bingbot
+Crawl-delay: 30
+
+User-agent: baiduspider
+Crawl-delay: 30
+
+User-agent: PetalBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: AhrefsBot
+disallow: /
+
+User-agent: Sogou web
+disallow: /
+
+User-agent: dotbot
+disallow: /
+
+User-agent: Exabot
+disallow: /
+
+User-agent: Steeler
+Disallow: /
+
+User-Agent: 360Spider
+Disallow: /
+
+User-agent: YandexBot
+Disallow: /
+
+User-agent: TurnitinBot
+Disallow: /
+
+User-agent: QuerySeekerSpider
+Disallow: /
+
+User-agent: HaosouSpider
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
