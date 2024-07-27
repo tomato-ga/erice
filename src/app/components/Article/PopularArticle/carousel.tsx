@@ -18,48 +18,42 @@ interface CarouselProps {
 	articles: PopularArticle[]
 }
 
-const ITEMS_PER_PAGE = 3
+const DESKTOP_ITEMS_PER_PAGE = 3
+const MOBILE_ITEMS_PER_PAGE = 1.2
 const MOBILE_BREAKPOINT = 768
 
-const useCarousel = (itemCount: number) => {
-	const [activeIndex, setActiveIndex] = useState(0)
+// debounce関数の実装
+const debounce = <F extends (...args: any[]) => any>(func: F, wait: number) => {
+	let timeout: ReturnType<typeof setTimeout> | null = null
+	return (...args: Parameters<F>) => {
+		if (timeout !== null) {
+			clearTimeout(timeout)
+		}
+		timeout = setTimeout(() => func(...args), wait)
+	}
+}
+
+const useCarousel = (articles: PopularArticle[]) => {
 	const [showLeftArrow, setShowLeftArrow] = useState(false)
 	const [showRightArrow, setShowRightArrow] = useState(true)
 	const [isMobile, setIsMobile] = useState(false)
 	const carouselRef = useRef<HTMLDivElement>(null)
-
-	const totalPages = useMemo(() => {
-		if (isMobile) {
-			return itemCount
-		} else {
-			return Math.floor(itemCount / ITEMS_PER_PAGE)
-		}
-	}, [itemCount, isMobile])
-
-	const scrollToIndex = useCallback((index: number) => {
-		if (carouselRef.current) {
-			const scrollAmount = carouselRef.current.clientWidth * index
-			carouselRef.current.scrollTo({
-				left: scrollAmount,
-				behavior: 'smooth'
-			})
-		}
-	}, [])
 
 	const handleScroll = useCallback(() => {
 		if (carouselRef.current) {
 			const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current
 			setShowLeftArrow(scrollLeft > 0)
 			setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 1)
-			const newIndex = Math.floor(scrollLeft / clientWidth)
-			setActiveIndex(newIndex)
 		}
 	}, [])
+
+	const debouncedHandleScroll = useMemo(() => debounce(handleScroll, 50), [handleScroll])
 
 	const scrollCarousel = useCallback(
 		(direction: 'left' | 'right') => {
 			if (carouselRef.current) {
-				const scrollAmount = carouselRef.current.clientWidth * (isMobile ? 1 : ITEMS_PER_PAGE)
+				const itemsPerPage = isMobile ? MOBILE_ITEMS_PER_PAGE : DESKTOP_ITEMS_PER_PAGE
+				const scrollAmount = carouselRef.current.clientWidth / itemsPerPage
 				carouselRef.current.scrollBy({
 					left: direction === 'left' ? -scrollAmount : scrollAmount,
 					behavior: 'smooth'
@@ -71,7 +65,8 @@ const useCarousel = (itemCount: number) => {
 
 	useEffect(() => {
 		const handleResize = () => {
-			setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+			const newIsMobile = window.innerWidth < MOBILE_BREAKPOINT
+			setIsMobile(newIsMobile)
 		}
 		handleResize()
 		window.addEventListener('resize', handleResize)
@@ -81,37 +76,18 @@ const useCarousel = (itemCount: number) => {
 	useEffect(() => {
 		const currentRef = carouselRef.current
 		if (currentRef) {
-			const observer = new IntersectionObserver(
-				(entries) => {
-					entries.forEach((entry) => {
-						if (entry.isIntersecting) {
-							const index = Array.from(currentRef.children).indexOf(entry.target as HTMLElement)
-							setActiveIndex(Math.floor(index / ITEMS_PER_PAGE))
-						}
-					})
-				},
-				{ root: currentRef, threshold: 0.5 }
-			)
-
-			Array.from(currentRef.children).forEach((child) => observer.observe(child))
-
-			return () => observer.disconnect()
+			currentRef.addEventListener('scroll', debouncedHandleScroll)
+			return () => {
+				currentRef.removeEventListener('scroll', debouncedHandleScroll)
+			}
 		}
-	}, [itemCount])
-
-	useEffect(() => {
-		scrollToIndex(0)
-	}, [scrollToIndex])
+	}, [debouncedHandleScroll])
 
 	return {
-		activeIndex,
 		showLeftArrow,
 		showRightArrow,
 		carouselRef,
-		scrollToIndex,
-		handleScroll,
 		scrollCarousel,
-		totalPages,
 		isMobile
 	}
 }
@@ -190,17 +166,7 @@ const ArticleCard: React.FC<{ article: PopularArticle; rank: number }> = React.m
 ArticleCard.displayName = 'ArticleCard'
 
 const Carousel: React.FC<CarouselProps> = ({ articles }) => {
-	const {
-		activeIndex,
-		showLeftArrow,
-		showRightArrow,
-		carouselRef,
-		scrollToIndex,
-		handleScroll,
-		scrollCarousel,
-		totalPages,
-		isMobile
-	} = useCarousel(articles.length)
+	const { showLeftArrow, showRightArrow, carouselRef, scrollCarousel, isMobile } = useCarousel(articles)
 
 	const handleKeyDown = (e: React.KeyboardEvent) => {
 		switch (e.key) {
@@ -219,33 +185,18 @@ const Carousel: React.FC<CarouselProps> = ({ articles }) => {
 				ref={carouselRef}
 				className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide cursor-grab active:cursor-grabbing"
 				style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
-				onScroll={handleScroll}
 				role="region"
 				aria-label="人気記事カルーセル"
 				tabIndex={0}
 			>
 				{articles.map((article, index) => (
-					<div key={article.id} className={`flex-shrink-0 snap-start px-2 ${isMobile ? 'w-full' : 'w-1/3'}`}>
+					<div key={article.id} className={`flex-shrink-0 snap-start px-2 ${isMobile ? 'w-[83.33%]' : 'w-1/3'}`}>
 						<ArticleCard article={article} rank={index + 1} />
 					</div>
 				))}
 			</div>
 			<ArrowButton direction="left" onClick={() => scrollCarousel('left')} show={showLeftArrow} />
 			<ArrowButton direction="right" onClick={() => scrollCarousel('right')} show={showRightArrow} />
-			<div className="absolute bottom-0 left-0 right-0 flex justify-center items-center space-x-2 py-2">
-				{Array.from({ length: totalPages }).map((_, index) => (
-					<button
-						key={index}
-						onClick={() => scrollToIndex(index)}
-						className={`w-2 h-2 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-							index === activeIndex ? 'bg-blue-500 w-4' : 'bg-gray-300'
-						}`}
-						aria-label={`${index + 1}ページ目へ`}
-						aria-current={index === activeIndex ? 'true' : 'false'}
-					/>
-				))}
-			</div>
-			<div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gray-300 to-transparent opacity-50" />
 		</div>
 	)
 }
