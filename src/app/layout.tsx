@@ -13,6 +13,8 @@ export const metadata: Metadata = {
 		template: '%s | エロコメスト'
 	},
 	description: 'エロコメストは無料エロ動画を思う存分楽しめるサイトです。',
+	robots: 'index,follow',
+	referrer: 'origin-when-cross-origin',
 	openGraph: {
 		title: {
 			default: 'エロコメスト',
