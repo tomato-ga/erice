@@ -21,7 +21,7 @@ const KeywordRelatedArticles: React.FC<KeywordRelatedArticlesProps> = ({ keyword
 				<ul>
 					{keywordarticledata.map((keyarti: KeywordArticle) => (
 						<li key={keyarti.id} className="p-1.5">
-							<ArticleCard article={keyarti} isSmallThumbnail={true} />
+							<ArticleCard article={keyarti} isSmallThumbnail={true} source='Kobetu-Related' />
 						</li>
 					))}
 				</ul>

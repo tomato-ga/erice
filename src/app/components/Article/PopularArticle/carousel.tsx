@@ -133,7 +133,7 @@ const ArticleCard: React.FC<{ article: PopularArticle; rank: number }> = React.m
 			href={`/post/${article.id}`}
 			className="block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
 			aria-labelledby={`article-${article.id}-title`}
-			onClick={() => handleUmamiClick('Kobetu-PopularArticle', 'Article', article)}
+			onClick={() => handleUmamiClick('Kobetu-Popular', article)}
 		>
 			<div
 				className={`relative border-2 ${rankBorderColor} rounded-lg overflow-hidden shadow-lg transition-shadow duration-300 hover:shadow-xl`}

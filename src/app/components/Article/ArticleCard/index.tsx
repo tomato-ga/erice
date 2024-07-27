@@ -12,14 +12,15 @@ const FavoriteButton = dynamic(() => import('../../Fav/FavButton'), { ssr: false
 interface ArticleCardProps {
 	article: HomePageArticle | RelatedArticle
 	isSmallThumbnail?: boolean
+	source?: 'Top' | 'Pagination' | 'Popular' | 'Kobetu-Recently' | 'TagPagination' | 'Kobetu-Related'
 }
 
-const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSmallThumbnail = false }) => {
+const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSmallThumbnail = false, source = '' }) => {
 	const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.preventDefault()
 		handlePageClickCount(article.id).catch((error) => console.error('Failed to record click:', error))
 
-		handleUmamiClick('ArticleCard', 'Article', article)
+		handleUmamiClick(source, article)
 	}
 
 	return (

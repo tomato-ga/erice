@@ -113,7 +113,7 @@ export default async function TagPage({ params }: PageProps) {
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
 					{data.articles.map((article) => (
 						<div key={article.id} className="aspect-w-16 aspect-h-9">
-							<ArticleCard article={article} />
+							<ArticleCard article={article} source="TagPagination" />
 						</div>
 					))}
 				</div>

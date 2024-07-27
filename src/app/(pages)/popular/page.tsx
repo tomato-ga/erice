@@ -33,7 +33,7 @@ export default async function PopularArticlesPage() {
 				{rankedArticles.map((article) => (
 					<div key={article.id} className="relative">
 						{renderRanking(article.rank)}
-						<ArticleCard article={article} />
+						<ArticleCard article={article} source='Popular' />
 					</div>
 				))}
 			</div>

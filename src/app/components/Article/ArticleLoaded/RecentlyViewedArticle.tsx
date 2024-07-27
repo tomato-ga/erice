@@ -26,12 +26,8 @@ const RecentlyViewedArticles: React.FC = () => {
 			<div className="mt-1.5 p-0.5 rounded-md bg-gradient-to-b from-pink-100 to-pink-200">
 				<ul>
 					{articles.slice(0, 5).map((article: RelatedArticle) => (
-						<li
-							key={article.id}
-							className="p-1.5"
-							onClick={() => handleUmamiClick('Kobetu-RecentlyViewedArticle', 'Recently', article)}
-						>
-							<ArticleCard article={article} isSmallThumbnail={true} />
+						<li key={article.id} className="p-1.5">
+							<ArticleCard article={article} isSmallThumbnail={true} source="Kobetu-Recently" />
 						</li>
 					))}
 				</ul>
