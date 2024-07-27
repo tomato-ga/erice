@@ -6,9 +6,14 @@ class KeywordViewDatabase extends Dexie {
 
 	constructor() {
 		super('KeywordViewDatabase')
-		this.version(1).stores({
-			keywordViews: '++id, keywordId, timestamp'
-		})
+		this.version(2)
+			.stores({
+				keywordViews: '++id, &keywordId, timestamp'
+			})
+			.upgrade((tx) => {
+				console.log('データベースをバージョン2にアップグレードしています...')
+				// ここにアップグレード処理を追加
+			})
 	}
 }
 
@@ -34,7 +39,9 @@ class KeywordDatabaseManager {
 
 		try {
 			this.db = new KeywordViewDatabase()
+
 			await this.db.open()
+			console.log('データベースの初期化が完了しました。')
 		} catch (error) {
 			console.error('キーワードデータベースの初期化に失敗しました:', error)
 			throw error
