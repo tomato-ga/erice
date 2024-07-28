@@ -14,38 +14,38 @@ export const metadata: Metadata = {
 	},
 	description: 'エロコメストは無料エロ動画を思う存分楽しめるサイトです。',
 	robots: 'index,follow',
-	referrer: 'origin-when-cross-origin',
-	openGraph: {
-		title: {
-			default: 'エロコメスト',
-			template: '%s | エロコメスト'
-		},
-		description: 'エロコメストは無料エロ動画を思う存分楽しめるサイトです。',
-		images: [
-			{
-				url: 'opengraph-image.jpg',
-				width: 1280,
-				height: 720,
-				alt: 'Open Graph Image'
-			}
-		]
-	},
-	twitter: {
-		card: 'summary_large_image',
-		title: {
-			default: 'エロコメスト',
-			template: '%s | エロコメスト'
-		},
-		description: 'エロコメストは無料エロ動画を思う存分楽しめるサイトです。',
-		images: [
-			{
-				url: 'twitter-image.jpg',
-				width: 1280,
-				height: 720,
-				alt: 'Twitter Image'
-			}
-		]
-	}
+	referrer: 'origin-when-cross-origin'
+	// openGraph: {
+	// 	title: {
+	// 		default: 'エロコメスト',
+	// 		template: '%s | エロコメスト'
+	// 	},
+	// 	description: 'エロコメストは無料エロ動画を思う存分楽しめるサイトです。',
+	// 	images: [
+	// 		{
+	// 			url: 'opengraph-image.jpg',
+	// 			width: 1280,
+	// 			height: 720,
+	// 			alt: 'Open Graph Image'
+	// 		}
+	// 	]
+	// },
+	// twitter: {
+	// 	card: 'summary_large_image',
+	// 	title: {
+	// 		default: 'エロコメスト',
+	// 		template: '%s | エロコメスト'
+	// 	},
+	// 	description: 'エロコメストは無料エロ動画を思う存分楽しめるサイトです。',
+	// 	images: [
+	// 		{
+	// 			url: 'twitter-image.jpg',
+	// 			width: 1280,
+	// 			height: 720,
+	// 			alt: 'Twitter Image'
+	// 		}
+	// 	]
+	// }
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
