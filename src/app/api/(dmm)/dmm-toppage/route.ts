@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
 		}
 
 		const rawData: RawApiResponse = await response.json()
-		console.log('Raw API response:', JSON.stringify(rawData))
+		// console.log('Raw API response:', JSON.stringify(rawData))
 
 		let parsedData: DmmHomePage[]
 		if (Array.isArray(rawData)) {
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
 			throw new Error('APIレスポンスの形式が不正です')
 		}
 
-		console.log('Parsed data:', JSON.stringify(parsedData.slice(0, 2))) // 最初の2項目だけログ出力
+		// console.log('Parsed data:', JSON.stringify(parsedData.slice(0, 2))) // 最初の2項目だけログ出力
 
 		return NextResponse.json(parsedData)
 	} catch (error) {

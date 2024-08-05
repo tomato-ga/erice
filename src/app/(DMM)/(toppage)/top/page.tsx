@@ -10,8 +10,6 @@ export default async function DMMTopPage() {
 
 		return (
 			<section className="max-w-7xl mx-auto px-4 py-8">
-				<h1 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">最新動画</h1>
-
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 					{data.map((info) => (
 						<div key={info.id} className="bg-white shadow-md rounded-lg overflow-hidden">
