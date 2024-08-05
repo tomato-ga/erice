@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
 		)
 
 		if (!response.ok) {
-			const errorData = await response.json().catch(() => null)
+			const errorData = (await response.json().catch(() => ({}))) as { error?: string }
 			console.error('Worker API error:', response.status, errorData)
 			return NextResponse.json(
 				{ error: 'Failed to fetch articles', details: errorData?.error || response.statusText },

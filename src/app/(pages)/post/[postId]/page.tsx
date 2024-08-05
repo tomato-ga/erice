@@ -51,7 +51,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function KobetuArticlePage({ params }: Props) {
-	const [article, popularArticlesData] = await Promise.all([getKobetuArticle(params.postId), getPopularArticles()])
+	// MEMO 人気動画は初期スタート時にはデータがないためコメントアウト
+	// const [article, popularArticlesData] = await Promise.all([getKobetuArticle(params.postId), getPopularArticles()])
+	const [article] = await Promise.all([getKobetuArticle(params.postId)])
 
 	if (!article) {
 		return (
@@ -69,9 +71,9 @@ export default async function KobetuArticlePage({ params }: Props) {
 			<div className="bg-white min-h-screen">
 				<div className="container mx-auto px-2 py-6">
 					<ArticleLBasic article={article} />
-					<Suspense fallback={<LoadingSpinner />}>
+					{/* <Suspense fallback={<LoadingSpinner />}>
 						<PopularArticle articles={popularArticlesData.data.articles} />
-					</Suspense>
+					</Suspense> */}
 					<Suspense fallback={<LoadingSpinner />}>
 						<KeywordRelatedArticles keywordarticledata={keywordArticles} />
 					</Suspense>
