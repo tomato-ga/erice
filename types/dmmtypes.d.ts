@@ -148,12 +148,17 @@ interface ApiResponse {
 	items: DMMItem[]
 }
 
-interface DMMSaleItem extends DMMItem {
+interface DMMSaleItem extends Omit<DMMItem, 'imageURL' | 'genre'> {
 	salecount: string
 	salePrice: string
 	rate: string
 	actress: string
-	genre?: Omit<ItemInfo, 'genre'> & { genre?: string[] } // Pick と Omit を組み合わせて genre の型を変更
+	genre?: string[]
+	imageURL?: string
 }
 
 type DMMSaleApiResponse = DMMSaleItem[]
+
+interface DMMSaleApiResponse extends Omit<DMMSaleItem, 'imageURL'> {
+	imageURL?: ImageURL
+}

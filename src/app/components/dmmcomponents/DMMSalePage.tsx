@@ -11,9 +11,9 @@ export default async function DMMSalePage() {
 	console.log('saleItems', saleItems)
 
 	return (
-		<div className="container mx-auto px-4 py-8">
+		<div className="w-full px-4 py-8 lg:px-8">
 			<h1 className="text-3xl font-bold mb-6">DMMセール商品</h1>
-			<Suspense fallback={<div>読み込み中...</div>}>
+			<Suspense fallback={<div>読み込み中です...</div>}>
 				<SaleItemList items={saleItems} />
 			</Suspense>
 		</div>

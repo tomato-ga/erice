@@ -51,7 +51,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
 	return (
 		<>
-			<section className="max-w-7xl mx-auto">
+			<section className="">
 				<h1 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">最新動画</h1>
 
 				<DMMSalePage />

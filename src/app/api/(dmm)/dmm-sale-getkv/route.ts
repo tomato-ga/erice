@@ -59,19 +59,29 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 		}
 
 		const data: DMMSaleApiResponse = await response.json()
+
+		const getImageUrl = (imageURL: unknown): string | null => {
+			if (typeof imageURL === 'object' && imageURL !== null) {
+				const imgUrl = imageURL as { large?: string; small?: string }
+				return imgUrl.large || imgUrl.small || null
+			}
+			return typeof imageURL === 'string' ? imageURL : null
+		}
+
 		const processedData = data.map((item) => ({
-			contend_id: item.content_id,
+			content_id: item.content_id,
 			title: item.title,
 			affiliateURL: item.affiliateURL,
-			imageURL: item.imageURL?.large ? item.imageURL?.large : item.imageURL?.small,
+			// imageURL: item.imageURL?.large ? item.imageURL?.large : item.imageURL?.small,
+			imageURL: getImageUrl(item.imageURL),
 			salecount: item.salecount,
 			salePrice: item.salePrice,
 			rate: item.rate,
 			actress: item.iteminfo?.actress ? item.iteminfo?.actress?.map((actress) => actress.name).join(', ') : null,
 			genre: item.iteminfo?.genre ? item.iteminfo?.genre.map((genre) => genre.name) : null,
-			// TODO 多分違う
 			listprice: item.salecount ? item.salecount : null,
-			price: item.salePrice ? item.salePrice : null
+			price: item.salePrice ? item.salePrice : null,
+			date: item.date
 		}))
 
 		return NextResponse.json(processedData)
