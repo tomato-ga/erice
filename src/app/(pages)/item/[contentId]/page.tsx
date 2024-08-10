@@ -1,4 +1,4 @@
-// /Volumes/SSD_1TB/erice2/erice/src/app/(pages)/item/[contentId]/page.tsx
+// /pages/item/[contentId]/page.tsx
 
 import { Suspense } from 'react'
 import { Metadata } from 'next'
@@ -15,8 +15,7 @@ interface Props {
 	params: { contentId: string }
 }
 
-async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
-	// fetchData 関数をコンポーネント内に移動
+async function fetchData(itemType: ItemType, contentId: string): Promise<DMMItemProps | null> {
 	let endpoint = ''
 	switch (itemType) {
 		case 'todaynew':
@@ -35,9 +34,32 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 			throw new Error(`Invalid itemType: ${itemType}`)
 	}
 
-	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`)
-	const data: DMMItemProps[] = await response.json()
-	return data
+	// Promise.anyを使ってKVとD1からのデータ取得を行い、最初に解決されたPromiseの結果を返す
+	try {
+		const item = await Promise.any([
+			(async () => {
+				const kvResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`)
+				const kvData: DMMItemProps[] = await kvResponse.json()
+				const itemFromKV = kvData.find((item) => item.content_id === contentId)
+				if (itemFromKV) {
+					return itemFromKV
+				}
+				throw new Error('Item not found in KV') // KVにデータがない場合、エラーをthrowする
+			})(),
+			(async () => {
+				const d1Response = await fetch(
+					`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-one-item?content_id=${contentId}`
+				)
+				const d1Data: DMMItemProps = await d1Response.json()
+				return d1Data
+			})()
+		])
+		return item
+	} catch (error) {
+		// エラーハンドリング：全てのPromiseがrejectされた場合
+		console.error('Error fetching data:', error)
+		return null
+	}
 }
 
 export default async function DMMKobetuItemPage({
@@ -51,12 +73,8 @@ export default async function DMMKobetuItemPage({
 		throw new Error('itemType is required')
 	}
 
-	const saleItems = await fetchData(itemType)
-	console.log('saleItems', saleItems)
-
-	const Item = saleItems.find((itemmap) => {
-		return itemmap.content_id === params.contentId
-	})
+	// fetchData関数でKVとD1のデータを取得し、適切な方を返す
+	const Item = await fetchData(itemType, params.contentId)
 
 	console.log('Found Item:', Item)
 
@@ -85,29 +103,11 @@ export default async function DMMKobetuItemPage({
 						</Link>
 					</div>
 
-					{/* <div className="flex items-center space-x-4">
-						<img src={Item.imageURL || '/default-avatar.jpg'} alt={Item.title} className="w-12 h-12 rounded-full" />
-						<div>
-							<p className="text-gray-600 text-sm">
-								{(() => {
-									if (!Item.date) return 'Date not available'
-									try {
-										const date = new Date(Item.date)
-										return date.toISOString().split('T')[0]
-									} catch (error) {
-										console.error('Invalid date:', Item.date)
-										return 'Invalid date'
-									}
-								})()}
-							</p>
-							<p className="text-gray-600 text-sm">{Item.actress || 'Unknown'}</p>
-						</div>
-					</div> */}
+					{/* ... (省略) ... */}
 
 					<h1 className="text-gray-600 font-semibold text-2xl sm:text-4xl">{Item.title}</h1>
 
-					{/* ArticleKeywords コンポーネントは DMMSaleItem の構造に合わせて修正が必要かもしれません */}
-					{/* <ArticleKeywords keywords={Item.genre} /> */}
+					{/* ... (省略) ... */}
 
 					<Link href={Item.affiliateURL || '#'} target="_blank" rel="noopener">
 						<div className="text-lg p-5 text-slate-700 text-center font-semibold rounded-md bg-red-50">

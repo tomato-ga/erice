@@ -1,28 +1,3 @@
-/**
- * HomePage コンポーネント
- *
- * このコンポーネントは、エロコメストのホームページを表示します。
- * 最新の動画記事をページネーションで表示し、各記事はArticleCardコンポーネントで表現されます。
- *
- * @component
- * @param {Object} props - コンポーネントのプロパティ
- * @param {Object} props.searchParams - URLのクエリパラメータ
- * @param {string} [props.searchParams.page] - 現在のページ番号（オプション、デフォルトは1）
- *
- * @returns {JSX.Element} レンダリングされたホームページ
- *
- * 主な機能:
- * - getHomeArticles関数を使用して最新の記事データを取得
- * - 記事データをグリッドレイアウトで表示
- * - ページネーション機能の提供
- * - エラー処理とローディング状態の表示
- *
- * 注意事項:
- * - このコンポーネントはサーバーサイドでレンダリングされます
- * - デフォルトで1ページあたり30記事を表示
- * - ユーザーエージェントとリファラー情報をログに記録
- */
-
 import { Suspense } from 'react'
 import { getHomeArticles } from './components/fetch/GetHomeArticles'
 import ArticleCard from './components/Article/ArticleCard'
@@ -31,6 +6,8 @@ import { HomePageArticle } from '../../types/types'
 import DMMTopPage from './(DMM)/(toppage)/top/page'
 import DMMSalePage from './components/dmmcomponents/DMMSalePage'
 import DMMItemContainer from './components/dmmcomponents/DMMItemContainer'
+import Link from 'next/link'
+import { ArrowRight } from 'lucide-react'
 
 interface HomePageProps {
 	searchParams: { page?: string }
@@ -52,35 +29,94 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
 	return (
 		<>
-			<section className="">
-				<h1 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">最新動画</h1>
+			<section className="space-y-16 py-12">
+				{/* <h1 className="text-3xl md:text-4xl font-bold text-center mb-8">最新動画</h1> */}
 
-				{/*  DMM Item Container 呼び出し*/}
-				<h2 className="text-4xl text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 font-extrabold border-b border-gray-300 pb-4 mt-4">
-					限定セール
-				</h2>
-				<DMMItemContainer itemType="sale" />
-				<h2 className="text-4xl text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 font-extrabold border-b border-gray-300 pb-4 mt-4">
-					今日配信の新作
-				</h2>
-				<DMMItemContainer itemType="todaynew" />
-				<h2 className="text-4xl text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 font-extrabold border-b border-gray-300 pb-4 mt-4">
-					デビュー作品
-				</h2>
-				<DMMItemContainer itemType="debut" />
-				<h2 className="text-4xl text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 font-extrabold border-b border-gray-300 pb-4 mt-4">
-					注目作品
-				</h2>
-				<DMMItemContainer itemType="feature" />
+				{/* 限定セールセクション */}
+				<div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl shadow-lg p-8 transition duration-300 ease-in-out hover:shadow-xl">
+					<div className="text-center mb-8">
+						<h2 className="text-4xl font-extrabold mb-4">
+							<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500">
+								限定セール
+							</span>
+						</h2>
+						<Link
+							href="/sale"
+							className="inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-500 rounded-full shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
+						>
+							全ての限定セール商品を見る
+							<ArrowRight className="ml-2 h-5 w-5 animate-bounce" />
+						</Link>
+					</div>
+					<DMMItemContainer itemType="sale" from="top" />
+				</div>
 
-				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+				{/* 今日配信の新作セクション */}
+				<div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl shadow-lg p-8 transition duration-300 ease-in-out hover:shadow-xl">
+					<div className="text-center mb-8">
+						<h2 className="text-4xl font-extrabold mb-4">
+							<span className="text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-blue-500">
+								今日配信の新作
+							</span>
+						</h2>
+						<Link
+							href="/todaynew"
+							className="inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-green-500 to-blue-500 rounded-full shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50"
+						>
+							全ての新作商品を見る
+							<ArrowRight className="ml-2 h-5 w-5 animate-bounce" />
+						</Link>
+					</div>
+					<DMMItemContainer itemType="todaynew" from="top" />
+				</div>
+
+				{/* デビュー作品セクション */}
+				<div className="bg-gradient-to-r from-yellow-50 to-red-50 rounded-xl shadow-lg p-8 transition duration-300 ease-in-out hover:shadow-xl">
+					<div className="text-center mb-8">
+						<h2 className="text-4xl font-extrabold mb-4">
+							<span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-red-500">
+								デビュー作品
+							</span>
+						</h2>
+						<Link
+							href="/debut"
+							className="inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-yellow-500 to-red-500 rounded-full shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50"
+						>
+							全てのデビュー作品を見る
+							<ArrowRight className="ml-2 h-5 w-5 animate-bounce" />
+						</Link>
+					</div>
+					<DMMItemContainer itemType="debut" from="top" />
+				</div>
+
+				{/* 注目作品セクション */}
+				<div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl shadow-lg p-8 transition duration-300 ease-in-out hover:shadow-xl">
+					<div className="text-center mb-8">
+						<h2 className="text-4xl font-extrabold mb-4">
+							<span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">
+								注目作品
+							</span>
+						</h2>
+						<Link
+							href="/feature"
+							className="inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-pink-500 to-purple-500 rounded-full shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-opacity-50"
+						>
+							全ての注目作品を見る
+							<ArrowRight className="ml-2 h-5 w-5 animate-bounce" />
+						</Link>
+					</div>
+					<DMMItemContainer itemType="feature" from="top" />
+				</div>
+
+				{/* 既存の記事グリッドとページネーション */}
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
 					{data.articles.map((article) => (
 						<div key={article.id} className="aspect-w-16 aspect-h-9">
 							<ArticleCard article={article} isSmallThumbnail={false} source="Top" />
 						</div>
 					))}
 				</div>
-				<div className="mt-8 md:mt-12">
+				<div className="mt-12">
 					<PaginationComponent currentPage={currentPage} totalPages={data.totalPages} />
 				</div>
 			</section>
