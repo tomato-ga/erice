@@ -38,7 +38,7 @@ const GenreTag = ({ genre }: { genre: string[] }) => {
 // item: 商品情報 (T 型)
 const DMMItemCard = <T extends DMMItemProps>({ item, itemType }: { item: T; itemType: ItemType }) => {
 	return (
-		<div className="bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-md hover:shadow-xl flex flex-col h-full">
+		<div className="bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-md  flex flex-col h-full">
 			<Link href={`/item/${item.content_id}?itemType=${itemType}`}>
 				<div className="relative pt-[56.25%] overflow-hidden bg-gray-100">
 					<img

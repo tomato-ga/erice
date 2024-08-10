@@ -38,7 +38,7 @@ export default async function DMMItemContainer({ itemType, from }: { itemType: I
 	}
 	return (
 		<div
-			className={`bg-gradient-to-r ${gradients[itemType]} rounded-xl  p-6 md:p-8 transition duration-300 ease-in-out hover:shadow-xl`}
+			className={`bg-gradient-to-r ${gradients[itemType]} rounded-xl  p-6 md:p-8 transition duration-300 ease-in-out `}
 		>
 			<DMMItemList items={items} itemType={itemType} from={from} />
 		</div>

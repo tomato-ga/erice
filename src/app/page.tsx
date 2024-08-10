@@ -33,7 +33,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 				{/* <h1 className="text-3xl md:text-4xl font-bold text-center mb-8">最新動画</h1> */}
 
 				{/* 限定セールセクション */}
-				<div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl shadow-lg p-8 transition duration-300 ease-in-out hover:shadow-xl">
+				<div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl shadow-lg p-8 transition duration-300 ease-in-out ">
 					<div className="text-center mb-8">
 						<h2 className="text-4xl font-extrabold mb-4">
 							<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500">
@@ -42,7 +42,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 						</h2>
 						<Link
 							href="/sale"
-							className="inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-500 rounded-full shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
+							className="inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-500 rounded-full shadow-lg transition-all duration-300 ease-in-out  hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
 						>
 							全ての限定セール商品を見る
 							<ArrowRight className="ml-2 h-5 w-5 animate-bounce" />
@@ -52,7 +52,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 				</div>
 
 				{/* 今日配信の新作セクション */}
-				<div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl shadow-lg p-8 transition duration-300 ease-in-out hover:shadow-xl">
+				<div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl shadow-lg p-8 transition duration-300 ease-in-out ">
 					<div className="text-center mb-8">
 						<h2 className="text-4xl font-extrabold mb-4">
 							<span className="text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-blue-500">
@@ -61,7 +61,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 						</h2>
 						<Link
 							href="/todaynew"
-							className="inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-green-500 to-blue-500 rounded-full shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50"
+							className="inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-green-500 to-blue-500 rounded-full shadow-lg transition-all duration-300 ease-in-out  hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50"
 						>
 							全ての新作商品を見る
 							<ArrowRight className="ml-2 h-5 w-5 animate-bounce" />
@@ -71,7 +71,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 				</div>
 
 				{/* デビュー作品セクション */}
-				<div className="bg-gradient-to-r from-yellow-50 to-red-50 rounded-xl shadow-lg p-8 transition duration-300 ease-in-out hover:shadow-xl">
+				<div className="bg-gradient-to-r from-yellow-50 to-red-50 rounded-xl shadow-lg p-8 transition duration-300 ease-in-out ">
 					<div className="text-center mb-8">
 						<h2 className="text-4xl font-extrabold mb-4">
 							<span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-red-500">
@@ -80,7 +80,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 						</h2>
 						<Link
 							href="/debut"
-							className="inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-yellow-500 to-red-500 rounded-full shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50"
+							className="inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-yellow-500 to-red-500 rounded-full shadow-lg transition-all duration-300 ease-in-out  hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50"
 						>
 							全てのデビュー作品を見る
 							<ArrowRight className="ml-2 h-5 w-5 animate-bounce" />
@@ -90,7 +90,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 				</div>
 
 				{/* 注目作品セクション */}
-				<div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl shadow-lg p-8 transition duration-300 ease-in-out hover:shadow-xl">
+				<div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl shadow-lg p-8 transition duration-300 ease-in-out ">
 					<div className="text-center mb-8">
 						<h2 className="text-4xl font-extrabold mb-4">
 							<span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">
@@ -99,7 +99,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 						</h2>
 						<Link
 							href="/feature"
-							className="inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-pink-500 to-purple-500 rounded-full shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-opacity-50"
+							className="inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-pink-500 to-purple-500 rounded-full shadow-lg transition-all duration-300 ease-in-out  hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-opacity-50"
 						>
 							全ての注目作品を見る
 							<ArrowRight className="ml-2 h-5 w-5 animate-bounce" />

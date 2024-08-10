@@ -136,7 +136,7 @@ const ArticleCard: React.FC<{ article: PopularArticle; rank: number }> = React.m
 			onClick={() => handleUmamiClick('Kobetu-Popular', article)}
 		>
 			<div
-				className={`relative border-2 ${rankBorderColor} rounded-lg overflow-hidden shadow-lg transition-shadow duration-300 hover:shadow-xl`}
+				className={`relative border-2 ${rankBorderColor} rounded-lg overflow-hidden shadow-lg transition-shadow duration-300 `}
 			>
 				<div className="relative pt-[56.25%]">
 					<img
