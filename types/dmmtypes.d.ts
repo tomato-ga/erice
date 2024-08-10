@@ -152,7 +152,8 @@ interface DMMSaleItem extends Omit<DMMItem, 'imageURL' | 'genre'> {
 	salecount: string
 	salePrice: string
 	rate: string
-	actress: string
+	actress?: string
+	actress_id?: string
 	genre?: string[]
 	imageURL?: string
 }

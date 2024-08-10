@@ -59,9 +59,12 @@ export default async function DMMKobetuItemPage({ params }: Props) {
 	console.log('First few saleItems:', saleItems.slice(0, 3))
 
 	const Item = saleItems.find((itemmap) => {
-		console.log('Comparing:', itemmap.content_id, params.contentId)
+		// console.log('Comparing:', itemmap.content_id, params.contentId)
 		return itemmap.content_id === params.contentId
 	})
+
+	// TODO KVのItemがなかったらD1から取得する
+	// TODO 女優情報だけ欲しい
 
 	console.log('Found Item:', Item)
 

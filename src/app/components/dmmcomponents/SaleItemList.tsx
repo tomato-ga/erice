@@ -38,7 +38,7 @@ function GenreTag({ genre }: { genre: string[] }) {
 // SaleItemCard コンポーネント：個々の商品カード表示部分
 // item: 商品情報 (DMMSaleItem 型)
 function SaleItemCard({ item }: { item: DMMSaleItem }) {
-	console.log('SaleItemCard item: ', item)
+	// console.log('SaleItemCard item: ', item)
 
 	return (
 		<div className="bg-white shadow-lg rounded-lg overflow-hidden transition duration-300 ease-in-out transform flex flex-col h-full">
