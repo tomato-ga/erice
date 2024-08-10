@@ -1,12 +1,13 @@
-// /Volumes/SSD_1TB/erice2/erice/src/app/(pages)/item/[contendId]/page.tsx
+// /Volumes/SSD_1TB/erice2/erice/src/app/(pages)/item/[contentId]/page.tsx
 
 import { Suspense } from 'react'
 import { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 import ArticleLBasic from '@/app/components/Article/ArticleLinks'
 import KeywordRelatedArticles from '@/app/components/Article/ArticleLoaded/KeywordRelated'
-import { DMMSaleItem } from '../../../../../types/dmmtypes'
 import Link from 'next/link'
+import { ItemType } from '@/app/components/dmmcomponents/DMMItemContainer'
+import { DMMItemProps } from '../../../../../types/dmmtypes'
 
 const PopularArticle = dynamic(() => import('@/app/components/Article/PopularArticle'))
 
@@ -14,65 +15,57 @@ interface Props {
 	params: { contentId: string }
 }
 
-// export async function generateMetadata({ params }: Props): Promise<Metadata> {
-// 	const article = await getKobetuArticle(params.postId)
+async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
+	// fetchData 関数をコンポーネント内に移動
+	let endpoint = ''
+	switch (itemType) {
+		case 'todaynew':
+			endpoint = '/api/dmm-todaynew-getkv'
+			break
+		case 'debut':
+			endpoint = '/api/dmm-debut-getkv'
+			break
+		case 'feature':
+			endpoint = '/api/dmm-feature-getkv'
+			break
+		case 'sale':
+			endpoint = '/api/dmm-sale-getkv'
+			break
+		default:
+			throw new Error(`Invalid itemType: ${itemType}`)
+	}
 
-// 	if (!article) {
-// 		return {
-// 			title: '記事が見つかりません',
-// 			description: '指定された記事は存在しないか、取得できませんでした。'
-// 		}
-// 	}
+	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`)
+	const data: DMMItemProps[] = await response.json()
+	return data
+}
 
-// 	return {
-// 		title: article.title,
-// 		description: article.title,
-// 		openGraph: {
-// 			title: article.title,
-// 			description: article.title,
-// 			images: [
-// 				{
-// 					url: article.image_url,
-// 					width: 1200,
-// 					height: 630,
-// 					alt: article.title
-// 				}
-// 			]
-// 		},
-// 		twitter: {
-// 			card: 'summary_large_image',
-// 			title: article.title,
-// 			description: article.title,
-// 			images: [article.image_url]
-// 		}
-// 	}
-// }
-
-export default async function DMMKobetuItemPage({ params }: Props) {
+export default async function DMMKobetuItemPage({
+	params,
+	searchParams
+}: Props & { searchParams: { itemType?: ItemType } }) {
 	console.log('Received params:', params)
+	const itemType = searchParams.itemType || 'todaynew' // デフォルト値を設定
 
-	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-sale-getkv`)
-	const saleItems: DMMSaleItem[] = await response.json()
+	if (!itemType) {
+		throw new Error('itemType is required')
+	}
 
-	console.log('params.contentId:', params.contentId)
-	console.log('saleItems length:', saleItems.length)
-	console.log('First few saleItems:', saleItems.slice(0, 3))
+	const saleItems = await fetchData(itemType)
+	console.log('saleItems', saleItems)
 
 	const Item = saleItems.find((itemmap) => {
-		// console.log('Comparing:', itemmap.content_id, params.contentId)
 		return itemmap.content_id === params.contentId
 	})
-
-	// TODO KVのItemがなかったらD1から取得する
-	// TODO 女優情報だけ欲しい
 
 	console.log('Found Item:', Item)
 
 	if (!params.contentId || !Item) {
 		return (
 			<div className="container mx-auto px-2 py-6">
-				<h1 className="text-2xl font-bold text-red-600">記事が見つかりませんでした</h1>
-				<p>記事が存在しないか、取得中にエラーが発生しました。</p>
+				<h1 className="text-2xl font-bold text-red-600">{itemType}のアイテムが見つかりませんでした</h1>{' '}
+				{/* itemType に応じたエラーメッセージ */}
+				<p>アイテムが存在しないか、取得中にエラーが発生しました。</p>
 			</div>
 		)
 	}
@@ -121,6 +114,20 @@ export default async function DMMKobetuItemPage({ params }: Props) {
 							{Item.title}のページを見る
 						</div>
 					</Link>
+
+					{/* sampleImageURL の表示 */}
+					{Item.sampleImageURL && (
+						<div className="grid grid-cols-2 gap-4">
+							{Item.sampleImageURL.map((imageUrl, index) => (
+								<img
+									key={index}
+									src={imageUrl}
+									alt={`Sample Image ${index + 1}`}
+									className="w-full h-auto rounded-lg"
+								/>
+							))}
+						</div>
+					)}
 				</article>
 			</div>
 		</div>

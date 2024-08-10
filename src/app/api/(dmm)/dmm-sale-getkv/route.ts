@@ -11,7 +11,7 @@ import { DMMSaleApiResponse } from '../../../../../types/dmmtypes'
  *
  * @returns {Promise<NextResponse>} 処理されたセール商品データを含むNextResponse
  * - 成功時: セール商品の配列（各商品は以下の情報を含む）
- *   - contend_id: 商品のコンテンツID
+ *   - content_id: 商品のコンテンツID
  *   - title: 商品タイトル
  *   - affiliateURL: アフィリエイトURL
  *   - imageURL: 商品画像URL（大きいサイズまたは小さいサイズ）
@@ -72,8 +72,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 			content_id: item.content_id,
 			title: item.title,
 			affiliateURL: item.affiliateURL,
-			// imageURL: item.imageURL?.large ? item.imageURL?.large : item.imageURL?.small,
 			imageURL: getImageUrl(item.imageURL),
+			sampleImageURL: item.sampleImageURL?.sample_l?.image ?? item.sampleImageURL?.sample_s?.image ?? null,
 			salecount: item.salecount,
 			salePrice: item.salePrice,
 			rate: item.rate,

@@ -30,6 +30,7 @@ import PaginationComponent from './components/Pagination'
 import { HomePageArticle } from '../../types/types'
 import DMMTopPage from './(DMM)/(toppage)/top/page'
 import DMMSalePage from './components/dmmcomponents/DMMSalePage'
+import DMMItemContainer from './components/dmmcomponents/DMMItemContainer'
 
 interface HomePageProps {
 	searchParams: { page?: string }
@@ -54,7 +55,23 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 			<section className="">
 				<h1 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">最新動画</h1>
 
-				<DMMSalePage />
+				{/*  DMM Item Container 呼び出し*/}
+				<h2 className="text-4xl text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 font-extrabold border-b border-gray-300 pb-4 mt-4">
+					限定セール
+				</h2>
+				<DMMItemContainer itemType="sale" />
+				<h2 className="text-4xl text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 font-extrabold border-b border-gray-300 pb-4 mt-4">
+					今日配信の新作
+				</h2>
+				<DMMItemContainer itemType="todaynew" />
+				<h2 className="text-4xl text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 font-extrabold border-b border-gray-300 pb-4 mt-4">
+					デビュー作品
+				</h2>
+				<DMMItemContainer itemType="debut" />
+				<h2 className="text-4xl text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 font-extrabold border-b border-gray-300 pb-4 mt-4">
+					注目作品
+				</h2>
+				<DMMItemContainer itemType="feature" />
 
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
 					{data.articles.map((article) => (

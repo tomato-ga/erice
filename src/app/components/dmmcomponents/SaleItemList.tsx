@@ -74,7 +74,7 @@ function SaleItemCard({ item }: { item: DMMSaleItem }) {
 export default function SaleItemList({ items }: { items: DMMSaleItem[] }) {
 	return (
 		<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-3">
-			{items.map((item) => (
+			{items.slice(0, 5).map((item) => (
 				<div key={item.content_id}>
 					<SaleItemCard item={item} />
 				</div>

@@ -163,3 +163,17 @@ type DMMSaleApiResponse = DMMSaleItem[]
 interface DMMSaleApiResponse extends Omit<DMMSaleItem, 'imageURL'> {
 	imageURL?: ImageURL
 }
+
+// DMMItemProps型定義
+export type DMMItemProps = {
+	content_id: string
+	affiliateURL: string
+	sampleImageURL?: string[]
+	imageURL?: string
+	title: string
+	price?: string
+	actress?: string
+	genre?: string[]
+	salecount?: string
+	salePrice?: string
+}

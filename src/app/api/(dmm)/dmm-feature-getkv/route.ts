@@ -51,12 +51,16 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
 		const data: ApiResponse = await response.json()
 		const processedData = data.result.items.map((item) => ({
-			contend_id: item.content_id,
+			content_id: item.content_id,
 			title: item.title,
 			affiliateURL: item.affiliateURL,
 			imageURL: item.imageURL?.large ? item.imageURL?.large : item.imageURL?.small,
-			actress: item.iteminfo?.actress ? item.iteminfo?.actress?.map((actress) => actress.name).join(', ') : null,
-			genre: item.iteminfo?.genre ? item.iteminfo?.genre.map((genre) => genre.name) : null
+			sampleImageURL: item.sampleImageURL?.sample_l?.image ?? item.sampleImageURL?.sample_s?.image ?? null,
+			actress: item.iteminfo?.actress ? item.iteminfo?.actress?.[0]?.name : null,
+			actress_id: item.iteminfo?.actress?.[0]?.id || null,
+			genre: item.iteminfo?.genre ? item.iteminfo?.genre.map((genre) => genre.name) : null,
+			price: item.prices?.price,
+			date: item.date
 		}))
 
 		return NextResponse.json(processedData)
