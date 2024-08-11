@@ -226,9 +226,9 @@ export interface DMMSaleItem extends DMMBaseItem {
 	actress_id?: number
 }
 
-export type DMMItem = DMMBaseItem & Partial<Omit<DMMSaleItem, keyof DMMBaseItem>>
+export type DMMItemPage = DMMBaseItem & Partial<Omit<DMMSaleItem, keyof DMMBaseItem>>
 
-export type DMMItemProps = DMMItem
+export type DMMItemPageTypes = DMMItem
 
 // B. 各APIエンドポイント用の型を作成
 export interface DMMTodayNewItem extends DMMBaseItem {}

@@ -64,9 +64,9 @@ const DMMItemCard = <T extends DMMItemProps>({ item, itemType }: { item: T; item
 					<p className="text-sm text-gray-600 mb-2 line-clamp-1" title={item.actress}>
 						{item.actress ? `出演: ${item.actress}` : ''}
 					</p>
-					<div className="flex flex-wrap mt-2 overflow-hidden flex-grow">
+					{/* TODO 一旦外してる　<div className="flex flex-wrap mt-2 overflow-hidden flex-grow">
 						<GenreTag genre={Array.isArray(item.genre) ? item.genre : []} />
-					</div>
+					</div> */}
 				</div>
 			</Link>
 		</div>

@@ -12,7 +12,9 @@ const ItemCard = ({ item }: { item: ActressItem }) => (
 			</div>
 			<div className="p-4 flex flex-col flex-grow">
 				<h3 className="text-lg font-semibold mb-2 line-clamp-2 text-gray-800">{item.title}</h3>
-				<p className="text-red-600 font-bold mb-2">{item.price}</p>
+				<p className="text-red-600 font-bold mb-2">
+					{item.price.match(/\d+~円/) ? item.price : item.price.replace(/~/, '円〜')}
+				</p>
 			</div>
 		</Link>
 	</div>
