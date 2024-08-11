@@ -3,12 +3,8 @@ import { Actress, ActressType, NewActressResponse, AllContentResponse } from '..
 import ActressItemList from './DMMActressItemList'
 
 async function fetchData(actressType: ActressType): Promise<Actress[]> {
-	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actresses-getkv?type=${actressType}`, {
-		cache: 'no-cache'
-	})
+	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actresses-getkv?type=${actressType}`)
 	const data: NewActressResponse | AllContentResponse = await response.json()
-
-	console.log('ActressContainer', data)
 
 	if ('actresses' in data) {
 		return data.actresses
@@ -41,7 +37,7 @@ export default async function DMMActressItemContainer({
 
 	const titles = {
 		new: '新人女優',
-		popular: '注目の女優',
+		popular: '人気女優',
 		all: '全てのコンテンツ'
 	}
 

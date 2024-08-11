@@ -112,7 +112,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 				{/* 女優セクション */}
 				<DMMActressItemContainer actressType="new" from="top" />
 
-				{/* <DMMActressItemContainer actressType="popular" from="top" /> */}
+				<DMMActressItemContainer actressType="popular" from="top" />
 
 				{/* 既存の記事グリッドとページネーション */}
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">

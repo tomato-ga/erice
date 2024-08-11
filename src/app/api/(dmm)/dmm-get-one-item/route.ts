@@ -20,7 +20,7 @@ type DMMItem = z.infer<typeof DMMItemSchema>
 export async function GET(request: NextRequest): Promise<NextResponse> {
 	const content_id = request.nextUrl.searchParams.get('content_id')
 	const API_KEY = process.env.CLOUDFLARE_DMM_API_TOKEN
-	const WORKER_URL = 'https://erice-get-one-item.servicedake.workers.dev' // 指定されたAPIエンドポイント
+	const WORKER_URL = process.env.DMM_GET_ONE_ITEM_WORKER_URL
 
 	if (!API_KEY) {
 		console.error('CLOUDFLARE_DMM_API_TOKENが設定されていません')

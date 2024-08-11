@@ -203,3 +203,39 @@ export interface AllContentResponse {
 }
 
 export type ActressType = 'new' | 'popular' | 'all'
+
+// * DMM Itempage 型定義 *//
+
+export interface DMMBaseItem {
+	content_id: string
+	title: string
+	affiliateURL: string
+	imageURL: string
+	sampleImageURL?: string[] | null
+	price?: string
+	actress?: string
+	genre?: string[]
+	date?: string
+}
+
+export interface DMMSaleItem extends DMMBaseItem {
+	salecount?: string
+	salePrice?: string
+	rate?: string
+	listprice?: string
+	actress_id?: number
+}
+
+export type DMMItem = DMMBaseItem & Partial<Omit<DMMSaleItem, keyof DMMBaseItem>>
+
+export type DMMItemProps = DMMItem
+
+// B. 各APIエンドポイント用の型を作成
+export interface DMMTodayNewItem extends DMMBaseItem {}
+
+export interface DMMDebutItem extends DMMBaseItem {}
+
+export interface DMMFeatureItem extends DMMBaseItem {}
+
+// C. DMMItemProps型を再定義
+export type DMMItemProps = DMMBaseItem & Partial<DMMSaleItem>

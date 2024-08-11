@@ -7,7 +7,8 @@ import ArticleLBasic from '@/app/components/Article/ArticleLinks'
 import KeywordRelatedArticles from '@/app/components/Article/ArticleLoaded/KeywordRelated'
 import Link from 'next/link'
 import { ItemType } from '@/app/components/dmmcomponents/DMMItemContainer'
-import { DMMItemProps } from '../../../../../types/dmmtypes'
+import { DMMItem, DMMItemProps } from '../../../../../types/dmmtypes' // DMMItem をインポート
+import { DMMItemSchema } from '../../../../../types/dmmitemzodschema'
 
 const PopularArticle = dynamic(() => import('@/app/components/Article/PopularArticle'))
 
@@ -15,7 +16,8 @@ interface Props {
 	params: { contentId: string }
 }
 
-async function fetchData(itemType: ItemType, contentId: string): Promise<DMMItemProps | null> {
+// itemType を使用したデータフェッチ関数
+async function fetchData(itemType: ItemType, contentId: string): Promise<DMMItem | null> {
 	let endpoint = ''
 	switch (itemType) {
 		case 'todaynew':
@@ -34,29 +36,49 @@ async function fetchData(itemType: ItemType, contentId: string): Promise<DMMItem
 			throw new Error(`Invalid itemType: ${itemType}`)
 	}
 
-	// Promise.anyを使ってKVとD1からのデータ取得を行い、最初に解決されたPromiseの結果を返す
 	try {
-		const item = await Promise.any([
-			(async () => {
-				const kvResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`)
-				const kvData: DMMItemProps[] = await kvResponse.json()
-				const itemFromKV = kvData.find((item) => item.content_id === contentId)
-				if (itemFromKV) {
-					return itemFromKV
-				}
-				throw new Error('Item not found in KV') // KVにデータがない場合、エラーをthrowする
-			})(),
-			(async () => {
-				const d1Response = await fetch(
-					`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-one-item?content_id=${contentId}`
-				)
-				const d1Data: DMMItemProps = await d1Response.json()
-				return d1Data
-			})()
-		])
-		return item
+		// KVストアからのデータ取得を試みる
+		const kvResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`)
+		const kvData: DMMItemProps[] = await kvResponse.json()
+		const itemFromKV = kvData.find((item) => item.content_id === contentId)
+
+		if (itemFromKV) {
+			// DMMItemSchemaを使用して検証
+			const validatedItem = DMMItemSchema.parse(itemFromKV)
+			return validatedItem
+		}
+
+		// KVストアでアイテムが見つからない場合、D1からデータを取得
+		const d1Response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-one-item?content_id=${contentId}`)
+		const d1Data: DMMItem[] = await d1Response.json()
+
+		if (d1Data.length > 0) {
+			// DMMItemSchemaを使用して検証
+			const validatedItem = DMMItemSchema.parse(d1Data[0])
+			return validatedItem
+		}
+
+		// どちらのソースからもアイテムが見つからない場合
+		console.log(`Item with content_id ${contentId} not found in KV store or D1.`)
+		return null
 	} catch (error) {
-		// エラーハンドリング：全てのPromiseがrejectされた場合
+		if (error instanceof Error) {
+			console.error(`Error fetching data for ${itemType} with content_id ${contentId}: ${error.message}`)
+		} else {
+			console.error(`Unknown error occurred while fetching data for ${itemType} with content_id ${contentId}`)
+		}
+		return null
+	}
+}
+
+// itemType を使用しないデータフェッチ関数
+async function fetchItemByContentId(contentId: string): Promise<DMMItem[] | null> {
+	// DMMItem[] に変更
+	try {
+		const d1Response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-one-item?content_id=${contentId}`)
+		const d1Data: DMMItem[] = await d1Response.json() // DMMItem[] に変更
+		return d1Data
+	} catch (error) {
 		console.error('Error fetching data:', error)
 		return null
 	}
@@ -66,22 +88,28 @@ export default async function DMMKobetuItemPage({
 	params,
 	searchParams
 }: Props & { searchParams: { itemType?: ItemType } }) {
-	console.log('Received params:', params)
-	const itemType = searchParams.itemType || 'todaynew' // デフォルト値を設定
+	console.log('Received params:', params) // contentId の値を確認
+	console.log('itemType:', searchParams.itemType) // itemType の値を確認
 
-	if (!itemType) {
-		throw new Error('itemType is required')
+	// itemType の有無でデータフェッチ関数を切り替える
+	let Item: DMMItem | null = null
+	if (searchParams.itemType) {
+		const itemType = searchParams.itemType
+		Item = await fetchData(itemType, params.contentId)
+	} else {
+		const items = await fetchItemByContentId(params.contentId)
+		Item = items && items.length > 0 ? items[0] : null
 	}
-
-	// fetchData関数でKVとD1のデータを取得し、適切な方を返す
-	const Item = await fetchData(itemType, params.contentId)
 
 	console.log('Found Item:', Item)
 
-	if (!params.contentId || !Item) {
+	if (!params.contentId || !Item || Item.length === 0) {
+		// Item.length === 0 を追加
 		return (
 			<div className="container mx-auto px-2 py-6">
-				<h1 className="text-2xl font-bold text-red-600">{itemType}のアイテムが見つかりませんでした</h1>{' '}
+				<h1 className="text-2xl font-bold text-red-600">
+					{searchParams.itemType ? searchParams.itemType : '指定された'}のアイテムが見つかりませんでした
+				</h1>{' '}
 				{/* itemType に応じたエラーメッセージ */}
 				<p>アイテムが存在しないか、取得中にエラーが発生しました。</p>
 			</div>

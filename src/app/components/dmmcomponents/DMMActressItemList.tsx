@@ -3,13 +3,9 @@
 
 import Link from 'next/link'
 import { Actress, ActressItem } from '../../../../types/dmmtypes'
-import { motion } from 'framer-motion'
 
 const ItemCard = ({ item }: { item: ActressItem }) => (
-	<motion.div
-		whileHover={{ scale: 1.05 }}
-		className="bg-white rounded-lg overflow-hidden shadow-md flex flex-col h-full transition duration-300 ease-in-out hover:shadow-lg"
-	>
+	<div className="bg-white rounded-lg overflow-hidden shadow-md flex flex-col h-full transition duration-300 ease-in-out hover:shadow-lg">
 		<Link href={`/item/${item.id}`}>
 			<div className="relative pt-[56.25%] overflow-hidden bg-gray-100">
 				<img src={item.imageUrl} alt={item.title} className="absolute top-0 left-0 w-full h-full object-cover" />
@@ -19,7 +15,7 @@ const ItemCard = ({ item }: { item: ActressItem }) => (
 				<p className="text-red-600 font-bold mb-2">{item.price}</p>
 			</div>
 		</Link>
-	</motion.div>
+	</div>
 )
 
 const ActressCard = ({ actress }: { actress: Actress }) => (
@@ -47,11 +43,9 @@ const ActressItemList = ({
 	actressType: string
 	from: string
 }) => {
-	const displayCount = actresses.length
-
 	return (
 		<div className="space-y-8">
-			{actresses.slice(0, displayCount).map((actress) => (
+			{actresses.map((actress) => (
 				<ActressCard key={actress.id} actress={actress} />
 			))}
 		</div>
