@@ -26,9 +26,12 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 	const data: DMMItemProps[] = await response.json()
 	return data
 }
-
 export default async function DMMItemContainer({ itemType, from }: { itemType: ItemType; from: string }) {
 	const items = await fetchData(itemType)
+
+	if (!items || items.length === 0) {
+		return null
+	}
 
 	const gradients = {
 		todaynew: 'from-green-50 to-blue-50',
@@ -36,11 +39,16 @@ export default async function DMMItemContainer({ itemType, from }: { itemType: I
 		feature: 'from-pink-50 to-purple-50',
 		sale: 'from-blue-50 to-purple-50'
 	}
+
 	return (
-		<div
-			className={`bg-gradient-to-r ${gradients[itemType]} rounded-xl  p-6 md:p-8 transition duration-300 ease-in-out `}
-		>
-			<DMMItemList items={items} itemType={itemType} from={from} />
-		</div>
+		<>
+			{items && items.length > 0 && (
+				<div
+					className={`bg-gradient-to-r ${gradients[itemType]} rounded-xl p-6 md:p-8 transition duration-300 ease-in-out`}
+				>
+					<DMMItemList items={items} itemType={itemType} from={from} />
+				</div>
+			)}
+		</>
 	)
 }

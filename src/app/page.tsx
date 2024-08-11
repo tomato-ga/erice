@@ -15,7 +15,7 @@ interface HomePageProps {
 }
 
 const DEFAULT_PAGE = 1
-const DEFAULT_LIMIT = 30
+const DEFAULT_LIMIT = 28
 
 export default async function HomePage({ searchParams }: HomePageProps) {
 	const currentPage = parseInt(searchParams.page || `${DEFAULT_PAGE}`, 10)
@@ -34,6 +34,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 				{/* <h1 className="text-3xl md:text-4xl font-bold text-center mb-8">最新動画</h1> */}
 
 				{/* 限定セールセクション */}
+				{/* TODO アイテムが存在しない場合は、このセクションを表示させないようにしたいので、DMMItemContainerにJSXを移動させる */}
 				<div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl shadow-lg p-8 transition duration-300 ease-in-out ">
 					<div className="text-center mb-8">
 						<h2 className="text-4xl font-extrabold mb-4">
