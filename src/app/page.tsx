@@ -8,6 +8,7 @@ import DMMSalePage from './components/dmmcomponents/DMMSalePage'
 import DMMItemContainer from './components/dmmcomponents/DMMItemContainer'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
+import DMMActressItemContainer from './components/dmmcomponents/DMMActressItemContainer'
 
 interface HomePageProps {
 	searchParams: { page?: string }
@@ -107,6 +108,11 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 					</div>
 					<DMMItemContainer itemType="feature" from="top" />
 				</div>
+
+				{/* 女優セクション */}
+				<DMMActressItemContainer actressType="new" from="top" />
+
+				{/* <DMMActressItemContainer actressType="popular" from="top" /> */}
 
 				{/* 既存の記事グリッドとページネーション */}
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">

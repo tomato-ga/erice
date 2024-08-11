@@ -177,3 +177,29 @@ export type DMMItemProps = {
 	salecount?: string
 	salePrice?: string
 }
+
+export interface ActressItem {
+	id: string
+	title: string
+	imageUrl: string
+	price: string
+}
+
+export interface Actress {
+	id: string
+	name: string
+	items: ActressItem[]
+}
+
+export interface NewActressResponse {
+	actresses: Actress[]
+}
+
+export interface AllContentResponse {
+	'dmm-debut-items': ActressItem[]
+	'dmm-feature-items': ActressItem[]
+	'dmm-today-new-items': ActressItem[]
+	'sale-items': ActressItem[]
+}
+
+export type ActressType = 'new' | 'popular' | 'all'
