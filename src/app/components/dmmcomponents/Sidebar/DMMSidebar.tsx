@@ -66,6 +66,28 @@ const DMMSidebar = () => {
 						デビュー作品
 					</Link>
 				</li>
+				<li>
+					<Link
+						href="/feature"
+						className="flex items-center text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md p-2 transition-colors duration-200"
+					>
+						<svg
+							className="w-5 h-5 mr-3"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+							/>
+						</svg>
+						注目作品
+					</Link>
+				</li>
 			</ul>
 		</nav>
 	)

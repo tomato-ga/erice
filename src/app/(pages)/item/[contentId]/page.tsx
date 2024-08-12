@@ -18,6 +18,8 @@ import {
 import { ArrowRight, ExternalLink } from 'lucide-react'
 import { z } from 'zod'
 import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
+import { DMMItemProps } from '../../../../../types/dmmtypes'
+import RelatedItemsScroll from '@/app/components/dmmcomponents/Related/RelatedItemsScroll'
 
 interface Props {
 	params: { contentId: string }
@@ -104,6 +106,12 @@ async function fetchItemByContentId(contentId: string): Promise<DMMItem | null> 
 	}
 }
 
+async function fetchRelatedItems(itemType: ItemType): Promise<DMMItemProps[]> {
+	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-${itemType}-getkv`, { cache: 'no-store' })
+	const data: DMMItemProps[] = await response.json()
+	return data.slice(0, 50)
+}
+
 export default async function DMMKobetuItemPage({
 	params,
 	searchParams
@@ -134,6 +142,14 @@ export default async function DMMKobetuItemPage({
 			</div>
 		)
 	}
+
+	const relatedItemTypes: ItemType[] = ['todaynew', 'debut', 'feature', 'sale']
+	const relatedItemsData = await Promise.all(
+		relatedItemTypes.map(async (type) => ({
+			type,
+			items: await fetchRelatedItems(type)
+		}))
+	)
 
 	return (
 		<div className="bg-gray-50 dark:bg-gray-900 min-h-screen">
@@ -192,6 +208,22 @@ export default async function DMMKobetuItemPage({
 									<ExternalLink className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse flex-shrink-0" />
 								</Link>
 							</div>
+							{relatedItemsData.map(({ type, items }) => (
+								<RelatedItemsScroll
+									key={type}
+									items={items}
+									itemType={type}
+									title={
+										type === 'todaynew'
+											? '今日配信の新作'
+											: type === 'debut'
+											? 'デビュー作品'
+											: type === 'feature'
+											? '注目作品'
+											: '限定セール'
+									}
+								/>
+							))}
 						</>
 					)}
 				</article>
