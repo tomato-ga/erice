@@ -19,8 +19,6 @@ import { ArrowRight, ExternalLink } from 'lucide-react'
 import { z } from 'zod'
 import { formatDate } from '@/utils/dmmUtils'
 
-const PopularArticle = dynamic(() => import('@/app/components/Article/PopularArticle'))
-
 interface Props {
 	params: { contentId: string }
 }
@@ -106,33 +104,9 @@ async function fetchItemByContentId(contentId: string): Promise<DMMItem | null> 
 	}
 }
 
-const ItemDetailsTable = ({ item }: { item: DMMItem }) => (
-	<div className="overflow-x-auto">
-		<table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-			<tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-				{[
-					{ label: 'タイトル', value: item.title },
-					{ label: '発売日', value: item.date ? formatDate(item.date) : '情報なし' },
-					{ label: '出演者', value: item.actress },
-					{ label: '品番', value: item.content_id },
-					{ label: 'メーカー', value: item.maker },
-					{ label: 'レーベル', value: item.label },
-					{ label: 'シリーズ', value: item.series },
-					{ label: '監督', value: item.director }
-				].map(({ label, value }) => (
-					<tr key={label}>
-						<td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">
-							{label}
-						</td>
-						<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-							{value || '情報なし'}
-						</td>
-					</tr>
-				))}
-			</tbody>
-		</table>
-	</div>
-)
+import { useState } from 'react'
+import ItemDetailsTable from '@/app/components/dmmcomponents/DMMKobetuItemTable'
+import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
 
 export default async function DMMKobetuItemPage({
 	params,
@@ -166,61 +140,60 @@ export default async function DMMKobetuItemPage({
 	}
 
 	return (
-		<div className="bg-white dark:bg-gray-900 min-h-screen">
-			<div className="container mx-auto px-4 py-8">
-				<article className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 space-y-8">
-					<div className="relative overflow-hidden rounded-lg">
-						<Link href={Item.affiliateURL || '#'} target="_blank" rel="noopener">
+		<div className="bg-gray-50 dark:bg-gray-900 min-h-screen">
+			<div className="container mx-auto px-2 sm:px-4 py-6 sm:py-8">
+				<article className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 space-y-6 sm:space-y-8">
+					<div className="relative overflow-hidden rounded-lg aspect-w-16 aspect-h-9">
+						<Link href={Item.affiliateURL || '#'} target="_blank" rel="noopener noreferrer">
 							<img
-								src={Item.imageURL || '/default.jpg'}
-								alt={Item.title}
-								className="w-full h-auto transition-transform duration-300 hover:scale-105"
+								src={Item.imageURL}
+								alt={`${Item.title}のパッケージ画像`}
+								className="w-full h-full object-cover transition-transform duration-300"
 							/>
 						</Link>
 					</div>
 
-					<h1 className="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-gray-100 text-center">{Item.title}</h1>
+					<h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 text-center">
+						{Item.title}
+					</h1>
 
 					<div className="flex justify-center">
 						<Link
 							href={Item.affiliateURL || '#'}
 							target="_blank"
-							rel="noopener"
-							className="inline-flex items-center justify-center text-xl font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-full shadow-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 px-8 py-4"
+							rel="noopener noreferrer"
+							className="inline-flex items-center justify-center text-xl font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-full shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 px-6 sm:px-8 py-3 sm:py-4"
 						>
 							<span className="mr-2">高画質動画を見る</span>
-							<ExternalLink className="w-6 h-6 animate-pulse" />
+							<ExternalLink className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse" />
 						</Link>
 					</div>
 
-					{/* ItemDetailsTableを追加 */}
-					<div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
-						<h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">商品詳細</h2>
-						<ItemDetailsTable item={Item} />
-					</div>
+					<ProductDetails Item={Item} />
 
 					{Item.sampleImageURL && (
 						<>
-							<h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">サンプル画像</h2>
-							<div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+							<h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">サンプル画像</h2>
+							<div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
 								{Item.sampleImageURL.map((imageUrl, index) => (
-									<img
-										key={index}
-										src={imageUrl}
-										alt={`Sample Image ${index + 1}`}
-										className="w-full h-auto rounded-lg transition-transform duration-300 hover:scale-105"
-									/>
+									<div key={index} className="aspect-w-16 aspect-h-9 relative rounded-lg overflow-hidden">
+										<img
+											src={imageUrl}
+											alt={`${Item.title}のサンプル画像${index + 1}`}
+											className="w-full h-full object-cover transition-transform duration-300 "
+										/>
+									</div>
 								))}
 							</div>
-							<div className="flex justify-center mt-8">
+							<div className="flex justify-center mt-6 sm:mt-8">
 								<Link
 									href={Item.affiliateURL || '#'}
 									target="_blank"
-									rel="noopener"
-									className="inline-flex items-center justify-center text-xl font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-full shadow-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 px-8 py-4"
+									rel="noopener noreferrer"
+									className="inline-flex items-center justify-center text-lg sm:text-xl font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-full shadow-lg transition-all duration-300 ease-in-out  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 px-6 sm:px-8 py-3 sm:py-4"
 								>
 									<span className="mr-2">{Item.title}の高画質動画を見る</span>
-									<ExternalLink className="w-6 h-6 animate-pulse" />
+									<ExternalLink className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse" />
 								</Link>
 							</div>
 						</>
