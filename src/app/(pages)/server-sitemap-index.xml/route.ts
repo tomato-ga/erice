@@ -1,7 +1,9 @@
+// /Volumes/SSD_1TB/erice2/erice/src/app/(pages)/server-sitemap-index.xml/route.ts
+
 import { getServerSideSitemapIndex } from 'next-sitemap'
 
 const BASE_URL = 'http://localhost:3000' // 実際のサイトURLに置き換えてください
-const ENTRIES_PER_SITEMAP = 50000
+const ENTRIES_PER_SITEMAP = 20000
 const API_ENDPOINT = process.env.DMM_SITEMAP_WORKER_URL
 const API_KEY = process.env.CLOUDFLARE_DMM_API_TOKEN
 
