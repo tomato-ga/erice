@@ -30,6 +30,7 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 			throw new Error(`Invalid itemType: ${itemType}`)
 	}
 
+	// todo revalidatepathなどのアクションが必要そう
 	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, { cache: 'no-store' })
 	const data: DMMItemProps[] = await response.json()
 	return data
