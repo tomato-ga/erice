@@ -17,7 +17,7 @@ import {
 } from '../../../../../types/dmmitemzodschema'
 import { ArrowRight, ExternalLink } from 'lucide-react'
 import { z } from 'zod'
-import { formatDate } from '@/utils/dmmUtils'
+import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
 
 interface Props {
 	params: { contentId: string }
@@ -104,10 +104,6 @@ async function fetchItemByContentId(contentId: string): Promise<DMMItem | null> 
 	}
 }
 
-import { useState } from 'react'
-import ItemDetailsTable from '@/app/components/dmmcomponents/DMMKobetuItemTable'
-import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
-
 export default async function DMMKobetuItemPage({
 	params,
 	searchParams
@@ -132,7 +128,7 @@ export default async function DMMKobetuItemPage({
 		return (
 			<div className="container mx-auto px-2 py-6">
 				<h1 className="text-2xl font-bold text-red-600">
-					{searchParams.itemType ? searchParams.itemType : '指定された'}のアイテムが見つかりませんでし��
+					{searchParams.itemType ? searchParams.itemType : '指定された'}のアイテムが見つかりませんでし
 				</h1>
 				<p>アイテムが存在しないか、取得中にエラーが発生しました。</p>
 			</div>
@@ -190,10 +186,10 @@ export default async function DMMKobetuItemPage({
 									href={Item.affiliateURL || '#'}
 									target="_blank"
 									rel="noopener noreferrer"
-									className="inline-flex items-center justify-center text-lg sm:text-xl font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-full shadow-lg transition-all duration-300 ease-in-out  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 px-6 sm:px-8 py-3 sm:py-4"
+									className="inline-flex items-center justify-center text-lg sm:text-xl font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-sm shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 px-6 sm:px-8 py-3 sm:py-4 min-h-[3.5rem] sm:min-h-[4rem] max-w-[90%] text-center"
 								>
-									<span className="mr-2">{Item.title}の高画質動画を見る</span>
-									<ExternalLink className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse" />
+									<span className="mr-2 break-words">{Item.title}の高画質動画を見る</span>
+									<ExternalLink className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse flex-shrink-0" />
 								</Link>
 							</div>
 						</>

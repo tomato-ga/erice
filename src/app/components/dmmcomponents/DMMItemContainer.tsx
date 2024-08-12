@@ -36,6 +36,8 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 }
 
 export default async function DMMItemContainer({ itemType, from, bgGradient }: DMMItemContainerProps) {
+	console.log('itemTypeitemType: ', itemType)
+
 	const items = await fetchData(itemType)
 
 	if (!items || items.length === 0) {
@@ -64,7 +66,7 @@ export default async function DMMItemContainer({ itemType, from, bgGradient }: D
 	}
 
 	return (
-		<div className={`${bgGradient} rounded-xl shadow-lg p-8 transition duration-300 ease-in-out`}>
+		<div className={`${bgGradient} shadow-lg p-4 sm:p-4 md:p-8 transition duration-300 ease-in-out`}>
 			{from !== 'only' && (
 				<div className="text-center mb-8">
 					<h2 className="text-4xl font-extrabold mb-4">
@@ -76,7 +78,7 @@ export default async function DMMItemContainer({ itemType, from, bgGradient }: D
 						href={`/${itemType}`}
 						className={`inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r ${
 							gradients[itemType]
-						} rounded-full shadow-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-${
+						}  shadow-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-${
 							gradients[itemType].split('-')[1]
 						}-400 focus:ring-opacity-50`}
 					>

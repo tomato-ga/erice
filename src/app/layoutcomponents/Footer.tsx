@@ -9,7 +9,7 @@ const Footer = () => {
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
 					<div>
 						<h3 className="text-cyan-400 text-xl font-semibold mb-4">エロコメスト</h3>
-						<p className="text-gray-400 mb-4">最新の無料エロ動画を紹介しています。</p>
+						<p className="text-gray-400 mb-4">最新のエロ動画を紹介しています。</p>
 					</div>
 					<div>
 						<h3 className="text-cyan-400 text-xl font-semibold mb-4">リンク</h3>

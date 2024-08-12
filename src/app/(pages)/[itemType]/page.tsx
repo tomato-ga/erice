@@ -13,11 +13,11 @@ export default async function DMMGenericPage({ params }: { params: { itemType: s
 		sale: '限定セール'
 	}
 
-	const gradients: Record<ItemType, string> = {
-		todaynew: 'from-green-500 to-blue-500',
-		debut: 'from-yellow-500 to-red-500',
-		feature: 'from-pink-500 to-purple-500',
-		sale: 'from-blue-500 to-purple-500'
+	const gradients: Record<ItemType, { bg: string; text: string }> = {
+		todaynew: { bg: 'from-green-50 to-blue-50', text: 'from-green-500 to-blue-500' },
+		debut: { bg: 'from-yellow-50 to-red-50', text: 'from-yellow-500 to-red-500' },
+		feature: { bg: 'from-pink-50 to-purple-50', text: 'from-pink-500 to-purple-500' },
+		sale: { bg: 'from-blue-50 to-purple-50', text: 'from-blue-500 to-purple-500' }
 	}
 
 	if (!Object.keys(pageTitles).includes(itemType)) {
@@ -30,22 +30,20 @@ export default async function DMMGenericPage({ params }: { params: { itemType: s
 	}
 
 	return (
-		<>
-			<div className="container mx-auto px-4 py-12">
-				<div className="text-center mb-12">
-					<h1 className="text-4xl font-extrabold mb-4">
-						<span className={`text-transparent bg-clip-text bg-gradient-to-r ${gradients[itemType]}`}>
-							{pageTitles[itemType]}
-						</span>
-					</h1>
-					<p className="text-xl text-gray-600 mb-6">
-						最新の{pageTitles[itemType]}をチェックしましょう。お気に入りの作品が見つかるかもしれません！
-					</p>
-				</div>
-				<div id="items">
-					<DMMItemContainer itemType={itemType} from="only" />
-				</div>
+		<div className="w-full">
+			<div className="text-center mb-12">
+				<h1 className="text-4xl font-extrabold mb-4 mt-10">
+					<span className={`text-transparent bg-clip-text bg-gradient-to-r ${gradients[itemType].text}`}>
+						{pageTitles[itemType]}
+					</span>
+				</h1>
+				<p className="text-xl text-gray-600 mb-6">
+					最新の{pageTitles[itemType]}をチェックしましょう。お気に入りの作品が見つかるかもしれません！
+				</p>
 			</div>
-		</>
+			<div className="w-full">
+				<DMMItemContainer itemType={itemType} from="only" bgGradient={`bg-gradient-to-r ${gradients[itemType].bg}`} />
+			</div>
+		</div>
 	)
 }

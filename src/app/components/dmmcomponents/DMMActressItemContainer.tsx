@@ -43,7 +43,7 @@ export default async function DMMActressItemContainer({
 
 	return (
 		<div
-			className={`bg-gradient-to-br ${gradients[actressType]} rounded-2xl p-8 shadow-lg transition duration-300 ease-in-out hover:shadow-xl`}
+			className={`bg-gradient-to-br ${gradients[actressType]} shadow-lg p-4 sm:p-4 md:p-8 transition duration-300 ease-in-out`}
 		>
 			<h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
 				<span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
