@@ -60,7 +60,11 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 			actress_id: item.iteminfo?.actress?.[0]?.id || null,
 			genre: item.iteminfo?.genre ? item.iteminfo?.genre.map((genre) => genre.name) : null,
 			price: item.prices?.price,
-			date: item.date
+			date: item.date,
+			maker: item.iteminfo?.maker ? item.iteminfo?.maker[0]?.name : null,
+			label: item.iteminfo?.label ? item.iteminfo?.label[0]?.name : null,
+			series: item.iteminfo?.series ? item.iteminfo?.series[0]?.name : null,
+			director: item.iteminfo?.director ? item.iteminfo?.director[0]?.name : null
 		}))
 
 		return NextResponse.json(processedData)

@@ -6,6 +6,7 @@ import { handlePageClickCount } from '../../handleclick'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { handleUmamiClick } from '@/lib/umamiTracking'
+import { formatDate } from '@/utils/dmmUtils'
 
 const FavoriteButton = dynamic(() => import('../../Fav/FavButton'), { ssr: false })
 
@@ -53,11 +54,6 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSmallThumbnail = f
 			</div>
 		</div>
 	)
-}
-
-function formatDate(dateString: string): string {
-	const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' }
-	return new Date(dateString).toLocaleDateString('ja-JP', options)
 }
 
 export default ArticleCard

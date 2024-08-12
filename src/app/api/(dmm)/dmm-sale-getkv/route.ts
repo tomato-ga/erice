@@ -82,7 +82,11 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 			genre: item.iteminfo?.genre ? item.iteminfo?.genre.map((genre) => genre.name) : null,
 			listprice: item.salecount ? item.salecount : null,
 			price: item.salePrice ? item.salePrice : null,
-			date: item.date
+			date: item.date,
+			maker: item.iteminfo?.maker ? item.iteminfo?.maker[0]?.name : null,
+			label: item.iteminfo?.label ? item.iteminfo?.label[0]?.name : null,
+			series: item.iteminfo?.series ? item.iteminfo?.series[0]?.name : null,
+			director: item.iteminfo?.director ? item.iteminfo?.director[0]?.name : null
 		}))
 
 		return NextResponse.json(processedData)

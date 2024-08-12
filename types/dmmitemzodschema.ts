@@ -24,15 +24,22 @@ const DMMSaleItemExtraSchema = z.object({
 	listprice: z.string().nullable().optional()
 })
 
+const DMMItemInfo = z.object({
+	maker: z.string().nullable().optional(),
+	label: z.string().nullable().optional(),
+	series: z.string().nullable().optional(),
+	director: z.string().nullable().optional()
+})
+
 // 全てのDMMアイテムに対応するスキーマ
-export const DMMItemSchema = DMMBaseItemSchema.merge(DMMSaleItemExtraSchema.partial())
+export const DMMItemSchema = DMMBaseItemSchema.merge(DMMSaleItemExtraSchema.partial()).merge(DMMItemInfo)
 
 export type DMMItem = z.infer<typeof DMMItemSchema>
 
 // 特定のアイテムタイプに対応するスキーマ
-export const DMMTodayNewItemSchema = DMMBaseItemSchema
-export const DMMDebutItemSchema = DMMBaseItemSchema
-export const DMMFeatureItemSchema = DMMBaseItemSchema
+export const DMMTodayNewItemSchema = DMMBaseItemSchema.merge(DMMItemInfo.partial())
+export const DMMDebutItemSchema = DMMBaseItemSchema.merge(DMMItemInfo.partial())
+export const DMMFeatureItemSchema = DMMBaseItemSchema.merge(DMMItemInfo.partial())
 export const DMMSaleItemSchema = DMMBaseItemSchema.merge(DMMSaleItemExtraSchema)
 
 export type DMMTodayNewItem = z.infer<typeof DMMTodayNewItemSchema>

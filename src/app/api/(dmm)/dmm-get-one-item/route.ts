@@ -1,20 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-
-// Zodスキーマの定義
-const DMMItemSchema = z.object({
-	content_id: z.string(),
-	affiliateURL: z.string(),
-	sampleImageURL: z.array(z.string()).optional(),
-	imageURL: z.string().optional(),
-	title: z.string(),
-	price: z.string().optional(),
-	actress: z.string().optional(),
-	genre: z.array(z.string()).optional()
-})
-
-// ZodスキーマからTypeScript型定義を生成
-type DMMItem = z.infer<typeof DMMItemSchema>
+import { DMMItem } from '../../../../../types/dmmitemzodschema'
 
 // APIエンドポイント
 export async function GET(request: NextRequest): Promise<NextResponse> {

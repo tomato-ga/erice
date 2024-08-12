@@ -38,13 +38,24 @@ async function fetchArticles(cursor: string | null): Promise<WorkerResponse> {
 		throw new Error(`HTTP error! status: ${response.status}`)
 	}
 
-	const data = await response.json()
+	const data: unknown = await response.json()
 
-	if (!data.articles || !Array.isArray(data.articles)) {
-		throw new Error('Invalid response format from worker')
+	if (!isWorkerResponse(data)) {
+		throw new Error('ワーカーからの応答が無効な形式です')
 	}
 
-	return data as WorkerResponse
+	return data
+}
+
+function isWorkerResponse(data: unknown): data is WorkerResponse {
+	return (
+		typeof data === 'object' &&
+		data !== null &&
+		'articles' in data &&
+		Array.isArray((data as WorkerResponse).articles) &&
+		'nextCursor' in data &&
+		'totalCount' in data
+	)
 }
 
 export async function getTotalArticles(): Promise<number> {

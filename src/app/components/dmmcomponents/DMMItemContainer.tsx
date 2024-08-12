@@ -1,7 +1,15 @@
+import Link from 'next/link'
 import { DMMItemProps } from '../../../../types/dmmtypes'
 import DMMItemList from './DMMItemList'
+import { ArrowRight } from 'lucide-react'
 
 export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale'
+
+interface DMMItemContainerProps {
+	itemType: ItemType
+	from: string
+	bgGradient?: string
+}
 
 async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 	let endpoint = ''
@@ -26,7 +34,8 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 	const data: DMMItemProps[] = await response.json()
 	return data
 }
-export default async function DMMItemContainer({ itemType, from }: { itemType: ItemType; from: string }) {
+
+export default async function DMMItemContainer({ itemType, from, bgGradient }: DMMItemContainerProps) {
 	const items = await fetchData(itemType)
 
 	if (!items || items.length === 0) {
@@ -34,21 +43,49 @@ export default async function DMMItemContainer({ itemType, from }: { itemType: I
 	}
 
 	const gradients = {
-		todaynew: 'from-green-50 to-blue-50',
-		debut: 'from-yellow-50 to-red-50',
-		feature: 'from-pink-50 to-purple-50',
-		sale: 'from-blue-50 to-purple-50'
+		todaynew: 'from-green-500 to-blue-500',
+		debut: 'from-yellow-500 to-red-500',
+		feature: 'from-pink-500 to-purple-500',
+		sale: 'from-blue-500 to-purple-500'
+	}
+
+	const titles = {
+		todaynew: '今日配信の新作',
+		debut: 'デビュー作品',
+		feature: '注目作品',
+		sale: '限定セール'
+	}
+
+	const linkTexts = {
+		todaynew: '全ての新作商品を見る',
+		debut: '全てのデビュー作品を見る',
+		feature: '全ての注目作品を見る',
+		sale: '全ての限定セール商品を見る'
 	}
 
 	return (
-		<>
-			{items && items.length > 0 && (
-				<div
-					className={`bg-gradient-to-r ${gradients[itemType]} rounded-xl p-6 md:p-8 transition duration-300 ease-in-out`}
-				>
-					<DMMItemList items={items} itemType={itemType} from={from} />
+		<div className={`${bgGradient} rounded-xl shadow-lg p-8 transition duration-300 ease-in-out`}>
+			{from !== 'only' && (
+				<div className="text-center mb-8">
+					<h2 className="text-4xl font-extrabold mb-4">
+						<span className={`text-transparent bg-clip-text bg-gradient-to-r ${gradients[itemType]}`}>
+							{titles[itemType]}
+						</span>
+					</h2>
+					<Link
+						href={`/${itemType}`}
+						className={`inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r ${
+							gradients[itemType]
+						} rounded-full shadow-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-${
+							gradients[itemType].split('-')[1]
+						}-400 focus:ring-opacity-50`}
+					>
+						{linkTexts[itemType]}
+						<ArrowRight className="ml-2 h-5 w-5 animate-bounce" />
+					</Link>
 				</div>
 			)}
-		</>
+			<DMMItemList items={items} itemType={itemType} from={from} />
+		</div>
 	)
 }
