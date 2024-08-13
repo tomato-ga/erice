@@ -25,10 +25,22 @@ const DMMSaleItemExtraSchema = z.object({
 })
 
 const DMMItemInfo = z.object({
-	maker: z.string().nullable().optional(),
-	label: z.string().nullable().optional(),
-	series: z.string().nullable().optional(),
-	director: z.string().nullable().optional()
+	maker: z
+		.union([z.string(), z.array(z.string())])
+		.nullable()
+		.optional(),
+	label: z
+		.union([z.string(), z.array(z.string())])
+		.nullable()
+		.optional(),
+	series: z
+		.union([z.string(), z.array(z.string())])
+		.nullable()
+		.optional(),
+	director: z
+		.union([z.string(), z.array(z.string())])
+		.nullable()
+		.optional()
 })
 
 // 全てのDMMアイテムに対応するスキーマ

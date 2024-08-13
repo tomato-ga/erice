@@ -13,23 +13,34 @@ import {
 interface PaginationComponentProps {
 	currentPage: number
 	totalPages: number
-	actress?: string
-	genre?: string
+	category?: string
+	categoryType: 'actress' | 'genre'
 }
 
-const PaginationComponent: React.FC<PaginationComponentProps> = ({ currentPage, totalPages, actress, genre }) => {
+const PaginationComponent: React.FC<PaginationComponentProps> = ({
+	currentPage,
+	totalPages,
+	category,
+	categoryType
+}) => {
 	const pageNumbers = useMemo(() => {
 		const start = Math.max(1, Math.min(currentPage - 2, totalPages - 4))
 		return Array.from({ length: Math.min(5, totalPages) }, (_, i) => start + i)
 	}, [currentPage, totalPages])
 
 	const getHref = (page: number) => {
-		if (actress) {
+		if (categoryType === 'actress') {
 			if (page === 1) {
-				return `/actress/${encodeURIComponent(actress)}`
+				return `/actress/${encodeURIComponent(category as string)}`
 			}
-			return `/actress/${encodeURIComponent(actress)}/page/${page}`
+			return `/actress/${encodeURIComponent(category as string)}/page/${page}`
+		} else if (categoryType === 'genre') {
+			if (page === 1) {
+				return `/genre/${encodeURIComponent(category as string)}`
+			}
+			return `/genre/${encodeURIComponent(category as string)}/page/${page}`
 		}
+		// どちらでもない場合はルートパスへ
 		if (page === 1) {
 			return '/'
 		}

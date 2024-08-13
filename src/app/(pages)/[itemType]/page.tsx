@@ -11,7 +11,8 @@ export default async function DMMGenericPage({ params }: { params: { itemType: s
 		debut: 'デビュー作品',
 		feature: '注目作品',
 		sale: '限定セール',
-		actress: 'アクトレス'
+		actress: 'アクトレス',
+		genre: 'ジャンル'
 	}
 
 	const gradients: Record<ItemType, { bg: string; text: string }> = {
@@ -19,7 +20,8 @@ export default async function DMMGenericPage({ params }: { params: { itemType: s
 		debut: { bg: 'from-yellow-50 to-red-50', text: 'from-yellow-500 to-red-500' },
 		feature: { bg: 'from-pink-50 to-purple-50', text: 'from-pink-500 to-purple-500' },
 		sale: { bg: 'from-blue-50 to-purple-50', text: 'from-blue-500 to-purple-500' },
-		actress: { bg: 'from-blue-50 to-purple-50', text: 'from-red-500 to-blue-500' }
+		actress: { bg: 'from-blue-50 to-purple-50', text: 'from-red-500 to-blue-500' },
+		genre: { bg: 'from-blue-50 to-purple-50', text: 'from-red-500 to-blue-500' }
 	}
 
 	if (!Object.keys(pageTitles).includes(itemType)) {

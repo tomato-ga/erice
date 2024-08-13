@@ -1,4 +1,4 @@
-// /Volumes/SSD_1TB/erice2/erice/src/app/(pages)/actress/[[...slug]]/page.tsx
+// /Volumes/SSD_1TB/erice2/erice/src/app/(pages)/genre/[[...slug]]/page.tsx
 
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
@@ -14,10 +14,10 @@ interface PageProps {
 const SITE_NAME = 'エロコメスト'
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-	const [actressname, , page] = params.slug || []
+	const [genrename, , page] = params.slug || []
 	const currentPage = page ? parseInt(page, 10) : 1
 
-	if (!actressname) {
+	if (!genrename) {
 		return {
 			title: 'ページが見つかりません | ' + SITE_NAME,
 			description: '指定されたページは存在しません。'
@@ -27,8 +27,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	try {
 		// APIリクエストを行い、女優名とページ番号から必要なメタデータを取得する
 		// ここでは仮のタイトルと説明を設定
-		const pageTitle = `女優: ${actressname} ${currentPage > 1 ? ` - ページ ${currentPage}` : ''}`
-		const description = `女優 ${actressname} の動画一覧です。${currentPage}ページ目を表示しています。`
+		const pageTitle = `女優: ${genrename} ${currentPage > 1 ? ` - ページ ${currentPage}` : ''}`
+		const description = `女優 ${genrename} の動画一覧です。${currentPage}ページ目を表示しています。`
 
 		return {
 			title: pageTitle,
@@ -45,20 +45,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	} catch (error) {
 		console.error('[Server] Failed to fetch metadata:', error)
 		return {
-			title: `女優: ${actressname}`,
-			description: `女優 ${actressname} の動画一覧です。`
+			title: `女優: ${genrename}`,
+			description: `女優 ${genrename} の動画一覧です。`
 		}
 	}
 }
 
-export default async function ActressPaginationPage({ params }: PageProps) {
+export default async function GenrePaginationPage({ params }: PageProps) {
 	const { slug = [] } = params
 	let currentPage = 1
-	let actressname: string | undefined
+	let genrename: string | undefined
 
 	// URLパターンの解析
 	if (slug.length >= 1) {
-		actressname = decodeURIComponent(slug[0])
+		genrename = decodeURIComponent(slug[0])
 		if (slug.length === 3 && slug[1] === 'page') {
 			currentPage = parseInt(slug[2], 10)
 		} else if (slug.length !== 1) {
@@ -68,14 +68,14 @@ export default async function ActressPaginationPage({ params }: PageProps) {
 		notFound()
 	}
 
-	if (isNaN(currentPage) || currentPage < 1 || !actressname) {
+	if (isNaN(currentPage) || currentPage < 1 || !genrename) {
 		notFound()
 	}
 
 	try {
 		// APIリクエストのURLを出力
-		const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-pagination?actress=${encodeURIComponent(
-			actressname
+		const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-genre-pagination?genre=${encodeURIComponent(
+			genrename
 		)}&page=${currentPage}`
 		console.log('APIリクエストURL:', apiUrl) // リクエストURLを出力
 
@@ -92,7 +92,7 @@ export default async function ActressPaginationPage({ params }: PageProps) {
 			items: DMMItemProps[]
 			currentPage: number
 			totalPages: number
-			actress?: string
+			genre?: string
 		}
 
 		// レスポンスデータを出力
@@ -106,8 +106,8 @@ export default async function ActressPaginationPage({ params }: PageProps) {
 						items={data.items}
 						currentPage={data.currentPage}
 						totalPages={data.totalPages}
-						category={actressname}
-						categoryType="actress"
+						category={genrename}
+						categoryType="genre"
 					/>
 				</Suspense>
 			</section>

@@ -229,4 +229,4 @@ export interface DMMSaleItem extends DMMBaseItem {
 // C. DMMItemProps型を再定義
 export type DMMItemProps = DMMBaseItem & Partial<DMMSaleItem>
 
-export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale' | 'actress'
+export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale' | 'actress' | 'genre'

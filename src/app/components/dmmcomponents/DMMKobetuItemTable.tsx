@@ -19,8 +19,8 @@ const ItemDetailsTable = ({ item }: { item: DMMItem }) => {
 		{ label: '品番', value: item.content_id, icon: '🔢' },
 		{ label: 'メーカー', value: item.maker, icon: '🏭' },
 		{ label: 'レーベル', value: item.label, icon: '🏷️' },
-		{ label: 'シリーズ', value: item.series, icon: '📺' },
-		{ label: '監督', value: item.director, icon: '🎬' }
+		{ label: 'シリーズ', value: item.series || '情報なし', icon: '📺' },
+		{ label: '監督', value: item.director || '情報なし', icon: '🎬' }
 	] satisfies ItemDetailsTableProps[]
 
 	console.log('item: ', item)
@@ -42,7 +42,7 @@ const ItemDetailsTable = ({ item }: { item: DMMItem }) => {
 											<Link
 												key={index}
 												href={`/${label === '出演者' ? 'actress' : 'genre'}/${encodeURIComponent(item)}`}
-												className="text-base text-blue-900 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500"
+												className="text-base text-blue-600 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500"
 											>
 												{item}
 											</Link>
@@ -52,7 +52,7 @@ const ItemDetailsTable = ({ item }: { item: DMMItem }) => {
 											<Link
 												key={index}
 												href={`/${label === '出演者' ? 'actress' : 'genre'}/${encodeURIComponent(item.trim())}`}
-												className="text-base text-blue-900 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500"
+												className="text-base text-blue-600 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500"
 											>
 												{item.trim()}
 											</Link>

@@ -138,8 +138,16 @@ export default async function DMMKobetuItemPage({
 	try {
 		if (searchParams.itemType) {
 			Item = await fetchData(searchParams.itemType, params.contentId)
+
+			if (!!Item) {
+				console.log('fetchData: ', Item)
+			}
 		} else {
 			Item = await fetchItemByContentId(params.contentId)
+
+			if (!!Item) {
+				console.log('fetchItemByContentId: ', Item)
+			}
 		}
 	} catch (error) {
 		console.error('Error fetching item:', error)

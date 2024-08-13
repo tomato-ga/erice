@@ -50,7 +50,8 @@ export default async function DMMItemContainer({ itemType, from, bgGradient }: D
 		debut: 'from-yellow-500 to-red-500',
 		feature: 'from-pink-500 to-purple-500',
 		sale: 'from-blue-500 to-purple-500',
-		actress: 'from-blue-500 to-purple-500'
+		actress: 'from-blue-500 to-purple-500',
+		genre: 'from-blue-500 to-purple-500'
 	}
 
 	const titles = {
@@ -58,7 +59,8 @@ export default async function DMMItemContainer({ itemType, from, bgGradient }: D
 		debut: 'デビュー作品',
 		feature: '注目作品',
 		sale: '限定セール',
-		actress: 'アクトレス'
+		actress: 'アクトレス',
+		genre: 'ジャンル'
 	}
 
 	const linkTexts = {
@@ -66,7 +68,8 @@ export default async function DMMItemContainer({ itemType, from, bgGradient }: D
 		debut: '全てのデビュー作品を見る',
 		feature: '全ての注目作品を見る',
 		sale: '全ての限定セール商品を見る',
-		actress: '全てのアクトレスを見る'
+		actress: '全てのアクトレスを見る',
+		genre: '全てのジャンルを見る'
 	}
 
 	return (
