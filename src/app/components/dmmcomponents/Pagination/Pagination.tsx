@@ -26,52 +26,25 @@ export default function DMMItemContainerPagination({
 	}
 
 	const gradients = {
-		todaynew: 'from-green-500 to-blue-500',
-		debut: 'from-yellow-500 to-red-500',
-		feature: 'from-pink-500 to-purple-500',
-		sale: 'from-blue-500 to-purple-500',
-		actress: 'from-blue-500 to-purple-500'
+		actress: 'from-blue-50 to-purple-50'
 	}
 
 	const titles = {
-		todaynew: '今日配信の新作',
-		debut: 'デビュー作品',
-		feature: '注目作品',
-		sale: '限定セール',
-		actress: 'アクトレス'
-	}
-
-	const linkTexts = {
-		todaynew: '全ての新作商品を見る',
-		debut: '全てのデビュー作品を見る',
-		feature: '全ての注目作品を見る',
-		sale: '全ての限定セール商品を見る',
-		actress: '全てのアクトレスを見る'
+		actress: `${actress}の動画`
 	}
 
 	const itemType = 'actress' // デフォルト値を設定
 
 	return (
 		<div
-			className={`bg-gradient-to-r ${gradients[itemType]} shadow-lg p-4 sm:p-4 md:p-8 transition duration-300 ease-in-out`}
+			className={`bg-gradient-to-r from-blue-50 to-purple-50 shadow-lg p-4 sm:p-4 md:p-8 transition duration-300 ease-in-out`}
 		>
 			<div className="text-center mb-8">
 				<h2 className="text-4xl font-extrabold mb-4">
-					<span className={`text-transparent bg-clip-text bg-gradient-to-r ${gradients[itemType]}`}>
+					<span className={`text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500`}>
 						{titles[itemType]}
 					</span>
 				</h2>
-				<Link
-					href={`/${itemType}`}
-					className={`inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r ${
-						gradients[itemType]
-					}  shadow-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-${
-						gradients[itemType].split('-')[1]
-					}-400 focus:ring-opacity-50`}
-				>
-					{linkTexts[itemType]}
-					<ArrowRight className="ml-2 h-5 w-5 animate-bounce" />
-				</Link>
 			</div>
 			<DMMItemList items={items} itemType={itemType} from="pagination" />
 			<PaginationComponent currentPage={currentPage} totalPages={totalPages} actress={actress} />{' '}

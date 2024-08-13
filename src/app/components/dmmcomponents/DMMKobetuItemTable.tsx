@@ -4,17 +4,26 @@ import Link from 'next/link'
 import { DMMItem } from '../../../../types/dmmitemzodschema'
 import { formatDate } from '@/utils/dmmUtils'
 
+type ItemDetailsTableProps = {
+	label: string
+	value: string | string[] | null | undefined
+	icon: string
+}
+
 const ItemDetailsTable = ({ item }: { item: DMMItem }) => {
 	const details = [
 		{ label: 'タイトル', value: item.title, icon: '🎬' },
 		{ label: '発売日', value: item.date ? formatDate(item.date) : '情報なし', icon: '📅' },
-		{ label: '出演者', value: item.actress, icon: '🌟' },
+		{ label: '出演者', value: item.actress || '情報なし', icon: '😍' },
+		{ label: 'ジャンル', value: item.genre || '情報なし', icon: '📚' },
 		{ label: '品番', value: item.content_id, icon: '🔢' },
 		{ label: 'メーカー', value: item.maker, icon: '🏭' },
 		{ label: 'レーベル', value: item.label, icon: '🏷️' },
-		{ label: 'シリーズ', value: item.series, icon: '📚' },
+		{ label: 'シリーズ', value: item.series, icon: '📺' },
 		{ label: '監督', value: item.director, icon: '🎬' }
-	]
+	] satisfies ItemDetailsTableProps[]
+
+	console.log('item: ', item)
 
 	return (
 		<div className="space-y-3">
@@ -26,13 +35,32 @@ const ItemDetailsTable = ({ item }: { item: DMMItem }) => {
 						</span>
 						<div className="flex-grow">
 							<h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">{label}</h3>
-							{label === '出演者' && value ? ( // 出演者の場合のみ Link コンポーネントで囲む
-								<Link
-									href={`/actress/${encodeURIComponent(value)}`}
-									className="text-base text-gray-900 dark:text-gray-100 break-words"
-								>
-									{value}
-								</Link>
+							{(label === '出演者' || label === 'ジャンル') && value ? (
+								<div>
+									{Array.isArray(value) ? (
+										value.map((item, index) => (
+											<Link
+												key={index}
+												href={`/${label === '出演者' ? 'actress' : 'genre'}/${encodeURIComponent(item)}`}
+												className="text-base text-blue-900 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500"
+											>
+												{item}
+											</Link>
+										))
+									) : typeof value === 'string' ? (
+										value.split(',').map((item, index) => (
+											<Link
+												key={index}
+												href={`/${label === '出演者' ? 'actress' : 'genre'}/${encodeURIComponent(item.trim())}`}
+												className="text-base text-blue-900 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500"
+											>
+												{item.trim()}
+											</Link>
+										))
+									) : (
+										<p className="text-base text-gray-900 dark:text-gray-100 break-words">情報なし</p>
+									)}
+								</div>
 							) : (
 								<p className="text-base text-gray-900 dark:text-gray-100 break-words">{value || '情報なし'}</p>
 							)}
