@@ -19,7 +19,7 @@ const ItemDetailsTable = ({ item }: { item: DMMItem }) => {
 		{ label: '品番', value: item.content_id, icon: '🔢' },
 		{ label: 'メーカー', value: item.maker, icon: '🏭' },
 		{ label: 'レーベル', value: item.label, icon: '🏷️' },
-		{ label: 'シリーズ', value: item.series || '情報なし', icon: '📺' },
+		{ label: 'シリーズ', value: item.series && item.series.length > 0 ? item.series : '情報なし', icon: '📺' },
 		{ label: '監督', value: item.director || '情報なし', icon: '🎬' }
 	] satisfies ItemDetailsTableProps[]
 
@@ -35,7 +35,7 @@ const ItemDetailsTable = ({ item }: { item: DMMItem }) => {
 						</span>
 						<div className="flex-grow">
 							<h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">{label}</h3>
-							{(label === '出演者' || label === 'ジャンル') && value ? (
+							{(label === '出演者' || label === 'ジャンル') && value !== '情報なし' ? (
 								<div>
 									{Array.isArray(value) ? (
 										value.map((item, index) => (

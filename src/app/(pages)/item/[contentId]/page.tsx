@@ -28,7 +28,7 @@ interface Props {
 	params: { contentId: string }
 }
 
-// itemType を使用したデータフェッチ関数
+
 // itemType を使用したデータフェッチ関数
 async function fetchData(itemType: ItemType, contentId: string): Promise<DMMItem | null> {
 	let endpoint = ''
