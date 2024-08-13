@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { DMMItemProps } from '../../../../types/dmmtypes'
 import DMMItemList from './DMMItemList'
 import { ArrowRight } from 'lucide-react'
+import { revalidatePath } from 'next/cache'
 
 export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale'
 
@@ -33,6 +34,7 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 	// todo revalidatepathなどのアクションが必要そう
 	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, { cache: 'no-store' })
 	const data: DMMItemProps[] = await response.json()
+	revalidatePath('/' + itemType)
 	return data
 }
 

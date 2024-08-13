@@ -1,3 +1,5 @@
+// src/app/(pages)/item/[contentId]/page.tsx
+
 import { Suspense } from 'react'
 import { Metadata } from 'next'
 import dynamic from 'next/dynamic'
@@ -20,11 +22,13 @@ import { z } from 'zod'
 import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
 import { DMMItemProps } from '../../../../../types/dmmtypes'
 import RelatedItemsScroll from '@/app/components/dmmcomponents/Related/RelatedItemsScroll'
+import { revalidateTag } from 'next/cache'
 
 interface Props {
 	params: { contentId: string }
 }
 
+// itemType を使用したデータフェッチ関数
 // itemType を使用したデータフェッチ関数
 async function fetchData(itemType: ItemType, contentId: string): Promise<DMMItem | null> {
 	let endpoint = ''
@@ -52,7 +56,11 @@ async function fetchData(itemType: ItemType, contentId: string): Promise<DMMItem
 	}
 
 	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`)
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
+			next: {
+				tags: [`item-${contentId}`]
+			}
+		})
 		const data: unknown = await response.json()
 
 		// Zodバリデーションを実行
@@ -60,6 +68,7 @@ async function fetchData(itemType: ItemType, contentId: string): Promise<DMMItem
 		const item = validatedData.find((item) => item.content_id === contentId)
 
 		if (item) {
+			revalidateTag(`item-${item.content_id}`)
 			return item
 		}
 
@@ -77,7 +86,11 @@ async function fetchData(itemType: ItemType, contentId: string): Promise<DMMItem
 // itemType を使用しないデータフェッチ関数
 async function fetchItemByContentId(contentId: string): Promise<DMMItem | null> {
 	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-one-item?content_id=${contentId}`)
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-one-item?content_id=${contentId}`, {
+			next: {
+				tags: [`item-${contentId}`]
+			}
+		})
 		const data: unknown = await response.json()
 
 		console.log('Raw API response:', data) // APIレスポンスの詳細をログ出力
@@ -85,6 +98,8 @@ async function fetchItemByContentId(contentId: string): Promise<DMMItem | null> 
 		if (Array.isArray(data) && data.length > 0) {
 			const parseResult = DMMItemSchema.safeParse(data[0])
 			if (parseResult.success) {
+				revalidateTag(`item-${parseResult.data.content_id}`)
+
 				return parseResult.data
 			} else {
 				console.error('Validation error:', parseResult.error.errors)
@@ -132,11 +147,11 @@ export default async function DMMKobetuItemPage({
 
 	console.log('Found Item:', Item)
 
-	if (!params.contentId || !Item) {
+	if (!Item) {
 		return (
 			<div className="container mx-auto px-2 py-6">
 				<h1 className="text-2xl font-bold text-red-600">
-					{searchParams.itemType ? searchParams.itemType : '指定された'}のアイテムが見つかりませんでし
+					{searchParams.itemType ? searchParams.itemType : '指定された'}のアイテムが見つかりませんでした
 				</h1>
 				<p>アイテムが存在しないか、取得中にエラーが発生しました。</p>
 			</div>
