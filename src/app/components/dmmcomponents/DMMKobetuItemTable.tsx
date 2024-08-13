@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { DMMItem } from '../../../../types/dmmitemzodschema'
 import { formatDate } from '@/utils/dmmUtils'
 
@@ -25,7 +26,16 @@ const ItemDetailsTable = ({ item }: { item: DMMItem }) => {
 						</span>
 						<div className="flex-grow">
 							<h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">{label}</h3>
-							<p className="text-base text-gray-900 dark:text-gray-100 break-words">{value || '情報なし'}</p>
+							{label === '出演者' && value ? ( // 出演者の場合のみ Link コンポーネントで囲む
+								<Link
+									href={`/actress/${encodeURIComponent(value)}`}
+									className="text-base text-gray-900 dark:text-gray-100 break-words"
+								>
+									{value}
+								</Link>
+							) : (
+								<p className="text-base text-gray-900 dark:text-gray-100 break-words">{value || '情報なし'}</p>
+							)}
 						</div>
 					</div>
 				</div>

@@ -3,7 +3,7 @@
 import { useRef } from 'react'
 import Link from 'next/link'
 import { DMMItemProps } from '../../../../../types/dmmtypes'
-import { ItemType } from '../DMMItemContainer'
+import { ItemType } from '../../../../../types/dmmtypes'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 
 interface RelatedItemsScrollProps {
@@ -19,7 +19,8 @@ const RelatedItemsScroll: React.FC<RelatedItemsScrollProps> = ({ items, itemType
 		todaynew: 'from-green-500 to-blue-500',
 		debut: 'from-yellow-500 to-red-500',
 		feature: 'from-pink-500 to-purple-500',
-		sale: 'from-blue-500 to-purple-500'
+		sale: 'from-blue-500 to-purple-500',
+		actress: 'from-blue-500 to-purple-500'
 	}
 
 	const scroll = (direction: 'left' | 'right') => {

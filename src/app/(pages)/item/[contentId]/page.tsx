@@ -4,7 +4,7 @@ import { Suspense } from 'react'
 import { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { ItemType } from '@/app/components/dmmcomponents/DMMItemContainer'
+import { ItemType } from '../../../../../types/dmmtypes'
 import {
 	DMMDebutItem,
 	DMMDebutItemSchema,

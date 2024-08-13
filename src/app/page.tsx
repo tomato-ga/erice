@@ -28,6 +28,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 		return <ErrorDisplay message="記��の取得に失敗しました。後でもう一度お試しください。" />
 	}
 
+
 	return (
 		<>
 			<section className="space-y-16 py-12">

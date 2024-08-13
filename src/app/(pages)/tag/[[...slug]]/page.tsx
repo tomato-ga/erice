@@ -1,3 +1,5 @@
+// /Volumes/SSD_1TB/erice2/erice/src/app/(pages)/tag/[[...slug]]/page.tsx
+
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'

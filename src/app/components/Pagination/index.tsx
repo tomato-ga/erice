@@ -13,21 +13,22 @@ import {
 interface PaginationComponentProps {
 	currentPage: number
 	totalPages: number
-	keyword?: string
+	actress?: string
+	genre?: string
 }
 
-const PaginationComponent: React.FC<PaginationComponentProps> = ({ currentPage, totalPages, keyword }) => {
+const PaginationComponent: React.FC<PaginationComponentProps> = ({ currentPage, totalPages, actress, genre }) => {
 	const pageNumbers = useMemo(() => {
 		const start = Math.max(1, Math.min(currentPage - 2, totalPages - 4))
 		return Array.from({ length: Math.min(5, totalPages) }, (_, i) => start + i)
 	}, [currentPage, totalPages])
 
 	const getHref = (page: number) => {
-		if (keyword) {
+		if (actress) {
 			if (page === 1) {
-				return `/tag/${encodeURIComponent(keyword)}`
+				return `/actress/${encodeURIComponent(actress)}`
 			}
-			return `/tag/${encodeURIComponent(keyword)}/page/${page}`
+			return `/actress/${encodeURIComponent(actress)}/page/${page}`
 		}
 		if (page === 1) {
 			return '/'
