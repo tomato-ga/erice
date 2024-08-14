@@ -1,8 +1,3 @@
-// How To
-// const actressData = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-pagination?actress=五条恋&page=1`)
-// const acdata = await actressData.json()
-// console.log('actressData:', acdata)
-
 import { NextRequest, NextResponse } from 'next/server'
 
 const WORKER_URL = process.env.DMM_ACTRESS_PAGINATION_WORKER_URL
@@ -15,9 +10,8 @@ interface APIResponse {
 }
 
 export async function GET(request: NextRequest) {
-	const { searchParams } = new URL(request.url)
-	const actress = searchParams.get('actress')
-	const page = searchParams.get('page') || '1'
+	const actress = request.nextUrl.searchParams.get('actress')
+	const page = request.nextUrl.searchParams.get('page') || '1'
 
 	// APIキーをヘッダーに追加 (必要に応じて)
 	const headers = new Headers()
@@ -31,11 +25,6 @@ export async function GET(request: NextRequest) {
 	try {
 		const controller = new AbortController()
 		const timeoutId = setTimeout(() => controller.abort(), 5000) // 5秒タイムアウト
-
-		// リクエスト情報を出力
-		// console.log('APIルートリクエスト:', request)
-		// console.log('APIルートリクエストURL:', `${WORKER_URL}/items-by-actress?${apiParams}`) // リクエストURLを出力
-		// console.log('APIルートリクエストヘッダー:', headers) // リクエストヘッダーを出力
 
 		const response = await fetch(`${WORKER_URL}/items-by-actress?${apiParams}`, {
 			signal: controller.signal,

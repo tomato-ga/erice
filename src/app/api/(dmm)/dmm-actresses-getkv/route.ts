@@ -27,8 +27,7 @@ async function fetchFromWorker(endpoint: string): Promise<NewActressResponse | A
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
 	try {
-		const { searchParams } = new URL(request.url)
-		const type = searchParams.get('type') as ActressType | null
+		const type = request.nextUrl.searchParams.get('type') as ActressType | null
 
 		let data: NewActressResponse | AllContentResponse
 

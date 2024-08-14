@@ -1,8 +1,3 @@
-// How To
-// const genreData = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-genre-pagination?genre=五条恋&page=1`)
-// const acdata = await genreData.json()
-// console.log('genreData:', acdata)
-
 import { NextRequest, NextResponse } from 'next/server'
 
 const WORKER_URL = process.env.DMM_GENRE_PAGINATION_WORKER_URL
@@ -14,9 +9,8 @@ interface APIResponse {
 }
 
 export async function GET(request: NextRequest) {
-	const { searchParams } = new URL(request.url)
-	const genre = searchParams.get('genre')
-	const page = searchParams.get('page') || '1'
+	const genre = request.nextUrl.searchParams.get('genre')
+	const page = request.nextUrl.searchParams.get('page') || '1'
 
 	// APIキーをヘッダーに追加 (必要に応じて)
 	const headers = new Headers()
@@ -28,11 +22,6 @@ export async function GET(request: NextRequest) {
 	}
 
 	try {
-		// リクエスト情報を出力
-		// console.log('APIルートリクエスト:', request)
-		// console.log('APIルートリクエストURL:', `${WORKER_URL}/items-by-genre?${apiParams}`) // リクエストURLを出力
-		// console.log('APIルートリクエストヘッダー:', headers) // リクエストヘッダーを出力
-
 		const response = await fetch(`${WORKER_URL}/items-by-genre?${apiParams}`, {
 			headers: headers,
 			cache: 'force-cache'
@@ -48,7 +37,6 @@ export async function GET(request: NextRequest) {
 		}
 
 		const data = (await response.json()) as unknown
-		// console.log('api/items-by-genre:', data)
 
 		// レスポンスデータのバリデーション
 		if (
@@ -59,9 +47,6 @@ export async function GET(request: NextRequest) {
 			typeof (data as APIResponse).totalPages === 'number'
 		) {
 			const validatedData = data as APIResponse
-
-			// レスポンスデータを出力
-			// console.log('APIルートレスポンス:', validatedData)
 
 			return NextResponse.json(validatedData, {
 				headers: {
