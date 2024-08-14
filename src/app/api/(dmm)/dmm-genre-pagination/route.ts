@@ -29,20 +29,14 @@ export async function GET(request: NextRequest) {
 	}
 
 	try {
-		const controller = new AbortController()
-		const timeoutId = setTimeout(() => controller.abort(), 5000) // 5秒タイムアウト
-
 		// リクエスト情報を出力
-		console.log('APIルートリクエスト:', request)
-		console.log('APIルートリクエストURL:', `${WORKER_URL}/items-by-genre?${apiParams}`) // リクエストURLを出力
-		console.log('APIルートリクエストヘッダー:', headers) // リクエストヘッダーを出力
+		// console.log('APIルートリクエスト:', request)
+		// console.log('APIルートリクエストURL:', `${WORKER_URL}/items-by-genre?${apiParams}`) // リクエストURLを出力
+		// console.log('APIルートリクエストヘッダー:', headers) // リクエストヘッダーを出力
 
 		const response = await fetch(`${WORKER_URL}/items-by-genre?${apiParams}`, {
-			signal: controller.signal,
 			headers: headers // APIキーをヘッダーに追加
 		})
-
-		clearTimeout(timeoutId)
 
 		if (!response.ok) {
 			const errorData = await response.json().catch(() => ({}))
@@ -54,7 +48,7 @@ export async function GET(request: NextRequest) {
 		}
 
 		const data = (await response.json()) as unknown
-		console.log('api/items-by-genre:', data)
+		// console.log('api/items-by-genre:', data)
 
 		// レスポンスデータのバリデーション
 		if (
@@ -67,7 +61,7 @@ export async function GET(request: NextRequest) {
 			const validatedData = data as APIResponse
 
 			// レスポンスデータを出力
-			console.log('APIルートレスポンス:', validatedData)
+			// console.log('APIルートレスポンス:', validatedData)
 
 			return NextResponse.json(validatedData, {
 				headers: {

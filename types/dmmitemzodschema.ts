@@ -16,6 +16,35 @@ const DMMBaseItemSchema = z.object({
 	actress_id: z.number().nullable().optional()
 })
 
+/////////////////// 商品個別ページのfetch用スキーマ /////////////////////
+export const DMMItemMainResponseSchema = z.object({
+	content_id: z.string(),
+	affiliateURL: z.string().url(),
+	sampleImageURL: z.array(z.string()).nullable().optional(),
+	imageURL: z.string().url(),
+	title: z.string()
+})
+
+export type DMMItemMainResponse = z.infer<typeof DMMItemMainResponseSchema>
+
+/////////////////// 商品詳細ページのfetch用スキーマ /////////////////////
+
+/////////////////// 商品詳細ページのfetch用スキーマ /////////////////////
+export const DMMItemDetailResponseSchema = z.object({
+	date: z.string().nullable().optional(),
+	price: z.string().nullable().optional(),
+	actress: z.string().nullable().optional(),
+	genre: z.array(z.string()).nullable().optional(),
+	director: z.array(z.string()).nullable().optional(),
+	label: z.array(z.string()).nullable().optional(),
+	series: z.array(z.string()).nullable().optional(),
+	maker: z.array(z.string()).nullable().optional()
+})
+
+export type DMMItemDetailResponse = z.infer<typeof DMMItemDetailResponseSchema>
+
+/////////////////// 商品詳細ページのfetch用スキーマ /////////////////////
+
 // セールアイテム特有のプロパティ
 const DMMSaleItemExtraSchema = z.object({
 	salecount: z.string().nullable().optional(),

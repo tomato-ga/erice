@@ -33,9 +33,9 @@ export async function GET(request: NextRequest) {
 		const timeoutId = setTimeout(() => controller.abort(), 5000) // 5秒タイムアウト
 
 		// リクエスト情報を出力
-		console.log('APIルートリクエスト:', request)
-		console.log('APIルートリクエストURL:', `${WORKER_URL}/items-by-actress?${apiParams}`) // リクエストURLを出力
-		console.log('APIルートリクエストヘッダー:', headers) // リクエストヘッダーを出力
+		// console.log('APIルートリクエスト:', request)
+		// console.log('APIルートリクエストURL:', `${WORKER_URL}/items-by-actress?${apiParams}`) // リクエストURLを出力
+		// console.log('APIルートリクエストヘッダー:', headers) // リクエストヘッダーを出力
 
 		const response = await fetch(`${WORKER_URL}/items-by-actress?${apiParams}`, {
 			signal: controller.signal,

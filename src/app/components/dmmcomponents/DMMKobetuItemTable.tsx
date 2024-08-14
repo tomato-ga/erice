@@ -1,16 +1,20 @@
-'use client'
-
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { DMMItem } from '../../../../types/dmmitemzodschema'
-import { formatDate } from '@/utils/dmmUtils'
+import { DMMItemDetailResponse } from '../../../../types/dmmitemzodschema'
+import { fetchItemDetailByContentId } from '../dmmcomponents/fetch/itemFetchers'
 
-type ItemDetailsTableProps = {
+const formatDate = (dateString: string) => {
+	const date = new Date(dateString)
+	return date.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })
+}
+
+interface ItemDetailsTableProps {
 	label: string
-	value: string | string[] | null | undefined
+	value: string | string[] | undefined | null
 	icon: string
 }
 
-const ItemDetailsTable = ({ item }: { item: DMMItem }) => {
+const ItemDetailsTable = ({ item }: { item: DMMItemDetailResponse & { title: string; content_id: string } }) => {
 	const details = [
 		{ label: 'タイトル', value: item.title, icon: '🎬' },
 		{ label: '発売日', value: item.date ? formatDate(item.date) : '情報なし', icon: '📅' },
@@ -22,8 +26,6 @@ const ItemDetailsTable = ({ item }: { item: DMMItem }) => {
 		{ label: 'シリーズ', value: item.series && item.series.length > 0 ? item.series : '情報なし', icon: '📺' },
 		{ label: '監督', value: item.director || '情報なし', icon: '🎬' }
 	] satisfies ItemDetailsTableProps[]
-
-	console.log('item: ', item)
 
 	return (
 		<div className="space-y-3">
@@ -72,14 +74,33 @@ const ItemDetailsTable = ({ item }: { item: DMMItem }) => {
 	)
 }
 
-// 呼び出し元のコンポーネント
-const ProductDetails = ({ Item }: { Item: DMMItem }) => (
-	<div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 shadow-lg">
-		<h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 pb-2 border-b border-gray-200 dark:border-gray-700">
-			商品詳細
-		</h2>
-		<ItemDetailsTable item={Item} />
-	</div>
-)
+interface ProductDetailsProps {
+	contentId: string
+	title: string
+}
+
+const ProductDetails = async ({ contentId, title }: ProductDetailsProps) => {
+	const itemDetails = await fetchItemDetailByContentId(contentId)
+	console.log('fetchItemDetailByContentId関数を呼び出します', itemDetails)
+
+	if (!itemDetails) {
+		return <div>商品詳細を読み込めませんでした。</div>
+	}
+
+	const combinedItem = {
+		...itemDetails,
+		title,
+		content_id: contentId
+	}
+
+	return (
+		<div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 shadow-lg">
+			<h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 pb-2 border-b border-gray-200 dark:border-gray-700">
+				商品詳細
+			</h2>
+			<ItemDetailsTable item={combinedItem} />
+		</div>
+	)
+}
 
 export default ProductDetails

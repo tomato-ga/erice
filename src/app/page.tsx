@@ -18,16 +18,15 @@ const DEFAULT_PAGE = 1
 const DEFAULT_LIMIT = 28
 
 export default async function HomePage({ searchParams }: HomePageProps) {
-	const currentPage = parseInt(searchParams.page || `${DEFAULT_PAGE}`, 10)
+	// const currentPage = parseInt(searchParams.page || `${DEFAULT_PAGE}`, 10)
 
-	let data: { articles: HomePageArticle[]; totalPages: number }
-	try {
-		data = await getHomeArticles(currentPage, DEFAULT_LIMIT)
-	} catch (error) {
-		console.error('[Server] Failed to fetch articles:', error)
-		return <ErrorDisplay message="記��の取得に失敗しました。後でもう一度お試しください。" />
-	}
-
+	// let data: { articles: HomePageArticle[]; totalPages: number }
+	// try {
+	// 	data = await getHomeArticles(currentPage, DEFAULT_LIMIT)
+	// } catch (error) {
+	// 	console.error('[Server] Failed to fetch articles:', error)
+	// 	return <ErrorDisplay message="記��の取得に失敗しました。後でもう一度お試しください。" />
+	// }
 
 	return (
 		<>

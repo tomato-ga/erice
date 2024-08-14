@@ -35,11 +35,17 @@ const GenreTag = ({ genre }: { genre: string[] }) => {
 }
 
 // DMMItemCard コンポーネント：個々の商品カード表示部分
-// item: 商品情報 (T 型)
+// item: 商品情報 (T ���)
 const DMMItemCard = <T extends DMMItemProps>({ item, itemType }: { item: T; itemType: ItemType }) => {
 	return (
 		<div className="bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-md  flex flex-col h-full">
-			<Link href={`/item/${item.content_id}?itemType=${itemType}`}>
+			<Link
+				href={
+					itemType === 'genre' || itemType === 'actress'
+						? `/item/${item.content_id}`
+						: `/item/${item.content_id}?itemType=${itemType}`
+				}
+			>
 				<div className="relative pt-[56.25%] overflow-hidden bg-gray-100">
 					<img
 						src={item.imageURL?.toString() || ''}

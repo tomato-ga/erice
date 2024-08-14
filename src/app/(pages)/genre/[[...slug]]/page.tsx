@@ -27,8 +27,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	try {
 		// APIリクエストを行い、女優名とページ番号から必要なメタデータを取得する
 		// ここでは仮のタイトルと説明を設定
-		const pageTitle = `女優: ${genrename} ${currentPage > 1 ? ` - ページ ${currentPage}` : ''}`
-		const description = `女優 ${genrename} の動画一覧です。${currentPage}ページ目を表示しています。`
+		const pageTitle = `${genrename} ${currentPage > 1 ? ` - ページ ${currentPage}` : ''}`
+		const description = `${genrename} の動画一覧です。${currentPage}ページ目を表示しています。`
 
 		return {
 			title: pageTitle,
@@ -45,8 +45,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	} catch (error) {
 		console.error('[Server] Failed to fetch metadata:', error)
 		return {
-			title: `女優: ${genrename}`,
-			description: `女優 ${genrename} の動画一覧です。`
+			title: `${genrename}`,
+			description: `${genrename} の動画一覧です。`
 		}
 	}
 }
@@ -96,7 +96,7 @@ export default async function GenrePaginationPage({ params }: PageProps) {
 		}
 
 		// レスポンスデータを出力
-		console.log('APIレスポンスデータ:', data) // レスポンスデータを出力
+		// console.log('APIレスポンスデータ:', data) // レスポンスデータを出力
 
 		return (
 			<section className="max-w-7xl mx-auto">
