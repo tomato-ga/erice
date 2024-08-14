@@ -13,7 +13,7 @@ export async function POST(request: Request) {
 	}
 
 	try {
-		const { articleIds } = await request.json()
+		const { articleIds } = (await request.json()) as { articleIds: string[] }
 		console.log('API: 受信したデータ:', JSON.stringify({ articleIds }, null, 2))
 
 		// データの形式を検証
