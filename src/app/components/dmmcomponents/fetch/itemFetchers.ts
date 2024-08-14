@@ -71,10 +71,6 @@ export async function fetchData(itemType: ItemType, contentId: string): Promise<
 	}
 }
 
-// TODO content_idに紐付く全ての情報をSQLクエリして取得しているので遅い。
-// TODO アイテムのパッケージ画像とタイトルaffUrlのみ取得して、初期表示を速くする
-// TODO アイテムの商品詳細データは、Workersを分離し���、content_idで商品詳細情報を取得するように変更し、fetchを分離させ、dynamicでitemdetailsを実装する
-// TODO 型もfetch専用の型を作成する -> DMMItem -> DMMItemMainFetch(仮)
 export async function fetchItemMainByContentId(contentId: string): Promise<DMMItemMainResponse | null> {
 	try {
 		const response = await fetch(
