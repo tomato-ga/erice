@@ -3,7 +3,7 @@
 import { getServerSideSitemap } from 'next-sitemap'
 import { ISitemapField } from 'next-sitemap'
 
-const BASE_URL = 'http://localhost:3000' // 実際のサイトURLに置き換えてください
+const BASE_URL = 'https://erice.cloud' // 実際のサイトURLに置き換えてください
 const ENTRIES_PER_SITEMAP = 20000
 const API_ENDPOINT = process.env.DMM_SITEMAP_WORKER_URL
 const API_KEY = process.env.CLOUDFLARE_DMM_API_TOKEN
