@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
 	}
 
 	try {
-		const { articleId } = await request.json()
+		const { articleId } = (await request.json()) as { articleId: string }
 		console.log('Received articleId:', articleId) // デバッグログ
 
 		if (!articleId) {
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 			const errorData = await response.json().catch(() => null)
 			console.error('Worker API error:', response.status, errorData)
 			return NextResponse.json(
-				{ error: 'Failed to increment page clicks', details: errorData?.error || response.statusText },
+				// { error: 'Failed to increment page clicks', details: errorData?.error || response.statusText },
 				{ status: response.status }
 			)
 		}

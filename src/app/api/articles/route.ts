@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
 			const errorData = await response.json().catch(() => null)
 			console.error('Worker API error:', response.status, errorData)
 			return NextResponse.json(
-				{ error: 'Failed to fetch articles', details: errorData?.error || response.statusText },
+				// { error: 'Failed to fetch articles', details: errorData?.error || response.statusText },
 				{ status: response.status }
 			)
 		}

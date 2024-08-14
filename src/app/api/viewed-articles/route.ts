@@ -13,9 +13,9 @@ export async function POST(request: NextRequest) {
 		const body = await request.json()
 		console.log('API: 受信したデータ:', JSON.stringify(body, null, 2))
 
-		if (!body.userId || !Array.isArray(body.viewedArticles)) {
-			return NextResponse.json({ error: '無効なデータ形式です' }, { status: 400 })
-		}
+		// if (!body.userId || !Array.isArray(body.viewedArticles)) {
+		// 	return NextResponse.json({ error: '無効なデータ形式です' }, { status: 400 })
+		// }
 
 		const response = await fetch(WORKER_URL, {
 			method: 'POST',
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
 			const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
 			console.error('Worker API error:', response.status, errorData)
 			return NextResponse.json(
-				{ error: 'Failed to sync viewed articles', details: errorData.error },
+				// { error: 'Failed to sync viewed articles', details: errorData.error },
 				{ status: response.status }
 			)
 		}

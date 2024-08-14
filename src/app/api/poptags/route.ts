@@ -20,7 +20,7 @@ export async function GET() {
 			const errorData = await response.json().catch(() => null)
 			console.error('Worker API error:', response.status, errorData)
 			return NextResponse.json(
-				{ error: 'Failed to fetch popular keywords', details: errorData?.error || response.statusText },
+				// { error: 'Failed to fetch popular keywords', details: errorData?.error || response.statusText },
 				{ status: response.status }
 			)
 		}
