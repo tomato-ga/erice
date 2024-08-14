@@ -40,7 +40,16 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 		}
 
 		const data: DMMItemProps[] = await response.json()
-		revalidatePath('/' + itemType) // TODO: 適切なページルートを指定する
+		// パスの修正
+		if (itemType === 'todaynew') {
+			revalidatePath('/todaynew')
+		} else if (itemType === 'debut') {
+			revalidatePath('/debut')
+		} else if (itemType === 'feature') {
+			revalidatePath('/feature')
+		} else if (itemType === 'sale') {
+			revalidatePath('/sale')
+		}
 		return data
 	} catch (error) {
 		console.error('Error fetching data:', error)
