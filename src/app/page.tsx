@@ -13,9 +13,6 @@ interface HomePageProps {
 	searchParams: { page?: string }
 }
 
-const DEFAULT_PAGE = 1
-const DEFAULT_LIMIT = 28
-
 export default async function HomePage({ searchParams }: HomePageProps) {
 	// const currentPage = parseInt(searchParams.page || `${DEFAULT_PAGE}`, 10)
 
@@ -52,13 +49,5 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 				</div> */}
 			</section>
 		</>
-	)
-}
-
-function ErrorDisplay({ message }: { message: string }) {
-	return (
-		<div className="text-center text-red-600 py-8" role="alert">
-			<p>{message}</p>
-		</div>
 	)
 }
