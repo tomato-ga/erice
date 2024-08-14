@@ -26,9 +26,8 @@ async function fetchFromWorker(endpoint: string): Promise<NewActressResponse | A
 }
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
+	const type = request.nextUrl.searchParams.get('type') as ActressType | null
 	try {
-		const type = request.nextUrl.searchParams.get('type') as ActressType | null
-
 		let data: NewActressResponse | AllContentResponse
 
 		switch (type) {
