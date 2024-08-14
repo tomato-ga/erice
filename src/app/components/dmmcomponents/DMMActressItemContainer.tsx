@@ -3,20 +3,33 @@ import { Actress, ActressType, NewActressResponse, AllContentResponse } from '..
 import ActressItemList from './DMMActressItemList'
 
 async function fetchData(actressType: ActressType): Promise<Actress[]> {
-	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actresses-getkv?type=${actressType}`)
-	const data: NewActressResponse | AllContentResponse = await response.json()
+	try {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actresses-getkv?type=${actressType}`)
 
-	if ('actresses' in data) {
-		return data.actresses
-	} else {
-		// AllContentResponseの場合、適切な形式に変換する
-		const allItems = [
-			...data['dmm-debut-items'],
-			...data['dmm-feature-items'],
-			...data['dmm-today-new-items'],
-			...data['sale-items']
-		]
-		return [{ id: 'all', name: 'All Content', items: allItems }]
+		if (!response.ok) {
+			console.error('Error fetching data:', response.status, response.statusText)
+			// TODO: 適切なエラーハンドリングを実装する
+			return []
+		}
+
+		const data: NewActressResponse | AllContentResponse = await response.json()
+
+		if ('actresses' in data) {
+			return data.actresses
+		} else {
+			// AllContentResponseの場合、適切な形式に変換する
+			const allItems = [
+				...data['dmm-debut-items'],
+				...data['dmm-feature-items'],
+				...data['dmm-today-new-items'],
+				...data['sale-items']
+			]
+			return [{ id: 'all', name: 'All Content', items: allItems }]
+		}
+	} catch (error) {
+		console.error('Error fetching data:', error)
+		// TODO: 適切なエラーハンドリングを実装する
+		return []
 	}
 }
 

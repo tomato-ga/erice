@@ -1,3 +1,4 @@
+// components/DMMItemContainer.tsx
 import Link from 'next/link'
 import { DMMItemProps, ItemType } from '../../../../types/dmmtypes'
 import DMMItemList from './DMMItemList'
@@ -29,11 +30,23 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 			throw new Error(`Invalid itemType: ${itemType}`)
 	}
 
-	// todo revalidatepathなどのアクションが必要そう
-	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, { cache: 'force-cache' })
-	const data: DMMItemProps[] = await response.json()
-	revalidatePath('/' + itemType)
-	return data
+	try {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, { cache: 'force-cache' })
+
+		if (!response.ok) {
+			console.error('Error fetching data:', response.status, response.statusText)
+			// TODO: 適切なエラーハンドリングを実装する
+			return []
+		}
+
+		const data: DMMItemProps[] = await response.json()
+		revalidatePath('/' + itemType) // TODO: 適切なページルートを指定する
+		return data
+	} catch (error) {
+		console.error('Error fetching data:', error)
+		// TODO: 適切なエラーハンドリングを実装する
+		return []
+	}
 }
 
 export default async function DMMItemContainer({ itemType, from, bgGradient }: DMMItemContainerProps) {
