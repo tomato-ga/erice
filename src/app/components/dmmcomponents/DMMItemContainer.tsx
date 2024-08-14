@@ -30,7 +30,7 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 	}
 
 	// todo revalidatepathなどのアクションが必要そう
-	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, { cache: 'no-store' })
+	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, { cache: 'force-cache' })
 	const data: DMMItemProps[] = await response.json()
 	revalidatePath('/' + itemType)
 	return data

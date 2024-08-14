@@ -45,6 +45,7 @@ const ItemDetailsTable = ({ item }: { item: DMMItemDetailResponse & { title: str
 												key={index}
 												href={`/${label === '出演者' ? 'actress' : 'genre'}/${encodeURIComponent(item)}`}
 												className="text-base text-blue-600 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500"
+												prefetch={true}
 											>
 												{item}
 											</Link>

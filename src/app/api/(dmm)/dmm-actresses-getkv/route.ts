@@ -14,7 +14,8 @@ async function fetchFromWorker(endpoint: string): Promise<NewActressResponse | A
 		headers: {
 			'Content-Type': 'application/json',
 			'X-API-Key': API_KEY
-		}
+		},
+		cache: 'force-cache'
 	})
 
 	if (!response.ok) {

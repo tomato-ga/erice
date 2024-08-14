@@ -80,6 +80,7 @@ export async function fetchItemMainByContentId(contentId: string): Promise<DMMIt
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-one-item-main?content_id=${contentId}`,
 			{
+				cache: 'force-cache',
 				next: {
 					tags: [`item-${contentId}`]
 				}

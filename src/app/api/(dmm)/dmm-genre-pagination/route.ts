@@ -11,7 +11,6 @@ interface APIResponse {
 	items: unknown[]
 	currentPage: number
 	totalPages: number
-	actress?: string
 }
 
 export async function GET(request: NextRequest) {
@@ -35,7 +34,8 @@ export async function GET(request: NextRequest) {
 		// console.log('APIルートリクエストヘッダー:', headers) // リクエストヘッダーを出力
 
 		const response = await fetch(`${WORKER_URL}/items-by-genre?${apiParams}`, {
-			headers: headers // APIキーをヘッダーに追加
+			headers: headers,
+			cache: 'force-cache'
 		})
 
 		if (!response.ok) {
