@@ -101,11 +101,8 @@ class DatabaseManager {
 			const unsyncedRecords = await this.db.viewedArticles.where('synced').equals(0).toArray()
 
 			if (unsyncedRecords.length === 0) {
-				// console.log('同期する記事ビューがありません')
 				return
 			}
-
-			// console.log(`${unsyncedRecords.length}件の未同期記事ビューを同期します`)
 
 			const syncData = {
 				userId: await getUserId(),
@@ -114,8 +111,6 @@ class DatabaseManager {
 					timestamp: record.timestamp
 				}))
 			}
-
-			// console.log('APIにデータを送信します:', JSON.stringify(syncData))
 
 			const response = await fetch('/api/viewed-articles', {
 				method: 'POST',
@@ -127,22 +122,23 @@ class DatabaseManager {
 
 			if (!response.ok) {
 				const errorText = await response.text()
-				// console.error('APIレスポンスエラー:', response.status, errorText)
 				throw new ArticleViewError(`サーバーとの同期に失敗しました: ${response.statusText}`, 'SYNC_FAILURE')
 			}
 
-			const result = await response.json()
-			// console.log('APIレスポンス:', result)
+			interface SyncResponse {
+				status: 'OK' | 'ERROR'
+				message?: string
+			}
+
+			const result: SyncResponse = await response.json()
 
 			if (result.status === 'OK') {
 				const ids = unsyncedRecords.map((r: ArticleView) => r.id).filter((id): id is number => id !== undefined)
 				await this.db.viewedArticles.where('id').anyOf(ids).modify({ synced: 1 })
-				// console.log(`${ids.length}件の記事ビューを同期済みにマークしました`)
 			} else {
 				throw new ArticleViewError('同期に失敗しました: ' + (result.message || '不明なエラー'), 'SYNC_FAILURE')
 			}
 		} catch (error) {
-			// console.error('同期中にエラーが発生しました:', error)
 			throw error
 		} finally {
 			this.syncInProgress = false

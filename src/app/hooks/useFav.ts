@@ -11,6 +11,11 @@ interface UseFavoriteResult {
 	error: string | null
 }
 
+interface FavoriteResponse {
+  success: boolean;
+  message?: string;
+}
+
 export const useFavorite = (articleId: number): UseFavoriteResult => {
 	const { favorites, addFavorite, removeFavorite } = useFavoriteStore()
 	const [isFavorite, setIsFavorite] = useState<boolean>(false)
@@ -44,7 +49,7 @@ export const useFavorite = (articleId: number): UseFavoriteResult => {
 				throw new Error(`Failed to ${action} favorite`)
 			}
 
-			const result = await response.json()
+			const result = (await response.json()) as FavoriteResponse
 
 			if (result.success) {
 				if (isFavorite) {

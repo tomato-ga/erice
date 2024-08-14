@@ -1,5 +1,12 @@
 import { PaginationArticleResponse, PaginationArticle } from '../../../../../types/types'
 
+interface APIResponse {
+	articles: PaginationArticle[]
+	currentPage: number
+	totalPages: number
+	total: number
+}
+
 export async function getArticlesByKeyword(
 	keyword: string,
 	page: number,
@@ -23,7 +30,7 @@ export async function getArticlesByKeyword(
 			console.error('getArticlesByKeyword API Response:', errorText)
 			throw new Error(`Failed to fetch articles: ${res.status} ${res.statusText}. Response: ${errorText}`)
 		}
-		const data = await res.json()
+		const data = (await res.json()) as APIResponse
 		// console.log('getArticlesByKeyword API Response:', data) // 確認用ログ
 
 		if (!data.articles || !Array.isArray(data.articles)) {

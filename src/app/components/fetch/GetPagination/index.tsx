@@ -25,7 +25,12 @@ export async function fetchPaginationArticles(
 			throw new Error(`Failed to fetch articles: ${response.status} ${JSON.stringify(errorData)}`)
 		}
 
-		const data = await response.json()
+		const data = await response.json() as {
+			articles: unknown,
+			currentPage?: number,
+			totalPages?: number,
+			total?: number
+		}
 		console.log('Fetched data:', data) // デバッグログ
 
 		// レスポンスの型チェックと整形
