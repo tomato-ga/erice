@@ -27,13 +27,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 			cache: 'force-cache'
 		})
 
+		if (response.status === 404) {
+			console.log(`Content not found for content_id: ${content_id}`)
+			return NextResponse.json({ items: [] }, { status: 200 })
+		}
+
 		if (!response.ok) {
 			console.error(`Cloudflare Worker API error: ${response.status} ${response.statusText}`)
 			throw new Error(`Cloudflare Workerからのデータ取得に失敗しました: ${response.status}`)
 		}
 
 		const data: DMMItem[] = await response.json()
-		return NextResponse.json(data)
+		return NextResponse.json({ items: data })
 	} catch (error) {
 		console.error('APIルートでエラーが発生しました:', error)
 		return NextResponse.json({ error: 'サーバー内部エラー', details: (error as Error).message }, { status: 500 })
