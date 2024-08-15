@@ -127,16 +127,16 @@ export async function fetchItemDetailByContentId(contentId: string): Promise<DMM
 
 		console.log('Raw API response fetchItemDetailByContentId:', data)
 
-		// データが単一のオブジェクトであることを期待
-		if (typeof data === 'object' && data !== null) {
-			const parseResult = DMMItemDetailResponseSchema.safeParse(data)
+		// データが{ items: { ... } }の形式であることを期待
+		if (typeof data === 'object' && data !== null && 'items' in data) {
+			const itemData = (data as { items: unknown }).items
+			const parseResult = DMMItemDetailResponseSchema.safeParse(itemData)
 			if (parseResult.success) {
 				revalidateTag(`item-${contentId}`)
 				return parseResult.data
 			} else {
 				console.error('Validation error:', parseResult.error.errors)
-				// エラーの詳細をログ出力
-				console.error('Invalid data:', data)
+				console.error('Invalid data:', itemData)
 				return null
 			}
 		}

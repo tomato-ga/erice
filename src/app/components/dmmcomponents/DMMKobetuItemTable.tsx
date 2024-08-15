@@ -15,7 +15,7 @@ interface ItemDetailsTableProps {
 }
 
 const ItemDetailsTable = ({ item }: { item: DMMItemDetailResponse & { title: string; content_id: string } }) => {
-	console.log('item table: ', item)
+	console.log('ItemDetailsTable received item:', item)
 	const details = [
 		{ label: 'タイトル', value: item.title, icon: '🎬' },
 		{ label: '発売日', value: item.date ? formatDate(item.date) : '情報なし', icon: '📅' },
@@ -94,6 +94,8 @@ const ProductDetails = async ({ contentId, title }: ProductDetailsProps) => {
 		title,
 		content_id: contentId
 	}
+
+	console.log('Combined item:', combinedItem)
 
 	return (
 		<div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 shadow-lg">
