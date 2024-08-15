@@ -13,21 +13,31 @@ interface PageProps {
 
 const SITE_NAME = 'エロコメスト'
 
+function decodeAndEncodeGenreName(encodedName: string): string {
+	try {
+		const decodedName = decodeURIComponent(encodedName)
+		return encodeURIComponent(decodedName)
+	} catch (error) {
+		console.error('Failed to decode/encode genre name:', error)
+		return encodedName
+	}
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-	const [genrename, , page] = params.slug || []
+	const [encodedGenreName, , page] = params.slug || []
 	const currentPage = page ? parseInt(page, 10) : 1
 
-	if (!genrename) {
+	if (!encodedGenreName) {
 		return {
 			title: 'ページが見つかりません | ' + SITE_NAME,
 			description: '指定されたページは存在しません。'
 		}
 	}
 
+	const genrename = decodeURIComponent(decodeAndEncodeGenreName(encodedGenreName))
+
 	try {
-		// APIリクエストを行い、女優名とページ番号から必要なメタデータを取得する
-		// ここでは仮のタイトルと説明を設定
-		const pageTitle = `${genrename} ${currentPage > 1 ? ` - ページ ${currentPage}` : ''}`
+		const pageTitle = `${genrename} ${currentPage > 1 ? ` - ページ ${currentPage}` : ''} | ${SITE_NAME}`
 		const description = `${genrename} の動画一覧です。${currentPage}ページ目を表示しています。`
 
 		return {
@@ -38,6 +48,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 				description: description
 			},
 			twitter: {
+				card: 'summary',
 				title: pageTitle,
 				description: description
 			}
@@ -45,7 +56,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	} catch (error) {
 		console.error('[Server] Failed to fetch metadata:', error)
 		return {
-			title: `${genrename}`,
+			title: `${genrename} | ${SITE_NAME}`,
 			description: `${genrename} の動画一覧です。`
 		}
 	}
@@ -58,7 +69,8 @@ export default async function GenrePaginationPage({ params }: PageProps) {
 
 	// URLパターンの解析
 	if (slug.length >= 1) {
-		genrename = decodeURIComponent(slug[0])
+		const encodedGenreName = slug[0]
+		genrename = decodeURIComponent(decodeAndEncodeGenreName(encodedGenreName))
 		if (slug.length === 3 && slug[1] === 'page') {
 			currentPage = parseInt(slug[2], 10)
 		} else if (slug.length !== 1) {

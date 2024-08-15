@@ -28,6 +28,49 @@ function LoadingSpinner() {
 	)
 }
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+	const contentId = params.contentId
+	let title = 'エロコメスト'
+	let description = '詳細ページ'
+
+	try {
+		const itemMain = await fetchItemMainByContentId(contentId)
+		const itemDetail = await fetchItemDetailByContentId(contentId)
+
+		if (itemMain && itemDetail) {
+			title = `${itemMain.title} | エロコメスト`
+			description = `${itemMain.title}のページです。${itemDetail.actress ? `出演: ${itemDetail.actress}` : ''}`
+		}
+	} catch (error) {
+		console.error('メタデータの取得中にエラーが発生しました:', error)
+	}
+
+	return {
+		title,
+		description,
+		openGraph: {
+			title,
+			description,
+			type: 'website',
+			url: `https://erocomesuto.com/item/${contentId}`,
+			images: [
+				{
+					url: 'https://erocomesuto.com/ogp.jpg',
+					width: 1200,
+					height: 630,
+					alt: 'エロコメスト OGP画像'
+				}
+			]
+		},
+		twitter: {
+			card: 'summary_large_image',
+			title,
+			description,
+			images: ['https://erocomesuto.com/ogp.jpg']
+		}
+	}
+}
+
 export default async function DMMKobetuItemPage({
 	params,
 	searchParams
