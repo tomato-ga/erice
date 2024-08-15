@@ -145,9 +145,9 @@ export default async function DMMKobetuItemPage({
 						<ProductDetails contentId={params.contentId} title={ItemMain.title} />
 					</Suspense>
 
-					{/* <Suspense fallback={<LoadingSpinner />}>
-						<CommentSection itemId={Number(params.contentId)} />
-					</Suspense> */}
+					<Suspense fallback={<LoadingSpinner />}>
+						<CommentSection contentId={params.contentId} />
+					</Suspense>
 
 					{ItemMain.sampleImageURL && (
 						<>

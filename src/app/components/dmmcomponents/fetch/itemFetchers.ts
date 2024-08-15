@@ -112,7 +112,7 @@ export async function fetchItemMainByContentId(contentId: string): Promise<DMMIt
 }
 
 export async function fetchItemDetailByContentId(contentId: string): Promise<DMMItemDetailResponse | null> {
-	console.log('fetchItemDetailByContentId関数を呼び出します', contentId)
+	// console.log('fetchItemDetailByContentId関数を呼び出します', contentId)
 
 	try {
 		const response = await fetch(

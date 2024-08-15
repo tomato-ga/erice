@@ -7,9 +7,10 @@ import { deleteComment } from '@/app/actions/commentActions'
 
 interface CommentProps {
 	comment: Comment
+	contentId: string
 }
 
-export function CommentComponent({ comment }: CommentProps) {
+export function CommentComponent({ comment, contentId }: CommentProps) {
 	const [isDeleting, setIsDeleting] = useState(false)
 	const [error, setError] = useState<string | null>(null)
 	const router = useRouter()
@@ -19,7 +20,7 @@ export function CommentComponent({ comment }: CommentProps) {
 			setIsDeleting(true)
 			setError(null)
 			try {
-				const result = await deleteComment(comment.id!)
+				const result = await deleteComment(contentId!)
 				if (result.success) {
 					router.refresh()
 				} else {
@@ -39,14 +40,14 @@ export function CommentComponent({ comment }: CommentProps) {
 			<p className="text-gray-800 mb-2">{comment.comment}</p>
 			<div className="flex justify-between items-center text-sm text-gray-500">
 				<span>{new Date(comment.createdAt!).toLocaleString()}</span>
-				<button
+				{/* MEMO 削除ボタン除外 <button
 					onClick={handleDelete}
 					disabled={isDeleting}
 					className="text-red-500 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 rounded disabled:opacity-50"
 					aria-label="コメントを削除"
 				>
 					{isDeleting ? '削除中...' : '削除'}
-				</button>
+				</button> */}
 			</div>
 			{error && (
 				<p className="mt-2 text-sm text-red-600" role="alert">

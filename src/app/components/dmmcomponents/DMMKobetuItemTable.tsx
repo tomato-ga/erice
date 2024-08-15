@@ -15,7 +15,7 @@ interface ItemDetailsTableProps {
 }
 
 const ItemDetailsTable = ({ item }: { item: DMMItemDetailResponse & { title: string; content_id: string } }) => {
-	console.log('ItemDetailsTable received item:', item)
+	// console.log('ItemDetailsTable received item:', item)
 	const details = [
 		{ label: 'タイトル', value: item.title, icon: '🎬' },
 		{ label: '発売日', value: item.date ? formatDate(item.date) : '情報なし', icon: '📅' },
@@ -83,7 +83,7 @@ interface ProductDetailsProps {
 
 const ProductDetails = async ({ contentId, title }: ProductDetailsProps) => {
 	const itemDetails = await fetchItemDetailByContentId(contentId)
-	console.log('fetchItemDetailByContentId関数を呼び出します', itemDetails)
+	// console.log('fetchItemDetailByContentId関数を呼び出します', itemDetails)
 
 	if (!itemDetails) {
 		return <div>商品詳細を読み込めませんでした。</div>

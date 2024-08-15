@@ -3,10 +3,16 @@
 import { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { addComment } from '@/app/actions/commentActions'
+import { Comment } from '../../../../../types/comment'
 
 interface FormData {
-	itemId: number
+	contentId: number
 	comment: string
+}
+
+interface CommentFormProps {
+	contentId: string // string から number に変更
+	onCommentAdded: (newComment: Comment) => void
 }
 
 function SubmitButton() {
@@ -15,12 +21,12 @@ function SubmitButton() {
 			type="submit"
 			className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline disabled:opacity-50 transition duration-150 ease-in-out"
 		>
-			コメントを投稿
+			コメントを投稿する
 		</button>
 	)
 }
 
-export function CommentForm({ itemId }: { itemId: number }) {
+export function CommentForm({ contentId, onCommentAdded }: CommentFormProps) {
 	const {
 		register,
 		handleSubmit,
@@ -33,7 +39,7 @@ export function CommentForm({ itemId }: { itemId: number }) {
 
 	const onSubmit = async (data: FormData) => {
 		const formData = new FormData()
-		formData.append('itemId', data.itemId.toString())
+		formData.append('contentId', data.contentId.toString())
 		formData.append('comment', data.comment)
 
 		try {
@@ -42,6 +48,14 @@ export function CommentForm({ itemId }: { itemId: number }) {
 				setSuccessMessage(result.message)
 				setServerError(null)
 				reset()
+				// result.newComment が存在しない場合、新しいコメントオブジェクトを作成
+				const newComment: Comment = {
+					contentId: contentId, // parseInt を削除
+					comment: data.comment,
+					createdAt: new Date().toISOString()
+					// その他の必要なプロパティを追加
+				}
+				onCommentAdded(newComment)
 			} else if (result.errors) {
 				setServerError('コメントの投稿に失敗しました')
 				setSuccessMessage(null)
@@ -54,18 +68,15 @@ export function CommentForm({ itemId }: { itemId: number }) {
 
 	return (
 		<form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="mb-8">
-			<input type="hidden" {...register('itemId')} value={itemId} />
+			<input type="hidden" {...register('contentId')} value={contentId} />
 
 			<div className="mb-4">
-				<label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-2">
-					コメント
-				</label>
 				<textarea
 					id="comment"
 					{...register('comment', { required: 'コメントは必須です' })}
 					className="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500"
 					rows={4}
-					placeholder="コメントを入力してください"
+					placeholder="動画のどんなシーンが印象的だったか、どんなシーンが抜きポイントだったか、ぜひ教えてください"
 					aria-invalid={errors.comment ? 'true' : 'false'}
 				/>
 				{errors.comment && (

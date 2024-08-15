@@ -1,15 +1,40 @@
-import { Suspense } from 'react'
+'use client'
+
+import { Suspense, useState, useCallback } from 'react'
 import { CommentForm } from './CommentForm'
 import { CommentList } from './CommentList'
+import { Comment } from '../../../../../types/comment'
 
-export function CommentSection({ itemId }: { itemId: number }) {
+export function CommentSection({ contentId }: { contentId: string }) {
+	const [comments, setComments] = useState<Comment[]>([])
+	const [latestComment, setLatestComment] = useState<Comment | null>(null)
+
+	const handleCommentAdded = useCallback((newComment: Comment) => {
+		setComments((prevComments) => [newComment, ...prevComments])
+		setLatestComment(newComment)
+	}, [])
+
 	return (
-		<div className="max-w-2xl mx-auto p-4">
-			<h2 className="text-2xl font-bold mb-4">コメント</h2>
-			<CommentForm itemId={itemId} />
-			<Suspense fallback={<div>コメントを読み込み中...</div>}>
-				<CommentList itemId={itemId} />
-			</Suspense>
-		</div>
+		<section className="bg-gradient-to-br from-pink-100 to-orange-50 dark:from-yellow-900 dark:to-orange-900 rounded-xl shadow-lg p-6 my-8 transform">
+			<h2 className="text-3xl font-extrabold mb-4 text-center bg-gradient-to-r from-pink-500 to-orange-600 text-transparent bg-clip-text">
+				もし動画を見たら、ヌケたシーンを教えてください
+			</h2>
+			<p className="text-gray-700 dark:text-gray-300 text-center mb-6">
+				動画のどんなシーンが印象的だったか、どんなシーンが抜きポイントだったか、ぜひ教えてください
+			</p>
+			<div className="space-y-6 animate-fade-in-up">
+				<CommentForm contentId={contentId} onCommentAdded={handleCommentAdded} />
+				<Suspense
+					fallback={
+						<div className="flex justify-center items-center h-24">
+							<div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-500"></div>
+							<span className="ml-2 text-gray-600 dark:text-gray-300">コメントを読み込み中...</span>
+						</div>
+					}
+				>
+					<CommentList contentId={contentId} onCommentAdded={handleCommentAdded} newComment={latestComment} />
+				</Suspense>
+			</div>
+		</section>
 	)
 }
