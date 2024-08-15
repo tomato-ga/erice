@@ -13,16 +13,29 @@ interface PageProps {
 
 const SITE_NAME = 'エロコメスト'
 
+function decodeAndEncodeActressName(encodedName: string): string {
+	try {
+		// URLデコードを行い、その後再度エンコードして正しいUTF-8文字列を得る
+		const decodedName = decodeURIComponent(encodedName)
+		return encodeURIComponent(decodedName)
+	} catch (error) {
+		console.error('Failed to decode/encode actress name:', error)
+		return encodedName // エラーが発生した場合は元の文字列を返す
+	}
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-	const [actressname, , page] = params.slug || []
+	const [encodedActressName, , page] = params.slug || []
 	const currentPage = page ? parseInt(page, 10) : 1
 
-	if (!actressname) {
+	if (!encodedActressName) {
 		return {
 			title: 'ページが見つかりません | ' + SITE_NAME,
 			description: '指定されたページは存在しません。'
 		}
 	}
+
+	const actressname = decodeURIComponent(decodeAndEncodeActressName(encodedActressName))
 
 	try {
 		// APIリクエストを行い、女優名とページ番号から必要なメタデータを取得する
@@ -38,6 +51,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 				description: description
 			},
 			twitter: {
+				card: 'summary',
 				title: pageTitle,
 				description: description
 			}
@@ -58,7 +72,8 @@ export default async function ActressPaginationPage({ params }: PageProps) {
 
 	// URLパターンの解析
 	if (slug.length >= 1) {
-		actressname = decodeURIComponent(slug[0])
+		const encodedActressName = slug[0]
+		actressname = decodeURIComponent(decodeAndEncodeActressName(encodedActressName))
 		if (slug.length === 3 && slug[1] === 'page') {
 			currentPage = parseInt(slug[2], 10)
 		} else if (slug.length !== 1) {
