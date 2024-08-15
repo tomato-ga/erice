@@ -22,8 +22,8 @@ const ItemDetailsTable = ({ item }: { item: DMMItemDetailResponse & { title: str
 		{ label: '出演者', value: item.actress || '情報なし', icon: '😍' },
 		{ label: 'ジャンル', value: item.genre || '情報なし', icon: '📚' },
 		{ label: '品番', value: item.content_id, icon: '🔢' },
-		{ label: 'メーカー', value: item.maker, icon: '🏭' },
-		{ label: 'レーベル', value: item.label, icon: '🏷️' },
+		{ label: 'メーカー', value: item.maker || '情報なし', icon: '🏭' },
+		{ label: 'レーベル', value: item.label || '情報なし', icon: '🏷️' },
 		{ label: 'シリーズ', value: item.series && item.series.length > 0 ? item.series : '情報なし', icon: '📺' },
 		{ label: '監督', value: item.director || '情報なし', icon: '🎬' }
 	] satisfies ItemDetailsTableProps[]
