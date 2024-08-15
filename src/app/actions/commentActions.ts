@@ -4,13 +4,8 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { commentSchema, Comment } from '../../../types/comment'
 
-export async function addComment(prevState: any, formData: FormData) {
-	const rawData = {
-		itemId: Number(formData.get('itemId')),
-		comment: formData.get('comment')
-	}
-
-	const validationResult = commentSchema.safeParse(rawData)
+export async function addComment(data: { itemId: number; comment: string }) {
+	const validationResult = commentSchema.safeParse(data)
 
 	if (!validationResult.success) {
 		return {
