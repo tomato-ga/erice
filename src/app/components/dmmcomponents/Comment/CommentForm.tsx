@@ -1,28 +1,21 @@
 'use client'
 
-import { useRef } from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
-import { addComment } from '@/app/actions/commentActions' // Server Actionをimport
+import { useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { addComment } from '@/app/actions/commentActions'
 
-// フォームデータのインターフェース定義
 interface FormData {
 	itemId: number
 	comment: string
 }
 
 function SubmitButton() {
-	const {
-		formState: { isSubmitting }
-	} = useForm()
-
 	return (
 		<button
 			type="submit"
-			disabled={isSubmitting}
 			className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline disabled:opacity-50 transition duration-150 ease-in-out"
-			aria-disabled={isSubmitting}
 		>
-			{isSubmitting ? '送信中...' : 'コメントを投稿'}
+			コメントを投稿
 		</button>
 	)
 }
@@ -35,29 +28,33 @@ export function CommentForm({ itemId }: { itemId: number }) {
 		reset
 	} = useForm<FormData>()
 	const formRef = useRef<HTMLFormElement>(null)
+	const [serverError, setServerError] = useState<string | null>(null)
+	const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
 	const onSubmit = async (data: FormData) => {
-		console.log('送信データ:', data)
+		const formData = new FormData()
+		formData.append('itemId', data.itemId.toString())
+		formData.append('comment', data.comment)
 
 		try {
-			const result = await addComment(data)
-
-			console.log('addCommentの結果:', result)
-
-			if (result.success) {
-				console.log('フォームをリセットします')
+			const result = await addComment({}, formData)
+			if (result.message) {
+				setSuccessMessage(result.message)
+				setServerError(null)
 				reset()
-			} else {
-				console.error('コメントの投稿に失敗しました:', result.message)
+			} else if (result.errors) {
+				setServerError('コメントの投稿に失敗しました')
+				setSuccessMessage(null)
 			}
 		} catch (error) {
-			console.error('コメントの投稿中にエラーが発生しました:', error)
+			setServerError('エラーが発生しました')
+			setSuccessMessage(null)
 		}
 	}
 
 	return (
 		<form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="mb-8">
-			<input type="hidden" {...register('itemId', { value: itemId })} />
+			<input type="hidden" {...register('itemId')} value={itemId} />
 
 			<div className="mb-4">
 				<label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-2">
@@ -70,14 +67,15 @@ export function CommentForm({ itemId }: { itemId: number }) {
 					rows={4}
 					placeholder="コメントを入力してください"
 					aria-invalid={errors.comment ? 'true' : 'false'}
-					aria-describedby="comment-error"
 				/>
 				{errors.comment && (
-					<p id="comment-error" role="alert" className="mt-2 text-sm text-red-600">
+					<p role="alert" className="mt-2 text-sm text-red-600">
 						{errors.comment.message}
 					</p>
 				)}
 			</div>
+			{serverError && <p className="text-red-600 mb-4">{serverError}</p>}
+			{successMessage && <p className="text-green-600 mb-4">{successMessage}</p>}
 			<SubmitButton />
 		</form>
 	)

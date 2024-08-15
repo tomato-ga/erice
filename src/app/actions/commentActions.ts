@@ -4,27 +4,47 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { commentSchema, Comment } from '../../../types/comment'
 
-export async function addComment(data: { itemId: number; comment: string }) {
-	const validationResult = commentSchema.safeParse(data)
+export async function addComment(prevState: any, formData: FormData) {
+	const validationResult = commentSchema.safeParse({
+		itemId: formData.get('itemId'),
+		comment: formData.get('comment')
+	})
 
 	if (!validationResult.success) {
-		return {
-			success: false,
-			errors: validationResult.error.flatten().fieldErrors
-		}
+		return { message: '', errors: validationResult.error.flatten().fieldErrors }
 	}
 
-	const validatedData = validationResult.data
+	const { itemId, comment } = validationResult.data
 
 	try {
-		// ここでデータベースにコメントを追加する処理を実装
-		// 例: await db.insert(comments).values(validatedData);
+		const response = await fetch('YOUR_WORKER_URL/comments', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				itemId: itemId,
+				// userId: userId, // userIdがもしあれば
+				comment: comment
+			})
+		})
 
-		revalidatePath(`/items/${validatedData.itemId}`)
-		return { success: true, message: 'コメントが投稿されました' }
+		if (response.ok) {
+			const data = await response.json()
+			console.log('コメントが追加されました:', data)
+			// ... 成功時の処理 ...
+		} else {
+			console.error('コメントの追加に失敗しました:', response.status)
+			// ... 失敗時の処理 ...
+		}
+		// ここでデータベースにコメントを追加する処理を実装
+		// 例: await db.insert(comments).values({ itemId, comment });
+
+		revalidatePath(`/items/${itemId}`)
+		return { message: 'コメントが投稿されました', errors: {} }
 	} catch (error) {
 		console.error('コメント投稿エラー:', error)
-		return { success: false, message: 'コメントの投稿に失敗しました' }
+		return { message: '', errors: { server: ['コメントの投稿に失敗しました'] } }
 	}
 }
 
