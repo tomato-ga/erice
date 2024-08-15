@@ -15,6 +15,7 @@ import {
 	fetchItemDetailByContentId,
 	fetchRelatedItems
 } from '@/app/components/dmmcomponents/fetch/itemFetchers'
+import { CommentSection } from '@/app/components/dmmcomponents/Comment/CommentSection'
 
 interface Props {
 	params: { contentId: string }
@@ -143,6 +144,10 @@ export default async function DMMKobetuItemPage({
 					<Suspense fallback={<LoadingSpinner />}>
 						<ProductDetails contentId={params.contentId} title={ItemMain.title} />
 					</Suspense>
+
+					{/* <Suspense fallback={<LoadingSpinner />}>
+						<CommentSection itemId={Number(params.contentId)} />
+					</Suspense> */}
 
 					{ItemMain.sampleImageURL && (
 						<>
