@@ -41,8 +41,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 			headers: {
 				'Content-Type': 'application/json',
 				'X-API-Key': API_KEY
-			},
-			cache: 'force-cache'
+			}
 		})
 
 		if (!response.ok) {

@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { DMMItemProps, ItemType } from '../../../../types/dmmtypes'
 import DMMItemList from './DMMItemList'
 import { ArrowRight } from 'lucide-react'
-import { revalidatePath } from 'next/cache'
 
 interface DMMItemContainerProps {
 	itemType: ItemType
@@ -31,7 +30,9 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 	}
 
 	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, { cache: 'force-cache' })
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
+			cache: itemType === 'todaynew' ? 'no-store' : 'force-cache'
+		})
 
 		if (!response.ok) {
 			console.error('Error fetching data:', response.status, response.statusText)
@@ -40,16 +41,6 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 		}
 
 		const data: DMMItemProps[] = await response.json()
-		// パスの修正
-		if (itemType === 'todaynew') {
-			revalidatePath('/todaynew')
-		} else if (itemType === 'debut') {
-			revalidatePath('/debut')
-		} else if (itemType === 'feature') {
-			revalidatePath('/feature')
-		} else if (itemType === 'sale') {
-			revalidatePath('/sale')
-		}
 		return data
 	} catch (error) {
 		console.error('Error fetching data:', error)
