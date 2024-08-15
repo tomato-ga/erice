@@ -10,6 +10,7 @@ interface DMMItemContainerProps {
 	bgGradient?: string
 }
 
+// MEMO todaynewだけキャッシュ期限を付与
 async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 	let endpoint = ''
 	switch (itemType) {
@@ -31,12 +32,13 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 
 	try {
 		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
-			cache: itemType === 'todaynew' ? 'no-store' : 'force-cache'
+			next: {
+				revalidate: itemType === 'todaynew' ? getSecondsUntilMidnight() : false
+			}
 		})
 
 		if (!response.ok) {
 			console.error('Error fetching data:', response.status, response.statusText)
-			// TODO: 適切なエラーハンドリングを実装する
 			return []
 		}
 
@@ -44,9 +46,14 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 		return data
 	} catch (error) {
 		console.error('Error fetching data:', error)
-		// TODO: 適切なエラーハンドリングを実装する
 		return []
 	}
+}
+
+function getSecondsUntilMidnight(): number {
+	const now = new Date()
+	const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+	return Math.floor((midnight.getTime() - now.getTime()) / 1000)
 }
 
 export default async function DMMItemContainer({ itemType, from, bgGradient }: DMMItemContainerProps) {
