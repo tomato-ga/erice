@@ -1,10 +1,11 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { useRef } from 'react'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import { addComment } from '@/app/actions/commentActions' // Server Actionをimport
 
-interface CommentFormData {
+// フォームデータのインターフェース定義
+interface FormData {
 	itemId: number
 	comment: string
 }
@@ -32,10 +33,10 @@ export function CommentForm({ itemId }: { itemId: number }) {
 		handleSubmit,
 		formState: { errors },
 		reset
-	} = useForm<CommentFormData>()
+	} = useForm<FormData>()
 	const formRef = useRef<HTMLFormElement>(null)
 
-	const onSubmit = async (data: CommentFormData) => {
+	const onSubmit = async (data: FormData) => {
 		console.log('送信データ:', data)
 
 		try {
