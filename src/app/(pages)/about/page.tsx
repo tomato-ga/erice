@@ -20,7 +20,7 @@ const About = () => {
 			</section>
 
 			<section className="mb-8">
-				<h2 className="text-2xl font-semibold text-gray-700 mb-4">パートナー湿布</h2>
+				<h2 className="text-2xl font-semibold text-gray-700 mb-4">パートナーシップ</h2>
 				<div className="flex flex-col items-start bg-gray-100 p-6 rounded-lg">
 					<div className="mb-4">
 						<p className="text-gray-700 font-medium mb-2">Powered by</p>
