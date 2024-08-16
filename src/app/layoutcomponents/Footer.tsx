@@ -15,8 +15,8 @@ const Footer = () => {
 						<h3 className="text-cyan-400 text-xl font-semibold mb-4">リンク</h3>
 						<ul className="text-gray-400 space-y-2">
 							<li>
-								<Link href="/" className="hover:text-cyan-400">
-									ホーム
+								<Link href="/about" className="hover:text-cyan-400">
+									このサイトについて
 								</Link>
 							</li>
 							{/* <li>
