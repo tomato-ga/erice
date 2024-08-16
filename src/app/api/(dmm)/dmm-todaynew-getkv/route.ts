@@ -34,6 +34,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 		return NextResponse.json({ error: 'DMM_TOPPAGE_WORKER_URLが環境変数に設定されていません' }, { status: 500 })
 	}
 
+	// 次の0時までの秒数を計算する関数
+	const getSecondsUntilMidnight = () => {
+		const now = new Date()
+		const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+		return Math.floor((tomorrow.getTime() - now.getTime()) / 1000)
+	}
+
 	try {
 		console.log(`Fetching data from ${WORKER_URL}`)
 		const response = await fetch(`${WORKER_URL}/today-new-items`, {
@@ -41,7 +48,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 			headers: {
 				'Content-Type': 'application/json',
 				'X-API-Key': API_KEY
-			}
+			},
+			next: { revalidate: getSecondsUntilMidnight() }
 		})
 
 		if (!response.ok) {

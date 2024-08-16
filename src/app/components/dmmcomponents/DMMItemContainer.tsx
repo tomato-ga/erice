@@ -13,18 +13,24 @@ interface DMMItemContainerProps {
 // MEMO todaynewだけキャッシュ期限を付与
 async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 	let endpoint = ''
+	let revalidateTime = 0 // デフォルトは0（キャッシュなし）
+
 	switch (itemType) {
 		case 'todaynew':
 			endpoint = '/api/dmm-todaynew-getkv'
+			revalidateTime = getSecondsUntilMidnight()
 			break
 		case 'debut':
 			endpoint = '/api/dmm-debut-getkv'
+			revalidateTime = 3600 // 1時間キャッシュ
 			break
 		case 'feature':
 			endpoint = '/api/dmm-feature-getkv'
+			revalidateTime = 3600 // 1時間キャッシュ
 			break
 		case 'sale':
 			endpoint = '/api/dmm-sale-getkv'
+			revalidateTime = 1800 // 30分キャッシュ
 			break
 		default:
 			throw new Error(`Invalid itemType: ${itemType}`)
@@ -33,7 +39,7 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 	try {
 		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
 			next: {
-				revalidate: itemType === 'todaynew' ? getSecondsUntilMidnight() : false
+				revalidate: revalidateTime
 			}
 		})
 
@@ -43,6 +49,10 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 		}
 
 		const data: DMMItemProps[] = await response.json()
+		if (!Array.isArray(data)) {
+			console.error('Invalid data format received:', data)
+			return []
+		}
 		return data
 	} catch (error) {
 		console.error('Error fetching data:', error)
