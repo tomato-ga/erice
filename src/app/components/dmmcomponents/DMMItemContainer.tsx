@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { DMMItemProps, ItemType } from '../../../../types/dmmtypes'
 import DMMItemList from './DMMItemList'
 import { ArrowRight } from 'lucide-react'
+import { revalidateTag } from 'next/cache'
 
 interface DMMItemContainerProps {
 	itemType: ItemType
@@ -128,4 +129,14 @@ export default async function DMMItemContainer({ itemType, from, bgGradient }: D
 			<DMMItemList items={items} itemType={itemType} from={from} />
 		</div>
 	)
+}
+
+// 毎日0時にキャッシュを再検証するスケジューラー関数
+export async function revalidateDailyCache() {
+	try {
+		revalidateTag('dmm-todaynew')
+		console.log('DMM todaynew cache revalidated successfully')
+	} catch (error) {
+		console.error('Failed to revalidate DMM todaynew cache:', error)
+	}
 }

@@ -94,13 +94,3 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 		}
 	}
 }
-
-// 毎日0時にキャッシュを再検証するスケジューラー関数
-export async function revalidateDailyCache() {
-	try {
-		revalidateTag('dmm-todaynew')
-		console.log('DMM todaynew cache revalidated successfully')
-	} catch (error) {
-		console.error('Failed to revalidate DMM todaynew cache:', error)
-	}
-}
