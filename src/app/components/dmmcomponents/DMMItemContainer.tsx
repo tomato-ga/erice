@@ -13,49 +13,50 @@ interface DMMItemContainerProps {
 // MEMO todaynewだけキャッシュ期限を付与
 async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 	let endpoint = ''
-	let revalidateTime = 0 // デフォルトは0（キャッシュなし）
+	let fetchOptions: RequestInit & { next?: NextFetchRequestConfig } = {}
 
 	switch (itemType) {
 		case 'todaynew':
 			endpoint = '/api/dmm-todaynew-getkv'
-			revalidateTime = getSecondsUntilMidnight()
+			fetchOptions.next = { tags: ['dmm-todaynew'] }
 			break
 		case 'debut':
 			endpoint = '/api/dmm-debut-getkv'
-			revalidateTime = 3600 // 1時間キャッシュ
+			fetchOptions.next = { revalidate: 3600 } // 1時間キャッシュ
 			break
 		case 'feature':
 			endpoint = '/api/dmm-feature-getkv'
-			revalidateTime = 3600 // 1時間キャッシュ
+			fetchOptions.next = { revalidate: 3600 } // 1時間キャッシュ
 			break
 		case 'sale':
 			endpoint = '/api/dmm-sale-getkv'
-			revalidateTime = 1800 // 30分キャッシュ
+			fetchOptions.next = { revalidate: 36000 } // 10時間キャッシュ
 			break
 		default:
 			throw new Error(`Invalid itemType: ${itemType}`)
 	}
 
 	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
-			next: {
-				revalidate: revalidateTime
-			}
-		})
+		console.log(`Fetching data for ${itemType} from ${endpoint}`)
+		console.log('Fetch options:', fetchOptions)
+
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, fetchOptions)
 
 		if (!response.ok) {
-			console.error('Error fetching data:', response.status, response.statusText)
+			console.error(`Error fetching data for ${itemType}:`, response.status, response.statusText)
 			return []
 		}
 
 		const data: DMMItemProps[] = await response.json()
 		if (!Array.isArray(data)) {
-			console.error('Invalid data format received:', data)
+			console.error(`Invalid data format received for ${itemType}:`, data)
 			return []
 		}
+
+		console.log(`Successfully fetched ${data.length} items for ${itemType}`)
 		return data
 	} catch (error) {
-		console.error('Error fetching data:', error)
+		console.error(`Error fetching data for ${itemType}:`, error)
 		return []
 	}
 }
@@ -99,7 +100,7 @@ export default async function DMMItemContainer({ itemType, from, bgGradient }: D
 		feature: '全ての注目作品を見る',
 		sale: '全ての限定セール商品を見る',
 		actress: '全てのアクトレスを見る',
-		genre: '全てのジャンルを見る'
+		genre: '全てのジャンル���見る'
 	}
 
 	return (

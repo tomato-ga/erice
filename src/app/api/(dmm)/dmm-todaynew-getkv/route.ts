@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidateTag } from 'next/cache'
 import { DMMItem } from '../../../../../types/dmmtypes'
 
 interface ApiResponse {
@@ -49,7 +50,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 				'Content-Type': 'application/json',
 				'X-API-Key': API_KEY
 			},
-			next: { revalidate: getSecondsUntilMidnight() }
+			next: { tags: ['dmm-todaynew'] } // キャッシュタグを追加
 		})
 
 		if (!response.ok) {
@@ -75,6 +76,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 			director: item.iteminfo?.director ? item.iteminfo?.director[0]?.name : null
 		}))
 
+		// データ処理後、キャッシュタグを再検証
+		revalidateTag('dmm-todaynew')
+
 		return NextResponse.json(processedData)
 	} catch (error) {
 		console.error('APIルートでエラーが発生しました:', error)
@@ -88,5 +92,15 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 		} else {
 			return NextResponse.json({ error: 'サーバー内部エラー', details: (error as Error).message }, { status: 500 })
 		}
+	}
+}
+
+// 毎日0時にキャッシュを再検証するスケジューラー関数
+export async function revalidateDailyCache() {
+	try {
+		revalidateTag('dmm-todaynew')
+		console.log('DMM todaynew cache revalidated successfully')
+	} catch (error) {
+		console.error('Failed to revalidate DMM todaynew cache:', error)
 	}
 }
