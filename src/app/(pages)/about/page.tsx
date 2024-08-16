@@ -14,7 +14,7 @@ const About = () => {
 			<section className="mb-8">
 				<h2 className="text-2xl font-semibold text-gray-700 mb-4">私たちのミッション</h2>
 				<p className="text-gray-600 leading-relaxed">
-					エロコメストは、みんなで抜ける情報を共有する動画体験を提供することを目指しています。DMM.comやSOKMILなどの豊富なコンテンツを通じて、
+					エロコメストは、みんなで抜ける情報を共有し合うことで、新たな動画体験を提供することを目指しています。DMM.comやSOKMILなどの豊富なコンテンツを通じて、
 					ユーザーの皆様に満足いただけるサービスを提供します。
 				</p>
 			</section>
