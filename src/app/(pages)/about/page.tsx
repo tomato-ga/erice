@@ -53,9 +53,7 @@ const About = () => {
 			<section>
 				<h2 className="text-2xl font-semibold text-gray-700 mb-4">免責事項</h2>
 				<p className="text-gray-600 leading-relaxed">
-					当サイトは、DMM.comのアフィリエイトプログラムを利用しています。
-					コンテンツの選択には十分注意を払っていますが、閲覧は自己責任でお願いいたします。
-					また、18歳未満の方のご利用はお控えください。
+					当サイトは、DMM.comのアフィリエイトプログラムを利用しています。 また、18歳未満の方のご利用はお控えください。
 				</p>
 			</section>
 		</div>
