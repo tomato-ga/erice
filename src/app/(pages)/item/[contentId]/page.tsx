@@ -200,4 +200,5 @@ export default async function DMMKobetuItemPage({
 	)
 }
 
-export const fetchCache = 'force-cache'
+// 24時間キャッシュ
+export const revalidate = 86400
