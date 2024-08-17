@@ -144,11 +144,11 @@ export default async function DMMKobetuItemPage({
 					<div className="w-full text-sm text-center my-4">このページに広告を設置しています</div>
 
 					<Suspense fallback={<LoadingSpinner />}>
-						<ProductDetails contentId={params.contentId} title={ItemMain.title} />
+						<CommentSection contentId={params.contentId} />
 					</Suspense>
 
 					<Suspense fallback={<LoadingSpinner />}>
-						<CommentSection contentId={params.contentId} />
+						<ProductDetails contentId={params.contentId} title={ItemMain.title} />
 					</Suspense>
 
 					{ItemMain.sampleImageURL && (
