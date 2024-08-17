@@ -19,7 +19,7 @@ const ItemDetailsTable = ({ item }: { item: DMMItemDetailResponse & { title: str
 	const details = [
 		{ label: 'タイトル', value: item.title, icon: '🎬' },
 		{ label: '発売日', value: item.date ? formatDate(item.date) : '情報なし', icon: '📅' },
-		{ label: '出演者', value: item.actress || '情報なし', icon: '😍' },
+		{ label: '女優名', value: item.actress || '情報なし', icon: '😍' },
 		{ label: 'ジャンル', value: item.genre || '情報なし', icon: '📚' },
 		{ label: '品番', value: item.content_id, icon: '🔢' },
 		{ label: 'メーカー', value: item.maker || '情報なし', icon: '🏭' },
@@ -100,7 +100,7 @@ const ProductDetails = async ({ contentId, title }: ProductDetailsProps) => {
 	return (
 		<div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 shadow-lg">
 			<h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 pb-2 border-b border-gray-200 dark:border-gray-700">
-				商品詳細
+				アダルト動画詳細
 			</h2>
 			<ItemDetailsTable item={combinedItem} />
 		</div>
