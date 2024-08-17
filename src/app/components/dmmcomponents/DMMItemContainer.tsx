@@ -23,15 +23,15 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 			break
 		case 'debut':
 			endpoint = '/api/dmm-debut-getkv'
-			fetchOptions.next = { revalidate: 3600 } // 1時間キャッシュ
+			fetchOptions.next = { revalidate: 43200 } // 12時間キャッシュ
 			break
 		case 'feature':
 			endpoint = '/api/dmm-feature-getkv'
-			fetchOptions.next = { revalidate: 3600 } // 1時間キャッシュ
+			fetchOptions.next = { revalidate: 43200 } // 12時間キャッシュ
 			break
 		case 'sale':
 			endpoint = '/api/dmm-sale-getkv'
-			fetchOptions.next = { revalidate: 36000 } // 10時間キャッシュ
+			fetchOptions.next = { revalidate: 43200 } // 12時間キャッシュ
 			break
 		default:
 			throw new Error(`Invalid itemType: ${itemType}`)
