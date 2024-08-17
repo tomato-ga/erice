@@ -38,13 +38,13 @@ const ItemDetailsTable = ({ item }: { item: DMMItemDetailResponse & { title: str
 						</span>
 						<div className="flex-grow">
 							<h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">{label}</h3>
-							{(label === '出演者' || label === 'ジャンル') && value !== '情報なし' ? (
+							{(label === '女優名' || label === 'ジャンル') && value !== '情報なし' ? (
 								<div>
 									{Array.isArray(value) ? (
 										value.map((item, index) => (
 											<Link
 												key={index}
-												href={`/${label === '出演者' ? 'actress' : 'genre'}/${encodeURIComponent(item)}`}
+												href={`/${label === '女優名' ? 'actress' : 'genre'}/${encodeURIComponent(item)}`}
 												className="text-base text-blue-600 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500"
 												prefetch={true}
 											>
@@ -55,7 +55,7 @@ const ItemDetailsTable = ({ item }: { item: DMMItemDetailResponse & { title: str
 										value.split(',').map((item, index) => (
 											<Link
 												key={index}
-												href={`/${label === '出演者' ? 'actress' : 'genre'}/${encodeURIComponent(item.trim())}`}
+												href={`/${label === '女優名' ? 'actress' : 'genre'}/${encodeURIComponent(item.trim())}`}
 												className="text-base text-blue-600 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500"
 											>
 												{item.trim()}
