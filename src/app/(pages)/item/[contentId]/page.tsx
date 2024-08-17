@@ -10,7 +10,7 @@ import { ArrowRight, ExternalLink } from 'lucide-react'
 import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
 import RelatedItemsScroll from '@/app/components/dmmcomponents/Related/RelatedItemsScroll'
 import {
-	fetchData,
+	fetchDataKV,
 	fetchItemMainByContentId,
 	fetchItemDetailByContentId,
 	fetchRelatedItems
@@ -82,7 +82,7 @@ export default async function DMMKobetuItemPage({
 	let ItemMain: DMMItemMainResponse | null = null
 	try {
 		if (searchParams.itemType) {
-			ItemMain = await fetchData(searchParams.itemType, params.contentId)
+			ItemMain = await fetchDataKV(searchParams.itemType, params.contentId)
 		} else {
 			ItemMain = await fetchItemMainByContentId(params.contentId)
 		}
@@ -199,3 +199,5 @@ export default async function DMMKobetuItemPage({
 		</div>
 	)
 }
+
+export const fetchCache = 'force-cache'

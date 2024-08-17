@@ -19,7 +19,7 @@ import {
 import { DMMItemProps } from '../../../../../types/dmmtypes'
 import { revalidateTag } from 'next/cache'
 
-export async function fetchData(itemType: ItemType, contentId: string): Promise<DMMItem | null> {
+export async function fetchDataKV(itemType: ItemType, contentId: string): Promise<DMMItem | null> {
 	let endpoint = ''
 	let parseFunction: (data: unknown) => DMMItem[]
 
@@ -78,7 +78,7 @@ export async function fetchItemMainByContentId(contentId: string): Promise<DMMIt
 			{
 				cache: 'force-cache',
 				next: {
-					tags: [`item-${contentId}`]
+					tags: [`item-main-${contentId}`]
 				}
 			}
 		)
@@ -89,7 +89,7 @@ export async function fetchItemMainByContentId(contentId: string): Promise<DMMIt
 		if (typeof data === 'object' && data !== null) {
 			const parseResult = DMMItemMainResponseSchema.safeParse(data)
 			if (parseResult.success) {
-				revalidateTag(`item-${parseResult.data.content_id}`)
+				revalidateTag(`item-main-${parseResult.data.content_id}`)
 				return parseResult.data
 			} else {
 				console.error('Validation error:', parseResult.error.errors)
@@ -119,7 +119,7 @@ export async function fetchItemDetailByContentId(contentId: string): Promise<DMM
 			`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-one-item-detail?content_id=${contentId}`,
 			{
 				next: {
-					tags: [`item-${contentId}`]
+					tags: [`item-detail-${contentId}`]
 				}
 			}
 		)
@@ -132,7 +132,7 @@ export async function fetchItemDetailByContentId(contentId: string): Promise<DMM
 			const itemData = (data as { items: unknown }).items
 			const parseResult = DMMItemDetailResponseSchema.safeParse(itemData)
 			if (parseResult.success) {
-				revalidateTag(`item-${contentId}`)
+				revalidateTag(`item-detail-${contentId}`)
 				return parseResult.data
 			} else {
 				console.error('Validation error:', parseResult.error.errors)
@@ -156,7 +156,11 @@ export async function fetchItemDetailByContentId(contentId: string): Promise<DMM
 }
 
 export async function fetchRelatedItems(itemType: ItemType): Promise<DMMItemProps[]> {
-	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-${itemType}-getkv`, { cache: 'no-store' })
+	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-${itemType}-getkv`, {
+		next: {
+			revalidate: 43200 // 12時間（秒単位）
+		}
+	})
 	const data: DMMItemProps[] = await response.json()
 	return data.slice(0, 50)
 }

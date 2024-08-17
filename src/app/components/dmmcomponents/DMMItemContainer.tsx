@@ -130,4 +130,5 @@ export async function revalidateDailyCache() {
 	}
 }
 
-export const fetchCache = 'force-cache'
+// 12時間キャッシュ
+export const revalidate = 43200

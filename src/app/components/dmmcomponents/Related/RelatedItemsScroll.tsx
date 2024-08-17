@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { DMMItemProps } from '../../../../../types/dmmtypes'
 import { ItemType } from '../../../../../types/dmmtypes'
@@ -14,6 +14,22 @@ interface RelatedItemsScrollProps {
 
 const RelatedItemsScroll: React.FC<RelatedItemsScrollProps> = ({ items, itemType, title }) => {
 	const scrollRef = useRef<HTMLDivElement>(null)
+	const [shuffledItems, setShuffledItems] = useState<DMMItemProps[]>([])
+
+	// アイテムをシャッフルする関数
+	const shuffleArray = (array: DMMItemProps[]) => {
+		const shuffled = [...array]
+		for (let i = shuffled.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1))
+			;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+		}
+		return shuffled
+	}
+
+	// コンポーネントのマウント時にアイテムをシャッフル
+	useEffect(() => {
+		setShuffledItems(shuffleArray(items))
+	}, [items])
 
 	const gradients = {
 		todaynew: 'from-green-500 to-blue-500',
@@ -47,7 +63,7 @@ const RelatedItemsScroll: React.FC<RelatedItemsScrollProps> = ({ items, itemType
 					className="flex overflow-x-auto space-x-4 scrollbar-hide scroll-smooth"
 					style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
 				>
-					{items.map((item) => (
+					{shuffledItems.map((item) => (
 						<div key={item.content_id} className="flex-none w-64">
 							<Link href={`/item/${item.content_id}?itemType=${itemType}`}>
 								<div className="bg-white overflow-hidden">
