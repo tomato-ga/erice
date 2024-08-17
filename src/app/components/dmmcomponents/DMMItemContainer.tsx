@@ -19,19 +19,15 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 	switch (itemType) {
 		case 'todaynew':
 			endpoint = '/api/dmm-todaynew-getkv'
-			fetchOptions.next = { tags: ['dmm-todaynew'] }
 			break
 		case 'debut':
 			endpoint = '/api/dmm-debut-getkv'
-			fetchOptions.next = { revalidate: 43200 } // 12時間キャッシュ
 			break
 		case 'feature':
 			endpoint = '/api/dmm-feature-getkv'
-			fetchOptions.next = { revalidate: 43200 } // 12時間キャッシュ
 			break
 		case 'sale':
 			endpoint = '/api/dmm-sale-getkv'
-			fetchOptions.next = { revalidate: 43200 } // 12時間キャッシュ
 			break
 		default:
 			throw new Error(`Invalid itemType: ${itemType}`)
@@ -39,9 +35,8 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 
 	try {
 		console.log(`Fetching data for ${itemType} from ${endpoint}`)
-		console.log('Fetch options:', fetchOptions)
 
-		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, fetchOptions)
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`)
 
 		if (!response.ok) {
 			console.error(`Error fetching data for ${itemType}:`, response.status, response.statusText)
@@ -60,12 +55,6 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 		console.error(`Error fetching data for ${itemType}:`, error)
 		return []
 	}
-}
-
-function getSecondsUntilMidnight(): number {
-	const now = new Date()
-	const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
-	return Math.floor((midnight.getTime() - now.getTime()) / 1000)
 }
 
 export default async function DMMItemContainer({ itemType, from, bgGradient }: DMMItemContainerProps) {
@@ -140,3 +129,5 @@ export async function revalidateDailyCache() {
 		console.error('Failed to revalidate DMM todaynew cache:', error)
 	}
 }
+
+export const fetchCache = 'force-cache'

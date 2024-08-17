@@ -49,8 +49,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 			headers: {
 				'Content-Type': 'application/json',
 				'X-API-Key': API_KEY
-			},
-			next: { tags: ['dmm-todaynew'] } // キャッシュタグを追加
+			}
 		})
 
 		if (!response.ok) {
