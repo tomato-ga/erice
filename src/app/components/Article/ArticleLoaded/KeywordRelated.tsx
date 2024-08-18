@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { KeywordArticle } from '../../../../../types/types'
+import { KeywordArticle } from '@/types/types'
 import ArticleCard from '../ArticleCard'
 import Link from 'next/link'
 
@@ -21,7 +21,7 @@ const KeywordRelatedArticles: React.FC<KeywordRelatedArticlesProps> = ({ keyword
 				<ul>
 					{keywordarticledata.map((keyarti: KeywordArticle) => (
 						<li key={keyarti.id} className="p-1.5">
-							<ArticleCard article={keyarti} isSmallThumbnail={true} source='Kobetu-Related' />
+							<ArticleCard article={keyarti} isSmallThumbnail={true} source="Kobetu-Related" />
 						</li>
 					))}
 				</ul>

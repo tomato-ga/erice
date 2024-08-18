@@ -1,4 +1,4 @@
-import { RirekiArticleResponse } from '../../../../../types/types'
+import { RirekiArticleResponse } from '@/types/types'
 import { cache } from 'react'
 
 export const getRirekiArticles = cache(async (userId: string): Promise<RirekiArticleResponse> => {

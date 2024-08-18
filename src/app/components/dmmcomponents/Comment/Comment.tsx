@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Comment } from '../../../../../types/comment'
+import { Comment } from '@/types/comment'
 import { deleteComment } from '@/app/actions/commentActions'
 
 interface CommentProps {

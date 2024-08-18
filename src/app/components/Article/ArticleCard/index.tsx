@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { HomePageArticle, RelatedArticle } from '../../../../../types/types'
+import { HomePageArticle, RelatedArticle } from '@/types/types'
 import { handlePageClickCount } from '../../handleclick'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'

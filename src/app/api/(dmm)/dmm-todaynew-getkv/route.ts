@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidateTag } from 'next/cache'
-import { DMMItem } from '../../../../../types/dmmtypes'
+import { DMMItem } from '@/types/dmmtypes'
 
 interface ApiResponse {
 	request: {

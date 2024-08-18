@@ -1,5 +1,5 @@
 import React from 'react'
-import { Keyword } from '../../../../../types/types'
+import { Keyword } from '@/types/types'
 import KeywordInteractions from './KeywordInteractions'
 import Link from 'next/link'
 

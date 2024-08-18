@@ -1,7 +1,7 @@
 // src/app/api/record-user-actions/route.ts
 
 import { NextRequest, NextResponse } from 'next/server'
-import { SyncData } from '../../../../types/types'
+import { SyncData } from '../../@/types/types'
 
 const API_ENDPOINT = process.env.USER_ACTION_WORKER_URL
 const API_KEY = process.env.D1_API_KEY

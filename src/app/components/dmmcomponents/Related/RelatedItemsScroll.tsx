@@ -2,8 +2,8 @@
 
 import { useRef, useState, useEffect } from 'react'
 import Link from 'next/link'
-import { DMMItemProps } from '../../../../../types/dmmtypes'
-import { ItemType } from '../../../../../types/dmmtypes'
+import { DMMItemProps } from '@/types/dmmtypes'
+import { ItemType } from '@/types/dmmtypes'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 
 interface RelatedItemsScrollProps {

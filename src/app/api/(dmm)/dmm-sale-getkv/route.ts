@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { DMMSaleApiResponse } from '../../../../../types/dmmtypes'
+import { DMMSaleApiResponse } from '@/types/dmmtypes'
 
 /**
  * セール中の動画を取得するAPIエンドポイント

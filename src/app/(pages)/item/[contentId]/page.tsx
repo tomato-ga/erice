@@ -4,8 +4,8 @@ import { Suspense } from 'react'
 import { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { ItemType } from '../../../../../types/dmmtypes'
-import { DMMItem, DMMItemMainResponse } from '../../../../../types/dmmitemzodschema'
+import { ItemType } from '@/types/dmmtypes'
+import { DMMItem, DMMItemMainResponse } from '@/types/dmmitemzodschema'
 import { ArrowRight, ExternalLink } from 'lucide-react'
 import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
 import RelatedItemsScroll from '@/app/components/dmmcomponents/Related/RelatedItemsScroll'
@@ -16,6 +16,8 @@ import {
 	fetchRelatedItems
 } from '@/app/components/dmmcomponents/fetch/itemFetchers'
 import { CommentSection } from '@/app/components/dmmcomponents/Comment/CommentSection'
+import ActressRelatedItems from '@/app/components/dmmcomponents/DMMActressItemRelated'
+import ItemDetails from '@/app/components/dmmcomponents/ItemDetails'
 
 interface Props {
 	params: { contentId: string }
@@ -144,11 +146,7 @@ export default async function DMMKobetuItemPage({
 					<div className="w-full text-sm text-center my-4">このページに広告を設置しています</div>
 
 					<Suspense fallback={<LoadingSpinner />}>
-						<CommentSection contentId={params.contentId} />
-					</Suspense>
-
-					<Suspense fallback={<LoadingSpinner />}>
-						<ProductDetails contentId={params.contentId} title={ItemMain.title} />
+						<ItemDetails ItemMain={ItemMain} contentId={params.contentId} />
 					</Suspense>
 
 					{ItemMain.sampleImageURL && (

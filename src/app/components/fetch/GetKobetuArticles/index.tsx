@@ -1,6 +1,6 @@
 'use server'
 
-import { KobetuPageArticle, SingleArticleApiResponse } from '../../../../../types/types'
+import { KobetuPageArticle, SingleArticleApiResponse } from '@/types/types'
 
 /**
  * 指定された記事IDに基づいて個別の記事データを取得する非同期関数

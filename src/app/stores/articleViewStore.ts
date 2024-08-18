@@ -1,7 +1,7 @@
 // src/store/articleViewStore.ts
 import { create } from 'zustand'
 import { loadArticleViews, ArticleView } from '@/lib/articleViewSync'
-import { RelatedArticle } from '../../../types/types'
+import { RelatedArticle } from '@/types/types'
 
 interface ArticleViewState {
 	articles: RelatedArticle[]

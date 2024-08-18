@@ -3,8 +3,8 @@
 // src/app/components/dmmcomponents/DMMItemList.tsx
 
 import Link from 'next/link'
-import { ItemType } from '../../../../types/dmmtypes'
-import { DMMItemProps } from '../../../../types/dmmtypes'
+import { ItemType } from '@/types/dmmtypes'
+import { DMMItemProps } from '@/types/dmmtypes'
 
 // PriceDisplay コンポーネント：価格表示部分
 // listPrice: 定価 (number 型)

@@ -2,7 +2,7 @@
 
 import { useArticleViewStore } from '@/app/stores/articleViewStore'
 import { useEffect } from 'react'
-import { RelatedArticle } from '../../../../../types/types'
+import { RelatedArticle } from '@/types/types'
 import ArticleCard from '../ArticleCard'
 import { handleUmamiClick } from '@/lib/umamiTracking'
 

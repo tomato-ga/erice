@@ -9,7 +9,7 @@
  * @requires React
  * @requires next/server
  * @requires ./SaleItemList
- * @requires ../../../../types/dmmtypes
+ * @requires @/types/dmmtypes
  *
  * @returns {Promise<JSX.Element>} セール商品ページのJSX要素
  *
@@ -19,7 +19,7 @@
 
 import { Suspense } from 'react'
 import SaleItemList from './SaleItemList'
-import { DMMSaleItem } from '../../../../types/dmmtypes'
+import { DMMSaleItem } from '@/types/dmmtypes'
 
 export default async function DMMSalePage() {
 	/**

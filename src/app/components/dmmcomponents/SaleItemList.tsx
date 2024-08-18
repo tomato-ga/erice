@@ -3,7 +3,7 @@
 'use client'
 
 import { useState } from 'react'
-import { DMMSaleItem } from '../../../../types/dmmtypes'
+import { DMMSaleItem } from '@/types/dmmtypes'
 import Link from 'next/link'
 
 // PriceDisplay コンポーネント：価格表示部分

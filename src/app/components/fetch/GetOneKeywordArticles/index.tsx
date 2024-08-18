@@ -1,6 +1,6 @@
 'use server'
 
-import { KeywordArticle, KeywordArticleApiResponse } from '../../../../../types/types'
+import { KeywordArticle, KeywordArticleApiResponse } from '@/types/types'
 
 /**
  * 指定されたキーワードに関連する記事を取得する非同期関数

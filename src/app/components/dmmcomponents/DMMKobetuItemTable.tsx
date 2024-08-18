@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { DMMItemDetailResponse } from '../../../../types/dmmitemzodschema'
+import { DMMItemDetailResponse } from '@/types/dmmitemzodschema'
 import { fetchItemDetailByContentId } from '../dmmcomponents/fetch/itemFetchers'
 
 const formatDate = (dateString: string) => {
@@ -14,7 +14,12 @@ interface ItemDetailsTableProps {
 	icon: string
 }
 
-const ItemDetailsTable = ({ item }: { item: DMMItemDetailResponse & { title: string; content_id: string } }) => {
+interface ExtendedDMMItemDetailResponse extends DMMItemDetailResponse {
+	title: string
+	content_id: string
+}
+
+const ItemDetailsTable = ({ item }: { item: ExtendedDMMItemDetailResponse }) => {
 	// console.log('ItemDetailsTable received item:', item)
 	const details = [
 		{ label: 'タイトル', value: item.title, icon: '🎬' },
@@ -77,25 +82,17 @@ const ItemDetailsTable = ({ item }: { item: DMMItemDetailResponse & { title: str
 }
 
 interface ProductDetailsProps {
-	contentId: string
+	itemDetail: DMMItemDetailResponse
 	title: string
+	contentId: string
 }
 
-const ProductDetails = async ({ contentId, title }: ProductDetailsProps) => {
-	const itemDetails = await fetchItemDetailByContentId(contentId)
-	// console.log('fetchItemDetailByContentId関数を呼び出します', itemDetails)
-
-	if (!itemDetails) {
-		return <div>商品詳細を読み込めませんでした。</div>
-	}
-
-	const combinedItem = {
-		...itemDetails,
+const ProductDetails = ({ itemDetail, title, contentId }: ProductDetailsProps) => {
+	const combinedItem: ExtendedDMMItemDetailResponse = {
+		...itemDetail,
 		title,
 		content_id: contentId
 	}
-
-	console.log('Combined item:', combinedItem)
 
 	return (
 		<div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 shadow-lg">

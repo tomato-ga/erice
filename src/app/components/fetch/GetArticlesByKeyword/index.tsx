@@ -1,4 +1,4 @@
-import { PaginationArticleResponse, PaginationArticle } from '../../../../../types/types'
+import { PaginationArticleResponse, PaginationArticle } from '@/types/types'
 
 interface APIResponse {
 	articles: PaginationArticle[]

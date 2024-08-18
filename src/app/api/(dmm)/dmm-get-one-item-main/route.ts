@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { DMMItem } from '../../../../../types/dmmitemzodschema'
+import { DMMItem } from '@/types/dmmitemzodschema'
 
 // APIエンドポイント
 export async function GET(request: NextRequest): Promise<NextResponse> {

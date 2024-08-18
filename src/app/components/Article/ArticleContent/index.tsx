@@ -1,5 +1,5 @@
 import React from 'react'
-import { KobetuPageArticle } from '../../../../../types/types'
+import { KobetuPageArticle } from '@/types/types'
 import PopularArticles from '../PopularArticle'
 import ArticleKeywords from '../ArticleKeywords'
 import ArticleLinks from '../ArticleLinks/index'

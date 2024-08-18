@@ -1,5 +1,5 @@
 // components/DMMActressItemContainer.tsx
-import { Actress, ActressType, NewActressResponse, AllContentResponse } from '../../../../types/dmmtypes'
+import { Actress, ActressType, NewActressResponse, AllContentResponse } from '@/types/dmmtypes'
 import ActressItemList from './DMMActressItemList'
 
 async function fetchData(actressType: ActressType): Promise<Actress[]> {

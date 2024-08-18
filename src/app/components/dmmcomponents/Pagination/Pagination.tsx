@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { DMMItemProps } from '../../../../../types/dmmtypes'
+import { DMMItemProps } from '@/types/dmmtypes'
 import DMMItemList from '../DMMItemList'
 import { ArrowRight } from 'lucide-react'
 import PaginationComponent from '../../Pagination'

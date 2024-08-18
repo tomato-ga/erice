@@ -15,7 +15,7 @@
  */
 
 // import { useQuery } from '@tanstack/react-query'
-import { HomePageApiResponse } from '../../../../../types/types'
+import { HomePageApiResponse } from '@/types/types'
 
 // const fetchHomeArticles = async (page: number, limit: number): Promise<HomePageApiResponse> => {
 // 	const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/toppage?page=${page}&limit=${limit}`

@@ -1,6 +1,6 @@
 // /Users/ore/Documents/GitHub/rice/erice/src/app/components/fetch/getPagination/index.tsx
 
-import { PaginationArticleResponse } from '../../../../../types/types'
+import { PaginationArticleResponse } from '@/types/types'
 
 export async function fetchPaginationArticles(
 	keyword: string | null,
@@ -25,10 +25,10 @@ export async function fetchPaginationArticles(
 			throw new Error(`Failed to fetch articles: ${response.status} ${JSON.stringify(errorData)}`)
 		}
 
-		const data = await response.json() as {
-			articles: unknown,
-			currentPage?: number,
-			totalPages?: number,
+		const data = (await response.json()) as {
+			articles: unknown
+			currentPage?: number
+			totalPages?: number
 			total?: number
 		}
 		console.log('Fetched data:', data) // デバッグログ

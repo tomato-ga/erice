@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import DMMItemContainerPagination from '@/app/components/dmmcomponents/Pagination/Pagination'
 import { Metadata } from 'next'
-import { DMMItemProps } from '../../../../../types/dmmtypes'
+import { DMMItemProps } from '@/types/dmmtypes'
 
 interface PageProps {
 	params: { slug?: string[] }

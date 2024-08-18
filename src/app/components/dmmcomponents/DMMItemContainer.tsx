@@ -1,6 +1,6 @@
 // components/DMMItemContainer.tsx
 import Link from 'next/link'
-import { DMMItemProps, ItemType } from '../../../../types/dmmtypes'
+import { DMMItemProps, ItemType } from '@/types/dmmtypes'
 import DMMItemList from './DMMItemList'
 import { ArrowRight } from 'lucide-react'
 import { revalidateTag } from 'next/cache'

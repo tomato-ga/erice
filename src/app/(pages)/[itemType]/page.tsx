@@ -1,4 +1,4 @@
-import { ItemType } from '../../../../types/dmmtypes'
+import { ItemType } from '@/types/dmmtypes'
 import DMMItemContainer from '@/app/components/dmmcomponents/DMMItemContainer'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'

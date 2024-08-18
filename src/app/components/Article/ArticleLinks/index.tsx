@@ -2,7 +2,7 @@
 
 import React, { useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import { KobetuPageArticle } from '../../../../../types/types'
+import { KobetuPageArticle } from '@/types/types'
 import ArticleKeywords from '../ArticleKeywords'
 import { handleEXClickCount } from '../../handleexclick'
 import { initDatabase, recordArticleView, syncArticleKV } from '../../../../lib/articleViewSync'

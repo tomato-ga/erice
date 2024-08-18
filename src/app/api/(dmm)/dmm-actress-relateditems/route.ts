@@ -1,0 +1,87 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
+
+export const DMMActressRelatedItemSchema = z.object({
+	id: z.number(),
+	content_id: z.string(),
+	title: z.string(),
+	url: z.string(),
+	affiliate_url: z.string(),
+	release_date: z.string(),
+	imageURL: z.string()
+})
+
+export const DMMActressRelatedApiResponseSchema = z.object({
+	items: z.array(DMMActressRelatedItemSchema)
+})
+
+export type DMMActressRelatedItem = z.infer<typeof DMMActressRelatedItemSchema>
+
+export type DMMActressRelatedApiResponse = z.infer<typeof DMMActressRelatedApiResponseSchema>
+
+// 型ガード関数
+function isValidApiResponse(data: unknown): data is DMMActressRelatedApiResponse {
+	return typeof data === 'object' && data !== null && 'items' in data && Array.isArray((data as any).items)
+}
+
+// APIエンドポイント
+export async function GET(request: NextRequest): Promise<NextResponse> {
+	const { searchParams } = new URL(request.url)
+	const actressname = searchParams.get('actressname')
+
+	if (!actressname) {
+		return NextResponse.json({ error: 'actressnameパラメータが必要です' }, { status: 400 })
+	}
+
+	const API_KEY = process.env.CLOUDFLARE_DMM_API_TOKEN
+	const WORKER_URL = process.env.DMM_ACTRESS_RELATEDITEMS_WORKER_URL
+
+	if (!API_KEY) {
+		console.error('CLOUDFLARE_DMM_API_TOKENが設定されていません')
+		return NextResponse.json({ error: 'CLOUDFLARE_DMM_API_TOKENが環境変数に設定されていません' }, { status: 500 })
+	}
+
+	if (!WORKER_URL) {
+		console.error('DMM_ACTRESS_DETAIL_WORKER_URLが設定されていません')
+		return NextResponse.json({ error: 'DMM_ACTRESS_DETAIL_WORKER_URLが環境変数に設定されていません' }, { status: 500 })
+	}
+
+	const encodedActressName = encodeURIComponent(actressname)
+
+	try {
+		const response = await fetch(`${WORKER_URL}/${encodedActressName}`, {
+			headers: {
+				'Content-Type': 'application/json',
+				'X-API-Key': API_KEY
+			},
+			next: { revalidate: 2592000 } // 30日間キャッシュ
+		})
+
+		if (response.status === 404) {
+			console.log(`女優が見つかりません: ${actressname}`)
+			return NextResponse.json({ error: '女優が見つかりません' }, { status: 404 })
+		}
+
+		if (!response.ok) {
+			console.error(`Cloudflare Worker APIエラー: ${response.status} ${response.statusText}`)
+			throw new Error(`Cloudflare Workerからのデータ取得に失敗しました: ${response.status}`)
+		}
+
+		const data = await response.json()
+
+		if (!isValidApiResponse(data)) {
+			throw new Error('不正なレスポンス形式')
+		}
+
+		const validatedData = DMMActressRelatedApiResponseSchema.parse(data)
+		console.log('dmm-actress-relateditems validatedData', validatedData)
+
+		return NextResponse.json(validatedData)
+	} catch (error) {
+		console.error('APIルートでエラーが発生しました:', error)
+		if (error instanceof z.ZodError) {
+			return NextResponse.json({ error: 'データの形式が不正です', details: error.errors }, { status: 500 })
+		}
+		return NextResponse.json({ error: 'サーバー内部エラー', details: (error as Error).message }, { status: 500 })
+	}
+}

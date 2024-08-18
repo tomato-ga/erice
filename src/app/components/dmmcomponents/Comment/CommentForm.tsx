@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { addComment } from '@/app/actions/commentActions'
-import { Comment } from '../../../../../types/comment'
+import { Comment } from '@/types/comment'
 
 interface FormData {
 	contentId: number

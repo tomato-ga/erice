@@ -1,7 +1,7 @@
 // /Volumes/SSD_1TB/erice2/erice/src/app/api/onekeyword/route.ts
 
 import { NextRequest, NextResponse } from 'next/server'
-import { KeywordArticleApiResponse } from '../../../../types/types'
+import { KeywordArticleApiResponse } from '@/types/types'
 
 export async function GET(request: NextRequest) {
 	const API_KEY = process.env.D1_API_KEY

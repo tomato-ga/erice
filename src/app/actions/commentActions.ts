@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-import { commentSchema, Comment } from '../../../types/comment'
+import { commentSchema, Comment } from '@/types/comment'
 
 // コメントスキーマの更新
 const updatedCommentSchema = z.object({

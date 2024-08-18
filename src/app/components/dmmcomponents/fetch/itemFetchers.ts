@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { ItemType } from '../../../../../types/dmmtypes'
+import { ItemType } from '@/types/dmmtypes'
 import {
 	DMMDebutItem,
 	DMMDebutItemSchema,
@@ -15,9 +15,10 @@ import {
 	DMMSaleItemSchema,
 	DMMTodayNewItem,
 	DMMTodayNewItemSchema
-} from '../../../../../types/dmmitemzodschema'
-import { DMMItemProps } from '../../../../../types/dmmtypes'
+} from '@/types/dmmitemzodschema'
+import { DMMItemProps } from '@/types/dmmtypes'
 import { revalidateTag } from 'next/cache'
+import { DMMActressRelatedItem } from '@/app/api/(dmm)/dmm-actress-relateditems/route'
 
 export async function fetchDataKV(itemType: ItemType, contentId: string): Promise<DMMItem | null> {
 	let endpoint = ''
@@ -163,4 +164,28 @@ export async function fetchRelatedItems(itemType: ItemType): Promise<DMMItemProp
 	})
 	const data: DMMItemProps[] = await response.json()
 	return data.slice(0, 50)
+}
+
+
+export async function fetchActressRelatedItem(actressName: string): Promise<DMMActressRelatedItem[] | null> {
+	try {
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-relateditems?actressname=${encodeURIComponent(actressName)}`
+		)
+
+		if (!response.ok) {
+			if (response.status === 404) {
+				return null // 404エラーの場合は空の配列を返す
+			}
+			// その他のエラーの場合はnullを返す
+			console.error(`API error: ${response.status} ${response.statusText}`)
+			return null
+		}
+
+		const data: { items: DMMActressRelatedItem[] } = await response.json()
+		return data.items // items配列を返す
+	} catch (error) {
+		console.error('Failed to fetch actress related items:', error)
+		return null
+	}
 }

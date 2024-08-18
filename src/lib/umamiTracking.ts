@@ -1,4 +1,4 @@
-import { HomePageArticle, RelatedArticle } from '../../types/types'
+import { HomePageArticle, RelatedArticle } from '@/types/types'
 
 export const handleUmamiClick = (type: string, article: HomePageArticle | RelatedArticle) => {
 	if (typeof window !== 'undefined' && window.umami) {

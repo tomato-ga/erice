@@ -2,7 +2,7 @@
 
 import React from 'react'
 import dynamic from 'next/dynamic'
-import { PopularArticle as PopularArticleType } from '../../../../../types/types'
+import { PopularArticle as PopularArticleType } from '@/types/types'
 import Link from 'next/link'
 
 const Carousel = dynamic(() => import('./carousel'), { ssr: false })

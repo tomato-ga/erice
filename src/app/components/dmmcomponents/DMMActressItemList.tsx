@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Actress, ActressItem } from '../../../../types/dmmtypes'
+import { Actress, ActressItem } from '@/types/dmmtypes'
 
 const ItemCard = ({ item }: { item: ActressItem }) => (
 	<div className="bg-white rounded-lg overflow-hidden shadow-md flex flex-col h-full transition duration-300 ease-in-out hover:shadow-lg">

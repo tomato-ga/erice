@@ -1,4 +1,6 @@
-// src/types/dmm.ts
+// /Volumes/SSD_1TB/erice2/erice/types/dmmtypes.d.ts
+
+
 
 // package_imagesの型定義
 interface PackageImages {
@@ -230,3 +232,4 @@ export interface DMMSaleItem extends DMMBaseItem {
 export type DMMItemProps = DMMBaseItem & Partial<DMMSaleItem>
 
 export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale' | 'actress' | 'genre'
+

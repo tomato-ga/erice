@@ -1,5 +1,5 @@
 // app/actions/getPopularArticles.ts
-import { PopularArticlesResponse } from '../../../../../types/types'
+import { PopularArticlesResponse } from '@/types/types'
 
 export async function getPopularArticles(): Promise<PopularArticlesResponse> {
 	const API_KEY = process.env.D1_API_KEY

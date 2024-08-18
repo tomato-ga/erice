@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { AllContentResponse, NewActressResponse, ActressType } from '../../../../../types/dmmtypes'
+import { AllContentResponse, NewActressResponse, ActressType } from '@/types/dmmtypes'
 
 const API_KEY = process.env.CLOUDFLARE_DMM_API_TOKEN
 const WORKER_URL = process.env.DMM_ACTRESS_WORKER_URL

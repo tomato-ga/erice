@@ -3,7 +3,7 @@
 import { Suspense, useState, useCallback } from 'react'
 import { CommentForm } from './CommentForm'
 import { CommentList } from './CommentList'
-import { Comment } from '../../../../../types/comment'
+import { Comment } from '@/types/comment'
 
 export function CommentSection({ contentId }: { contentId: string }) {
 	const [comments, setComments] = useState<Comment[]>([])

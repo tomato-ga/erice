@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { getComments } from '@/app/actions/commentActions'
 import { CommentComponent } from './Comment'
-import { Comment } from '../../../../../types/comment'
+import { Comment } from '@/types/comment'
 
 interface CommentListProps {
 	contentId: string
