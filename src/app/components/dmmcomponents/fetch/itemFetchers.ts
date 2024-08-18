@@ -18,7 +18,7 @@ import {
 } from '@/types/dmmitemzodschema'
 import { DMMItemProps } from '@/types/dmmtypes'
 import { revalidateTag } from 'next/cache'
-import { DMMActressRelatedItem } from '@/app/api/(dmm)/dmm-actress-relateditems/route'
+import { DMMActressRelatedItem } from '@/types/APItypes'
 
 export async function fetchDataKV(itemType: ItemType, contentId: string): Promise<DMMItem | null> {
 	let endpoint = ''
@@ -165,7 +165,6 @@ export async function fetchRelatedItems(itemType: ItemType): Promise<DMMItemProp
 	const data: DMMItemProps[] = await response.json()
 	return data.slice(0, 50)
 }
-
 
 export async function fetchActressRelatedItem(actressName: string): Promise<DMMActressRelatedItem[] | null> {
 	try {
