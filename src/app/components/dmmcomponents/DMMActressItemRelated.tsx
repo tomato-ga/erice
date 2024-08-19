@@ -42,12 +42,7 @@ const ActressRelatedItems = async ({ actressName }: { actressName: string }) => 
 	const ActressItemsResult = await fetchActressRelatedItem(actressName)
 
 	if (ActressItemsResult === null) {
-		return (
-			<div className="text-center p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-				<p>関連商品の読み込み中にエラーが発生しました。</p>
-				<p>しばらく待ってから再度お試しください。</p>
-			</div>
-		)
+		return
 	}
 
 	const ActressItemsSchema = z.array(ItemSchema)

@@ -18,7 +18,7 @@ import {
 } from '@/types/dmmitemzodschema'
 import { DMMItemProps } from '@/types/dmmtypes'
 import { revalidateTag } from 'next/cache'
-import { DMMActressRelatedItem } from '@/types/APItypes'
+import { DMMActressProfile, DMMActressRelatedItem } from '@/types/APItypes'
 
 export async function fetchDataKV(itemType: ItemType, contentId: string): Promise<DMMItem | null> {
 	let endpoint = ''
@@ -185,6 +185,21 @@ export async function fetchActressRelatedItem(actressName: string): Promise<DMMA
 		return data.items // items配列を返す
 	} catch (error) {
 		console.error('Failed to fetch actress related items:', error)
+		return null
+	}
+}
+
+export async function fetchActressProfile(actressName: string): Promise<DMMActressProfile | null> {
+	try {
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-profile?actressname=${encodeURIComponent(actressName)}`
+		)
+		const data: DMMActressProfile = await response.json()
+		console.log('actressProfile:', data)
+
+		return data
+	} catch (error) {
+		console.error('Failed to fetch actress profile:', error)
 		return null
 	}
 }

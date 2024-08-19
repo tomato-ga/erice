@@ -3,8 +3,9 @@ import { DMMItemMainResponse, DMMItemDetailResponse } from '@/types/dmmitemzodsc
 import ActressRelatedItems from './DMMActressItemRelated'
 import { CommentSection } from './Comment/CommentSection'
 import ProductDetails from './DMMKobetuItemTable'
-import { fetchItemDetailByContentId } from './fetch/itemFetchers'
+import { fetchActressProfile, fetchItemDetailByContentId } from './fetch/itemFetchers'
 import LoadingSpinner from '../Article/ArticleContent/loadingspinner'
+import ActressProfile from './DMMActressProfile'
 
 interface ItemDetailsProps {
 	ItemMain: DMMItemMainResponse
@@ -13,9 +14,14 @@ interface ItemDetailsProps {
 
 export default async function ItemDetails({ ItemMain, contentId }: ItemDetailsProps) {
 	const itemDetail = await fetchItemDetailByContentId(contentId)
+	const actressProfileData = await fetchActressProfile(itemDetail?.actress || '')
 
 	if (!itemDetail) {
 		return <div>商品の詳細情報を取得できませんでした。</div>
+	}
+
+	if (!actressProfileData) {
+		return <div>女優のプロフィールを取得できませんでした。</div>
 	}
 
 	return (
@@ -25,11 +31,11 @@ export default async function ItemDetails({ ItemMain, contentId }: ItemDetailsPr
 			</Suspense>
 
 			<Suspense fallback={<LoadingSpinner />}>
-				<ProductDetails itemDetail={itemDetail} title={ItemMain.title} contentId={contentId} />
+				<ActressRelatedItems actressName={itemDetail.actress || ''} />
 			</Suspense>
 
 			<Suspense fallback={<LoadingSpinner />}>
-				<ActressRelatedItems actressName={itemDetail.actress || ''} />
+				<ActressProfile actressProfileData={actressProfileData} />
 			</Suspense>
 		</>
 	)

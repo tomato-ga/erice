@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
 import { DMMItemDetailResponse } from '@/types/dmmitemzodschema'
 import { fetchItemDetailByContentId } from '../dmmcomponents/fetch/itemFetchers'
+import Link from 'next/link'
 
 const formatDate = (dateString: string) => {
 	const date = new Date(dateString)
@@ -82,24 +81,32 @@ const ItemDetailsTable = ({ item }: { item: ExtendedDMMItemDetailResponse }) => 
 }
 
 interface ProductDetailsProps {
-	itemDetail: DMMItemDetailResponse
 	title: string
 	contentId: string
 }
 
-const ProductDetails = ({ itemDetail, title, contentId }: ProductDetailsProps) => {
-	const combinedItem: ExtendedDMMItemDetailResponse = {
-		...itemDetail,
+const ProductDetails = async ({ title, contentId }: ProductDetailsProps) => {
+	let item: ExtendedDMMItemDetailResponse = {
 		title,
 		content_id: contentId
 	}
 
+	try {
+		const detailData = await fetchItemDetailByContentId(contentId)
+		if (detailData) {
+			item = { ...item, ...detailData }
+		}
+	} catch (error) {
+		console.error('Error fetching item details:', error)
+		return
+	}
+
 	return (
 		<div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 shadow-lg">
-			<h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 pb-2 border-b border-gray-200 dark:border-gray-700">
-				アダルト動画詳細
+			<h2 className="text-center font-bold mb-6 py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text">
+				<span className="text-2xl">アダルト動画詳細</span>
 			</h2>
-			<ItemDetailsTable item={combinedItem} />
+			<ItemDetailsTable item={item} />
 		</div>
 	)
 }

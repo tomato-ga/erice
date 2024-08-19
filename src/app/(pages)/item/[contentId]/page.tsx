@@ -7,7 +7,6 @@ import Link from 'next/link'
 import { ItemType } from '@/types/dmmtypes'
 import { DMMItem, DMMItemMainResponse } from '@/types/dmmitemzodschema'
 import { ArrowRight, ExternalLink } from 'lucide-react'
-import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
 import RelatedItemsScroll from '@/app/components/dmmcomponents/Related/RelatedItemsScroll'
 import {
 	fetchDataKV,
@@ -18,6 +17,7 @@ import {
 import { CommentSection } from '@/app/components/dmmcomponents/Comment/CommentSection'
 import ActressRelatedItems from '@/app/components/dmmcomponents/DMMActressItemRelated'
 import ItemDetails from '@/app/components/dmmcomponents/ItemDetails'
+import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
 
 interface Props {
 	params: { contentId: string }
@@ -146,24 +146,31 @@ export default async function DMMKobetuItemPage({
 					<div className="w-full text-sm text-center my-4">このページに広告を設置しています</div>
 
 					<Suspense fallback={<LoadingSpinner />}>
-						<ItemDetails ItemMain={ItemMain} contentId={params.contentId} />
+						<ProductDetails title={ItemMain.title} contentId={params.contentId} />
 					</Suspense>
 
 					{ItemMain.sampleImageURL && (
-						<>
-							<h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">サンプル画像</h2>
-							<div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
+						<div className="mt-8">
+							<h2 className="text-center font-bold mb-6">
+								<span className="text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text">
+									サンプル画像
+								</span>
+							</h2>
+							<div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
 								{ItemMain.sampleImageURL.map((imageUrl, index) => (
-									<div key={index} className="aspect-w-16 aspect-h-9 relative rounded-lg overflow-hidden">
+									<div
+										key={index}
+										className="aspect-w-16 aspect-h-9 relative rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
+									>
 										<img
 											src={imageUrl}
 											alt={`${ItemMain.title}のサンプル画像${index + 1}`}
-											className="w-full h-full object-cover transition-transform duration-300 "
+											className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
 										/>
 									</div>
 								))}
 							</div>
-							<div className="flex justify-center mt-6 sm:mt-8">
+							<div className="flex justify-center mt-8">
 								<Link
 									href={ItemMain.affiliateURL || '#'}
 									target="_blank"
@@ -174,8 +181,13 @@ export default async function DMMKobetuItemPage({
 									<ExternalLink className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse flex-shrink-0" />
 								</Link>
 							</div>
-						</>
+						</div>
 					)}
+
+					<Suspense fallback={<LoadingSpinner />}>
+						<ItemDetails ItemMain={ItemMain} contentId={params.contentId} />
+					</Suspense>
+
 					{relatedItemsData.map(({ type, items }) => (
 						<RelatedItemsScroll
 							key={type}
