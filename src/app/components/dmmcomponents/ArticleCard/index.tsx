@@ -38,7 +38,7 @@ const DMMArticleCard: React.FC<DMMArticleCardProps> = ({ item, isSmallThumbnail 
 								src={item.imageURL?.toString() || ''}
 								alt={item.title}
 								className={`${
-									isSmallThumbnail ? 'object-cover w-full h-full' : 'absolute inset-0 w-full h-full object-cover'
+									isSmallThumbnail ? 'object-contain w-full h-full' : 'absolute inset-0 w-full h-full object-contain'
 								}`}
 							/>
 						</div>

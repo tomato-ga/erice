@@ -7,7 +7,7 @@ const ItemCard = ({ item }: { item: ActressItem }) => (
 	<div className="bg-white rounded-lg overflow-hidden shadow-md flex flex-col h-full transition duration-300 ease-in-out hover:shadow-lg">
 		<Link href={`/item/${item.id}`}>
 			<div className="relative pt-[56.25%] overflow-hidden bg-gray-100">
-				<img src={item.imageUrl} alt={item.title} className="absolute top-0 left-0 w-full h-full object-cover" />
+				<img src={item.imageUrl} alt={item.title} className="absolute top-0 left-0 w-full h-full object-contain" />
 			</div>
 			<div className="p-2 sm:p-3 flex flex-col flex-grow">
 				<h3 className="text-sm sm:text-base font-semibold mb-1 line-clamp-2 text-gray-800">{item.title}</h3>

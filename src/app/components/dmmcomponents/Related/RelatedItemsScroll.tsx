@@ -67,7 +67,7 @@ const RelatedItemsScroll: React.FC<RelatedItemsScrollProps> = ({ items, itemType
 						<div key={item.content_id} className="flex-none w-64">
 							<Link href={`/item/${item.content_id}?itemType=${itemType}`}>
 								<div className="bg-white overflow-hidden">
-									<img src={item.imageURL} alt={item.title} className="w-full h-40 object-cover" />
+									<img src={item.imageURL} alt={item.title} className="w-full h-40 object-contain" />
 									<div className="p-4">
 										<h4 className="text-sm font-semibold mb-2 line-clamp-2">{item.title}</h4>
 										<p className="text-xs text-gray-600">

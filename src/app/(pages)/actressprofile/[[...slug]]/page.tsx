@@ -5,7 +5,6 @@ import LoadingSpinner from '@/app/components/Article/ArticleContent/loadingspinn
 import { fetchActressProfileAndWorks } from '@/app/components/dmmcomponents/fetch/itemFetchers'
 import { DMMActressProfile, ActressProfileAndWorks, DMMActressProfilePageItem } from '@/types/APItypes'
 import { formatDate } from '@/utils/dmmUtils'
-import Image from 'next/image'
 import Link from 'next/link'
 
 interface PageProps {
@@ -49,7 +48,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 const ActressProfileSection = ({ profile }: { profile: DMMActressProfile }) => {
 	return (
-		<div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl p-6">
+		<div className="bg-white dark:bg-gray-800 shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl p-6">
 			<h2 className="text-3xl font-bold text-center py-4 text-gray-800 dark:text-white">
 				<span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
 					{profile.actress.name}のプロフィール
@@ -60,12 +59,12 @@ const ActressProfileSection = ({ profile }: { profile: DMMActressProfile }) => {
 					<img
 						src={profile.actress.image_url_large || ''}
 						alt={profile.actress.name}
-						className="w-full rounded-lg shadow-md transition-transform duration-300 hover:scale-105"
+						className="w-full  shadow-md transition-transform duration-300"
 					/>
 				</div>
 				<div className="md:w-2/3 p-4">
 					{/* プロフィール情報を表示 */}
-					{/* 例: ��年月日、サイズ、身長など */}
+					{/* 例: 年月日、サイズ、身長など */}
 				</div>
 			</div>
 		</div>
@@ -76,16 +75,14 @@ const ActressWorksList = ({ works }: { works: DMMActressProfilePageItem[] }) => 
 	return (
 		<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
 			{works.map((work) => (
-				<div key={work.content_id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+				<div key={work.content_id} className="bg-white dark:bg-gray-800 shadow-md overflow-hidden">
 					<Link href={`/item/${work.content_id}`} className="block">
 						<div className="relative aspect-[3/2] w-full">
 							{work.imageURL ? (
-								<Image
+								<img
 									src={work.imageURL}
 									alt={work.title}
-									layout="fill"
-									objectFit="cover"
-									className="transition-transform duration-300 hover:scale-105"
+									className="w-full h-full object-contain transition-transform duration-300"
 								/>
 							) : (
 								<div className="w-full h-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
@@ -139,7 +136,7 @@ export default async function ActressProfilePage({ params }: PageProps) {
 			<h2 className="text-2xl font-semibold mt-12 mb-6">{profile.actress.name}の作品一覧</h2>
 
 			<Suspense fallback={<LoadingSpinner />}>
-					<ActressWorksList works={works} />
+				<ActressWorksList works={works} />
 			</Suspense>
 		</div>
 	)

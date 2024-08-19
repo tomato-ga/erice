@@ -117,12 +117,12 @@ export default async function DMMKobetuItemPage({
 		<div className="bg-gray-50 dark:bg-gray-900 min-h-screen">
 			<div className="container mx-auto px-2 sm:px-4 py-6 sm:py-8">
 				<article className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 space-y-6 sm:space-y-8">
-					<div className="relative overflow-hidden rounded-lg aspect-w-16 aspect-h-9">
+					<div className="relative overflow-hidden aspect-w-16 aspect-h-9">
 						<Link href={ItemMain.affiliateURL || '#'} target="_blank" rel="noopener noreferrer">
 							<img
 								src={ItemMain.imageURL}
 								alt={`${ItemMain.title}のパッケージ画像`}
-								className="w-full h-full object-cover transition-transform duration-300"
+								className="w-full h-full object-contain transition-transform duration-300"
 							/>
 						</Link>
 					</div>
@@ -160,12 +160,12 @@ export default async function DMMKobetuItemPage({
 								{ItemMain.sampleImageURL.map((imageUrl, index) => (
 									<div
 										key={index}
-										className="aspect-w-16 aspect-h-9 relative rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
+										className="aspect-w-16 aspect-h-9 relative overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
 									>
 										<img
 											src={imageUrl}
 											alt={`${ItemMain.title}のサンプル画像${index + 1}`}
-											className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+											className="w-full h-full object-contain transition-transform duration-300"
 										/>
 									</div>
 								))}
