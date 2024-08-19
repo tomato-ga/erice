@@ -18,7 +18,18 @@ const hasAdditionalInfo = (actress: DMMActressProfile['actress']) => {
 const ActressProfile = async ({ actressProfileData }: { actressProfileData: DMMActressProfile }) => {
 	console.log('actressProfileData:', actressProfileData)
 
-	if (!actressProfileData.actress.bust || !actressProfileData.actress.waist || !actressProfileData.actress.hip) {
+	// actressProfileDataとactressProfileData.actressの存在をチェック
+	if (!actressProfileData || !actressProfileData.actress) {
+		console.error('actressProfileData または actress が undefined です')
+		return null
+	}
+
+	// オプショナルチェイニングを使用してプロパティにアクセス
+	if (
+		!isNotNullOrEmpty(actressProfileData.actress?.bust) ||
+		!isNotNullOrEmpty(actressProfileData.actress?.waist) ||
+		!isNotNullOrEmpty(actressProfileData.actress?.hip)
+	) {
 		return null
 	}
 

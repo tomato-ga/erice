@@ -65,7 +65,7 @@ const ActressProfileSection = ({ profile }: { profile: DMMActressProfile }) => {
 				</div>
 				<div className="md:w-2/3 p-4">
 					{/* プロフィール情報を表示 */}
-					{/* 例: 生年月日、サイズ、身長など */}
+					{/* 例: ��年月日、サイズ、身長など */}
 				</div>
 			</div>
 		</div>
@@ -130,14 +130,16 @@ export default async function ActressProfilePage({ params }: PageProps) {
 				AV女優「{profile.actress.name}」のエロ動画・アダルト動画が{itemCount}作品あります
 			</h1>
 
-			<Suspense fallback={<LoadingSpinner />}>
-				<ActressProfileSection profile={profile} />
-			</Suspense>
+			{(profile.actress.bust || profile.actress.waist || profile.actress.hip) && (
+				<Suspense fallback={<LoadingSpinner />}>
+					<ActressProfileSection profile={profile} />
+				</Suspense>
+			)}
 
 			<h2 className="text-2xl font-semibold mt-12 mb-6">{profile.actress.name}の作品一覧</h2>
 
 			<Suspense fallback={<LoadingSpinner />}>
-				<ActressWorksList works={works} />
+					<ActressWorksList works={works} />
 			</Suspense>
 		</div>
 	)
