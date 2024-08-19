@@ -14,7 +14,7 @@ const About = () => {
 			<section className="mb-8">
 				<h2 className="text-2xl font-semibold text-gray-700 mb-4">私たちのミッション</h2>
 				<p className="text-gray-600 leading-relaxed">
-					エロコメストは、みんなで抜ける情報を共有し合うことで、新たな動画体験を提供することを目指しています。DMM.comやSOKMILなどの豊富なコンテンツを通じて、
+					エロコメストは、みんなで抜ける情報を共有し合うことで、新たな動画体験を提供することを目指しています。DMM.comなどのコンテンツを通じて、
 					ユーザーの皆様に満足いただけるサービスを提供します。
 				</p>
 			</section>
@@ -38,15 +38,7 @@ const About = () => {
 						target="_blank"
 						rel="nofollow noopener noreferrer"
 						className="hover:opacity-80 transition duration-300"
-					>
-						<img
-							src="https://sokmil-ad.com/api/credit/135x18.gif"
-							alt="WEB SERVICE BY SOKMIL"
-							width="135"
-							height="18"
-							className="border border-gray-300 rounded"
-						/>
-					</Link>
+					></Link>
 				</div>
 			</section>
 
