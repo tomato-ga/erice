@@ -195,7 +195,7 @@ export default async function DMMKobetuItemPage({
 							itemType={type}
 							title={
 								type === 'todaynew'
-									? '���日配信の新作'
+									? '今日配信の新作'
 									: type === 'debut'
 									? 'デビュー作品'
 									: type === 'feature'

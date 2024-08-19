@@ -90,7 +90,7 @@ export default async function DMMItemContainer({ itemType, from, bgGradient }: D
 		feature: '全ての注目作品を見る',
 		sale: '全ての限定セール商品を見る',
 		actress: '全てのアクトレスを見る',
-		genre: '全てのジャンル���見る'
+		genre: '全てのジャンルを見る'
 	}
 
 	return (

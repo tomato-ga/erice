@@ -72,7 +72,7 @@ export async function addComment(prevState: any, formData: FormData) {
 		}
 	} catch (error) {
 		console.error('コメント投稿エラー:', error)
-		return { message: '', errors: { server: ['コメント��投稿中に予期せぬエラーが発生しました'] } }
+		return { message: '', errors: { server: ['コメント投稿中に予期せぬエラーが発生しました'] } }
 	}
 }
 
