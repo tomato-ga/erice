@@ -48,7 +48,7 @@ const ItemDetailsTable = ({ item }: { item: ExtendedDMMItemDetailResponse }) => 
 										value.map((item, index) => (
 											<Link
 												key={index}
-												href={`/${label === '女優名' ? 'actress' : 'genre'}/${encodeURIComponent(item)}`}
+												href={`/${label === '女優名' ? 'actressprofile' : 'genre'}/${encodeURIComponent(item)}`}
 												className="text-base text-blue-600 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500"
 												prefetch={true}
 											>
@@ -59,7 +59,7 @@ const ItemDetailsTable = ({ item }: { item: ExtendedDMMItemDetailResponse }) => 
 										value.split(',').map((item, index) => (
 											<Link
 												key={index}
-												href={`/${label === '女優名' ? 'actress' : 'genre'}/${encodeURIComponent(item.trim())}`}
+												href={`/${label === '女優名' ? 'actressprofile' : 'genre'}/${encodeURIComponent(item.trim())}`}
 												className="text-base text-blue-600 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500"
 											>
 												{item.trim()}

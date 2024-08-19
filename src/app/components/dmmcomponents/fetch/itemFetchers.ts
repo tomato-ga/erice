@@ -18,7 +18,12 @@ import {
 } from '@/types/dmmitemzodschema'
 import { DMMItemProps } from '@/types/dmmtypes'
 import { revalidateTag } from 'next/cache'
-import { DMMActressProfile, DMMActressRelatedItem } from '@/types/APItypes'
+import {
+	ActressProfileAndWorks,
+	ActressProfileAndWorksSchema,
+	DMMActressProfile,
+	DMMActressRelatedItem
+} from '@/types/APItypes'
 
 export async function fetchDataKV(itemType: ItemType, contentId: string): Promise<DMMItem | null> {
 	let endpoint = ''
@@ -200,6 +205,48 @@ export async function fetchActressProfile(actressName: string): Promise<DMMActre
 		return data
 	} catch (error) {
 		console.error('Failed to fetch actress profile:', error)
+		return null
+	}
+}
+
+export async function fetchActressProfileAndWorks(actressName: string): Promise<ActressProfileAndWorks | null> {
+	if (!actressName) {
+		console.error('女優名が指定されていません。')
+		return null
+	}
+
+	const encodedActressName = encodeURIComponent(actressName.trim())
+
+	try {
+		const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-profile-page?actressname=${encodedActressName}`
+		console.log('Fetching from URL:', apiUrl) // デバッグ用
+
+		const response = await fetch(apiUrl, {
+			next: { revalidate: 2592000 } // 30日キャッシュ
+		})
+
+		if (response.status === 404) {
+			console.log(`女優が見つかりません: ${actressName}`)
+			return null
+		}
+
+		if (!response.ok) {
+			console.error(`APIエラー: ${response.status} ${response.statusText}`)
+			throw new Error(`APIからのデータ取得に失敗しました: ${response.status}`)
+		}
+
+		const data = await response.json()
+		console.log('Received data:', data) // デバッグ用
+
+		const validatedData = ActressProfileAndWorksSchema.parse(data)
+		console.log('fetchActressProfileAndWorks validatedData', validatedData)
+
+		return validatedData
+	} catch (error) {
+		console.error('APIリクエストでエラーが発生しました:', error)
+		if (error instanceof z.ZodError) {
+			console.error('データの形式が不正です:', error.errors)
+		}
 		return null
 	}
 }

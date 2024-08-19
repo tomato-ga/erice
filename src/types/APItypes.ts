@@ -40,20 +40,17 @@ export const DMMActressProfileSchema = z.object({
 
 export type DMMActressProfile = z.infer<typeof DMMActressProfileSchema>
 
-// ActressProfile JSON response
-// id: 24788,
-// dmm_id: 1064982,
-// name: '八掛うみ',
-// ruby: 'やつがけうみ',
-// bust: 80,
-// waist: 57,
-// hip: 85,
-// height: 160,
-// birthday: '2000-09-02',
-// blood_type: 'A',
-// hobby: '料理/フルート',
-// prefectures: '東京都',
-// image_url_small: 'http://pics.dmm.co.jp/mono/actjpgs/thumbnail/yatugake_umi.jpg',
-// image_url_large: 'http://pics.dmm.co.jp/mono/actjpgs/yatugake_umi.jpg',
-// list_url: 'https://al.dmm.co.jp/?lurl=https%3A%2F%2Fwww.dmm.co.jp%2Fdigital%2Fvideoa%2F-%2Flist%2F%3D%2Farticle%3Dactress%2Fid%3D1064982%2F&af_id=kamipanmen-990&ch=api',
-// cup: ''
+export const DMMActressProfilePageItemSchema = z.object({
+	content_id: z.string(),
+	imageURL: z.string().optional(),
+	title: z.string(),
+	release_date: z.string()
+})
+
+export const ActressProfileAndWorksSchema = z.object({
+	profile: DMMActressProfileSchema,
+	works: z.array(DMMActressProfilePageItemSchema)
+})
+
+export type ActressProfileAndWorks = z.infer<typeof ActressProfileAndWorksSchema>
+export type DMMActressProfilePageItem = z.infer<typeof DMMActressProfilePageItemSchema>
