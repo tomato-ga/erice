@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 	const { actress } = data.profile
 	const { name, birthday, prefectures } = actress
-	const title = `${name} AV女優 エロ動画・アダルト動画`
+	const title = ` AV女優「${name}」のエロ動画・アダルト動画が${data.works.length}作品あります`
 	const description = `${name}のAV女優プロフィールと作品一覧。${birthday ? `生年月日: ${birthday}、` : ''}${
 		prefectures ? `出身地: ${prefectures}` : ''
 	}`
@@ -121,6 +121,8 @@ export default async function ActressProfilePage({ params }: PageProps) {
 
 	const { profile, works } = data
 	const itemCount = works.length
+
+	console.log('profile:', profile)
 
 	return (
 		<div className="max-w-7xl mx-auto px-4 py-8">
