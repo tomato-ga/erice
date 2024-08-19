@@ -134,7 +134,7 @@ export default async function ActressProfilePage({ params }: PageProps) {
 				<ActressProfileSection profile={profile} />
 			</Suspense>
 
-			<h2 className="text-2xl font-semibold mt-12 mb-6">作品一覧</h2>
+			<h2 className="text-2xl font-semibold mt-12 mb-6">{profile.actress.name}の作品一覧</h2>
 
 			<Suspense fallback={<LoadingSpinner />}>
 				<ActressWorksList works={works} />
