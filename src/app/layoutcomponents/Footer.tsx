@@ -16,9 +16,10 @@ const Footer = () => {
 						<ul className="text-gray-400 space-y-2">
 							<li>
 								<Link href="/about" className="hover:text-cyan-400">
-									このサイトについて
+									このサイトについて・お問い合わせ
 								</Link>
 							</li>
+
 							{/* <li>
 								<Link href="/about" className="hover:text-cyan-400">
 									About

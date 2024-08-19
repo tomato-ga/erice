@@ -1,55 +1,59 @@
+import React from 'react'
 import Link from 'next/link'
-import { Metadata } from 'next'
 
-export const metadata: Metadata = {
-	title: 'エロコメストについて | エロコメスト',
-	description: 'エロコメストは、DMM.comの豊富な動画コンテンツを提供するサイトです。安全で楽しい体験をお届けします。'
-}
-
-const About = () => {
+const TermsAndPrivacy: React.FC = () => {
 	return (
-		<div className="max-w-4xl mx-auto px-4 py-8">
-			<h1 className="text-3xl font-bold text-gray-800 mb-6">エロコメストについて</h1>
+		<div className="bg-gray-50 dark:bg-gray-900 min-h-screen py-12">
+			<div className="container mx-auto px-4 sm:px-6 lg:px-8">
+				<h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8">サイト情報・お問い合わせ</h1>
 
-			<section className="mb-8">
-				<h2 className="text-2xl font-semibold text-gray-700 mb-4">私たちのミッション</h2>
-				<p className="text-gray-600 leading-relaxed">
-					エロコメストは、みんなで抜ける情報を共有し合うことで、新たな動画体験を提供することを目指しています。DMM.comなどのコンテンツを通じて、
-					ユーザーの皆様に満足いただけるサービスを提供します。
-				</p>
-			</section>
+				<div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
+					<div className="px-4 py-5 sm:p-6 space-y-6">
+						<p className="text-base text-gray-700 dark:text-gray-300">
+							このページではサイト名「エロコメスト」（以下「当サイト」といいます。）のサイト情報やお問い合わせ方法などを記載しています。
+						</p>
 
-			<section className="mb-8">
-				<h2 className="text-2xl font-semibold text-gray-700 mb-4">パートナーシップ</h2>
-				<div className="flex flex-col items-start bg-gray-100 p-6 rounded-lg">
-					<div className="mb-4">
-						<p className="text-gray-700 font-medium mb-2">Powered by</p>
-						<Link
-							href="https://affiliate.dmm.com/api/"
-							className="text-blue-600 hover:text-blue-800 transition duration-300"
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							DMM.com
-						</Link>
+						<section className="mb-8">
+							<h2 className="text-2xl font-semibold text-gray-700 mb-4">私たちのミッション</h2>
+							<p className="text-gray-600 leading-relaxed">
+								エロコメストは、みんなの良かった抜き情報を共有し合うことで、新たな動画体験を提供することを目指しています。
+							</p>
+						</section>
+
+						<section>
+							<h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">お問い合わせ・削除依頼</h2>
+							<p className="text-base text-gray-700 dark:text-gray-300">
+								削除依頼やその他お問い合わせはこちらの「お問い合わせメールアドレス servicedake+erice atmark
+								gmail.com」からお願いいたします。
+							</p>
+						</section>
+
+						<section>
+							<h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">広告掲載</h2>
+							<p className="text-base text-gray-700 dark:text-gray-300">
+								当サイトではアフィリエイト広告を掲載しています。
+							</p>
+							<Link
+								href="https://affiliate.dmm.com/api/"
+								className="text-blue-600 hover:text-blue-800 transition duration-300"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								<p className="text-blue-700 font-medium mb-2">Powered by DMM.com</p>
+							</Link>
+
+							<p className="text-base text-gray-700 dark:text-gray-300">
+								当サイトからのアクセスで商品が購入された場合に売上が発生することがあります。
+								当サイトでは、アフィリエイト広告売上を更新にかかるサーバー・ドメイン・メンテナンス人件費用とする予定です。
+							</p>
+						</section>
+
+						<p className="text-base text-gray-700 dark:text-gray-300 mt-8">2024年8月1日</p>
 					</div>
-					<Link
-						href="https://sokmil-ad.com/"
-						target="_blank"
-						rel="nofollow noopener noreferrer"
-						className="hover:opacity-80 transition duration-300"
-					></Link>
 				</div>
-			</section>
-
-			<section>
-				<h2 className="text-2xl font-semibold text-gray-700 mb-4">免責事項</h2>
-				<p className="text-gray-600 leading-relaxed">
-					当サイトは、DMM.comのアフィリエイトプログラムを利用しています。 また、18歳未満の方のご利用はお控えください。
-				</p>
-			</section>
+			</div>
 		</div>
 	)
 }
 
-export default About
+export default TermsAndPrivacy
