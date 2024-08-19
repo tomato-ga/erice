@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { z } from 'zod'
 import { fetchActressRelatedItem } from '../dmmcomponents/fetch/itemFetchers'
@@ -19,7 +18,7 @@ const hasAdditionalInfo = (actress: DMMActressProfile['actress']) => {
 const ActressProfile = async ({ actressProfileData }: { actressProfileData: DMMActressProfile }) => {
 	console.log('actressProfileData:', actressProfileData)
 
-	if (!actressProfileData.actress) {
+	if (!actressProfileData.actress.bust || !actressProfileData.actress.waist || !actressProfileData.actress.hip) {
 		return null
 	}
 
