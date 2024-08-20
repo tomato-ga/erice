@@ -19,15 +19,19 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 	switch (itemType) {
 		case 'todaynew':
 			endpoint = '/api/dmm-todaynew-getkv'
+			fetchOptions = { cache: 'no-store' }
 			break
 		case 'debut':
 			endpoint = '/api/dmm-debut-getkv'
+			fetchOptions = { next: { revalidate: 43200 } }
 			break
 		case 'feature':
 			endpoint = '/api/dmm-feature-getkv'
+			fetchOptions = { next: { revalidate: 43200 } }
 			break
 		case 'sale':
 			endpoint = '/api/dmm-sale-getkv'
+			fetchOptions = { next: { revalidate: 43200 } }
 			break
 		default:
 			throw new Error(`Invalid itemType: ${itemType}`)
@@ -36,7 +40,7 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 	try {
 		console.log(`Fetching data for ${itemType} from ${endpoint}`)
 
-		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`)
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, fetchOptions)
 
 		if (!response.ok) {
 			console.error(`Error fetching data for ${itemType}:`, response.status, response.statusText)
@@ -120,15 +124,5 @@ export default async function DMMItemContainer({ itemType, from, bgGradient }: D
 	)
 }
 
-// 毎日0時にキャッシュを再検証するスケジューラー関数
-export async function revalidateDailyCache() {
-	try {
-		revalidateTag('dmm-todaynew')
-		console.log('DMM todaynew cache revalidated successfully')
-	} catch (error) {
-		console.error('Failed to revalidate DMM todaynew cache:', error)
-	}
-}
-
-// 12時間キャッシュ
-export const revalidate = 43200
+// // 12時間キャッシュ
+// export const revalidate = 43200
