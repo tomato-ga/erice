@@ -75,7 +75,7 @@ const DMMFeaturesItemCard = <T extends DMMItemProps>({ item }: { item: T }) => {
 
 // DMMItemList コンポーネント：商品リスト全体表示部分
 // items: 商品情報の配列 (T[] 型)
-const DMMFeaturesItemList = <T extends DMMItemProps>({ items, from }: { items: T[]; from: string }) => {
+const DMMTopFeaturesItemList = <T extends DMMItemProps>({ items, from }: { items: T[]; from: string }) => {
 	const displayCount = from === 'top' ? 8 : items.length
 
 	return (
@@ -89,4 +89,4 @@ const DMMFeaturesItemList = <T extends DMMItemProps>({ items, from }: { items: T
 	)
 }
 
-export default DMMFeaturesItemList
+export default DMMTopFeaturesItemList

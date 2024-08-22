@@ -62,7 +62,7 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 }
 
 export default async function DMMItemContainer({ itemType, from, bgGradient }: DMMItemContainerProps) {
-	console.log('itemTypeitemType: ', itemType)
+	console.log('DMMItemContainer itemType: ', itemType)
 
 	const items = await fetchData(itemType)
 
