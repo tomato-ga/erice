@@ -1,9 +1,8 @@
 // components/DMMItemContainer.tsx
 import Link from 'next/link'
-import { DMMItemProps, ItemType } from '@/types/dmmtypes'
-import DMMItemList from './DMMItemList'
+import { DMMItemProps } from '@/types/dmmtypes'
 import { ArrowRight } from 'lucide-react'
-import { revalidateTag } from 'next/cache'
+import DMMFeaturesItemList from './DMMonlyItemList'
 
 interface DMMItemContainerProps {
 	from: string
@@ -33,6 +32,8 @@ async function fetchData(): Promise<DMMItemProps[]> {
 }
 
 export default async function DMMSaleItemContainer({ from, bgGradient }: DMMItemContainerProps) {
+	const items = await fetchData()
+
 	const gradients = {
 		todaynew: 'from-green-500 to-blue-500',
 		debut: 'from-yellow-500 to-red-500',
@@ -80,7 +81,7 @@ export default async function DMMSaleItemContainer({ from, bgGradient }: DMMItem
 					<ArrowRight className="ml-2 h-5 w-5 animate-bounce" />
 				</Link>
 			</div>
-			){/* <DMMItemList items={items} itemType={itemType} from={from} /> */}
+			)<DMMFeaturesItemList items={items} from={from} />
 		</div>
 	)
 }
