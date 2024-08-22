@@ -1,7 +1,5 @@
 User-Agent: *
 Disallow: /api
-Disallow: /items
-Disallow: /actressprofile
 
 User-agent: Googlebot
 Allow: /
