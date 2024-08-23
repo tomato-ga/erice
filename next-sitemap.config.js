@@ -7,9 +7,7 @@ module.exports = {
 	// 動的生成されるサイトマップインデックスを除外
 	exclude: ['/server-sitemap-index.xml'],
 	// robots.txtに追加するサイトマップ
-	robotsTxtOptions: {
-		additionalSitemaps: ['https://erice.cloud/server-sitemap-index.xml']
-	},
+
 	// 各サイトマップのエントリー数（他のファイルと一致させる）
 	sitemapSize: 20000
 }
