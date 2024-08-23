@@ -83,11 +83,7 @@ export default async function DMMKobetuItemPage({
 
 	let ItemMain: DMMItemMainResponse | null = null
 	try {
-		if (searchParams.itemType) {
-			ItemMain = await fetchDataKV(searchParams.itemType, params.contentId)
-		} else {
-			ItemMain = await fetchItemMainByContentId(params.contentId)
-		}
+		ItemMain = await fetchItemMainByContentId(params.contentId)
 	} catch (error) {
 		console.error('Error fetching item:', error)
 	}
