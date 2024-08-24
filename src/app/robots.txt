@@ -1,22 +1,6 @@
 User-Agent: *
 Disallow: /api
 
-User-Agent: Googlebot
-Allow: /
-Disallow: /api
-
-Sitemap: https://erice.cloud/sitemap-i.xml
-Sitemap: https://erice.cloud/sitemap/0.xml
-Sitemap: https://erice.cloud/sitemap/1.xml
-Sitemap: https://erice.cloud/sitemap/2.xml
-Sitemap: https://erice.cloud/sitemap/3.xml
-Sitemap: https://erice.cloud/sitemap/4.xml
-Sitemap: https://erice.cloud/sitemap/5.xml
-Sitemap: https://erice.cloud/sitemap/6.xml
-Sitemap: https://erice.cloud/sitemap/7.xml
-Sitemap: https://erice.cloud/sitemap/8.xml
-Sitemap: https://erice.cloud/sitemap/9.xml
-Sitemap: https://erice.cloud/sitemap/10.xml
 
 User-agent: SemrushBot
 Disallow: /
