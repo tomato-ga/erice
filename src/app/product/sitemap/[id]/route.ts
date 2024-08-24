@@ -18,7 +18,7 @@ async function fetchTotalCount(): Promise<number> {
 			'Content-Type': 'application/json',
 			'X-API-Key': API_KEY
 		},
-		next: { revalidate: 3600 } // 1時間ごとに再検証
+		cache: 'no-cache'
 	})
 
 	if (!response.ok) {
