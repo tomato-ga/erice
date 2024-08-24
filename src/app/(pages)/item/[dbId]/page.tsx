@@ -18,6 +18,7 @@ import { CommentSection } from '@/app/components/dmmcomponents/Comment/CommentSe
 import ActressRelatedItems from '@/app/components/dmmcomponents/DMMActressItemRelated'
 import ItemDetails from '@/app/components/dmmcomponents/ItemDetails'
 import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
+import { formatDate } from '@/utils/dmmUtils'
 
 interface Props {
 	params: { dbId: number }
@@ -43,8 +44,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		const itemDetail = await fetchItemDetailByContentId(dbId)
 
 		if (itemMain && itemDetail) {
-			title = `${itemMain.title} | エロコメスト`
-			description = `${itemMain.title}のページです。${itemDetail.actress ? `出演: ${itemDetail.actress}` : ''}`
+			title = `${itemMain.content_id} ${itemMain.title} | エロコメスト`
+			description = `${itemMain.title} ${itemMain.content_id}のページです。${
+				itemDetail.actress && itemDetail.date
+					? `女優は${itemDetail.actress}で、発売日は${formatDate(itemDetail.date)}です。`
+					: '詳細情報は準備中です'
+			}`
 		}
 	} catch (error) {
 		console.error('メタデータの取得中にエラーが発生しました:', error)
