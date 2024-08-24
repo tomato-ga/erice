@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const DMMActressRelatedItemSchema = z.object({
-	id: z.number(),
+	db_id: z.number(),
 	content_id: z.string(),
 	title: z.string(),
 	url: z.string(),

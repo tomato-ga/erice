@@ -5,7 +5,7 @@ import { fetchActressRelatedItem } from '../dmmcomponents/fetch/itemFetchers'
 import { formatDate } from '@/utils/dmmUtils'
 
 const ItemSchema = z.object({
-	id: z.number(),
+	db_id: z.number(),
 	content_id: z.string(),
 	title: z.string(),
 	url: z.string(),
@@ -19,7 +19,7 @@ type ActressRelatedItem = z.infer<typeof ItemSchema>
 const ActressRelatedItemCard = ({ item }: { item: ActressRelatedItem }) => {
 	return (
 		<div className="bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-md flex flex-col h-full">
-			<Link href={`/item/${item.content_id}`}>
+			<Link href={`/item/${item.db_id}`}>
 				<div className="relative pt-[56.25%] overflow-hidden bg-gray-100">
 					<img src={item.imageURL} alt={item.title} className="absolute top-0 left-0 w-full h-full object-contain" />
 				</div>
@@ -69,7 +69,7 @@ const ActressRelatedItems = async ({ actressName }: { actressName: string }) => 
 			</h2>
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 				{ActressItems.map((item) => (
-					<ActressRelatedItemCard key={item.id} item={item} />
+					<ActressRelatedItemCard key={item.db_id} item={item} />
 				))}
 			</div>
 		</div>
