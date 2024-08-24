@@ -20,7 +20,7 @@ import ItemDetails from '@/app/components/dmmcomponents/ItemDetails'
 import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
 
 interface Props {
-	params: { contentId: string }
+	params: { dbId: number }
 }
 
 function LoadingSpinner() {
@@ -32,13 +32,15 @@ function LoadingSpinner() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-	const contentId = params.contentId
+	console.log('params:', params)
+
+	const dbId = params.dbId
 	let title = 'エロコメスト'
 	let description = '詳細ページ'
 
 	try {
-		const itemMain = await fetchItemMainByContentId(contentId)
-		const itemDetail = await fetchItemDetailByContentId(contentId)
+		const itemMain = await fetchItemMainByContentId(dbId)
+		const itemDetail = await fetchItemDetailByContentId(dbId)
 
 		if (itemMain && itemDetail) {
 			title = `${itemMain.title} | エロコメスト`
@@ -55,7 +57,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			title,
 			description,
 			type: 'website',
-			url: `https://erocomesuto.com/item/${contentId}`,
+			url: `https://erocomesuto.com/item/${dbId}`,
 			images: [
 				{
 					url: 'https://erocomesuto.com/ogp.jpg',
@@ -83,11 +85,7 @@ export default async function DMMKobetuItemPage({
 
 	let ItemMain: DMMItemMainResponse | null = null
 	try {
-		if (searchParams.itemType) {
-			ItemMain = await fetchDataKV(searchParams.itemType, params.contentId)
-		} else {
-			ItemMain = await fetchItemMainByContentId(params.contentId)
-		}
+		ItemMain = await fetchItemMainByContentId(params.dbId)
 	} catch (error) {
 		console.error('Error fetching item:', error)
 	}
@@ -146,7 +144,7 @@ export default async function DMMKobetuItemPage({
 					<div className="w-full text-sm text-center my-4">このページに広告を設置しています</div>
 
 					<Suspense fallback={<LoadingSpinner />}>
-						<ProductDetails title={ItemMain.title} contentId={params.contentId} />
+						<ProductDetails title={ItemMain.title} contentId={ItemMain.content_id} dbId={params.dbId} />
 					</Suspense>
 
 					{ItemMain.sampleImageURL && (
@@ -185,7 +183,7 @@ export default async function DMMKobetuItemPage({
 					)}
 
 					<Suspense fallback={<LoadingSpinner />}>
-						<ItemDetails ItemMain={ItemMain} contentId={params.contentId} />
+						<ItemDetails contentId={ItemMain.content_id} dbId={params.dbId} />
 					</Suspense>
 
 					{relatedItemsData.map(({ type, items }) => (

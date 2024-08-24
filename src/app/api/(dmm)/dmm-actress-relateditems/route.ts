@@ -57,7 +57,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 		}
 
 		const validatedData = DMMActressRelatedApiResponseSchema.parse(data)
-		console.log('dmm-actress-relateditems validatedData', validatedData)
+		// console.log('dmm-actress-relateditems validatedData', validatedData)
 
 		return NextResponse.json(validatedData)
 	} catch (error) {

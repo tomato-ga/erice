@@ -41,6 +41,7 @@ export const DMMActressProfileSchema = z.object({
 export type DMMActressProfile = z.infer<typeof DMMActressProfileSchema>
 
 export const DMMActressProfilePageItemSchema = z.object({
+	id: z.string(),
 	content_id: z.string(),
 	imageURL: z.string().optional(),
 	title: z.string(),

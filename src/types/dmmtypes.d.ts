@@ -1,7 +1,5 @@
 // /Volumes/SSD_1TB/erice2/erice/types/dmmtypes.d.ts
 
-
-
 // package_imagesの型定義
 interface PackageImages {
 	large: string
@@ -143,6 +141,7 @@ interface DMMItem {
 		name: string
 	}>
 	campaign?: Campaign[]
+	db_id?: number
 }
 
 // APIレスポンス全体の型
@@ -178,6 +177,7 @@ export type DMMItemProps = {
 	genre?: string[]
 	salecount?: string
 	salePrice?: string
+	db_id: number
 }
 
 export interface ActressItem {
@@ -185,6 +185,7 @@ export interface ActressItem {
 	title: string
 	imageUrl: string
 	price: string
+	db_id: number
 }
 
 export interface Actress {
@@ -232,4 +233,3 @@ export interface DMMSaleItem extends DMMBaseItem {
 export type DMMItemProps = DMMBaseItem & Partial<DMMSaleItem>
 
 export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale' | 'actress' | 'genre'
-

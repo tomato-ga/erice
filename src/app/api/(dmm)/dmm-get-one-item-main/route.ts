@@ -4,7 +4,7 @@ import { DMMItem } from '@/types/dmmitemzodschema'
 
 // APIエンドポイント
 export async function GET(request: NextRequest): Promise<NextResponse> {
-	const content_id = request.nextUrl.searchParams.get('content_id')
+	const db_id = request.nextUrl.searchParams.get('db_id')
 	const API_KEY = process.env.CLOUDFLARE_DMM_API_TOKEN
 	const WORKER_URL = process.env.DMM_GET_ONE_ITEM_WORKER_URL
 
@@ -13,13 +13,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 		return NextResponse.json({ error: 'CLOUDFLARE_DMM_API_TOKENが環境変数に設定されていません' }, { status: 500 })
 	}
 
-	if (!content_id) {
-		console.error('content_idが指定されていません')
-		return NextResponse.json({ error: 'content_id is required' }, { status: 400 })
+	if (!db_id) {
+		console.error('db_idが指定されていません')
+		return NextResponse.json({ error: 'db_id is required' }, { status: 400 })
 	}
 
 	try {
-		const response = await fetch(`${WORKER_URL}/item?content_id=${content_id}`, {
+		const response = await fetch(`${WORKER_URL}/item?db_id=${db_id}`, {
 			headers: {
 				'Content-Type': 'application/json',
 				'X-API-Key': API_KEY

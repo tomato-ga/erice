@@ -2,9 +2,12 @@ import { ItemType } from '@/types/dmmtypes'
 import DMMItemContainer from '@/app/components/dmmcomponents/DMMItemContainer'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import DMMFeaturedItemContainer from '@/app/components/dmmcomponents/DMMFeaturedItemContainer'
 
 export default async function DMMGenericPage({ params }: { params: { itemType: string } }) {
 	const itemType = params.itemType as ItemType
+
+	console.log('itemType: ', itemType)
 
 	const pageTitles: Record<ItemType, string> = {
 		todaynew: '今日配信の新作',
@@ -35,18 +38,16 @@ export default async function DMMGenericPage({ params }: { params: { itemType: s
 
 	return (
 		<div className="w-full">
-			<div className="text-center mb-12">
-				<h1 className="text-4xl font-extrabold mb-4 mt-10">
-					<span className={`text-transparent bg-clip-text bg-gradient-to-r ${gradients[itemType].text}`}>
-						{pageTitles[itemType]}
-					</span>
-				</h1>
-				<p className="text-xl text-gray-600 mb-6">
-					最新の{pageTitles[itemType]}をチェックしましょう。お気に入りの作品が見つかるかもしれません！
-				</p>
-			</div>
 			<div className="w-full">
-				<DMMItemContainer itemType={itemType} from="only" bgGradient={`bg-gradient-to-r ${gradients[itemType].bg}`} />
+				<DMMFeaturedItemContainer
+					from="only"
+					bgGradient={`bg-gradient-to-r ${gradients[itemType].bg}`}
+					endpoint={`/api/dmm-${itemType}-getkv`}
+					title={pageTitles[itemType]}
+					linkText="すべて見る"
+					linkHref={`/${itemType}` as '/sale' | '/todaynew' | '/debut' | '/feature'}
+					textGradient={gradients[itemType].text}
+				/>
 			</div>
 		</div>
 	)

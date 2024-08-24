@@ -75,8 +75,8 @@ const ActressWorksList = ({ works }: { works: DMMActressProfilePageItem[] }) => 
 	return (
 		<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
 			{works.map((work) => (
-				<div key={work.content_id} className="bg-white dark:bg-gray-800 shadow-md overflow-hidden">
-					<Link href={`/item/${work.content_id}`} className="block">
+				<div key={work.id} className="bg-white dark:bg-gray-800 shadow-md overflow-hidden">
+					<Link href={`/item/${work.id}`} className="block">
 						<div className="relative aspect-[3/2] w-full">
 							{work.imageURL ? (
 								<img
@@ -93,7 +93,7 @@ const ActressWorksList = ({ works }: { works: DMMActressProfilePageItem[] }) => 
 					</Link>
 					<div className="p-4">
 						<h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-2 hover:underline">
-							<Link href={`/item/${work.content_id}`}>{work.title}</Link>
+							<Link href={`/item/${work.id}`}>{work.title}</Link>
 						</h3>
 						<p className="mt-1 text-xs text-gray-500 dark:text-gray-400">発売日:{formatDate(work.release_date)}</p>
 					</div>
@@ -104,7 +104,7 @@ const ActressWorksList = ({ works }: { works: DMMActressProfilePageItem[] }) => 
 }
 
 export default async function ActressProfilePage({ params }: PageProps) {
-	console.log('params:', params)
+	console.log('ActressProfilePage params:', params)
 
 	const actressName = decodeURIComponent(params.slug)
 

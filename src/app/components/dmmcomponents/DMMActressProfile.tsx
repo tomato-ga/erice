@@ -16,7 +16,7 @@ const hasAdditionalInfo = (actress: DMMActressProfile['actress']) => {
 }
 
 const ActressProfile = async ({ actressProfileData }: { actressProfileData: DMMActressProfile }) => {
-	console.log('actressProfileData:', actressProfileData)
+	// console.log('actressProfileData:', actressProfileData)
 
 	// actressProfileDataとactressProfileData.actressの存在をチェック
 	if (!actressProfileData || !actressProfileData.actress) {

@@ -8,12 +8,13 @@ import LoadingSpinner from '../Article/ArticleContent/loadingspinner'
 import ActressProfile from './DMMActressProfile'
 
 interface ItemDetailsProps {
-	ItemMain: DMMItemMainResponse
+	// ItemMain: DMMItemMainResponse
 	contentId: string
+	dbId: number
 }
 
-export default async function ItemDetails({ ItemMain, contentId }: ItemDetailsProps) {
-	const itemDetailPromise = fetchItemDetailByContentId(contentId)
+export default async function ItemDetails({ contentId, dbId }: ItemDetailsProps) {
+	const itemDetailPromise = fetchItemDetailByContentId(dbId)
 	const actressProfileDataPromise = itemDetailPromise.then((detail) =>
 		detail ? fetchActressProfile(detail.actress || '') : null
 	)

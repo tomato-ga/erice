@@ -34,18 +34,12 @@ const GenreTag = ({ genre }: { genre: string[] }) => {
 	)
 }
 
-// DMMItemCard コンポーネント：個々の商品カード表示部分
+// DMMFeaturesItemCard コンポーネント：個々の商品カード表示部分
 // item: 商品情報 (T )
-const DMMItemCard = <T extends DMMItemProps>({ item, itemType }: { item: T; itemType: ItemType }) => {
+const DMMFeaturesItemCard = <T extends DMMItemProps>({ item }: { item: T }) => {
 	return (
 		<div className="bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-md flex flex-col h-full">
-			<Link
-				href={
-					itemType === 'genre' || itemType === 'actress'
-						? `/item/${item.db_id}`
-						: `/item/${item.db_id}?itemType=${itemType}`
-				}
-			>
+			<Link href={`/item/${item.content_id}`}>
 				<div className="relative overflow-hidden bg-gray-100 p-4">
 					<img
 						src={item.imageURL?.toString() || ''}
@@ -81,26 +75,18 @@ const DMMItemCard = <T extends DMMItemProps>({ item, itemType }: { item: T; item
 
 // DMMItemList コンポーネント：商品リスト全体表示部分
 // items: 商品情報の配列 (T[] 型)
-const DMMItemList = <T extends DMMItemProps>({
-	items,
-	itemType,
-	from
-}: {
-	items: T[]
-	itemType: ItemType
-	from: string
-}) => {
+const DMMTopFeaturesItemList = <T extends DMMItemProps>({ items, from }: { items: T[]; from: string }) => {
 	const displayCount = from === 'top' ? 8 : items.length
 
 	return (
 		<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 			{items.slice(0, displayCount).map((item) => (
 				<div key={item.content_id}>
-					<DMMItemCard item={item} itemType={itemType} />
+					<DMMFeaturesItemCard item={item} />
 				</div>
 			))}
 		</div>
 	)
 }
 
-export default DMMItemList
+export default DMMTopFeaturesItemList
