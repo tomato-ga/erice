@@ -1,6 +1,7 @@
 User-Agent: *
 Disallow: /api
 
+Sitemap: https://erice.cloud/product/sitemap.xml
 
 User-agent: SemrushBot
 Disallow: /
