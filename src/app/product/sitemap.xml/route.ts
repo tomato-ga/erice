@@ -1,9 +1,9 @@
-// app/product/sitemap.xml/route.ts
+// /app/product/sitemap.xml/route.ts
 
 import { NextResponse } from 'next/server'
 
 const BASE_URL = 'https://erice.cloud'
-const MAX_URLS_PER_SITEMAP = 10000 // Google's limit
+const MAX_URLS_PER_SITEMAP = 10000
 
 const API_ENDPOINT = process.env.DMM_SITEMAP_API_ENDPOINT
 const API_KEY = process.env.CLOUDFLARE_DMM_API_TOKEN
@@ -29,7 +29,7 @@ async function fetchTotalCount(): Promise<number> {
 	return data.totalCount
 }
 
-export async function GET(): Promise<NextResponse> {
+export async function GET() {
 	try {
 		const totalCount = await fetchTotalCount()
 		const sitemapCount = Math.ceil(totalCount / MAX_URLS_PER_SITEMAP)

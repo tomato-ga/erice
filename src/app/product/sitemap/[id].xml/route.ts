@@ -1,9 +1,9 @@
-// app/product/sitemap.xml/[id]/route.ts
+// /app/product/sitemap/[id].xml/route.ts
 
 import { NextRequest, NextResponse } from 'next/server'
 
-const BASE_URL = 'https://erice.cloud' // 開発環境では適切なURLに変更してください
-const MAX_URLS_PER_SITEMAP = 10000 // Google's limit
+const BASE_URL = 'https://erice.cloud'
+const MAX_URLS_PER_SITEMAP = 10000
 
 const API_ENDPOINT = process.env.DMM_SITEMAP_API_ENDPOINT
 const API_KEY = process.env.CLOUDFLARE_DMM_API_TOKEN
@@ -29,24 +29,18 @@ async function fetchTotalCount(): Promise<number> {
 	return data.totalCount
 }
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse> {
-	console.log('Received request for sitemap ID:', params.id) // デバッグログ
-
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
 	try {
 		const id = parseInt(params.id, 10)
 		if (isNaN(id) || id < 0) {
-			console.error('Invalid sitemap ID:', params.id)
 			return new NextResponse('Invalid sitemap ID', { status: 400 })
 		}
 
 		const totalCount = await fetchTotalCount()
-		console.log('Total count:', totalCount) // デバッグログ
-
 		const start = id * MAX_URLS_PER_SITEMAP
 		const end = Math.min((id + 1) * MAX_URLS_PER_SITEMAP, totalCount)
 
 		if (start >= totalCount) {
-			console.error('Sitemap not found. Start:', start, 'Total count:', totalCount)
 			return new NextResponse('Sitemap not found', { status: 404 })
 		}
 
@@ -60,7 +54,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 			.map(
 				(product) => `
   <url>
-    <loc>${BASE_URL}/${product.id}</loc>
+    <loc>${BASE_URL}/product/${product.id}</loc>
     <lastmod>${product.date}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
@@ -72,8 +66,6 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls}
 </urlset>`
-
-		console.log('Sitemap generated successfully for ID:', params.id) // デバッグログ
 
 		return new NextResponse(sitemap, {
 			status: 200,
