@@ -1,4 +1,4 @@
-// /app/product/sitemap/[id].xml/route.ts
+// /app/product/sitemap/[id]/route.ts
 
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -31,7 +31,10 @@ async function fetchTotalCount(): Promise<number> {
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
 	try {
-		const id = parseInt(params.id, 10)
+		// IDから.xml拡張子を除去
+		const idWithoutExtension = params.id.replace('.xml', '')
+		const id = parseInt(idWithoutExtension, 10)
+
 		if (isNaN(id) || id < 0) {
 			return new NextResponse('Invalid sitemap ID', { status: 400 })
 		}
