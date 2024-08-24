@@ -94,7 +94,7 @@ export default async function GenrePaginationPage({ params }: PageProps) {
 		const response = await fetch(apiUrl)
 
 		// レスポンスのステータスコードを出力
-		console.log('レスポンスステータスコード:', response.status)
+		console.log('ジャンルレスポンスステータスコード:', response.status)
 
 		if (!response.ok) {
 			throw new Error('API request failed.')
@@ -108,7 +108,7 @@ export default async function GenrePaginationPage({ params }: PageProps) {
 		}
 
 		// レスポンスデータを出力
-		// console.log('APIレスポンスデータ:', data) // レスポンスデータを出力
+		console.log('APIレスポンスデータ:', data) // レスポンスデータを出力
 
 		return (
 			<section className="max-w-7xl mx-auto">

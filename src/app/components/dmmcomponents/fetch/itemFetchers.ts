@@ -77,17 +77,14 @@ export async function fetchDataKV(itemType: ItemType, contentId: string): Promis
 	}
 }
 
-export async function fetchItemMainByContentId(contentId: string): Promise<DMMItemMainResponse | null> {
+export async function fetchItemMainByContentId(dbId: number): Promise<DMMItemMainResponse | null> {
 	try {
-		const response = await fetch(
-			`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-one-item-main?content_id=${contentId}`,
-			{
-				cache: 'force-cache',
-				next: {
-					tags: [`item-main-${contentId}`]
-				}
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-one-item-main?db_id=${dbId}`, {
+			cache: 'force-cache',
+			next: {
+				tags: [`item-main-${dbId}`]
 			}
-		)
+		})
 		const data: unknown = await response.json()
 
 		console.log('Raw API response fetchItemMainByContentId:', data)
@@ -117,18 +114,15 @@ export async function fetchItemMainByContentId(contentId: string): Promise<DMMIt
 	}
 }
 
-export async function fetchItemDetailByContentId(contentId: string): Promise<DMMItemDetailResponse | null> {
+export async function fetchItemDetailByContentId(dbId: number): Promise<DMMItemDetailResponse | null> {
 	// console.log('fetchItemDetailByContentId関数を呼び出します', contentId)
 
 	try {
-		const response = await fetch(
-			`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-one-item-detail?content_id=${contentId}`,
-			{
-				next: {
-					tags: [`item-detail-${contentId}`]
-				}
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-one-item-detail?db_id=${dbId}`, {
+			next: {
+				tags: [`item-detail-${dbId}`]
 			}
-		)
+		})
 		const data: unknown = await response.json()
 
 		console.log('Raw API response fetchItemDetailByContentId:', data)
@@ -138,7 +132,7 @@ export async function fetchItemDetailByContentId(contentId: string): Promise<DMM
 			const itemData = (data as { items: unknown }).items
 			const parseResult = DMMItemDetailResponseSchema.safeParse(itemData)
 			if (parseResult.success) {
-				revalidateTag(`item-detail-${contentId}`)
+				revalidateTag(`item-detail-${dbId}`)
 				return parseResult.data
 			} else {
 				console.error('Validation error:', parseResult.error.errors)
@@ -200,7 +194,7 @@ export async function fetchActressProfile(actressName: string): Promise<DMMActre
 			`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-profile?actressname=${encodeURIComponent(actressName)}`
 		)
 		const data: DMMActressProfile = await response.json()
-		console.log('actressProfile:', data)
+		// console.log('actressProfile:', data)
 
 		return data
 	} catch (error) {

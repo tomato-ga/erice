@@ -2,8 +2,16 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const WORKER_URL = process.env.DMM_GENRE_PAGINATION_WORKER_URL
 
+// APIResponseインターフェースを更新
 interface APIResponse {
-	items: unknown[]
+	items: { id: string; title: string; imageURL: string; content_id: string }[]
+	currentPage: number
+	totalPages: number
+}
+
+// 変換後のデータ構造を定義
+interface TransformedAPIResponse {
+	items: { db_id: string; title: string; imageURL: string; content_id: string }[]
 	currentPage: number
 	totalPages: number
 }
@@ -48,7 +56,17 @@ export async function GET(request: NextRequest) {
 		) {
 			const validatedData = data as APIResponse
 
-			return NextResponse.json(validatedData, {
+			// idをdb_idに変換
+			const transformedData: TransformedAPIResponse = {
+				...validatedData,
+				items: validatedData.items.map((item) => ({
+					...item,
+					db_id: item.id,
+					id: undefined
+				}))
+			}
+
+			return NextResponse.json(transformedData, {
 				headers: {
 					'Cache-Control': 'public, max-age=60, stale-while-revalidate=300'
 				}

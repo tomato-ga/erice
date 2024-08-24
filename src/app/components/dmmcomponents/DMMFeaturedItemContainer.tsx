@@ -35,7 +35,7 @@ const PriceDisplay = ({ listPrice, salePrice }: { listPrice: string | undefined;
 
 const DMMFeaturedItemCard = <T extends DMMItemProps>({ item }: { item: T }) => (
 	<div className="bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-md flex flex-col h-full">
-		<Link href={`/item/${item.content_id}`}>
+		<Link href={`/item/${item.db_id}`}>
 			<div className="relative overflow-hidden bg-gray-100 p-4">
 				<img
 					src={item.imageURL?.toString() || ''}

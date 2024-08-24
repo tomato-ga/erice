@@ -86,7 +86,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 			maker: item.iteminfo?.maker ? item.iteminfo?.maker[0]?.name : null,
 			label: item.iteminfo?.label ? item.iteminfo?.label[0]?.name : null,
 			series: item.iteminfo?.series ? item.iteminfo?.series[0]?.name : null,
-			director: item.iteminfo?.director ? item.iteminfo?.director[0]?.name : null
+			director: item.iteminfo?.director ? item.iteminfo?.director[0]?.name : null,
+			db_id: item.db_id
 		}))
 
 		return NextResponse.json(processedData)

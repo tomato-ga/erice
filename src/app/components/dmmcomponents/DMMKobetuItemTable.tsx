@@ -83,16 +83,17 @@ const ItemDetailsTable = ({ item }: { item: ExtendedDMMItemDetailResponse }) => 
 interface ProductDetailsProps {
 	title: string
 	contentId: string
+	dbId: number
 }
 
-const ProductDetails = async ({ title, contentId }: ProductDetailsProps) => {
+const ProductDetails = async ({ title, contentId, dbId }: ProductDetailsProps) => {
 	let item: ExtendedDMMItemDetailResponse = {
 		title,
 		content_id: contentId
 	}
 
 	try {
-		const detailData = await fetchItemDetailByContentId(contentId)
+		const detailData = await fetchItemDetailByContentId(dbId)
 		if (detailData) {
 			item = { ...item, ...detailData }
 		}

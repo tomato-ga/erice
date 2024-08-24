@@ -42,8 +42,8 @@ const DMMItemCard = <T extends DMMItemProps>({ item, itemType }: { item: T; item
 			<Link
 				href={
 					itemType === 'genre' || itemType === 'actress'
-						? `/item/${item.content_id}`
-						: `/item/${item.content_id}?itemType=${itemType}`
+						? `/item/${item.db_id}`
+						: `/item/${item.db_id}?itemType=${itemType}`
 				}
 			>
 				<div className="relative overflow-hidden bg-gray-100 p-4">
@@ -90,6 +90,8 @@ const DMMItemList = <T extends DMMItemProps>({
 	itemType: ItemType
 	from: string
 }) => {
+	console.log('Genre check DMMItemList items:', items)
+
 	const displayCount = from === 'top' ? 8 : items.length
 
 	return (

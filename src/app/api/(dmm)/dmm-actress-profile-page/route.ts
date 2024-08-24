@@ -59,6 +59,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 				actress: rawData.profile // DMMActressProfileSchemaは'actress'オブジェクトを期待しているため
 			},
 			works: rawData.works.map((work) => ({
+				id: work.id,
 				content_id: work.content_id,
 				imageURL: work.imageURL,
 				title: work.title,
