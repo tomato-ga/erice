@@ -90,8 +90,6 @@ const DMMItemList = <T extends DMMItemProps>({
 	itemType: ItemType
 	from: string
 }) => {
-	console.log('Genre check DMMItemList items:', items)
-
 	const displayCount = from === 'top' ? 8 : items.length
 
 	return (
