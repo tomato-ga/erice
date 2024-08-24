@@ -89,6 +89,8 @@ export default async function DMMFeaturedItemContainer<T extends DMMItemProps>({
 }: DMMFeaturedItemContainerProps<T>) {
 	const items = await fetchData<T>(endpoint)
 
+	console.log('DMMFeaturedItemContainer items:', items)
+
 	return (
 		<div className={`bg-gradient-to-r ${bgGradient} shadow-lg p-4 sm:p-4 md:p-8 transition duration-300 ease-in-out`}>
 			<div className="text-center mb-8">
