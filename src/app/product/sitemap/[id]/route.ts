@@ -57,7 +57,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 			.map(
 				(product) => `
   <url>
-    <loc>${BASE_URL}/product/${product.id}</loc>
+    <loc>${BASE_URL}/item/${product.id}</loc>
     <lastmod>${product.date}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
