@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import { formatAntennaDate } from '@/app/utils/postUtils'
 
 import { antennaPost, antennaGetOnePostApiResponse } from '@/types/antennaschema'
-import { PostList } from '../../antenna/page'
+import { PostList } from '@/app/components/antennacomponents/PostList'
 
 interface Props {
 	params: { dbId: string }
