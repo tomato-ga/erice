@@ -22,3 +22,10 @@ export const antennaPostApiResponseSchema = z.object({
 })
 
 export type antennaPostApiResponse = z.infer<typeof antennaPostApiResponseSchema>
+
+export const antennaGetOnePostApiResponseSchema = z.object({
+	status: z.string(),
+	data: z.array(antennaPostSchema)
+})
+
+export type antennaGetOnePostApiResponse = z.infer<typeof antennaGetOnePostApiResponseSchema>
