@@ -146,6 +146,10 @@ export default async function DMMKobetuItemPage({
 						</Link>
 					</div>
 
+					<Suspense fallback={<LoadingSpinner />}>
+						<CommentSection contentId={ItemMain.content_id} />
+					</Suspense>
+
 					<div className="w-full text-sm text-center my-4">このページに広告を設置しています</div>
 
 					<Suspense fallback={<LoadingSpinner />}>

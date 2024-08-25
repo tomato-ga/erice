@@ -23,9 +23,7 @@ export default async function ItemDetails({ contentId, dbId }: ItemDetailsProps)
 
 	return (
 		<>
-			<Suspense fallback={<LoadingSpinner />}>
-				<CommentSection contentId={contentId} />
-			</Suspense>
+
 
 			{itemDetail && (
 				<Suspense fallback={<LoadingSpinner />}>
