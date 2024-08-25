@@ -158,7 +158,7 @@ const r18Page: React.FC = () => (
 			{/* <SearchForm /> */}
 			<PostList />
 		</main>
-		<Footer />
+		{/* <Footer /> */}
 	</div>
 )
 
