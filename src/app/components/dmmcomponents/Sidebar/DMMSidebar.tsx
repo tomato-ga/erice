@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import React from 'react'
 
-const DMMSidebar = () => {
+const EriceSidebar = () => {
 	return (
 		<nav className="bg-white dark:bg-gray-800 rounded-lg p-4">
 			<ul className="space-y-3">
@@ -93,4 +93,4 @@ const DMMSidebar = () => {
 	)
 }
 
-export default DMMSidebar
+export default EriceSidebar
