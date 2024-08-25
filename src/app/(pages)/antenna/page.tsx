@@ -1,6 +1,7 @@
 import React from 'react'
 import { antennaPost, antennaPostApiResponse } from '@/types/antennaschema'
 import Link from 'next/link'
+import { formatAntennaDate } from '@/app/utils/postUtils'
 
 const navItems = [
 	{ href: '/', label: 'トップ', active: true },
@@ -9,6 +10,7 @@ const navItems = [
 	{ href: '/categories/movie', label: '動画' },
 	{ href: '/categories/animation', label: '漫画･アニメ' }
 ]
+
 
 const NavItem: React.FC<{ href: string; label: string; active?: boolean; external?: boolean }> = React.memo(
 	({ href, label, active, external }) => (
@@ -94,7 +96,7 @@ const PostItem: React.FC<{ post: antennaPost }> = ({ post }) => (
 				<h3 className="text-base font-normal leading-tight mb-2 overflow-hidden line-clamp-3">{post.title}</h3>
 				<div className="flex flex-col text-xs text-[#b1b1b1]">
 					{/* <span className="truncate mb-1">{post.site_name}</span> */}
-					<span>{new Date(post.published_at).toLocaleString()}</span>
+					<span>{formatAntennaDate(post.published_at)}</span>
 				</div>
 			</div>
 			{!!post.image_url && (
