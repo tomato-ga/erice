@@ -11,7 +11,6 @@ const navItems = [
 	{ href: '/categories/animation', label: '漫画･アニメ' }
 ]
 
-
 const NavItem: React.FC<{ href: string; label: string; active?: boolean; external?: boolean }> = React.memo(
 	({ href, label, active, external }) => (
 		<li className="text-sm font-bold">
@@ -49,7 +48,7 @@ const Header: React.FC = () => (
 			<Link href="https://erice.cloud">
 				<div className="text-4xl font-extrabold">
 					<span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-500">
-						エロコメアンテナ
+						えろぉアンテナ
 					</span>
 				</div>
 			</Link>
