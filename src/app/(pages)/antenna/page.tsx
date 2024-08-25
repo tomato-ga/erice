@@ -111,7 +111,7 @@ const PostItem: React.FC<{ post: antennaPost }> = ({ post }) => (
 
 const PostList: React.FC = async () => {
 	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/r18-latestpost`)
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/r18-latestpost`, { next: { revalidate: 300 } })
 		const postsdata: antennaPostApiResponse = await response.json()
 
 		if (postsdata.status !== 'success') {
