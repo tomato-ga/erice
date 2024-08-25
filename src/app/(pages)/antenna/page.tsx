@@ -100,7 +100,7 @@ const PostItem: React.FC<{ post: antennaPost }> = ({ post }) => (
 			{!!post.image_url && (
 				<img
 					src={post.image_url || ''}
-					alt=""
+					alt={`${post.title}の画像`}
 					className="w-[90px] h-[60px] md:w-[120px] md:h-20 object-cover ml-2 md:ml-4"
 					loading="lazy"
 				/>
