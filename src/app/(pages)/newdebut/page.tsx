@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { CalendarDays, User, Tag, Building, Film } from 'lucide-react'
+import { formatDate } from '@/utils/dmmUtils'
 
 async function fetchData(): Promise<ProcessedDMMItem[]> {
 	const fetchOptions = { next: { revalidate: 43200 } }
@@ -71,7 +72,7 @@ function NewActressCard({ item }: { item: ProcessedDMMItem }) {
 
 				<div className="text-center">
 					<Badge variant="outline" className="text-lg font-semibold py-1 px-3">
-						発売日: {item.date ? new Date(item.date).toLocaleDateString() : '不明'}
+						発売日: {item.date ? formatDate(item.date) : '不明'}
 					</Badge>
 				</div>
 
