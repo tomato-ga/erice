@@ -2,7 +2,7 @@ import React from 'react'
 import { antennaPost, antennaPostApiResponse } from '@/types/antennaschema'
 import Link from 'next/link'
 import { formatAntennaDate } from '@/app/utils/postUtils'
-import { r18antennaFetch } from './PostList'
+import { r18antennaFetch } from './r18fetch'
 
 const PostItem: React.FC<{ post: antennaPost }> = ({ post }) => (
 	<article className="border-t border-[#dae0e6]">
