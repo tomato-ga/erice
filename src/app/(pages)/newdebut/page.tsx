@@ -8,7 +8,7 @@ import { CalendarDays, User, Tag, Building, Film } from 'lucide-react'
 import { formatDate, formatMMDDDate } from '@/utils/dmmUtils'
 
 async function fetchData(): Promise<ProcessedDMMItem[]> {
-	const fetchOptions = { next: { revalidate: 43200 } }
+	const fetchOptions = { next: { revalidate: 86400 } }
 
 	try {
 		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-newdebut-getkv`, fetchOptions)
