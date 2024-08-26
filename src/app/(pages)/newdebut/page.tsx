@@ -143,9 +143,13 @@ export default async function NewActressesPage() {
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-pink-50 to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
 			<main className="max-w-7xl mx-auto space-y-8">
-				<h1 className="text-4xl font-extrabold text-center text-gray-900 sm:text-5xl md:text-6xl">
-					<span className="block">新人AV女優{itemsdata.length}人の</span>
-					<span className="block text-indigo-600 pt-1">最新デビュー作品一覧</span>
+				<h1 className="text-4xl font-extrabold text-center sm:text-5xl md:text-6xl">
+					<span className="block bg-gradient-to-r from-rose-500 to-pink-500 text-transparent bg-clip-text">
+						新人AV女優{itemsdata.length}人の
+					</span>
+					<span className="block bg-gradient-to-r from-fuchsia-500 via-purple-500 to-pink-500 text-transparent bg-clip-text pt-1">
+						最新デビュー作品一覧
+					</span>
 				</h1>
 
 				<p className="mt-3 text-xl text-gray-500 sm:mt-5 sm:text-2xl max-w-prose mx-auto text-center">
