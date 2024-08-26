@@ -30,10 +30,10 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 		}
 
 		const rawData = await response.json()
-		console.log('Raw API response:', rawData) // デバッグ用ログ
+		// console.log('Raw API response:', rawData) // デバッグ用ログ
 
 		const validatedData = antennaPostApiResponseSchema.parse(rawData)
-		console.log('Validated API response:', validatedData) // デバッグ用ログ
+		// console.log('Validated API response:', validatedData) // デバッグ用ログ
 
 		return NextResponse.json(validatedData)
 	} catch (error) {

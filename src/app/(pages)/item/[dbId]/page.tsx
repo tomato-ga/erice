@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { ItemType } from '@/types/dmmtypes'
 import { DMMItem, DMMItemMainResponse } from '@/types/dmmitemzodschema'
-import { ArrowRight, ExternalLink } from 'lucide-react'
+import { ArrowRight, ExternalLink, Video } from 'lucide-react'
 import RelatedItemsScroll from '@/app/components/dmmcomponents/Related/RelatedItemsScroll'
 import {
 	fetchDataKV,
@@ -82,6 +82,44 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			images: ['https://erocomesuto.com/ogp.jpg']
 		}
 	}
+}
+
+const VideoPlayer = ({ src }: { src: string | null | undefined }) => {
+	// srcが存在しない場合はnullを返す
+	if (!src) return null
+
+	const sizePriority = ['size_720_480', 'size_644_414', 'size_560_360', 'size_476_306']
+
+	// URLからサイズ情報を抽出する関数
+	const extractSize = (url: string): { width: number; height: number } | null => {
+		for (const size of sizePriority) {
+			const match = url.match(new RegExp(`/${size}/`))
+			if (match) {
+				const [width, height] = size.split('_').slice(1).map(Number)
+				return { width, height }
+			}
+		}
+		return null
+	}
+
+	const size = extractSize(src)
+	const width = size?.width || 720 // デフォルト値
+	const height = size?.height || 480 // デフォルト値
+
+	return (
+		<div className="video-player-container flex justify-center items-center my-8">
+			<div className="max-w-full">
+				<iframe
+					src={src}
+					width={width}
+					height={height}
+					allowFullScreen
+					allow="autoplay"
+					className="border-0 overflow-hidden max-w-full"
+				></iframe>
+			</div>
+		</div>
+	)
 }
 
 export default async function DMMKobetuItemPage({
@@ -182,19 +220,33 @@ export default async function DMMKobetuItemPage({
 									</div>
 								))}
 							</div>
-							<div className="flex justify-center mt-8">
-								<Link
-									href={ItemMain.affiliateURL || '#'}
-									target="_blank"
-									rel="noopener noreferrer"
-									className="inline-flex items-center justify-center text-lg sm:text-xl font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-sm shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 px-6 sm:px-8 py-3 sm:py-4 min-h-[3.5rem] sm:min-h-[4rem] max-w-[90%] text-center"
-								>
-									<span className="mr-2 break-words">{ItemMain.title}の高画質動画を見る</span>
-									<ExternalLink className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse flex-shrink-0" />
-								</Link>
+						</div>
+					)}
+
+					{!!ItemMain.sampleMovieURL && (
+						<div className="mt-8">
+							<h2 className="text-center font-bold mb-6">
+								<span className="text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text">
+									サンプル動画
+								</span>
+							</h2>
+							<div className="flex justify-center">
+								<VideoPlayer src={ItemMain.sampleMovieURL[0]} />
 							</div>
 						</div>
 					)}
+
+					<div className="flex justify-center mt-8">
+						<Link
+							href={ItemMain.affiliateURL || '#'}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="inline-flex items-center justify-center text-lg sm:text-xl font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-sm shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 px-6 sm:px-8 py-3 sm:py-4 min-h-[3.5rem] sm:min-h-[4rem] max-w-[90%] text-center"
+						>
+							<span className="mr-2 break-words">{ItemMain.title}の高画質動画を見る</span>
+							<ExternalLink className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse flex-shrink-0" />
+						</Link>
+					</div>
 
 					<Suspense fallback={<LoadingSpinner />}>
 						<ItemDetails contentId={ItemMain.content_id} dbId={params.dbId} />
@@ -211,7 +263,7 @@ export default async function DMMKobetuItemPage({
 									: type === 'debut'
 									? 'デビュー作品'
 									: type === 'feature'
-									? '注目作品'
+									? '目作品'
 									: '限定セール'
 							}
 						/>

@@ -9,6 +9,7 @@ const DMMBaseItemSchema = z.object({
 	affiliateURL: z.string(),
 	imageURL: z.string(),
 	sampleImageURL: z.array(z.string()).nullable().optional(),
+	sampleMovieURL: z.array(z.string()).nullable().optional(),
 	price: z.string().nullable().optional(),
 	actress: z.string().nullable().optional(),
 	genre: z.array(z.string()).nullable().optional(),
@@ -21,6 +22,7 @@ export const DMMItemMainResponseSchema = z.object({
 	content_id: z.string(),
 	affiliateURL: z.string().url(),
 	sampleImageURL: z.array(z.string()).nullable().optional(),
+	sampleMovieURL: z.array(z.string()).nullable().optional(),
 	imageURL: z.string().url(),
 	title: z.string()
 })
