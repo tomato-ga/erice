@@ -223,7 +223,7 @@ export default async function DMMKobetuItemPage({
 						</div>
 					)}
 
-					{!!ItemMain.sampleMovieURL && (
+					{ItemMain.sampleMovieURL && (
 						<div className="mt-8">
 							<h2 className="text-center font-bold mb-6">
 								<span className="text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text">
@@ -263,7 +263,7 @@ export default async function DMMKobetuItemPage({
 									: type === 'debut'
 									? 'デビュー作品'
 									: type === 'feature'
-									? '目作品'
+									? '注目作品'
 									: '限定セール'
 							}
 						/>
