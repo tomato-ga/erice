@@ -33,7 +33,7 @@ const PostItem: React.FC<{ post: antennaPost }> = ({ post }) => (
 export const PostList: React.FC<{ limit: number }> = async ({ limit = 100 }) => {
 	try {
 		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/r18-latestpost?limit=${limit}`, {
-			cache: 'no-cache'
+			cache: 'no-store'
 		})
 		const postsdata: antennaPostApiResponse = await response.json()
 
