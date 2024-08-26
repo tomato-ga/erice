@@ -55,7 +55,7 @@ function NewActressCard({ item }: { item: ProcessedDMMItem }) {
 			</CardHeader>
 			<CardContent className="space-y-6">
 				<div className="flex justify-center">
-					<Link href={item.affiliateURL} className="relative overflow-hidden">
+					<Link href={`/item/${item.db_id}`} className="relative overflow-hidden">
 						<Image
 							src={item.imageURL || '/placeholder.jpg'}
 							alt={item.title}
@@ -89,7 +89,7 @@ function NewActressCard({ item }: { item: ProcessedDMMItem }) {
 							</TableHead>
 							<TableCell>
 								<Link
-									href={item.affiliateURL}
+									href={`/item/${item.db_id}`}
 									className="text-indigo-600 hover:text-indigo-800 transition-colors duration-300"
 								>
 									{item.title}
