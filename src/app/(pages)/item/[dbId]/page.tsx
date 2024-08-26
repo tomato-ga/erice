@@ -19,6 +19,9 @@ import ActressRelatedItems from '@/app/components/dmmcomponents/DMMActressItemRe
 import ItemDetails from '@/app/components/dmmcomponents/ItemDetails'
 import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
 import { formatDate } from '@/utils/dmmUtils'
+import { r18antennaFetch } from '@/app/components/antennacomponents/PostList/PostList'
+import { PostList } from '@/app/components/antennacomponents/PostList'
+
 
 interface Props {
 	params: { dbId: number }
@@ -58,6 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	return {
 		title,
 		description,
+		// TODO opengraph修正する
 		openGraph: {
 			title,
 			description,
@@ -120,6 +124,9 @@ export default async function DMMKobetuItemPage({
 		<div className="bg-gray-50 dark:bg-gray-900 min-h-screen">
 			<div className="container mx-auto px-2 sm:px-4 py-6 sm:py-8">
 				<article className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 space-y-6 sm:space-y-8">
+
+					<PostList limit={10} />
+
 					<div className="relative overflow-hidden aspect-w-16 aspect-h-9">
 						<Link href={ItemMain.affiliateURL || '#'} target="_blank" rel="noopener noreferrer">
 							<img

@@ -89,7 +89,6 @@ const SearchForm: React.FC = () => (
 	</form>
 )
 
-
 const Footer: React.FC = () => (
 	<footer className="mt-10 py-4 bg-white text-xs text-center text-[#b1b1b1]">
 		<nav className="mb-4">

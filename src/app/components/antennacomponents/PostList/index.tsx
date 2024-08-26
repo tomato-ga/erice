@@ -2,6 +2,7 @@ import React from 'react'
 import { antennaPost, antennaPostApiResponse } from '@/types/antennaschema'
 import Link from 'next/link'
 import { formatAntennaDate } from '@/app/utils/postUtils'
+import { r18antennaFetch } from './PostList'
 
 const PostItem: React.FC<{ post: antennaPost }> = ({ post }) => (
 	<article className="border-t border-[#dae0e6]">
@@ -30,26 +31,23 @@ const PostItem: React.FC<{ post: antennaPost }> = ({ post }) => (
 	</article>
 )
 
-export const PostList: React.FC<{ limit: number }> = async ({ limit = 100 }) => {
+export const PostList: React.FC<{ limit: number }> = async ({ limit }) => {
 	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/r18-latestpost?limit=${limit}`, {
-			cache: 'no-store'
-		})
-		const postsdata: antennaPostApiResponse = await response.json()
+		const postsdata = await r18antennaFetch(limit)
 
-		if (postsdata.status !== 'success') {
-			throw new Error('APIからのレスポンスが不正です')
+		if (!postsdata.data || postsdata.data.length === 0) {
+			return <div>表示するデータがありません。</div>
 		}
 
 		return (
 			<div className="bg-white">
-				{postsdata.data.map((post) => (
+				{postsdata.data.slice(0, limit).map((post) => (
 					<PostItem key={post.id} post={post} />
 				))}
 			</div>
 		)
 	} catch (error) {
-		console.error('データの取得に失敗しました:', error)
+		console.error('PostList エラー:', error)
 		return <div>データの読み込みに失敗しました。</div>
 	}
 }
