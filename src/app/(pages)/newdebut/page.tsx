@@ -80,13 +80,13 @@ function NewActressCard({ item }: { item: ProcessedDMMItem }) {
 					<TableBody>
 						<TableRow>
 							<TableHead className="w-1/3">
-								<User className="inline-block mr-2" /> 女優名
+								<User className="inline-block mr-2" /> 女優
 							</TableHead>
 							<TableCell>{item.actress || '名前なし'}</TableCell>
 						</TableRow>
 						<TableRow>
 							<TableHead>
-								<CalendarDays className="inline-block mr-2" /> 作品名
+								<CalendarDays className="inline-block mr-2" /> 作品
 							</TableHead>
 							<TableCell>
 								<Link
