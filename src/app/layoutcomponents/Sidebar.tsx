@@ -19,7 +19,7 @@ const Sidebar: React.FC = () => {
 						<li>
 							<Link
 								href="/antenna"
-								className="flex items-center text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md p-2 transition-colors duration-200"
+								className="flex items-center text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md p-2 transition-colors duration-200 font-semibold"
 							>
 								<svg
 									className="w-5 h-5 mr-3"

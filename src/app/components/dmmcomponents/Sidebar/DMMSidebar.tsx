@@ -7,8 +7,30 @@ const EriceSidebar = () => {
 			<ul className="space-y-3">
 				<li>
 					<Link
+						href="/newdebut"
+						className="flex items-center text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md p-2 transition-colors duration-200 font-semibold"
+					>
+						<svg
+							className="w-5 h-5 mr-3"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+							/>
+						</svg>
+						新人AV女優一覧
+					</Link>
+				</li>
+				<li>
+					<Link
 						href="/sale"
-						className="flex items-center text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md p-2 transition-colors duration-200"
+						className="flex items-center text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md p-2 transition-colors duration-200 font-semibold"
 					>
 						<svg
 							className="w-5 h-5 mr-3"
@@ -24,13 +46,13 @@ const EriceSidebar = () => {
 								d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
 							/>
 						</svg>
-						全ての限定セール商品
+						限定セール商品
 					</Link>
 				</li>
 				<li>
 					<Link
 						href="/todaynew"
-						className="flex items-center text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md p-2 transition-colors duration-200"
+						className="flex items-center text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md p-2 transition-colors duration-200 font-semibold"
 					>
 						<svg
 							className="w-5 h-5 mr-3"
@@ -47,7 +69,7 @@ const EriceSidebar = () => {
 				<li>
 					<Link
 						href="/debut"
-						className="flex items-center text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md p-2 transition-colors duration-200"
+						className="flex items-center text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md p-2 transition-colors duration-200 font-semibold"
 					>
 						<svg
 							className="w-5 h-5 mr-3"
@@ -69,7 +91,7 @@ const EriceSidebar = () => {
 				<li>
 					<Link
 						href="/feature"
-						className="flex items-center text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md p-2 transition-colors duration-200"
+						className="flex items-center text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md p-2 transition-colors duration-200 font-semibold"
 					>
 						<svg
 							className="w-5 h-5 mr-3"

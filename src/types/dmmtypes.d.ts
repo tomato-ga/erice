@@ -233,3 +233,5 @@ export interface DMMSaleItem extends DMMBaseItem {
 export type DMMItemProps = DMMBaseItem & Partial<DMMSaleItem>
 
 export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale' | 'actress' | 'genre'
+
+
