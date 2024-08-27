@@ -214,7 +214,7 @@ export default async function DMMKobetuItemPage({
 									>
 										<img
 											src={imageUrl}
-											alt={`${ItemMain.title}のサンプル画像${index + 1}`}
+											alt={`${ItemMain.title} ${ItemMain.content_id}のサンプル画像${index + 1}`}
 											className="w-full h-full object-contain transition-transform duration-300"
 										/>
 									</div>

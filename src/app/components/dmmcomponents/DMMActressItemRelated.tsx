@@ -29,7 +29,7 @@ const ActressRelatedItemTimelineCard = ({ item }: { item: ActressRelatedItem }) 
 						<div className="relative pt-[56.25%] overflow-hidden bg-gray-100">
 							<img
 								src={item.imageURL}
-								alt={item.title}
+								alt={`${item.title} ${item.content_id}の画像です。`}
 								className="absolute top-0 left-0 w-full h-full object-contain"
 							/>
 						</div>
