@@ -39,13 +39,8 @@ const GenreTag = ({ genre }: { genre: string[] }) => {
 const DMMItemCard = <T extends DMMItemProps>({ item, itemType }: { item: T; itemType: ItemType }) => {
 	return (
 		<div className="bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-md flex flex-col h-full">
-			<Link
-				href={
-					itemType === 'genre' || itemType === 'actress'
-						? `/item/${item.db_id}`
-						: `/item/${item.db_id}?itemType=${itemType}`
-				}
-			>
+			{/* TODO itemType削除する */}
+			<Link href={`/item/${item.db_id}`}>
 				<div className="relative overflow-hidden bg-gray-100 p-4">
 					<img
 						src={item.imageURL?.toString() || ''}

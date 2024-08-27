@@ -199,7 +199,7 @@ export default async function DMMKobetuItemPage({
 						<ProductDetails title={ItemMain.title} contentId={ItemMain.content_id} dbId={params.dbId} />
 					</Suspense>
 
-					{ItemMain.sampleImageURL && (
+					{ItemMain.sampleImageURL && ItemMain.sampleImageURL.length > 0 && (
 						<div className="mt-8">
 							<h2 className="text-center font-bold mb-6">
 								<span className="text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text">
@@ -223,7 +223,7 @@ export default async function DMMKobetuItemPage({
 						</div>
 					)}
 
-					{ItemMain.sampleMovieURL && (
+					{ItemMain.sampleMovieURL && ItemMain.sampleMovieURL.length > 0 && (
 						<div className="mt-8">
 							<h2 className="text-center font-bold mb-6">
 								<span className="text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text">
