@@ -59,7 +59,7 @@ function NewActressCard({ item }: { item: ProcessedDMMItem }) {
 					<Link href={`/item/${item.db_id}`} className="relative overflow-hidden">
 						<Image
 							src={item.imageURL || '/placeholder.jpg'}
-							alt={item.title}
+							alt={`新人AV・セクシー女優${item.actress}のデビュー作品${item.title} / ${item.content_id}`}
 							width={300}
 							height={450}
 							className="object-cover transition-transform duration-300"
