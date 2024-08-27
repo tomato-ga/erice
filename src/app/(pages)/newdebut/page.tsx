@@ -64,9 +64,6 @@ function NewActressCard({ item }: { item: ProcessedDMMItem }) {
 							height={450}
 							className="object-cover transition-transform duration-300"
 						/>
-						<span className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white px-2 py-1 text-sm rounded">
-							{item.content_id}
-						</span>
 					</Link>
 				</div>
 
@@ -93,7 +90,7 @@ function NewActressCard({ item }: { item: ProcessedDMMItem }) {
 									href={`/item/${item.db_id}`}
 									className="text-indigo-600 hover:text-indigo-800 transition-colors duration-300"
 								>
-									{item.title}
+									{item.title} / {item.content_id}
 								</Link>
 							</TableCell>
 						</TableRow>
