@@ -75,7 +75,7 @@ const ActressRelatedItems = async ({ actressName }: { actressName: string }) => 
 		<div className="bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg p-4 sm:p-8 md:p-12">
 			<h2 className="text-3xl font-bold mb-12 text-center">
 				<span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
-					{actressName}の関連作品タイムライン
+					{actressName}の出演作品タイムライン
 				</span>
 			</h2>
 			<div className="relative">
