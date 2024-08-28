@@ -114,7 +114,7 @@ const r18Page: React.FC = () => (
 		<Header />
 		<main className="flex-grow p-4 md:max-w-[780px] md:mx-auto md:mt-6 md:p-[16px_80px_80px] md:bg-white md:rounded-[20px]">
 			{/* <SearchForm /> */}
-			<PostList limit={200} />
+			<PostList limit={300} />
 		</main>
 		{/* <Footer /> */}
 	</div>
