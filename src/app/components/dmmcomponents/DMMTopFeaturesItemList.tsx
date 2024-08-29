@@ -1,45 +1,41 @@
-'use client'
-
-// src/app/components/dmmcomponents/DMMItemList.tsx
-
 import Link from 'next/link'
-import { ItemType } from '@/types/dmmtypes'
 import { DMMItemProps } from '@/types/dmmtypes'
+import { ArrowRight } from 'lucide-react'
+import { UmamiTracking } from './UmamiTracking'
 
-// PriceDisplay コンポーネント：価格表示部分
-// listPrice: 定価 (number 型)
-// salePrice: 販売価格 (number 型)
-const PriceDisplay = ({ listPrice, salePrice }: { listPrice: string | undefined; salePrice: string }) => {
-	return (
-		<div className="mb-2">
-			<span className="text-gray-500 line-through mr-2">{listPrice}</span>
-			<span className="text-red-600 font-bold">{salePrice}</span>
-		</div>
-	)
-}
-// GenreTag コンポーネント：ジャンルタグ表示部分
-// genre: ジャンル名 (string 型)
-const GenreTag = ({ genre }: { genre: string[] }) => {
-	return (
-		<>
-			{genre.map((genreItem, index) => (
-				<span
-					key={index}
-					className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium mr-2 mb-2 inline-block transition-all duration-300 hover:bg-blue-200"
-				>
-					{genreItem}
-				</span>
-			))}
-		</>
-	)
+interface DMMFeaturesItemContainerProps<T extends DMMItemProps> {
+	from: string
+	bgGradient?: string
+	endpoint: string
+	title: string
+	linkText: string
+	linkHref: '/sale' | '/todaynew' | '/debut' | '/feature'
+	textGradient: string
 }
 
-// DMMFeaturesItemCard コンポーネント：個々の商品カード表示部分
-// item: 商品情報 (T )
-const DMMFeaturesItemCard = <T extends DMMItemProps>({ item }: { item: T }) => {
-	return (
-		<div className="bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-md flex flex-col h-full">
-			<Link href={`/item/${item.content_id}`}>
+async function fetchData<T extends DMMItemProps>(endpoint: string): Promise<T[]> {
+	try {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, { cache: 'no-store' })
+		if (!response.ok) return []
+		const data: T[] = await response.json()
+		return Array.isArray(data) ? data : []
+	} catch (error) {
+		console.error('データの取得に失敗しました:', error)
+		return []
+	}
+}
+
+const PriceDisplay = ({ listPrice, salePrice }: { listPrice: string | undefined; salePrice: string }) => (
+	<div className="mb-2">
+		<span className="text-gray-500 line-through mr-2">{listPrice}</span>
+		<span className="text-red-600 font-bold">{salePrice}</span>
+	</div>
+)
+
+const DMMFeaturesItemCard = <T extends DMMItemProps>({ item, type, from }: { item: T; type: string; from: string }) => (
+	<div className="bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-md flex flex-col h-full">
+		<UmamiTracking type={type} item={item} from={from}>
+			<Link href={`/item/${item.db_id}`}>
 				<div className="relative overflow-hidden bg-gray-100 p-4">
 					<img
 						src={item.imageURL?.toString() || ''}
@@ -64,29 +60,61 @@ const DMMFeaturesItemCard = <T extends DMMItemProps>({ item }: { item: T }) => {
 					<p className="text-sm text-gray-600 mb-2 line-clamp-1" title={item.actress}>
 						{item.actress ? `出演: ${item.actress}` : ''}
 					</p>
-					{/* TODO 一旦外してる　<div className="flex flex-wrap mt-2 overflow-hidden flex-grow">
-						<GenreTag genre={Array.isArray(item.genre) ? item.genre : []} />
-					</div> */}
 				</div>
 			</Link>
-		</div>
-	)
-}
+		</UmamiTracking>
+	</div>
+)
 
-// DMMItemList コンポーネント：商品リスト全体表示部分
-// items: 商品情報の配列 (T[] 型)
-const DMMTopFeaturesItemList = <T extends DMMItemProps>({ items, from }: { items: T[]; from: string }) => {
+const DMMFeaturesItemList = <T extends DMMItemProps>({
+	items,
+	from,
+	type
+}: {
+	items: T[]
+	from: string
+	type: string
+}) => {
 	const displayCount = from === 'top' ? 8 : items.length
-
 	return (
 		<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 			{items.slice(0, displayCount).map((item) => (
 				<div key={item.content_id}>
-					<DMMFeaturesItemCard item={item} />
+					<DMMFeaturesItemCard item={item} from={from} type={type} />
 				</div>
 			))}
 		</div>
 	)
 }
 
-export default DMMTopFeaturesItemList
+export default async function DMMFeaturesItemContainer<T extends DMMItemProps>({
+	from,
+	bgGradient,
+	endpoint,
+	title,
+	linkText,
+	linkHref,
+	textGradient
+}: DMMFeaturesItemContainerProps<T>) {
+	const items = await fetchData<T>(endpoint)
+
+	// console.log('DMMFeaturesItemContainer items:', items)
+
+	return (
+		<div className={`bg-gradient-to-r ${bgGradient} shadow-lg p-4 sm:p-4 md:p-8 transition duration-300 ease-in-out`}>
+			<div className="text-center mb-8">
+				<h2 className="text-4xl font-extrabold mb-4">
+					<span className={`text-transparent bg-clip-text bg-gradient-to-r ${textGradient}`}>{title}</span>
+				</h2>
+				<Link
+					href={linkHref}
+					className={`inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r ${textGradient} shadow-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50`}
+				>
+					{linkText}
+					<ArrowRight className="ml-2 h-5 w-5 animate-bounce" />
+				</Link>
+			</div>
+			<DMMFeaturesItemList items={items} from={from} type={linkHref} />
+		</div>
+	)
+}

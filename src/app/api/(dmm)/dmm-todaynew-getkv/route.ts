@@ -43,7 +43,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 	}
 
 	try {
-		console.log(`Fetching data from ${WORKER_URL}`)
+		// console.log(`Fetching data from ${WORKER_URL}`)
 		const response = await fetch(`${WORKER_URL}/today-new-items`, {
 			method: 'GET',
 			headers: {
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 		}))
 
 		// データ処理後、キャッシュタグを再検証
-		revalidateTag('dmm-todaynew')
+		// revalidateTag('dmm-todaynew')
 
 		return NextResponse.json(processedData)
 	} catch (error) {

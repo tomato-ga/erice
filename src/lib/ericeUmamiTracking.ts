@@ -1,4 +1,4 @@
-import { UmamiClickData } from '@/types/umamiTypes'
+import { ExtendedDMMItemProps, UmamiClickData } from '@/types/umamiTypes'
 
 export const handleericeUmamiClick = ({ type, from, item }: UmamiClickData) => {
 	if (typeof window !== 'undefined' && window.umami) {
