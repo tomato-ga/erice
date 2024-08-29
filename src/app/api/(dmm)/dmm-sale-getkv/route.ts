@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { DMMSaleApiResponse } from '@/types/dmmtypes'
+import { DMMSaleItem } from '@/types/dmmtypes'
 
 /**
  * セール中の動画を取得するAPIエンドポイント
@@ -68,7 +69,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 			return typeof imageURL === 'string' ? imageURL : null
 		}
 
-		const processedData = data.map((item) => ({
+		const processedData = data.map((item: DMMSaleItem) => ({
 			content_id: item.content_id,
 			title: item.title,
 			affiliateURL: item.affiliateURL,
@@ -79,7 +80,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 			rate: item.rate,
 			actress: item.iteminfo?.actress ? item.iteminfo?.actress?.[0]?.name : null,
 			actress_id: item.iteminfo?.actress?.[0]?.id || null,
-			genre: item.iteminfo?.genre ? item.iteminfo?.genre.map((genre) => genre.name) : null,
+			genre: item.iteminfo?.genre ? item.iteminfo?.genre.map((genre: { name: string }) => genre.name) : null,
 			listprice: item.salecount ? item.salecount : null,
 			price: item.salePrice ? item.salePrice : null,
 			date: item.date,
