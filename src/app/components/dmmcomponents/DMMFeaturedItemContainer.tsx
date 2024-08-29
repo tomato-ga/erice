@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { DMMItemProps } from '@/types/dmmtypes'
 import { ArrowRight } from 'lucide-react'
+import { UmamiTracking } from './UmamiTracking'
 
 interface DMMFeaturedItemContainerProps<T extends DMMItemProps> {
 	from: string
@@ -33,45 +34,55 @@ const PriceDisplay = ({ listPrice, salePrice }: { listPrice: string | undefined;
 	</div>
 )
 
-const DMMFeaturedItemCard = <T extends DMMItemProps>({ item }: { item: T }) => (
+const DMMFeaturedItemCard = <T extends DMMItemProps>({ item, type, from }: { item: T; type: string; from: string }) => (
 	<div className="bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-md flex flex-col h-full">
-		<Link href={`/item/${item.db_id}`}>
-			<div className="relative overflow-hidden bg-gray-100 p-4">
-				<img
-					src={item.imageURL?.toString() || ''}
-					alt={item.title}
-					className="w-full h-auto min-h-[200px] object-contain"
-				/>
-			</div>
-			<div className="p-4 flex flex-col flex-grow">
-				<h2 className="text-lg font-semibold mb-2 line-clamp-2 h-14" title={item.title}>
-					{item.title}
-				</h2>
-				{'salecount' in item && 'salePrice' in item && (
-					<PriceDisplay listPrice={item.salecount} salePrice={item.salePrice!} />
-				)}
-				{!('salecount' in item && 'salePrice' in item) && item.price && (
-					<div className="mb-2">
-						<span className="text-red-600 font-bold">
-							{item.price.match(/\d+~円/) ? item.price : item.price.replace(/~/, '円〜')}
-						</span>
-					</div>
-				)}
-				<p className="text-sm text-gray-600 mb-2 line-clamp-1" title={item.actress}>
-					{item.actress ? `出演: ${item.actress}` : ''}
-				</p>
-			</div>
-		</Link>
+		<UmamiTracking type={type} item={item} from={from}>
+			<Link href={`/item/${item.db_id}`}>
+				<div className="relative overflow-hidden bg-gray-100 p-4">
+					<img
+						src={item.imageURL?.toString() || ''}
+						alt={item.title}
+						className="w-full h-auto min-h-[200px] object-contain"
+					/>
+				</div>
+				<div className="p-4 flex flex-col flex-grow">
+					<h2 className="text-lg font-semibold mb-2 line-clamp-2 h-14" title={item.title}>
+						{item.title}
+					</h2>
+					{'salecount' in item && 'salePrice' in item && (
+						<PriceDisplay listPrice={item.salecount} salePrice={item.salePrice!} />
+					)}
+					{!('salecount' in item && 'salePrice' in item) && item.price && (
+						<div className="mb-2">
+							<span className="text-red-600 font-bold">
+								{item.price.match(/\d+~円/) ? item.price : item.price.replace(/~/, '円〜')}
+							</span>
+						</div>
+					)}
+					<p className="text-sm text-gray-600 mb-2 line-clamp-1" title={item.actress}>
+						{item.actress ? `出演: ${item.actress}` : ''}
+					</p>
+				</div>
+			</Link>
+		</UmamiTracking>
 	</div>
 )
 
-const DMMFeaturedItemList = <T extends DMMItemProps>({ items, from }: { items: T[]; from: string }) => {
+const DMMFeaturedItemList = <T extends DMMItemProps>({
+	items,
+	from,
+	type
+}: {
+	items: T[]
+	from: string
+	type: string
+}) => {
 	const displayCount = from === 'top' ? 8 : items.length
 	return (
 		<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 			{items.slice(0, displayCount).map((item) => (
 				<div key={item.content_id}>
-					<DMMFeaturedItemCard item={item} />
+					<DMMFeaturedItemCard item={item} from={from} type={type} />
 				</div>
 			))}
 		</div>
@@ -105,7 +116,7 @@ export default async function DMMFeaturedItemContainer<T extends DMMItemProps>({
 					<ArrowRight className="ml-2 h-5 w-5 animate-bounce" />
 				</Link>
 			</div>
-			<DMMFeaturedItemList items={items} from={from} />
+			<DMMFeaturedItemList items={items} from={from} type={linkHref} />
 		</div>
 	)
 }
