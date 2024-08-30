@@ -1,4 +1,4 @@
-// src/app/(pages)/item/[contentId]/page.tsx
+// /Volumes/SSD_1TB/erice2/erice/src/app/(pages)/item/[dbId]/page.tsx
 
 import { Suspense } from 'react'
 import { Metadata } from 'next'
@@ -21,6 +21,7 @@ import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
 import { formatDate } from '@/utils/dmmUtils'
 import { r18antennaFetch } from '@/app/components/antennacomponents/PostList/r18fetch'
 import { PostList } from '@/app/components/antennacomponents/PostList'
+import { UmamiTracking } from '@/app/components/dmmcomponents/UmamiTracking'
 
 interface Props {
 	params: { dbId: number }
@@ -164,6 +165,7 @@ export default async function DMMKobetuItemPage({
 					<PostList limit={12} />
 
 					<div className="relative overflow-hidden aspect-w-16 aspect-h-9">
+						{/*TODO  dbidから、actressIDと、actressNameだけ取得するAPIを作って、Umamiに渡す <UmamiTracking type="item" item={ItemMain} from="top"> */}
 						<Link href={ItemMain.affiliateURL || '#'} target="_blank" rel="noopener noreferrer">
 							<img
 								src={ItemMain.imageURL}
@@ -171,6 +173,7 @@ export default async function DMMKobetuItemPage({
 								className="w-full h-full object-contain transition-transform duration-300"
 							/>
 						</Link>
+						{/* </UmamiTracking> */}
 					</div>
 
 					<h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 text-center">
