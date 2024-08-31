@@ -17,17 +17,17 @@ type ActressRelatedItem = z.infer<typeof ItemSchema>
 
 const ActressRelatedItemTimelineCard = ({ item }: { item: ActressRelatedItem }) => {
 	return (
-		<div className="flex items-center mb-8">
-			<div className="w-1/4 pr-4 flex justify-end">
-				<div className="bg-white rounded-full p-3 shadow-md text-center">
-					<span className="text-xs sm:text-sm md:text-base font-bold text-gray-800">
+		<div className="flex flex-col sm:flex-row items-center mb-8 relative">
+			<div className="w-full sm:w-1/4 mb-4 sm:mb-0 sm:pr-4 flex justify-center sm:justify-end z-10">
+				<div className="bg-white rounded-full p-2 sm:p-3 shadow-md text-center">
+					<span className="text-xs sm:text-sm md:text-base font-bold text-gray-800 whitespace-nowrap">
 						{formatDate(item.release_date)}
 					</span>
 				</div>
 			</div>
-			<div className="w-3/4 pl-4">
+			<div className="w-full sm:w-3/4 sm:pl-4 relative">
 				<Link href={`/item/${item.db_id}`}>
-					<div className="bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-lg">
+					<div className="bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-lg hover:shadow-xl ml-6 sm:ml-0">
 						<div className="relative pt-[56.25%] overflow-hidden bg-gray-100">
 							<img
 								src={item.imageURL}
@@ -36,7 +36,7 @@ const ActressRelatedItemTimelineCard = ({ item }: { item: ActressRelatedItem }) 
 							/>
 						</div>
 						<div className="p-4">
-							<h2 className="text-lg font-semibold mb-2 line-clamp-2" title={item.title}>
+							<h2 className="text-sm sm:text-base md:text-lg font-semibold mb-2 line-clamp-2" title={item.title}>
 								{item.title}
 							</h2>
 						</div>
@@ -49,7 +49,7 @@ const ActressRelatedItemTimelineCard = ({ item }: { item: ActressRelatedItem }) 
 
 const ActressRelatedItemsTimeLine = async ({ actressName }: { actressName: string }) => {
 	if (!actressName) {
-		return <div>女優名��指定されていません。</div>
+		return <div>女優名指定されていません。</div>
 	}
 
 	const ActressItemsResult = await fetchActressRelatedItem(actressName)
@@ -81,7 +81,7 @@ const ActressRelatedItemsTimeLine = async ({ actressName }: { actressName: strin
 				</span>
 			</h2>
 			<div className="relative">
-				<div className="absolute left-1/4 top-0 bottom-0 w-px bg-gradient-to-b from-purple-500 to-pink-500"></div>
+				<div className="absolute left-0 sm:left-1/4 top-0 bottom-0 w-px bg-gradient-to-b from-purple-500 to-pink-500"></div>
 				{ActressItems.map((item) => (
 					<ActressRelatedItemTimelineCard key={item.db_id} item={item} />
 				))}

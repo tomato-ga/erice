@@ -9,8 +9,10 @@ declare global {
 }
 
 export const handleericeUmamiClick = (clickData: UmamiClickData) => {
+	// console.log('handleericeUmamiClick called with:', JSON.stringify(clickData, null, 2))
+	// console.log('window.umami exists:', !!window.umami)
 	if (typeof window === 'undefined' || !window.umami) {
-		// console.warn('Umami tracking is not available')
+		console.warn('Umami tracking is not available')
 		return
 	}
 
@@ -42,11 +44,11 @@ export const handleericeUmamiClick = (clickData: UmamiClickData) => {
 			Object.assign(trackingData, clickData.otherData)
 		}
 
-		const eventName = `${clickData.dataType} ${clickData.from} Click`
-		// console.log('Sending Umami event:', eventName, JSON.stringify(trackingData, null, 2))
+		const eventName = `${clickData.dataType} | ${clickData.from} | Click`
+		// console.log('Calling window.umami.track with:', eventName, JSON.stringify(trackingData, null, 2))
 		window.umami.track(eventName, trackingData)
-		// console.log('Umami event tracked successfully')
+		// console.log('window.umami.track called successfully')
 	} catch (error) {
-		// console.error('Failed to track Umami click event:', error)
+		// console.error('Failed to track Umami click event:', error);
 	}
 }

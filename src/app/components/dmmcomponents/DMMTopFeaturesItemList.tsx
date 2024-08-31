@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { DMMItemProps } from '@/types/dmmtypes'
 import { ArrowRight } from 'lucide-react'
 import { UmamiTracking } from './UmamiTracking'
+import { UmamiTrackingFromType } from '@/types/umamiTypes'
 
 interface DMMFeaturesItemContainerProps<T extends DMMItemProps> {
 	from: string
@@ -11,6 +12,7 @@ interface DMMFeaturesItemContainerProps<T extends DMMItemProps> {
 	linkText: string
 	linkHref: '/sale' | '/todaynew' | '/debut' | '/feature'
 	textGradient: string
+	umamifrom: UmamiTrackingFromType
 }
 
 async function fetchData<T extends DMMItemProps>(endpoint: string): Promise<T[]> {
@@ -32,9 +34,19 @@ const PriceDisplay = ({ listPrice, salePrice }: { listPrice: string | undefined;
 	</div>
 )
 
-const DMMFeaturesItemCard = <T extends DMMItemProps>({ item, type, from }: { item: T; type: string; from: string }) => (
+const DMMFeaturesItemCard = <T extends DMMItemProps>({
+	item,
+	type,
+	from,
+	umamifrom
+}: {
+	item: T
+	type: string
+	from: string
+	umamifrom: UmamiTrackingFromType
+}) => (
 	<div className="bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-md flex flex-col h-full">
-		<UmamiTracking trackingData={{ dataType: 'item', from: 'top', item: item }}>
+		<UmamiTracking trackingData={{ dataType: 'item', from: umamifrom, item: item }}>
 			<Link href={`/item/${item.db_id}`}>
 				<div className="relative overflow-hidden bg-gray-100 p-4">
 					<img
@@ -69,18 +81,20 @@ const DMMFeaturesItemCard = <T extends DMMItemProps>({ item, type, from }: { ite
 const DMMFeaturesItemList = <T extends DMMItemProps>({
 	items,
 	from,
-	type
+	type,
+	umamifrom
 }: {
 	items: T[]
 	from: string
 	type: string
+	umamifrom: UmamiTrackingFromType
 }) => {
 	const displayCount = from === 'top' ? 8 : items.length
 	return (
 		<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 			{items.slice(0, displayCount).map((item) => (
 				<div key={item.content_id}>
-					<DMMFeaturesItemCard item={item} from={from} type={type} />
+					<DMMFeaturesItemCard item={item} from={from} type={type} umamifrom={umamifrom} />
 				</div>
 			))}
 		</div>
@@ -94,7 +108,8 @@ export default async function DMMFeaturesItemContainer<T extends DMMItemProps>({
 	title,
 	linkText,
 	linkHref,
-	textGradient
+	textGradient,
+	umamifrom
 }: DMMFeaturesItemContainerProps<T>) {
 	const items = await fetchData<T>(endpoint)
 
@@ -114,7 +129,7 @@ export default async function DMMFeaturesItemContainer<T extends DMMItemProps>({
 					<ArrowRight className="ml-2 h-5 w-5 animate-bounce" />
 				</Link>
 			</div>
-			<DMMFeaturesItemList items={items} from={from} type={linkHref} />
+			<DMMFeaturesItemList items={items} from={from} type={linkHref} umamifrom={umamifrom} />
 		</div>
 	)
 }

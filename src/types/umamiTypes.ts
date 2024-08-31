@@ -4,7 +4,12 @@ import { DMMActressInfo } from './APItypes'
 
 export type UmamiTrackingDataType = 'item' | 'actress' | 'combined' | 'other' | 'actress-name' | 'genre' | 'antenna'
 export type UmamiTrackingFromType =
-	| 'top'
+	| 'top-sale'
+	| 'top-todaynew'
+	| 'top-debut' // この行を追加
+	| 'top-feature'
+	| 'top-new-actress'
+	| 'top-popular-actress'
 	| 'kobetu-img-top'
 	| 'kobetu-exlink-top'
 	| 'kobetu-exlink-bottom'
@@ -36,7 +41,12 @@ export interface UmamiTrackingProps {
 export const UmamiTrackingDataSchema = z.object({
 	dataType: z.enum(['item', 'actress', 'combined', 'other', 'actress-name', 'genre', 'antenna']),
 	from: z.enum([
-		'top',
+		'top-sale',
+		'top-todaynew',
+		'top-debut', // この行を追加
+		'top-feature',
+		'top-new-actress',
+		'top-popular-actress',
 		'kobetu-img-top',
 		'kobetu-exlink-top',
 		'kobetu-exlink-bottom',
@@ -53,7 +63,7 @@ export const UmamiTrackingDataSchema = z.object({
 		.object({
 			content_id: z.string(),
 			title: z.string()
-			})
+		})
 		.partial()
 		.optional(),
 	actressInfo: z

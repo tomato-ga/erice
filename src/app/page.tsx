@@ -21,6 +21,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 					title={titles.sale}
 					linkText={linkTexts.sale}
 					linkHref="/sale"
+					umamifrom="top-sale"
 					textGradient="from-blue-500 to-purple-500"
 				/>
 
@@ -32,6 +33,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 					title={titles.todaynew}
 					linkText={linkTexts.todaynew}
 					linkHref="/todaynew"
+					umamifrom="top-todaynew"
 					textGradient="from-green-500 to-blue-500"
 				/>
 
@@ -42,6 +44,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 					title={titles.debut}
 					linkText={linkTexts.debut}
 					linkHref="/debut"
+					umamifrom="top-debut"
 					textGradient="from-yellow-500 to-red-500"
 				/>
 
@@ -52,6 +55,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 					title={titles.feature}
 					linkText={linkTexts.feature}
 					linkHref="/feature"
+					umamifrom="top-feature"
 					textGradient="from-pink-500 to-purple-500"
 				/>
 
