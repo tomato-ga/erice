@@ -22,23 +22,28 @@ export const DMMActressProfileSchema = z.object({
 		id: z.number(),
 		dmm_id: z.number(),
 		name: z.string(),
-		ruby: z.string(),
-		bust: z.number().nullable().or(z.string()),
-		waist: z.number().nullable().or(z.string()),
-		hip: z.number().nullable().or(z.string()),
-		height: z.number().nullable().or(z.string()),
-		birthday: z.string().nullable().or(z.string()),
-		blood_type: z.string().nullable().or(z.string()),
-		hobby: z.string().nullable().or(z.string()),
-		prefectures: z.string().nullable().or(z.string()),
-		image_url_small: z.string().nullable().or(z.string()),
-		image_url_large: z.string().nullable().or(z.string()),
-		list_url: z.string().nullable().or(z.string()),
-		cup: z.string().nullable().or(z.string()).optional()
+		ruby: z.string().nullable(),
+		bust: z.number().nullable(),
+		waist: z.number().nullable(),
+		hip: z.number().nullable(),
+		height: z.number().nullable(),
+		birthday: z.string().nullable(),
+		blood_type: z.string().nullable(),
+		hobby: z.string().nullable(),
+		prefectures: z.string().nullable(),
+		image_url_small: z.string().nullable(),
+		image_url_large: z.string().nullable(),
+		list_url: z.string().nullable(),
+		cup: z.string().nullable(),
+		details: z.string().nullable()
 	})
 })
 
 export type DMMActressProfile = z.infer<typeof DMMActressProfileSchema>
+
+export type ActressDetails = {
+	[key: string]: string | number | boolean | null | undefined | Array<any> | object
+}
 
 export const DMMActressProfilePageItemSchema = z.object({
 	id: z.string(),

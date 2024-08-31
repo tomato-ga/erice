@@ -3,15 +3,34 @@ import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import LoadingSpinner from '@/app/components/Article/ArticleContent/loadingspinner'
 import { fetchActressProfileAndWorks } from '@/app/components/dmmcomponents/fetch/itemFetchers'
-import { DMMActressProfile, ActressProfileAndWorks, DMMActressProfilePageItem } from '@/types/APItypes'
+import { DMMActressProfile, ActressProfileAndWorks, DMMActressProfilePageItem, ActressDetails } from '@/types/APItypes'
 import { formatDate } from '@/utils/dmmUtils'
 import Link from 'next/link'
+import { generateRefinedProfileDescription } from './profileAnalysis'
 
 interface PageProps {
 	params: { slug: string }
 }
 
 const SITE_NAME = 'エロコメスト'
+
+export function parseDetails(details: string | null): ActressDetails | null {
+	if (!details) return null
+	try {
+		return JSON.parse(details) as ActressDetails
+	} catch {
+		return null
+	}
+}
+
+export function renderDetailValue(value: any): string {
+	if (Array.isArray(value)) {
+		return value.join(', ')
+	} else if (typeof value === 'object' && value !== null) {
+		return JSON.stringify(value)
+	}
+	return String(value)
+}
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	const actressName = decodeURIComponent(params.slug)
@@ -47,24 +66,66 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 const ActressProfileSection = ({ profile }: { profile: DMMActressProfile }) => {
+	const { actress } = profile
+	const details = parseDetails(actress.details)
+	const description = generateRefinedProfileDescription(profile)
+
+	const renderProfileRow = (label: string, value: string | number | null) => {
+		if (value === null || value === '非公開' || value === '') return null
+		return (
+			<tr className="border-b dark:border-gray-700">
+				<td className="py-2 px-4 font-medium">{label}</td>
+				<td className="py-2 px-4">{value}</td>
+			</tr>
+		)
+	}
+
 	return (
-		<div className="bg-white dark:bg-gray-800 shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl p-6">
-			<h2 className="text-3xl font-bold text-center py-4 text-gray-800 dark:text-white">
-				<span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
-					{profile.actress.name}のプロフィール
-				</span>
-			</h2>
-			<div className="flex flex-col md:flex-row">
-				<div className="md:w-1/3 p-4">
-					<img
-						src={profile.actress.image_url_large || ''}
-						alt={profile.actress.name}
-						className="w-full  shadow-md transition-transform duration-300"
-					/>
-				</div>
-				<div className="md:w-2/3 p-4">
-					{/* プロフィール情報を表示 */}
-					{/* 例: 年月日、サイズ、身長など */}
+		<div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
+			<div className="p-6">
+				<h2 className="text-3xl font-bold text-center mb-6">
+					<span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
+						{actress.name}のプロフィール
+					</span>
+				</h2>
+				<div className="flex flex-col md:flex-row md:space-x-6">
+					<div className="md:w-1/3 mb-6 md:mb-0">
+						<img
+							src={actress.image_url_large || '/placeholder-image.jpg'}
+							alt={actress.name}
+							className="w-full shadow-md object-cover aspect-[3/4]"
+						/>
+					</div>
+					<div className="md:w-2/3">
+						<table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+							<tbody>
+								{renderProfileRow('生年月日', actress.birthday)}
+								{renderProfileRow('血液型', actress.blood_type)}
+								{renderProfileRow('出身地', actress.prefectures)}
+								{renderProfileRow('趣味', actress.hobby)}
+								{renderProfileRow(
+									'スリーサイズ',
+									actress.bust && actress.waist && actress.hip
+										? `B${actress.bust} W${actress.waist} H${actress.hip}`
+										: null
+								)}
+								{renderProfileRow('身長', actress.height ? `${actress.height}cm` : null)}
+								{renderProfileRow('カップ', actress.cup)}
+								{details &&
+									Object.entries(details).map(([key, value]) => {
+										if (key === 'full_name' || key === 'current_name' || key === 'aliases') return null
+										return renderProfileRow(key, renderDetailValue(value))
+									})}
+							</tbody>
+						</table>
+						<div className="mt-4 text-sm text-gray-700 dark:text-gray-300">
+							{description.split('\n').map((paragraph, index) => (
+								<p key={index} className="mb-2">
+									{paragraph}
+								</p>
+							))}
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -119,7 +180,8 @@ export default async function ActressProfilePage({ params }: PageProps) {
 	const { profile, works } = data
 	const itemCount = works.length
 
-	console.log('profile:', profile)
+	console.log('profile:', JSON.stringify(profile, null, 2))
+	console.log('profile.actress:', profile.actress)
 
 	return (
 		<div className="max-w-7xl mx-auto px-4 py-8">
@@ -127,7 +189,7 @@ export default async function ActressProfilePage({ params }: PageProps) {
 				AV女優「{profile.actress.name}」のエロ動画・アダルト動画が{itemCount}作品あります
 			</h1>
 
-			{(profile.actress.bust || profile.actress.waist || profile.actress.hip) && (
+			{profile.actress && (
 				<Suspense fallback={<LoadingSpinner />}>
 					<ActressProfileSection profile={profile} />
 				</Suspense>

@@ -235,7 +235,7 @@ export async function fetchActressProfileAndWorks(actressName: string): Promise<
 		// console.log('Received data:', data) // デバッグ用
 
 		const validatedData = ActressProfileAndWorksSchema.parse(data)
-		// console.log('fetchActressProfileAndWorks validatedData', validatedData)
+		// console.log('fetchActressProfileAndWorks validatedData', validatedData.profile.actress)
 
 		return validatedData
 	} catch (error) {

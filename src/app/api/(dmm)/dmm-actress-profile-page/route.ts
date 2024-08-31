@@ -14,8 +14,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 	const API_KEY = process.env.CLOUDFLARE_DMM_API_TOKEN
 	const WORKER_URL = process.env.DMM_ACTRESS_PROFILE_AND_WORKS_WORKER_URL
 	// デバッグ用のログを追加
-	console.log('API_KEY:', API_KEY)
-	console.log('WORKER_URL:', WORKER_URL)
+	// console.log('API_KEY:', API_KEY)
+	// console.log('WORKER_URL:', WORKER_URL)
 
 	const { searchParams } = new URL(request.url)
 	const actressname = searchParams.get('actressname')
@@ -68,7 +68,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 		}
 
 		const validatedData = ActressProfileAndWorksSchema.parse(transformedData)
-		console.log('API response validatedData', validatedData)
+		// console.log('API response validatedData', validatedData.profile.actress)
 
 		return NextResponse.json(validatedData)
 	} catch (error) {
