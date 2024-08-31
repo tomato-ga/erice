@@ -47,6 +47,7 @@ export default async function DMMGenericPage({ params }: { params: { itemType: s
 					linkText="すべて見る"
 					linkHref={`/${itemType}` as '/sale' | '/todaynew' | '/debut' | '/feature'}
 					textGradient={gradients[itemType].text}
+					umamifrom={`only-${itemType}`}
 				/>
 			</div>
 		</div>

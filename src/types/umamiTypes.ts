@@ -20,6 +20,7 @@ export type UmamiTrackingFromType =
 	| 'search'
 	| 'other'
 	| 'antenna-post-list'
+	| string
 export type UmamiFeatureType = '/sale' | '/todaynew' | '/debut' | '/feature'
 
 export type UmamiTrackingData = {
