@@ -20,7 +20,9 @@ const ActressRelatedItemTimelineCard = ({ item }: { item: ActressRelatedItem }) 
 		<div className="flex items-center mb-8">
 			<div className="w-1/4 pr-4 flex justify-end">
 				<div className="bg-white rounded-full p-3 shadow-md text-center">
-					<span className="text-lg font-bold text-gray-800">{formatDate(item.release_date)}</span>
+					<span className="text-xs sm:text-sm md:text-base font-bold text-gray-800">
+						{formatDate(item.release_date)}
+					</span>
 				</div>
 			</div>
 			<div className="w-3/4 pl-4">
@@ -45,9 +47,9 @@ const ActressRelatedItemTimelineCard = ({ item }: { item: ActressRelatedItem }) 
 	)
 }
 
-const ActressRelatedItems = async ({ actressName }: { actressName: string }) => {
+const ActressRelatedItemsTimeLine = async ({ actressName }: { actressName: string }) => {
 	if (!actressName) {
-		return <div>女優名が指定されていません。</div>
+		return <div>女優名��指定されていません。</div>
 	}
 
 	const ActressItemsResult = await fetchActressRelatedItem(actressName)
@@ -88,4 +90,4 @@ const ActressRelatedItems = async ({ actressName }: { actressName: string }) => 
 	)
 }
 
-export default ActressRelatedItems
+export default ActressRelatedItemsTimeLine

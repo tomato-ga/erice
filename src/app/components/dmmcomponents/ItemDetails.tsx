@@ -1,11 +1,8 @@
 import { Suspense } from 'react'
-import { DMMItemMainResponse, DMMItemDetailResponse } from '@/types/dmmitemzodschema'
-import ActressRelatedItems from './DMMActressItemRelated'
-import { CommentSection } from './Comment/CommentSection'
-import ProductDetails from './DMMKobetuItemTable'
 import { fetchActressProfile, fetchItemDetailByContentId } from './fetch/itemFetchers'
 import LoadingSpinner from '../Article/ArticleContent/loadingspinner'
 import ActressProfile from './DMMActressProfile'
+import ActressRelatedItemsTimeLine from './DMMActressItemRelated'
 
 interface ItemDetailsProps {
 	// ItemMain: DMMItemMainResponse
@@ -23,11 +20,9 @@ export default async function ItemDetails({ contentId, dbId }: ItemDetailsProps)
 
 	return (
 		<>
-
-
 			{itemDetail && (
 				<Suspense fallback={<LoadingSpinner />}>
-					<ActressRelatedItems actressName={itemDetail.actress || ''} />
+					<ActressRelatedItemsTimeLine actressName={itemDetail.actress || ''} />
 				</Suspense>
 			)}
 
