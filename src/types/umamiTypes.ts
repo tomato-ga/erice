@@ -33,14 +33,25 @@ export interface UmamiTrackingProps {
 }
 
 export const UmamiTrackingDataSchema = z.object({
-	dataType: z.enum(['item', 'actress', 'combined', 'other']),
-	from: z.enum(['top', 'kobetu', 'actress', 'ExLink', 'related', 'genre', 'search', 'other']),
+	dataType: z.enum(['item', 'actress', 'combined', 'other', 'actress-name', 'genre']),
+	from: z.enum([
+		'top',
+		'kobetu-img-top',
+		'kobetu-exlink-top',
+		'kobetu-exlink-bottom',
+		'kobetu-item-detail',
+		'ExLink',
+		'related',
+		'genre',
+		'search',
+		'other'
+	]),
 	featureType: z.enum(['/sale', '/todaynew', '/debut', '/feature']).optional(),
 	item: z
 		.object({
 			content_id: z.string(),
 			title: z.string()
-		})
+			})
 		.partial()
 		.optional(),
 	actressInfo: z
