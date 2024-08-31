@@ -6,22 +6,13 @@ import { fetchActressProfileAndWorks } from '@/app/components/dmmcomponents/fetc
 import { DMMActressProfile, ActressProfileAndWorks, DMMActressProfilePageItem, ActressDetails } from '@/types/APItypes'
 import { formatDate } from '@/utils/dmmUtils'
 import Link from 'next/link'
-import { generateRefinedProfileDescription } from './profileAnalysis'
+import { generateRefinedProfileDescription, parseDetails } from './profileAnalysis'
 
 interface PageProps {
 	params: { slug: string }
 }
 
 const SITE_NAME = 'エロコメスト'
-
-export function parseDetails(details: string | null): ActressDetails | null {
-	if (!details) return null
-	try {
-		return JSON.parse(details) as ActressDetails
-	} catch {
-		return null
-	}
-}
 
 export function renderDetailValue(value: any): string {
 	if (Array.isArray(value)) {

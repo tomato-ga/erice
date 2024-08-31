@@ -1,7 +1,15 @@
 // utils/profileAnalysis.ts
 
-import { DMMActressProfile } from '@/types/APItypes'
-import { parseDetails } from './page'
+import { ActressDetails, DMMActressProfile } from '@/types/APItypes'
+
+export function parseDetails(details: string | null): ActressDetails | null {
+	if (!details) return null
+	try {
+		return JSON.parse(details) as ActressDetails
+	} catch {
+		return null
+	}
+}
 
 function calculateAge(birthday: string | null): number {
 	if (!birthday) return 0
