@@ -11,6 +11,15 @@ export function parseDetails(details: string | null): ActressDetails | null {
 	}
 }
 
+export function renderDetailValue(value: any): string {
+	if (Array.isArray(value)) {
+		return value.join(', ')
+	} else if (typeof value === 'object' && value !== null) {
+		return JSON.stringify(value)
+	}
+	return String(value)
+}
+
 function calculateAge(birthday: string | null): number {
 	if (!birthday) return 0
 	const birthDate = new Date(birthday)

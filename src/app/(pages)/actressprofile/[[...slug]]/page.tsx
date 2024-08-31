@@ -6,22 +6,13 @@ import { fetchActressProfileAndWorks } from '@/app/components/dmmcomponents/fetc
 import { DMMActressProfile, ActressProfileAndWorks, DMMActressProfilePageItem, ActressDetails } from '@/types/APItypes'
 import { formatDate } from '@/utils/dmmUtils'
 import Link from 'next/link'
-import { generateRefinedProfileDescription, parseDetails } from './profileAnalysis'
+import { generateRefinedProfileDescription, parseDetails, renderDetailValue } from './profileAnalysis'
 
 interface PageProps {
 	params: { slug: string }
 }
 
 const SITE_NAME = 'エロコメスト'
-
-export function renderDetailValue(value: any): string {
-	if (Array.isArray(value)) {
-		return value.join(', ')
-	} else if (typeof value === 'object' && value !== null) {
-		return JSON.stringify(value)
-	}
-	return String(value)
-}
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	const actressName = decodeURIComponent(params.slug)
