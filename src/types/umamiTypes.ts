@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { DMMItemMainResponseSchema, DMMItemMainResponse } from './dmmitemzodschema'
 import { DMMActressInfo } from './APItypes'
 
-export type UmamiTrackingDataType = 'item' | 'actress' | 'combined' | 'other' | 'actress-name' | 'genre'
+export type UmamiTrackingDataType = 'item' | 'actress' | 'combined' | 'other' | 'actress-name' | 'genre' | 'antenna'
 export type UmamiTrackingFromType =
 	| 'top'
 	| 'kobetu-img-top'
@@ -14,6 +14,7 @@ export type UmamiTrackingFromType =
 	| 'genre'
 	| 'search'
 	| 'other'
+	| 'antenna-post-list'
 export type UmamiFeatureType = '/sale' | '/todaynew' | '/debut' | '/feature'
 
 export type UmamiTrackingData = {
@@ -33,7 +34,7 @@ export interface UmamiTrackingProps {
 }
 
 export const UmamiTrackingDataSchema = z.object({
-	dataType: z.enum(['item', 'actress', 'combined', 'other', 'actress-name', 'genre']),
+	dataType: z.enum(['item', 'actress', 'combined', 'other', 'actress-name', 'genre', 'antenna']),
 	from: z.enum([
 		'top',
 		'kobetu-img-top',
@@ -44,7 +45,8 @@ export const UmamiTrackingDataSchema = z.object({
 		'related',
 		'genre',
 		'search',
-		'other'
+		'other',
+		'antenna-post-list'
 	]),
 	featureType: z.enum(['/sale', '/todaynew', '/debut', '/feature']).optional(),
 	item: z
