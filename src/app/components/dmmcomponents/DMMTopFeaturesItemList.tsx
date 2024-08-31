@@ -34,7 +34,7 @@ const PriceDisplay = ({ listPrice, salePrice }: { listPrice: string | undefined;
 
 const DMMFeaturesItemCard = <T extends DMMItemProps>({ item, type, from }: { item: T; type: string; from: string }) => (
 	<div className="bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-md flex flex-col h-full">
-		<UmamiTracking type={type} item={item} from={from}>
+		<UmamiTracking trackingData={{ dataType: 'item', from: 'top', item: item }}>
 			<Link href={`/item/${item.db_id}`}>
 				<div className="relative overflow-hidden bg-gray-100 p-4">
 					<img

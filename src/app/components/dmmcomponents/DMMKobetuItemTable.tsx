@@ -1,6 +1,8 @@
 import { DMMItemDetailResponse } from '@/types/dmmitemzodschema'
 import { fetchItemDetailByContentId } from '../dmmcomponents/fetch/itemFetchers'
 import Link from 'next/link'
+import { UmamiTracking } from './UmamiTracking'
+import { UmamiTrackingData, UmamiTrackingDataType, UmamiTrackingFromType } from '@/types/umamiTypes'
 
 const formatDate = (dateString: string) => {
 	const date = new Date(dateString)
@@ -19,7 +21,6 @@ interface ExtendedDMMItemDetailResponse extends DMMItemDetailResponse {
 }
 
 const ItemDetailsTable = ({ item }: { item: ExtendedDMMItemDetailResponse }) => {
-	// console.log('ItemDetailsTable received item:', item)
 	const details = [
 		{ label: 'タイトル', value: item.title, icon: '🎬' },
 		{ label: '発売日', value: item.date ? formatDate(item.date) : '情報なし', icon: '📅' },
@@ -32,6 +33,19 @@ const ItemDetailsTable = ({ item }: { item: ExtendedDMMItemDetailResponse }) => 
 		{ label: '監督', value: item.director || '情報なし', icon: '🎬' }
 	] satisfies ItemDetailsTableProps[]
 
+	const getUmamiTrackingData = (label: string, value: string | string[] | undefined | null): UmamiTrackingData => {
+		const dataType: UmamiTrackingDataType =
+			label === '女優名' ? 'actress-name' : label === 'ジャンル' ? 'genre' : 'other'
+		return {
+			dataType,
+			from: 'kobetu-item-detail' as UmamiTrackingFromType,
+			otherData: {
+				label,
+				value: Array.isArray(value) ? value.join(', ') : value
+			}
+		}
+	}
+
 	return (
 		<div className="space-y-3">
 			{details.map(({ label, value, icon }) => (
@@ -42,36 +56,40 @@ const ItemDetailsTable = ({ item }: { item: ExtendedDMMItemDetailResponse }) => 
 						</span>
 						<div className="flex-grow">
 							<h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">{label}</h3>
-							{(label === '女優名' || label === 'ジャンル') && value !== '情報なし' ? (
-								<div>
-									{Array.isArray(value) ? (
-										value.map((item, index) => (
-											<Link
-												key={index}
-												href={`/${label === '女優名' ? 'actressprofile' : 'genre'}/${encodeURIComponent(item)}`}
-												className="text-base text-blue-600 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500"
-												prefetch={true}
-											>
-												{item}
-											</Link>
-										))
-									) : typeof value === 'string' ? (
-										value.split(',').map((item, index) => (
-											<Link
-												key={index}
-												href={`/${label === '女優名' ? 'actressprofile' : 'genre'}/${encodeURIComponent(item.trim())}`}
-												className="text-base text-blue-600 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500"
-											>
-												{item.trim()}
-											</Link>
-										))
-									) : (
-										<p className="text-base text-gray-900 dark:text-gray-100 break-words">情報なし</p>
-									)}
-								</div>
-							) : (
-								<p className="text-base text-gray-900 dark:text-gray-100 break-words">{value || '情報なし'}</p>
-							)}
+							<UmamiTracking trackingData={getUmamiTrackingData(label, value)}>
+								{(label === '女優名' || label === 'ジャンル') && value !== '情報なし' ? (
+									<div>
+										{Array.isArray(value) ? (
+											value.map((item, index) => (
+												<Link
+													key={index}
+													href={`/${label === '女優名' ? 'actressprofile' : 'genre'}/${encodeURIComponent(item)}`}
+													className="text-base text-blue-600 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500"
+													prefetch={true}
+												>
+													{item}
+												</Link>
+											))
+										) : typeof value === 'string' ? (
+											value.split(',').map((item, index) => (
+												<Link
+													key={index}
+													href={`/${label === '女優名' ? 'actressprofile' : 'genre'}/${encodeURIComponent(
+														item.trim()
+													)}`}
+													className="text-base text-blue-600 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500"
+												>
+													{item.trim()}
+												</Link>
+											))
+										) : (
+											<p className="text-base text-gray-900 dark:text-gray-100 break-words">情報なし</p>
+										)}
+									</div>
+								) : (
+									<p className="text-base text-gray-900 dark:text-gray-100 break-words">{value || '情報なし'}</p>
+								)}
+							</UmamiTracking>
 						</div>
 					</div>
 				</div>

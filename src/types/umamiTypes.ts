@@ -2,8 +2,18 @@ import { z } from 'zod'
 import { DMMItemMainResponseSchema, DMMItemMainResponse } from './dmmitemzodschema'
 import { DMMActressInfo } from './APItypes'
 
-export type UmamiTrackingDataType = 'item' | 'actress' | 'combined' | 'other'
-export type UmamiTrackingFromType = 'top' | 'kobetu-img-top' | 'kobetu-exlink-top' | 'kobetu-exlink-bottom' |  'actress' | 'ExLink' | 'related' | 'genre' | 'search' | 'other'
+export type UmamiTrackingDataType = 'item' | 'actress' | 'combined' | 'other' | 'actress-name' | 'genre'
+export type UmamiTrackingFromType =
+	| 'top'
+	| 'kobetu-img-top'
+	| 'kobetu-exlink-top'
+	| 'kobetu-exlink-bottom'
+	| 'kobetu-item-detail'
+	| 'ExLink'
+	| 'related'
+	| 'genre'
+	| 'search'
+	| 'other'
 export type UmamiFeatureType = '/sale' | '/todaynew' | '/debut' | '/feature'
 
 export type UmamiTrackingData = {
