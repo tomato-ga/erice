@@ -24,15 +24,6 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 					textGradient="from-blue-500 to-purple-500"
 				/>
 
-				{/* <DMMFeaturedItemContainer
-					from="top"
-					bgGradient="bg-gradient-to-r from-green-50 to-blue-50"
-					endpoint="/api/dmm-todaynew-getkv"
-					title={titles.todaynew}
-					linkText={linkTexts.todaynew}
-					linkHref="/todaynew"
-					textGradient="from-green-500 to-blue-500"
-				/> */}
 				{/* MEMO 2024/08/30 todaynewだけ別コンポーネントにして、no-storeにしている */}
 				<DMMFeaturesItemContainer
 					from="top"

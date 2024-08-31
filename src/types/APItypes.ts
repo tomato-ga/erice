@@ -56,3 +56,19 @@ export const ActressProfileAndWorksSchema = z.object({
 export type ActressProfileAndWorks = z.infer<typeof ActressProfileAndWorksSchema>
 export type DMMActressProfilePageItem = z.infer<typeof DMMActressProfilePageItemSchema>
 
+// MEMO Umamiにデータ送信するために取ってくるactresseデータ
+export const DMMActressInfoSchema = z.object({
+	status: z.string(),
+	data: z
+		.array(
+			z.object({
+				actress_id: z.number(),
+				actress_name: z.string()
+			})
+		)
+		.nullable()
+		.optional(),
+	message: z.string().nullable().optional()
+})
+
+export type DMMActressInfo = z.infer<typeof DMMActressInfoSchema> | null | undefined

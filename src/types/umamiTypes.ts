@@ -1,31 +1,59 @@
-import { DMMItemProps } from './dmmtypes'
-import { DMMItemMainResponse } from './dmmitemzodschema'
+import { z } from 'zod'
+import { DMMItemMainResponseSchema, DMMItemMainResponse } from './dmmitemzodschema'
+import { DMMActressInfo } from './APItypes'
 
-// ExtendedDMMItemPropsの定義を更新
-export type ExtendedDMMItemProps = Partial<DMMItemMainResponse> &
-	Partial<DMMItemProps> & {
-		db_id?: number
-		content_id: string
-		affiliateURL: string
-		imageURL?: string | { large?: string; small?: string } // オプショナルに変更し、型を拡張
-		title: string
-		sampleImageURL?: string[] | null
-		sampleMovieURL?: string[] | null
-		actress?: string
-		actress_id?: string
-	}
+export type UmamiTrackingDataType = 'item' | 'actress' | 'combined' | 'other'
+export type UmamiTrackingFromType = 'top' | 'kobetu-img-top' | 'kobetu-exlink-top' | 'kobetu-exlink-bottom' |  'actress' | 'ExLink' | 'related' | 'genre' | 'search' | 'other'
+export type UmamiFeatureType = '/sale' | '/todaynew' | '/debut' | '/feature'
 
-// UmamiTrackingのprops用の型を定義
+export type UmamiTrackingData = {
+	dataType: UmamiTrackingDataType
+	from: UmamiTrackingFromType
+	featureType?: UmamiFeatureType
+	item?: Partial<DMMItemMainResponse>
+	actressInfo?: Partial<DMMActressInfo> | null
+	otherData?: Record<string, unknown>
+}
+
+export type UmamiClickData = UmamiTrackingData
+
 export interface UmamiTrackingProps {
-	type: string
-	item: ExtendedDMMItemProps
-	from: string
+	trackingData: UmamiTrackingData
 	children: React.ReactNode
 }
 
-// handleericeUmamiClick関数の引数の型を定義
-export interface UmamiClickData {
-	type: string
-	from: string
-	item: ExtendedDMMItemProps
+export const UmamiTrackingDataSchema = z.object({
+	dataType: z.enum(['item', 'actress', 'combined', 'other']),
+	from: z.enum(['top', 'kobetu', 'actress', 'ExLink', 'related', 'genre', 'search', 'other']),
+	featureType: z.enum(['/sale', '/todaynew', '/debut', '/feature']).optional(),
+	item: z
+		.object({
+			content_id: z.string(),
+			title: z.string()
+		})
+		.partial()
+		.optional(),
+	actressInfo: z
+		.object({
+			data: z.array(
+				z.object({
+					actress_id: z.string(),
+					actress_name: z.string()
+				})
+			)
+		})
+		.nullable()
+		.optional(),
+	otherData: z.record(z.unknown()).optional()
+})
+
+export function validateUmamiTrackingData(data: unknown): data is UmamiTrackingData {
+	// console.log('Validating UmamiTrackingData:', JSON.stringify(data, null, 2))
+	const result = UmamiTrackingDataSchema.safeParse(data)
+	if (!result.success) {
+		// console.error('Invalid UmamiTrackingData:', JSON.stringify(result.error.issues, null, 2))
+		return false
+	}
+	// console.log('UmamiTrackingData is valid')
+	return true
 }

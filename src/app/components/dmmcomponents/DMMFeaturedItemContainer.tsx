@@ -34,9 +34,17 @@ const PriceDisplay = ({ listPrice, salePrice }: { listPrice: string | undefined;
 	</div>
 )
 
-const DMMFeaturedItemCard = <T extends DMMItemProps>({ item, type, from }: { item: T; type: string; from: string }) => (
+const DMMFeaturedItemCard = <T extends DMMItemProps>({
+	item,
+	type,
+	from
+}: {
+	item: T
+	type: '/sale' | '/todaynew' | '/debut' | '/feature'
+	from: string
+}) => (
 	<div className="bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-md flex flex-col h-full">
-		<UmamiTracking type={type} item={item} from={from}>
+		<UmamiTracking trackingData={{ dataType: 'item', from: 'top', featureType: type, item: item }}>
 			<Link href={`/item/${item.db_id}`}>
 				<div className="relative overflow-hidden bg-gray-100 p-4">
 					<img
@@ -82,7 +90,7 @@ const DMMFeaturedItemList = <T extends DMMItemProps>({
 		<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 			{items.slice(0, displayCount).map((item) => (
 				<div key={item.content_id}>
-					<DMMFeaturedItemCard item={item} from={from} type={type} />
+					<DMMFeaturedItemCard item={item} from={from} type={type as '/sale' | '/todaynew' | '/debut' | '/feature'} />
 				</div>
 			))}
 		</div>

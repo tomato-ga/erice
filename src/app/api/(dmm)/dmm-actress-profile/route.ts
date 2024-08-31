@@ -52,7 +52,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
 		const data = await response.json()
 
-		console.log('dmm-actress-profile data: ', data)
+		// console.log('dmm-actress-profile data: ', data)
 
 		if (!isValidApiResponse(data)) {
 			throw new Error('不正なレスポンス形式')

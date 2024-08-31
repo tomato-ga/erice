@@ -12,7 +12,8 @@ import {
 	fetchDataKV,
 	fetchItemMainByContentId,
 	fetchItemDetailByContentId,
-	fetchRelatedItems
+	fetchRelatedItems,
+	fetchItemMainByContentIdToActressInfo
 } from '@/app/components/dmmcomponents/fetch/itemFetchers'
 import { CommentSection } from '@/app/components/dmmcomponents/Comment/CommentSection'
 import ActressRelatedItems from '@/app/components/dmmcomponents/DMMActressItemRelated'
@@ -127,8 +128,8 @@ export default async function DMMKobetuItemPage({
 	params,
 	searchParams
 }: Props & { searchParams: { itemType?: ItemType } }) {
-	console.log('Received params:', params)
-	console.log('itemType:', searchParams.itemType)
+	// console.log('Received params:', params)
+	// console.log('itemType:', searchParams.itemType)
 
 	let ItemMain: DMMItemMainResponse | null = null
 	try {
@@ -136,8 +137,10 @@ export default async function DMMKobetuItemPage({
 	} catch (error) {
 		console.error('Error fetching item:', error)
 	}
+	// console.log('Found ItemMain:', ItemMain)
 
-	console.log('Found ItemMain:', ItemMain)
+	const actressInfo = await fetchItemMainByContentIdToActressInfo(params.dbId)
+	console.log('Found actressInfo:', actressInfo)
 
 	if (!ItemMain) {
 		return (
@@ -165,15 +168,22 @@ export default async function DMMKobetuItemPage({
 					<PostList limit={12} />
 
 					<div className="relative overflow-hidden aspect-w-16 aspect-h-9">
-						{/*TODO  dbidから、actressIDと、actressNameだけ取得するAPIを作って、Umamiに渡す <UmamiTracking type="item" item={ItemMain} from="top"> */}
-						<Link href={ItemMain.affiliateURL || '#'} target="_blank" rel="noopener noreferrer">
-							<img
-								src={ItemMain.imageURL}
-								alt={`${ItemMain.title}のパッケージ画像`}
-								className="w-full h-full object-contain transition-transform duration-300"
-							/>
-						</Link>
-						{/* </UmamiTracking> */}
+						<UmamiTracking
+							trackingData={{
+								dataType: 'combined',
+								from: 'kobetu-img-top',
+								item: ItemMain,
+								actressInfo: actressInfo
+							}}
+						>
+							<Link href={ItemMain.affiliateURL || '#'} target="_blank" rel="noopener noreferrer">
+								<img
+									src={ItemMain.imageURL}
+									alt={`${ItemMain.title}のパッケージ画像`}
+									className="w-full h-full object-contain transition-transform duration-300"
+								/>
+							</Link>
+						</UmamiTracking>
 					</div>
 
 					<h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 text-center">
@@ -181,15 +191,24 @@ export default async function DMMKobetuItemPage({
 					</h1>
 
 					<div className="flex justify-center">
-						<Link
-							href={ItemMain.affiliateURL || '#'}
-							target="_blank"
-							rel="noopener noreferrer"
-							className="inline-flex items-center justify-center text-xl font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-full shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 px-6 sm:px-8 py-3 sm:py-4"
+						<UmamiTracking
+							trackingData={{
+								dataType: 'combined',
+								from: 'kobetu-exlink-top',
+								item: ItemMain,
+								actressInfo: actressInfo
+							}}
 						>
-							<span className="mr-2">高画質動画を見る</span>
-							<ExternalLink className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse" />
-						</Link>
+							<Link
+								href={ItemMain.affiliateURL || '#'}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="inline-flex items-center justify-center text-xl font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-full shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 px-6 sm:px-8 py-3 sm:py-4"
+							>
+								<span className="mr-2">高画質動画を見る</span>
+								<ExternalLink className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse" />
+							</Link>
+						</UmamiTracking>
 					</div>
 
 					<Suspense fallback={<LoadingSpinner />}>
@@ -240,15 +259,24 @@ export default async function DMMKobetuItemPage({
 					)}
 
 					<div className="flex justify-center mt-8">
-						<Link
-							href={ItemMain.affiliateURL || '#'}
-							target="_blank"
-							rel="noopener noreferrer"
-							className="inline-flex items-center justify-center text-lg sm:text-xl font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-sm shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 px-6 sm:px-8 py-3 sm:py-4 min-h-[3.5rem] sm:min-h-[4rem] max-w-[90%] text-center"
+						<UmamiTracking
+							trackingData={{
+								dataType: 'combined',
+								from: 'kobetu-exlink-bottom',
+								item: ItemMain,
+								actressInfo: actressInfo
+							}}
 						>
-							<span className="mr-2 break-words">{ItemMain.title}の高画質動画を見る</span>
-							<ExternalLink className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse flex-shrink-0" />
-						</Link>
+							<Link
+								href={ItemMain.affiliateURL || '#'}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="inline-flex items-center justify-center text-lg sm:text-xl font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-sm shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 px-6 sm:px-8 py-3 sm:py-4 min-h-[3.5rem] sm:min-h-[4rem] max-w-[90%] text-center"
+							>
+								<span className="mr-2 break-words">{ItemMain.title}の高画質動画を見る</span>
+								<ExternalLink className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse flex-shrink-0" />
+							</Link>
+						</UmamiTracking>
 					</div>
 
 					<Suspense fallback={<LoadingSpinner />}>
