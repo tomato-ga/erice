@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useCallback } from 'react'
 import { handleericeUmamiClick } from '@/lib/ericeUmamiTracking'
-import { UmamiTrackingProps, UmamiClickData, validateUmamiTrackingData } from '@/types/umamiTypes'
+import { UmamiClickData, UmamiTrackingProps, validateUmamiTrackingData } from '@/types/umamiTypes'
+import React, { useCallback } from 'react'
 
 export function UmamiTracking({ trackingData, children }: UmamiTrackingProps) {
 	const handleClick = useCallback(
@@ -15,7 +15,7 @@ export function UmamiTracking({ trackingData, children }: UmamiTrackingProps) {
 				// console.error('UmamiTracking: Invalid tracking data', JSON.stringify(trackingData, null, 2))
 			}
 		},
-		[trackingData]
+		[trackingData],
 	)
 
 	return <div onClick={handleClick}>{children}</div>

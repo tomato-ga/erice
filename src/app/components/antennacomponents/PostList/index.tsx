@@ -1,5 +1,5 @@
 import React from 'react'
-import { antennaPost, antennaPostApiResponse } from '@/types/antennaschema'
+import { antennaPost } from '@/types/antennaschema'
 import Link from 'next/link'
 import { formatAntennaDate } from '@/app/utils/postUtils'
 import { r18antennaFetch } from './r18fetch'

@@ -1,0 +1,62 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.5.2/schema.json",
+	"files": {
+	  "ignore": ["public"]
+	},
+	"organizeImports": {
+	  "enabled": true
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "single",
+			"jsxQuoteStyle": "single",
+			"quoteProperties": "asNeeded",
+			"semicolons": "asNeeded",
+			"arrowParentheses": "asNeeded",
+			"enabled": true,
+			"indentStyle": "tab",
+			"indentWidth": 1,
+			"lineEnding": "lf",
+			"lineWidth": 100,
+			"bracketSameLine": true,
+			"bracketSpacing": true
+		  }
+	},
+	"linter": {
+	  "enabled": true,
+	  "rules": {
+		"all": true,
+		"style": {
+		  "useImportType": "off",
+		  "useNamingConvention": "off"
+		},
+		"correctness": {
+		  "noUnusedVariables": "off",
+		  "noUnusedImports": "off",
+		  "noUndeclaredVariables": "off"
+		},
+		"a11y": {
+		  "useKeyWithClickEvents": "off"
+		}
+	  }
+	},
+	"overrides": [
+	  {
+		"include": [
+		  "next.config.js",
+		  "layout.tsx",
+		  "page.tsx",
+		  "loading.tsx",
+		  "error.tsx",
+		  "not-found.tsx"
+		],
+		"linter": {
+		  "rules": {
+			"style": {
+			  "noDefaultExport": "off"
+			}
+		  }
+		}
+	  }
+	]
+  }
