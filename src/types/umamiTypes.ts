@@ -20,6 +20,8 @@ export type UmamiTrackingFromType =
 	| 'search'
 	| 'other'
 	| 'antenna-post-list'
+	| 'antenna-postpage-detail'
+	| 'newdebutpage-item'
 	| string
 export type UmamiFeatureType = '/sale' | '/todaynew' | '/debut' | '/feature'
 
@@ -57,7 +59,9 @@ export const UmamiTrackingDataSchema = z.object({
 		'genre',
 		'search',
 		'other',
-		'antenna-post-list'
+		'antenna-post-list',
+		'antenna-postpage-detail',
+		'newdebutpage-item'
 	]),
 	featureType: z.enum(['/sale', '/todaynew', '/debut', '/feature']).optional(),
 	item: z

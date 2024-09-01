@@ -5,6 +5,7 @@ import { formatAntennaDate } from '@/app/utils/postUtils'
 
 import { antennaPost, antennaGetOnePostApiResponse } from '@/types/antennaschema'
 import { PostList } from '@/app/components/antennacomponents/PostList'
+import { UmamiTracking } from '@/app/components/dmmcomponents/UmamiTracking'
 
 interface Props {
 	params: { dbId: string }
@@ -50,14 +51,22 @@ export default async function AntennaKobetuPage({ params }: Props) {
 				<p>{post.description}</p>
 			</div> */}
 			<div className="mb-4">
-				<Link
-					href={post.url}
-					target="_blank"
-					rel="noopener noreferrer"
-					className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+				<UmamiTracking
+					trackingData={{
+						dataType: 'antenna',
+						from: 'antenna-post-detail',
+						otherData: { postId: post.id, postTitle: post.title, siteName: post.site_name } // 追加のデータを含める
+					}}
 				>
-					元の記事を見る
-				</Link>
+					<Link
+						href={post.url}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+					>
+						元の記事を見る
+					</Link>
+				</UmamiTracking>
 			</div>
 			<div>
 				<Link href="/antenna" className="text-blue-500 hover:underline">

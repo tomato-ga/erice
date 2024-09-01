@@ -13,7 +13,7 @@ const PostItem: React.FC<{ post: antennaPost }> = ({ post }) => (
 					trackingData={{
 						dataType: 'antenna',
 						from: 'antenna-post-list',
-						otherData: { postId: post.id } // 追加のデータを含める
+						otherData: { postId: post.id, postTitle: post.title , siteName: post.site_name} // 追加のデータを含める
 					}}
 				>
 					<Link href={post.url} target="_blank" className="no-underline text-[#212526]">

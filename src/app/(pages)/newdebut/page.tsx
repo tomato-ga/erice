@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge'
 import { CalendarDays, User, Tag, Building, Film } from 'lucide-react'
 import { formatDate, formatMMDDDate } from '@/utils/dmmUtils'
+import { UmamiTracking } from '@/app/components/dmmcomponents/UmamiTracking'
 
 async function fetchData(): Promise<ProcessedDMMItem[]> {
 	const fetchOptions = { next: { revalidate: 86400 } }
@@ -56,15 +57,23 @@ function NewActressCard({ item }: { item: ProcessedDMMItem }) {
 			</CardHeader>
 			<CardContent className="space-y-6">
 				<div className="flex justify-center">
-					<Link href={`/item/${item.db_id}`} className="relative overflow-hidden">
-						<Image
-							src={item.imageURL || '/placeholder.jpg'}
-							alt={`新人AV・セクシー女優${item.actress}のデビュー作品${item.title} / ${item.content_id}`}
-							width={300}
-							height={450}
-							className="object-cover transition-transform duration-300"
-						/>
-					</Link>
+					<UmamiTracking
+						trackingData={{
+							dataType: 'item',
+							from: 'newdebutpage-item',
+							otherData: { db_id: item.db_id, title: item.title, actress: item.actress, actressId: item.actress_id }
+						}}
+					>
+						<Link href={`/item/${item.db_id}`} className="relative overflow-hidden">
+							<Image
+								src={item.imageURL || '/placeholder.jpg'}
+								alt={`新人AV・セクシー女優${item.actress}のデビュー作品${item.title} / ${item.content_id}`}
+								width={300}
+								height={450}
+								className="object-cover transition-transform duration-300"
+							/>
+						</Link>
+					</UmamiTracking>
 				</div>
 
 				<div className="text-center">
