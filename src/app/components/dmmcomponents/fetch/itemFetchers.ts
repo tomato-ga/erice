@@ -27,7 +27,7 @@ import { DMMItemProps } from '@/types/dmmtypes'
 import { revalidateTag } from 'next/cache'
 import { z } from 'zod'
 
-const itemTypeConfig = {
+const itemTypeConfig: Record<ItemType, { endpoint: string; schema: z.ZodTypeAny }> = {
 	todaynew: {
 		endpoint: '/api/dmm-todaynew-getkv',
 		schema: z.array(DMMTodayNewItemSchema),
@@ -44,7 +44,15 @@ const itemTypeConfig = {
 		endpoint: '/api/dmm-sale-getkv',
 		schema: z.array(DMMSaleItemSchema),
 	},
-} as const
+	actress: {
+		endpoint: '/api/...',
+		schema: z.array(DMMActressInfoSchema),
+	},
+	genre: {
+		endpoint: '/api/.../',
+		schema: z.array(DMMItemSchema),
+	},
+}
 
 export async function fetchDataKV(itemType: ItemType, contentId: string): Promise<DMMItem | null> {
 	const config = itemTypeConfig[itemType]
@@ -59,7 +67,9 @@ export async function fetchDataKV(itemType: ItemType, contentId: string): Promis
 		const data: unknown = await response.json()
 
 		const validatedData = config.schema.parse(data)
-		const item = validatedData.find(item => item.content_id === contentId)
+		const item: DMMItem | undefined = validatedData.find(
+			(item: DMMItem) => item.content_id === contentId,
+		)
 
 		if (item) {
 			revalidateTag(`item-${item.content_id}`)
