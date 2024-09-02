@@ -61,10 +61,10 @@ const ActressProfileSection = ({ profile }: { profile: DMMActressProfile }) => {
 	const details = parseDetails(actress.details)
 	const description = generateRefinedProfileDescription(profile)
 
-	const renderProfileRow = (label: string, value: string | number | null) => {
+	const renderProfileRow = (label: string, value: string | number | null, key?: string) => {
 		if (value === null || value === '非公開' || value === '') return null
 		return (
-			<tr className='border-b dark:border-gray-700'>
+			<tr key={key} className='border-b dark:border-gray-700'>
 				<td className='py-2 px-4 font-medium'>{label}</td>
 				<td className='py-2 px-4'>{value}</td>
 			</tr>
@@ -84,39 +84,64 @@ const ActressProfileSection = ({ profile }: { profile: DMMActressProfile }) => {
 						<img
 							src={actress.image_url_large || '/placeholder-image.jpg'}
 							alt={actress.name}
-							className='w-full shadow-md object-cover aspect-[3/4]'
+							className='w-full shadow-md object-contain aspect-[3/4]'
 						/>
 					</div>
 					<div className='md:w-2/3'>
 						<table className='w-full text-sm text-left text-gray-500 dark:text-gray-400'>
 							<tbody>
-								{renderProfileRow('生年月日', actress.birthday)}
-								{renderProfileRow('血液型', actress.blood_type)}
-								{renderProfileRow('出身地', actress.prefectures)}
-								{renderProfileRow('趣味', actress.hobby)}
+								{renderProfileRow('生年月日', actress.birthday, 'birthday')}
+								{renderProfileRow('血液型', actress.blood_type, 'blood_type')}
+								{renderProfileRow('出身地', actress.prefectures, 'prefectures')}
+								{renderProfileRow('趣味', actress.hobby, 'hobby')}
 								{renderProfileRow(
 									'スリーサイズ',
 									actress.bust && actress.waist && actress.hip
 										? `B${actress.bust} W${actress.waist} H${actress.hip}`
 										: null,
+									'three_sizes',
 								)}
-								{renderProfileRow('身長', actress.height ? `${actress.height}cm` : null)}
-								{renderProfileRow('カップ', actress.cup)}
+								{renderProfileRow('身長', actress.height ? `${actress.height}cm` : null, 'height')}
+								{renderProfileRow('カップ', actress.cup, 'cup')}
 								{details &&
-									Object.entries(details).map(([key, value]) => {
+									Object.entries(details).map(([key, value], index) => {
 										if (key === 'full_name' || key === 'current_name' || key === 'aliases') {
 											return null
 										}
-										return renderProfileRow(key, renderDetailValue(value))
+										return (
+											<tr key={index} className='border-b dark:border-gray-700'>
+												<td className='py-2 px-4 font-medium'>{key}</td>
+												<td className='py-2 px-4'>{renderDetailValue(value)}</td>
+											</tr>
+										)
 									})}
 							</tbody>
 						</table>
-						<div className='mt-4 text-sm text-gray-700 dark:text-gray-300'>
+						<div className='mt-4 text-lg text-gray-700 dark:text-gray-300'>
 							{description.split('\n').map((paragraph, index) => (
 								<p key={index} className='mb-2'>
 									{paragraph}
 								</p>
 							))}
+						</div>
+						{/* キーワード表示エリア */}
+						<div className='mt-4'>
+							<div className='flex flex-wrap gap-2 mt-2'>
+								{actress.styles?.map((style, index) => (
+									<span
+										key={index}
+										className='bg-blue-100 text-blue-800 text-lg inline-block px-2.5 py-0.5 rounded-md'>
+										{style}
+									</span>
+								))}
+								{actress.types?.map((type, index) => (
+									<span
+										key={index}
+										className='bg-green-100 text-green-800 text-lg inline-block px-2.5 py-0.5 rounded-md'>
+										{type}
+									</span>
+								))}
+							</div>
 						</div>
 					</div>
 				</div>

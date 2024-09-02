@@ -7,11 +7,11 @@ export const DMMActressRelatedItemSchema = z.object({
 	url: z.string(),
 	affiliate_url: z.string(),
 	release_date: z.string(),
-	imageURL: z.string()
+	imageURL: z.string(),
 })
 
 export const DMMActressRelatedApiResponseSchema = z.object({
-	items: z.array(DMMActressRelatedItemSchema)
+	items: z.array(DMMActressRelatedItemSchema),
 })
 
 export type DMMActressRelatedItem = z.infer<typeof DMMActressRelatedItemSchema>
@@ -35,8 +35,10 @@ export const DMMActressProfileSchema = z.object({
 		image_url_large: z.string().nullable(),
 		list_url: z.string().nullable(),
 		cup: z.string().nullable(),
-		details: z.string().nullable()
-	})
+		details: z.string().nullable(),
+		styles: z.array(z.string()).nullable().optional(), // 変更点: optional() を追加
+		types: z.array(z.string()).nullable().optional(), // 変更点: optional() を追加
+	}),
 })
 
 export type DMMActressProfile = z.infer<typeof DMMActressProfileSchema>
@@ -50,12 +52,12 @@ export const DMMActressProfilePageItemSchema = z.object({
 	content_id: z.string(),
 	imageURL: z.string().optional(),
 	title: z.string(),
-	release_date: z.string()
+	release_date: z.string(),
 })
 
 export const ActressProfileAndWorksSchema = z.object({
 	profile: DMMActressProfileSchema,
-	works: z.array(DMMActressProfilePageItemSchema)
+	works: z.array(DMMActressProfilePageItemSchema),
 })
 
 export type ActressProfileAndWorks = z.infer<typeof ActressProfileAndWorksSchema>
@@ -68,12 +70,12 @@ export const DMMActressInfoSchema = z.object({
 		.array(
 			z.object({
 				actress_id: z.number(),
-				actress_name: z.string()
-			})
+				actress_name: z.string(),
+			}),
 		)
 		.nullable()
 		.optional(),
-	message: z.string().nullable().optional()
+	message: z.string().nullable().optional(),
 })
 
 export type DMMActressInfo = z.infer<typeof DMMActressInfoSchema> | null | undefined
