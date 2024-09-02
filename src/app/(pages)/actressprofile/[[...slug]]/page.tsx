@@ -64,85 +64,82 @@ const ActressProfileSection = ({ profile }: { profile: DMMActressProfile }) => {
 	const renderProfileRow = (label: string, value: string | number | null, key?: string) => {
 		if (value === null || value === '非公開' || value === '') return null
 		return (
-			<tr key={key} className='border-b dark:border-gray-700'>
-				<td className='py-2 px-4 font-medium'>{label}</td>
-				<td className='py-2 px-4'>{value}</td>
+			<tr
+				key={key}
+				className='border-b border-gray-200 dark:border-gray-700 transition-colors duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-800'>
+				<td className='py-3 px-4 font-medium text-gray-700 dark:text-gray-300'>{label}</td>
+				<td className='py-3 px-4 text-gray-600 dark:text-gray-400'>{value}</td>
 			</tr>
 		)
 	}
 
 	return (
-		<div className='bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden'>
-			<div className='p-6'>
-				<h2 className='text-3xl font-bold text-center mb-6'>
-					<span className='bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500'>
-						{actress.name}のプロフィール
-					</span>
+		<div className='bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 shadow-2xl rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl'>
+			<div className='p-8'>
+				<h2 className='text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400'>
+					{actress.name}のプロフィール
 				</h2>
-				<div className='flex flex-col md:flex-row md:space-x-6'>
-					<div className='md:w-1/3 mb-6 md:mb-0'>
+				<div className='flex flex-col lg:flex-row lg:space-x-8'>
+					<div className='lg:w-1/3 mb-6 lg:mb-0'>
 						<img
 							src={actress.image_url_large || '/placeholder-image.jpg'}
 							alt={actress.name}
-							className='w-full object-contain aspect-[3/4]'
+							className='w-full object-contain aspect-[3/4]  transition-transform'
 						/>
 					</div>
-					<div className='md:w-2/3'>
-						<table className='w-full text-sm text-left text-gray-500 dark:text-gray-400'>
-							<tbody>
-								{renderProfileRow('生年月日', actress.birthday, 'birthday')}
-								{renderProfileRow('血液型', actress.blood_type, 'blood_type')}
-								{renderProfileRow('出身地', actress.prefectures, 'prefectures')}
-								{renderProfileRow('趣味', actress.hobby, 'hobby')}
-								{renderProfileRow(
-									'スリーサイズ',
-									actress.bust && actress.waist && actress.hip
-										? `B${actress.bust} W${actress.waist} H${actress.hip}`
-										: null,
-									'three_sizes',
-								)}
-								{renderProfileRow('身長', actress.height ? `${actress.height}cm` : null, 'height')}
-								{renderProfileRow('カップ', actress.cup, 'cup')}
-								{details &&
-									Object.entries(details).map(([key, value], index) => {
-										if (key === 'full_name' || key === 'current_name' || key === 'aliases') {
-											return null
-										}
-										return (
-											<tr key={index} className='border-b dark:border-gray-700'>
-												<td className='py-2 px-4 font-medium'>{key}</td>
-												<td className='py-2 px-4'>{renderDetailValue(value)}</td>
-											</tr>
-										)
-									})}
-							</tbody>
-						</table>
-						<div className='mt-4 text-lg text-gray-700 dark:text-gray-300'>
-							{description.split('\n').map((paragraph, index) => (
-								<p key={index} className='mb-2'>
-									{paragraph}
-								</p>
-							))}
+					<div className='lg:w-2/3'>
+						<div className='overflow-x-auto'>
+							<table className='w-full text-left text-sm sm:text-base'>
+								<tbody>
+									{renderProfileRow('生年月日', actress.birthday, 'birthday')}
+									{renderProfileRow('血液型', actress.blood_type, 'blood_type')}
+									{renderProfileRow('出身地', actress.prefectures, 'prefectures')}
+									{renderProfileRow('趣味', actress.hobby, 'hobby')}
+									{renderProfileRow(
+										'スリーサイズ',
+										actress.bust && actress.waist && actress.hip
+											? `B${actress.bust} W${actress.waist} H${actress.hip}`
+											: null,
+										'three_sizes',
+									)}
+									{renderProfileRow('身長', actress.height ? `${actress.height}cm` : null, 'height')}
+									{renderProfileRow('カップ', actress.cup, 'cup')}
+									{details &&
+										Object.entries(details).map(([key, value], index) => {
+											if (['full_name', 'current_name', 'aliases'].includes(key)) return null
+											return renderProfileRow(key, renderDetailValue(value), `detail-${index}`)
+										})}
+								</tbody>
+							</table>
 						</div>
-						{/* キーワード表示エリア */}
-						<div className='mt-4'>
-							<div className='flex flex-wrap gap-2 mt-2'>
-								{actress.styles?.map((style, index) => (
-									<span
-										key={index}
-										className='bg-blue-100 text-blue-800 text-lg inline-block px-2.5 py-0.5 rounded-md'>
-										{style}
-									</span>
-								))}
-								{actress.types?.map((type, index) => (
-									<span
-										key={index}
-										className='bg-green-100 text-green-800 text-lg inline-block px-2.5 py-0.5 rounded-md'>
-										{type}
-									</span>
-								))}
-							</div>
-						</div>
+					</div>
+				</div>
+				<div className='mt-8 text-lg text-gray-700 dark:text-gray-300 space-y-4'>
+					{description.split('\n').map((paragraph, index) => (
+						<p key={index} className='transition-opacity duration-300 ease-in-out hover:opacity-80'>
+							{paragraph}
+						</p>
+					))}
+				</div>
+
+				<div className='mt-8'>
+					<div className='flex flex-wrap gap-3'>
+						{actress.styles?.map((style, index) => (
+							<Link
+								key={index}
+								href={`/actress/${encodeURIComponent(style)}`}
+								className='px-4 py-2 bg-indigo-50 text-indigo-600 font-bold rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out hover:underline'>
+								{style}
+							</Link>
+						))}
+						{actress.types?.map((type, index) => (
+							<Link
+								key={index}
+								href={`/actress/${encodeURIComponent(type)}`}
+								className='px-4 py-2 bg-indigo-50 text-indigo-600 font-bold rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out hover:underline'>
+								{type}
+							</Link>
+						))}
 					</div>
 				</div>
 			</div>

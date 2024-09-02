@@ -23,9 +23,9 @@ export function renderDetailValue(value: unknown): string {
 	return String(value)
 }
 
-function calculateAge(birthday: string | null): number {
+function calculateAge(birthday: string | null): number | null {
 	if (!birthday) {
-		throw new Error('誕生日が指定されていません')
+		return null
 	}
 	const birthDate = new Date(birthday)
 	const today = new Date()
@@ -98,19 +98,19 @@ function getCupDescription(cup: string): string {
 		F: 'かなり大きめ',
 		G: '非常に大きめ',
 		H: '極めて大きめ',
-		I: '超級大きめ',
-		J: '超級超級大きめ',
-		K: '超級級超級大きめ',
-		L: '超級超級超級超級大きめ',
-		M: '超級超級超級超級超級大きめ',
-		N: '超級超級超級超級超級超級大きめ',
-		O: '超級超級超級超級超級超級大きめ',
-		P: '超級超級超級超級超級超級超級大きめ',
-		Q: '超級超級超級超級超級超級超級大きめ',
-		R: '超級超級超級超級超級超級超級大きめ',
-		S: '超級超級超級超級超級超級超級大きめ',
-		T: '超級超級超級超級超級超級超級大きめ',
-		U: '超級超級超級超級超級超級超級大きめ',
+		I: '超級の大きめ',
+		J: '超超級の大きめ',
+		K: '超超超級の大きめ',
+		L: '超超超超級の大きめ',
+		M: '超超超超超級の大きめ',
+		N: '超超超超超超級の大きめ',
+		O: '超超超超超超超級の大きめ',
+		P: '超超超超超超超超級の大きめ',
+		Q: '超超超超超超超超超級の大きめ',
+		R: '超超超超超超超超超超級の大きめ',
+		S: '超超超超超超超超超超級の大きめ',
+		T: '超超超超超超超超超超超級の大きめ',
+		U: '超超超超超超超超超超超超級の大きめ',
 	}
 	return cupSizes[cup] || '特徴的な'
 }
@@ -131,10 +131,13 @@ function generateNaturalSentence(parts: (string | null | undefined)[]): string {
 	return parts.filter(Boolean).join('').replace(/、 ?$/, '。').replace(/。。/g, '。')
 }
 
-function generateBasicInfo(actress: DMMActressProfile['actress'], age: number): string {
+function generateBasicInfo(actress: DMMActressProfile['actress'], age: number | null): string {
+	// ageがnullの場合は0として扱う
+	const ageNumber = age === null ? 0 : (age as number)
+
 	return generateNaturalSentence([
 		`${actress.name}さんは、`,
-		age ? `${age}歳の` : '',
+		ageNumber ? `${ageNumber}歳の` : '',
 		'AV女優さんです。',
 		actress.height ? `身長${actress.height}cmで、` : '',
 		'魅力的なボディラインの持ち主です。',
