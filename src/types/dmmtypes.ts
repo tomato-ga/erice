@@ -219,4 +219,5 @@ export interface DMMBaseItem {
 	date?: string
 }
 
-export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale' | 'actress' | 'genre'
+export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale'
+//MEMO 削除したが影響ないか... | 'actress' | 'genre'

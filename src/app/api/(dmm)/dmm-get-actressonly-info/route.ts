@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server'
 import { DMMActressInfo, DMMActressInfoSchema } from '@/types/APItypes'
+import { NextRequest, NextResponse } from 'next/server'
 
 // APIエンドポイント
 export async function GET(request: NextRequest): Promise<NextResponse> {
@@ -9,7 +9,10 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
 	if (!API_KEY) {
 		console.error('CLOUDFLARE_DMM_API_TOKENが設定されていません')
-		return NextResponse.json({ error: 'CLOUDFLARE_DMM_API_TOKENが環境変数に設定されていません' }, { status: 500 })
+		return NextResponse.json(
+			{ error: 'CLOUDFLARE_DMM_API_TOKENが環境変数に設定されていません' },
+			{ status: 500 },
+		)
 	}
 
 	if (!db_id) {
@@ -21,13 +24,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 		const response = await fetch(`${WORKER_URL}?db_id=${db_id}`, {
 			headers: {
 				'Content-Type': 'application/json',
-				'X-API-Key': API_KEY
+				'X-API-Key': API_KEY,
 			},
-			cache: 'force-cache'
+			cache: 'force-cache',
 		})
 
 		if (response.status === 404) {
-			console.log(`Content not found for db_id: ${db_id}`)
+			console.error(`Content not found for db_id: ${db_id}`)
 			return NextResponse.json({ items: [] }, { status: 200 })
 		}
 
@@ -41,6 +44,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 		return NextResponse.json({ items: parsedData })
 	} catch (error) {
 		console.error('APIルートでエラーが発生しました:', error)
-		return NextResponse.json({ error: 'サーバー内部エラー', details: (error as Error).message }, { status: 500 })
+		return NextResponse.json(
+			{ error: 'サーバー内部エラー', details: (error as Error).message },
+			{ status: 500 },
+		)
 	}
 }

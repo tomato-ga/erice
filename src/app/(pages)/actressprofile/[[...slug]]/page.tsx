@@ -1,12 +1,21 @@
-import { Suspense } from 'react'
-import { notFound } from 'next/navigation'
-import { Metadata } from 'next'
 import LoadingSpinner from '@/app/components/Article/ArticleContent/loadingspinner'
 import { fetchActressProfileAndWorks } from '@/app/components/dmmcomponents/fetch/itemFetchers'
-import { DMMActressProfile, ActressProfileAndWorks, DMMActressProfilePageItem, ActressDetails } from '@/types/APItypes'
+import {
+	ActressDetails,
+	ActressProfileAndWorks,
+	DMMActressProfile,
+	DMMActressProfilePageItem,
+} from '@/types/APItypes'
 import { formatDate } from '@/utils/dmmUtils'
+import { Metadata } from 'next'
 import Link from 'next/link'
-import { generateRefinedProfileDescription, parseDetails, renderDetailValue } from './profileAnalysis'
+import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
+import {
+	generateRefinedProfileDescription,
+	parseDetails,
+	renderDetailValue,
+} from './profileAnalysis'
 
 interface PageProps {
 	params: { slug: string }
@@ -21,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	if (!data) {
 		return {
 			title: 'ページが見つかりません | ' + SITE_NAME,
-			description: '指定された女優は存在しません。'
+			description: '指定された女優は存在しません。',
 		}
 	}
 
@@ -37,13 +46,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 		description,
 		openGraph: {
 			title,
-			description
+			description,
 		},
 		twitter: {
 			card: 'summary',
 			title,
-			description
-		}
+			description,
+		},
 	}
 }
 
@@ -55,31 +64,31 @@ const ActressProfileSection = ({ profile }: { profile: DMMActressProfile }) => {
 	const renderProfileRow = (label: string, value: string | number | null) => {
 		if (value === null || value === '非公開' || value === '') return null
 		return (
-			<tr className="border-b dark:border-gray-700">
-				<td className="py-2 px-4 font-medium">{label}</td>
-				<td className="py-2 px-4">{value}</td>
+			<tr className='border-b dark:border-gray-700'>
+				<td className='py-2 px-4 font-medium'>{label}</td>
+				<td className='py-2 px-4'>{value}</td>
 			</tr>
 		)
 	}
 
 	return (
-		<div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
-			<div className="p-6">
-				<h2 className="text-3xl font-bold text-center mb-6">
-					<span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
+		<div className='bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden'>
+			<div className='p-6'>
+				<h2 className='text-3xl font-bold text-center mb-6'>
+					<span className='bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500'>
 						{actress.name}のプロフィール
 					</span>
 				</h2>
-				<div className="flex flex-col md:flex-row md:space-x-6">
-					<div className="md:w-1/3 mb-6 md:mb-0">
+				<div className='flex flex-col md:flex-row md:space-x-6'>
+					<div className='md:w-1/3 mb-6 md:mb-0'>
 						<img
 							src={actress.image_url_large || '/placeholder-image.jpg'}
 							alt={actress.name}
-							className="w-full shadow-md object-cover aspect-[3/4]"
+							className='w-full shadow-md object-cover aspect-[3/4]'
 						/>
 					</div>
-					<div className="md:w-2/3">
-						<table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+					<div className='md:w-2/3'>
+						<table className='w-full text-sm text-left text-gray-500 dark:text-gray-400'>
 							<tbody>
 								{renderProfileRow('生年月日', actress.birthday)}
 								{renderProfileRow('血液型', actress.blood_type)}
@@ -89,20 +98,22 @@ const ActressProfileSection = ({ profile }: { profile: DMMActressProfile }) => {
 									'スリーサイズ',
 									actress.bust && actress.waist && actress.hip
 										? `B${actress.bust} W${actress.waist} H${actress.hip}`
-										: null
+										: null,
 								)}
 								{renderProfileRow('身長', actress.height ? `${actress.height}cm` : null)}
 								{renderProfileRow('カップ', actress.cup)}
 								{details &&
 									Object.entries(details).map(([key, value]) => {
-										if (key === 'full_name' || key === 'current_name' || key === 'aliases') return null
+										if (key === 'full_name' || key === 'current_name' || key === 'aliases') {
+											return null
+										}
 										return renderProfileRow(key, renderDetailValue(value))
 									})}
 							</tbody>
 						</table>
-						<div className="mt-4 text-sm text-gray-700 dark:text-gray-300">
+						<div className='mt-4 text-sm text-gray-700 dark:text-gray-300'>
 							{description.split('\n').map((paragraph, index) => (
-								<p key={index} className="mb-2">
+								<p key={index} className='mb-2'>
 									{paragraph}
 								</p>
 							))}
@@ -116,29 +127,31 @@ const ActressProfileSection = ({ profile }: { profile: DMMActressProfile }) => {
 
 const ActressWorksList = ({ works }: { works: DMMActressProfilePageItem[] }) => {
 	return (
-		<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-			{works.map((work) => (
-				<div key={work.id} className="bg-white dark:bg-gray-800 shadow-md overflow-hidden">
-					<Link href={`/item/${work.id}`} className="block">
-						<div className="relative aspect-[3/2] w-full">
+		<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
+			{works.map(work => (
+				<div key={work.id} className='bg-white dark:bg-gray-800 shadow-md overflow-hidden'>
+					<Link href={`/item/${work.id}`} className='block'>
+						<div className='relative aspect-[3/2] w-full'>
 							{work.imageURL ? (
 								<img
 									src={work.imageURL}
 									alt={work.title}
-									className="w-full h-full object-contain transition-transform duration-300"
+									className='w-full h-full object-contain transition-transform duration-300'
 								/>
 							) : (
-								<div className="w-full h-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
-									<span className="text-gray-500 dark:text-gray-400">画像なし</span>
+								<div className='w-full h-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center'>
+									<span className='text-gray-500 dark:text-gray-400'>画像なし</span>
 								</div>
 							)}
 						</div>
 					</Link>
-					<div className="p-4">
-						<h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-2 hover:underline">
+					<div className='p-4'>
+						<h3 className='text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-2 hover:underline'>
 							<Link href={`/item/${work.id}`}>{work.title}</Link>
 						</h3>
-						<p className="mt-1 text-xs text-gray-500 dark:text-gray-400">発売日:{formatDate(work.release_date)}</p>
+						<p className='mt-1 text-xs text-gray-500 dark:text-gray-400'>
+							発売日:{formatDate(work.release_date)}
+						</p>
 					</div>
 				</div>
 			))}
@@ -166,8 +179,8 @@ export default async function ActressProfilePage({ params }: PageProps) {
 	console.log('profile.actress:', profile.actress)
 
 	return (
-		<div className="max-w-7xl mx-auto px-4 py-8">
-			<h1 className="text-3xl font-bold mb-6 text-center">
+		<div className='max-w-7xl mx-auto px-4 py-8'>
+			<h1 className='text-3xl font-bold mb-6 text-center'>
 				AV女優「{profile.actress.name}」のエロ動画・アダルト動画が{itemCount}作品あります
 			</h1>
 
@@ -177,7 +190,7 @@ export default async function ActressProfilePage({ params }: PageProps) {
 				</Suspense>
 			)}
 
-			<h2 className="text-2xl font-semibold mt-12 mb-6">{profile.actress.name}の作品一覧</h2>
+			<h2 className='text-2xl font-semibold mt-12 mb-6'>{profile.actress.name}の作品一覧</h2>
 
 			<Suspense fallback={<LoadingSpinner />}>
 				<ActressWorksList works={works} />

@@ -42,7 +42,7 @@ export const DMMActressProfileSchema = z.object({
 export type DMMActressProfile = z.infer<typeof DMMActressProfileSchema>
 
 export type ActressDetails = {
-	[key: string]: string | number | boolean | null | undefined | Array<any> | object
+	[key: string]: string | number | boolean | null | undefined | string[] | object
 }
 
 export const DMMActressProfilePageItemSchema = z.object({
