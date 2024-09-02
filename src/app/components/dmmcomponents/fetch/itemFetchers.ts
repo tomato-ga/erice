@@ -27,49 +27,48 @@ import { DMMItemProps } from '@/types/dmmtypes'
 import { revalidateTag } from 'next/cache'
 import { z } from 'zod'
 
-const itemTypeConfig: Record<ItemType, { endpoint: string; schema: z.ZodTypeAny }> = {
+// 型定義の修正
+export type FetchableItemType = 'todaynew' | 'debut' | 'feature' | 'sale'
+
+// エンドポイントと解析関数のマッピング
+const itemTypeConfig = {
 	todaynew: {
 		endpoint: '/api/dmm-todaynew-getkv',
-		schema: z.array(DMMTodayNewItemSchema),
+		parseFunction: (data: unknown) => z.array(DMMTodayNewItemSchema).parse(data) as DMMTodayNewItem[],
 	},
 	debut: {
 		endpoint: '/api/dmm-debut-getkv',
-		schema: z.array(DMMDebutItemSchema),
+		parseFunction: (data: unknown) => z.array(DMMDebutItemSchema).parse(data) as DMMDebutItem[],
 	},
 	feature: {
 		endpoint: '/api/dmm-feature-getkv',
-		schema: z.array(DMMFeatureItemSchema),
+		parseFunction: (data: unknown) => z.array(DMMFeatureItemSchema).parse(data) as DMMFeatureItem[],
 	},
 	sale: {
 		endpoint: '/api/dmm-sale-getkv',
-		schema: z.array(DMMSaleItemSchema),
+		parseFunction: (data: unknown) => z.array(DMMSaleItemSchema).parse(data) as DMMSaleItem[],
 	},
-	actress: {
-		endpoint: '/api/...',
-		schema: z.array(DMMActressInfoSchema),
-	},
-	genre: {
-		endpoint: '/api/.../',
-		schema: z.array(DMMItemSchema),
-	},
-}
+} satisfies Record<
+	FetchableItemType,
+	{ endpoint: string; parseFunction: (data: unknown) => DMMItem[] }
+>
 
-export async function fetchDataKV(itemType: ItemType, contentId: string): Promise<DMMItem | null> {
+export async function fetchDataKV(
+	itemType: FetchableItemType,
+	contentId: string,
+): Promise<DMMItem | null> {
 	const config = itemTypeConfig[itemType]
-	if (!config) {
-		throw new Error(`Invalid itemType: ${itemType}`)
-	}
 
 	try {
 		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${config.endpoint}`, {
-			next: { tags: [`item-${contentId}`] },
+			next: {
+				tags: [`item-${contentId}`],
+			},
 		})
 		const data: unknown = await response.json()
 
-		const validatedData = config.schema.parse(data)
-		const item: DMMItem | undefined = validatedData.find(
-			(item: DMMItem) => item.content_id === contentId,
-		)
+		const validatedData = config.parseFunction(data)
+		const item = validatedData.find(item => item.content_id === contentId)
 
 		if (item) {
 			revalidateTag(`item-${item.content_id}`)
@@ -78,16 +77,12 @@ export async function fetchDataKV(itemType: ItemType, contentId: string): Promis
 
 		return null
 	} catch (error) {
-		handleFetchError(error, itemType, contentId)
+		if (error instanceof z.ZodError) {
+			console.error(`Validation error for ${itemType} with content_id ${contentId}:`, error.errors)
+		} else {
+			console.error(`Error fetching data for ${itemType} with content_id ${contentId}:`, error)
+		}
 		return null
-	}
-}
-
-function handleFetchError(error: unknown, context: string, id: string | number) {
-	if (error instanceof z.ZodError) {
-		console.error(`Validation error for ${context} with id ${id}:`, error.errors)
-	} else {
-		console.error(`Error fetching data for ${context} with id ${id}:`, error)
 	}
 }
 
@@ -97,26 +92,32 @@ export async function fetchItemMainByContentId(dbId: number): Promise<DMMItemMai
 			`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-one-item-main?db_id=${dbId}`,
 			{
 				cache: 'force-cache',
-				next: { tags: [`item-main-${dbId}`] },
+				next: {
+					tags: [`item-main-${dbId}`],
+				},
 			},
 		)
 		const data: unknown = await response.json()
 
-		if (typeof data !== 'object' || data === null) {
-			console.error('Unexpected data format:', data)
-			return null
-		}
+		// console.log('Raw API response fetchItemMainByContentId:', data)
 
-		const parseResult = DMMItemMainResponseSchema.safeParse(data)
-		if (!parseResult.success) {
-			console.error('Validation error:', parseResult.error.errors)
-			return null
+		if (typeof data === 'object' && data !== null) {
+			const parseResult = DMMItemMainResponseSchema.safeParse(data)
+			if (parseResult.success) {
+				revalidateTag(`item-main-${parseResult.data.content_id}`)
+				return parseResult.data
+			}
 		}
-
-		revalidateTag(`item-main-${parseResult.data.content_id}`)
-		return parseResult.data
+		console.error('Unexpected data format:', data)
+		return null
 	} catch (error) {
-		handleFetchError(error, 'item main', dbId)
+		if (error instanceof z.ZodError) {
+			console.error('Zod validation error:', error.errors)
+		} else if (error instanceof Error) {
+			console.error('Error fetching data:', error.message)
+		} else {
+			console.error('Unknown error occurred while fetching data')
+		}
 		return null
 	}
 }
@@ -124,32 +125,41 @@ export async function fetchItemMainByContentId(dbId: number): Promise<DMMItemMai
 export async function fetchItemDetailByContentId(
 	dbId: number,
 ): Promise<DMMItemDetailResponse | null> {
+	// console.log('fetchItemDetailByContentId関数を呼び出します', contentId)
+
 	try {
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-one-item-detail?db_id=${dbId}`,
 			{
-				next: { tags: [`item-detail-${dbId}`] },
+				next: {
+					tags: [`item-detail-${dbId}`],
+				},
 			},
 		)
 		const data: unknown = await response.json()
 
-		if (typeof data !== 'object' || data === null || !('items' in data)) {
-			console.error('Unexpected data format:', data)
-			return null
-		}
+		// console.log('Raw API response fetchItemDetailByContentId:', data)
 
-		const itemData = (data as { items: unknown }).items
-		const parseResult = DMMItemDetailResponseSchema.safeParse(itemData)
-		if (!parseResult.success) {
+		// データが{ items: { ... } }の形式であることを期待
+		if (typeof data === 'object' && data !== null && 'items' in data) {
+			const itemData = (data as { items: unknown }).items
+			const parseResult = DMMItemDetailResponseSchema.safeParse(itemData)
+			if (parseResult.success) {
+				revalidateTag(`item-detail-${dbId}`)
+				return parseResult.data
+			}
 			console.error('Validation error:', parseResult.error.errors)
 			console.error('Invalid data:', itemData)
-			return null
 		}
-
-		revalidateTag(`item-detail-${dbId}`)
-		return parseResult.data
+		return null
 	} catch (error) {
-		handleFetchError(error, 'item detail', dbId)
+		if (error instanceof z.ZodError) {
+			console.error('Zod validation error:', error.errors)
+		} else if (error instanceof Error) {
+			console.error('Error fetching data:', error.message)
+		} else {
+			console.error('Unknown error occurred while fetching data')
+		}
 		return null
 	}
 }
@@ -176,6 +186,7 @@ export async function fetchActressRelatedItem(
 			if (response.status === 404) {
 				return null // 404エラーの場合は空の配列を返す
 			}
+			// その他のエラーの場合はnullを返す
 			console.error(`API error: ${response.status} ${response.statusText}`)
 			return null
 		}
@@ -194,6 +205,8 @@ export async function fetchActressProfile(actressName: string): Promise<DMMActre
 			`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-profile?actressname=${encodeURIComponent(actressName)}`,
 		)
 		const data: DMMActressProfile = await response.json()
+		// console.log('actressProfile:', data)
+
 		return data
 	} catch (error) {
 		console.error('Failed to fetch actress profile:', error)
@@ -213,12 +226,14 @@ export async function fetchActressProfileAndWorks(
 
 	try {
 		const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-profile-page?actressname=${encodedActressName}`
+		// console.log('Fetching from URL:', apiUrl) // デバッグ用
 
 		const response = await fetch(apiUrl, {
 			next: { revalidate: 2592000 }, // 30日キャッシュ
 		})
 
 		if (response.status === 404) {
+			// console.log(`女優が見つかりません: ${actressName}`)
 			return null
 		}
 
@@ -228,8 +243,10 @@ export async function fetchActressProfileAndWorks(
 		}
 
 		const data = await response.json()
+		// console.log('Received data:', data) // デバッグ用
 
 		const validatedData = ActressProfileAndWorksSchema.parse(data)
+		// console.log('fetchActressProfileAndWorks validatedData', validatedData.profile.actress)
 
 		return validatedData
 	} catch (error) {
@@ -249,26 +266,35 @@ export async function fetchItemMainByContentIdToActressInfo(
 			`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-actressonly-info?db_id=${dbId}`,
 			{
 				cache: 'force-cache',
-				next: { tags: [`item-actressInfo-${dbId}`] },
+				next: {
+					tags: [`item-actressInfo-${dbId}`],
+				},
 			},
 		)
-		const data: unknown = await response.json()
+		const data: DMMActressInfo[] = await response.json()
 
-		if (typeof data !== 'object' || data === null) {
+		// console.log('Raw API response fetchItemMainByContentId:', data)
+
+		if (typeof data === 'object' && data !== null) {
+			const parseResult = DMMActressInfoSchema.safeParse(data)
+			if (parseResult.success) {
+				revalidateTag(`item-actressInfo-${dbId}`)
+				return parseResult.data
+			}
+		} else {
 			console.error('Unexpected data format:', data)
-			return null
 		}
 
-		const parseResult = DMMActressInfoSchema.safeParse(data)
-		if (!parseResult.success) {
-			console.error('Validation error:', parseResult.error.errors)
-			return null
-		}
-
-		revalidateTag(`item-actressInfo-${dbId}`)
-		return parseResult.data
+		console.error('Unexpected data format:', data)
+		return null
 	} catch (error) {
-		handleFetchError(error, 'actress info', dbId)
+		if (error instanceof z.ZodError) {
+			console.error('Zod validation error:', error.errors)
+		} else if (error instanceof Error) {
+			console.error('Error fetching data:', error.message)
+		} else {
+			console.error('Unknown error occurred while fetching data')
+		}
 		return null
 	}
 }
