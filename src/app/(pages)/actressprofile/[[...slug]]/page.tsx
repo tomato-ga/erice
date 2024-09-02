@@ -84,7 +84,7 @@ const ActressProfileSection = ({ profile }: { profile: DMMActressProfile }) => {
 						<img
 							src={actress.image_url_large || '/placeholder-image.jpg'}
 							alt={actress.name}
-							className='w-full shadow-md object-contain aspect-[3/4]'
+							className='w-full object-contain aspect-[3/4]'
 						/>
 					</div>
 					<div className='md:w-2/3'>
