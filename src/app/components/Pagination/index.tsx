@@ -1,27 +1,27 @@
 'use client'
 
-import React, { useMemo } from 'react'
 import {
 	Pagination,
 	PaginationContent,
 	PaginationItem,
 	PaginationLink,
 	PaginationNext,
-	PaginationPrevious
+	PaginationPrevious,
 } from '@/components/ui/pagination'
+import React, { useMemo } from 'react'
 
 interface PaginationComponentProps {
 	currentPage: number
 	totalPages: number
 	category?: string
-	categoryType: 'actress' | 'genre'
+	categoryType: 'actress' | 'genre' | 'style' | 'type'
 }
 
 const PaginationComponent: React.FC<PaginationComponentProps> = ({
 	currentPage,
 	totalPages,
 	category,
-	categoryType
+	categoryType,
 }) => {
 	const pageNumbers = useMemo(() => {
 		const start = Math.max(1, Math.min(currentPage - 2, totalPages - 4))
@@ -34,7 +34,8 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({
 				return `/actress/${encodeURIComponent(category as string)}`
 			}
 			return `/actress/${encodeURIComponent(category as string)}/page/${page}`
-		} else if (categoryType === 'genre') {
+		}
+		if (categoryType === 'genre') {
 			if (page === 1) {
 				return `/genre/${encodeURIComponent(category as string)}`
 			}
@@ -52,28 +53,27 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({
 	}
 
 	return (
-		<nav aria-label="Pagination" className="my-8">
+		<nav aria-label='Pagination' className='my-8'>
 			<Pagination>
 				<PaginationContent>
 					{currentPage > 1 && (
 						<PaginationItem>
-							<PaginationPrevious href={getHref(currentPage - 1)} aria-label="Go to previous page" />
+							<PaginationPrevious href={getHref(currentPage - 1)} aria-label='Go to previous page' />
 						</PaginationItem>
 					)}
-					{pageNumbers.map((pageNumber) => (
+					{pageNumbers.map(pageNumber => (
 						<PaginationItem key={pageNumber}>
 							<PaginationLink
 								href={getHref(pageNumber)}
 								isActive={pageNumber === currentPage}
-								aria-label={`Go to page ${pageNumber}`}
-							>
+								aria-label={`Go to page ${pageNumber}`}>
 								{pageNumber}
 							</PaginationLink>
 						</PaginationItem>
 					))}
 					{currentPage < totalPages && (
 						<PaginationItem>
-							<PaginationNext href={getHref(currentPage + 1)} aria-label="Go to next page" />
+							<PaginationNext href={getHref(currentPage + 1)} aria-label='Go to next page' />
 						</PaginationItem>
 					)}
 				</PaginationContent>

@@ -127,7 +127,7 @@ const ActressProfileSection = ({ profile }: { profile: DMMActressProfile }) => {
 						{actress.styles?.map((style, index) => (
 							<Link
 								key={index}
-								href={`/actress/${encodeURIComponent(style)}`}
+								href={`/style/${encodeURIComponent(style)}`}
 								className='px-4 py-2 bg-indigo-50 text-indigo-600 font-bold rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out hover:underline'>
 								{style}
 							</Link>
@@ -135,7 +135,7 @@ const ActressProfileSection = ({ profile }: { profile: DMMActressProfile }) => {
 						{actress.types?.map((type, index) => (
 							<Link
 								key={index}
-								href={`/actress/${encodeURIComponent(type)}`}
+								href={`/type/${encodeURIComponent(type)}`}
 								className='px-4 py-2 bg-indigo-50 text-indigo-600 font-bold rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out hover:underline'>
 								{type}
 							</Link>

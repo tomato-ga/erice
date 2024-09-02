@@ -13,7 +13,7 @@ interface DMMItemContainerPaginationProps {
 	currentPage: number
 	totalPages: number
 	category: string | undefined // actress または genre を保持
-	categoryType: 'actress' | 'genre' // カテゴリーの種類を指定
+	categoryType: 'actress' | 'genre' | 'style' | 'type' // カテゴリーの種類を指定
 }
 
 export default function DMMItemContainerPagination({
@@ -29,12 +29,16 @@ export default function DMMItemContainerPagination({
 
 	const gradients = {
 		actress: 'from-blue-50 to-purple-50',
-		genre: 'from-green-50 to-blue-50' // genre のグラデーションを追加
+		genre: 'from-green-50 to-blue-50',
+		style: 'from-yellow-50 to-orange-50',
+		type: 'from-red-50 to-pink-50'
 	}
 
 	const titles = {
 		actress: `${category}の動画`,
-		genre: `${category}の動画`
+		genre: `${category}の動画`,
+		style: `${category}の動画`,
+		type: `${category}の動画`
 	}
 
 	return (
@@ -43,7 +47,7 @@ export default function DMMItemContainerPagination({
 		>
 			<div className="text-center mb-8">
 				<h2 className="text-4xl font-extrabold mb-4">
-					<span className={`text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500`}>
+					<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500">
 						{titles[categoryType]}
 					</span>
 				</h2>

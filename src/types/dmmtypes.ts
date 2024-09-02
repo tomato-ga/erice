@@ -220,3 +220,4 @@ export interface DMMBaseItem {
 }
 
 export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale' | 'actress' | 'genre';
+export type CategoryType = 'style' | 'type';
