@@ -81,11 +81,11 @@ export default async function TypePaginationPage({ params }: PageProps) {
 
 		const response = await fetch(apiUrl)
 
-		// レスポンスのステータスコードを出力
 		console.log('タイプレスポンスステータスコード:', response.status)
 
 		if (!response.ok) {
-			throw new Error('API request failed.') // ← エラー発生箇所
+			const errorText = await response.text()
+			throw new Error(`API request failed. Status: ${response.status}, Response: ${errorText}`)
 		}
 
 		const data = (await response.json()) as {
@@ -95,7 +95,6 @@ export default async function TypePaginationPage({ params }: PageProps) {
 			type?: string
 		}
 
-		// レスポンスデータを出力
 		console.log('APIレスポンスデータ:', data)
 
 		return (
@@ -113,6 +112,11 @@ export default async function TypePaginationPage({ params }: PageProps) {
 		)
 	} catch (error) {
 		console.error('[Server] Failed to fetch data:', error)
+		// エラーの詳細情報をログに出力
+		if (error instanceof Error) {
+			console.error('Error message:', error.message)
+			console.error('Error stack:', error.stack)
+		}
 		return <ErrorDisplay message='データの取得に失敗しました。後でもう一度お試しください。' />
 	}
 }
