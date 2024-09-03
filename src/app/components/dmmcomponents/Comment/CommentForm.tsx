@@ -1,9 +1,9 @@
 'use client'
 
-import { useRef, useState } from 'react'
-import { useForm } from 'react-hook-form'
 import { addComment } from '@/app/actions/commentActions'
 import { Comment } from '@/types/comment'
+import { useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
 
 interface FormData {
 	contentId: number
@@ -18,9 +18,8 @@ interface CommentFormProps {
 function SubmitButton() {
 	return (
 		<button
-			type="submit"
-			className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline disabled:opacity-50 transition duration-150 ease-in-out"
-		>
+			type='submit'
+			className='w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline disabled:opacity-50 transition duration-150 ease-in-out'>
 			コメントを投稿する
 		</button>
 	)
@@ -31,7 +30,7 @@ export function CommentForm({ contentId, onCommentAdded }: CommentFormProps) {
 		register,
 		handleSubmit,
 		formState: { errors },
-		reset
+		reset,
 	} = useForm<FormData>()
 	const formRef = useRef<HTMLFormElement>(null)
 	const [serverError, setServerError] = useState<string | null>(null)
@@ -43,7 +42,14 @@ export function CommentForm({ contentId, onCommentAdded }: CommentFormProps) {
 		formData.append('comment', data.comment)
 
 		try {
-			const result = await addComment({}, formData)
+			const result = await addComment(formData)
+			// result が undefined の場合の処理を追加
+			if (!result) {
+				setServerError('コメントの投稿に失敗しました。')
+				setSuccessMessage(null)
+				return
+			}
+
 			if (result.message) {
 				setSuccessMessage(result.message)
 				setServerError(null)
@@ -52,7 +58,7 @@ export function CommentForm({ contentId, onCommentAdded }: CommentFormProps) {
 				const newComment: Comment = {
 					contentId: contentId, // parseInt を削除
 					comment: data.comment,
-					createdAt: new Date().toISOString()
+					createdAt: new Date().toISOString(),
 					// その他の必要なプロパティを追加
 				}
 				onCommentAdded(newComment)
@@ -67,26 +73,26 @@ export function CommentForm({ contentId, onCommentAdded }: CommentFormProps) {
 	}
 
 	return (
-		<form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="mb-8">
-			<input type="hidden" {...register('contentId')} value={contentId} />
+		<form ref={formRef} onSubmit={handleSubmit(onSubmit)} className='mb-8'>
+			<input type='hidden' {...register('contentId')} value={contentId} />
 
-			<div className="mb-4">
+			<div className='mb-4'>
 				<textarea
-					id="comment"
+					id='comment'
 					{...register('comment', { required: 'コメントは必須です' })}
-					className="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500"
+					className='w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500'
 					rows={4}
-					placeholder="動画のどんなシーンが印象的だったか、どんなシーンが抜きポイントだったか、ぜひ教えてください"
+					placeholder='動画のどんなシーンが印象的だったか、どんなシーンが抜きポイントだったか、ぜひ教えてください'
 					aria-invalid={errors.comment ? 'true' : 'false'}
 				/>
 				{errors.comment && (
-					<p role="alert" className="mt-2 text-sm text-red-600">
+					<p role='alert' className='mt-2 text-sm text-red-600'>
 						{errors.comment.message}
 					</p>
 				)}
 			</div>
-			{serverError && <p className="text-red-600 mb-4">{serverError}</p>}
-			{successMessage && <p className="text-green-600 mb-4">{successMessage}</p>}
+			{serverError && <p className='text-red-600 mb-4'>{serverError}</p>}
+			{successMessage && <p className='text-green-600 mb-4'>{successMessage}</p>}
 			<SubmitButton />
 		</form>
 	)
