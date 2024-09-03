@@ -122,7 +122,7 @@ const ActressProfileSection = ({ profile }: { profile: DMMActressProfile }) => {
 					))}
 				</div>
 
-				{/* <div className='mt-8'>
+				<div className='mt-8'>
 					<div className='flex flex-wrap gap-3'>
 						{actress.styles?.map((style, index) => (
 							<Link
@@ -141,7 +141,7 @@ const ActressProfileSection = ({ profile }: { profile: DMMActressProfile }) => {
 							</Link>
 						))}
 					</div>
-				</div> */}
+				</div>
 			</div>
 		</div>
 	)
