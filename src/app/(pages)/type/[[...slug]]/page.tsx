@@ -10,16 +10,6 @@ interface PageProps {
 
 const SITE_NAME = 'エロコメスト'
 
-function decodeAndEncodeTypeName(encodedName: string): string {
-	try {
-		const decodedName = decodeURIComponent(encodedName)
-		return encodeURIComponent(decodedName)
-	} catch (error) {
-		console.error('Failed to decode/encode type name:', error)
-		return encodedName
-	}
-}
-
 export function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	const [encodedTypeName, , page] = params.slug || []
 	const currentPage = page ? Number.parseInt(page, 10) : 1
@@ -31,11 +21,11 @@ export function generateMetadata({ params }: PageProps): Promise<Metadata> {
 		})
 	}
 
-	const typename = decodeURIComponent(decodeAndEncodeTypeName(encodedTypeName))
+	const typeName = decodeURIComponent(encodedTypeName)
 
 	try {
-		const pageTitle = `${typename} ${currentPage > 1 ? ` - ページ ${currentPage}` : ''} | ${SITE_NAME}`
-		const description = `${typename} の動画一覧です。${currentPage}ページ目を表示しています。`
+		const pageTitle = `${typeName} ${currentPage > 1 ? ` - ページ ${currentPage}` : ''} | ${SITE_NAME}`
+		const description = `${typeName} の動画一覧です。${currentPage}ページ目を表示しています。`
 
 		return Promise.resolve({
 			title: pageTitle,
@@ -53,8 +43,8 @@ export function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	} catch (error) {
 		console.error('[Server] Failed to fetch metadata:', error)
 		return Promise.resolve({
-			title: `${typename} | ${SITE_NAME}`,
-			description: `${typename} の動画一覧です。`,
+			title: `${typeName} | ${SITE_NAME}`,
+			description: `${typeName} の動画一覧です。`,
 		})
 	}
 }
@@ -62,12 +52,13 @@ export function generateMetadata({ params }: PageProps): Promise<Metadata> {
 export default async function TypePaginationPage({ params }: PageProps) {
 	const { slug = [] } = params
 	let currentPage = 1
-	let typename: string | undefined
+	let typeName: string | undefined
 
 	// URLパターンの解析
 	if (slug.length >= 1) {
 		const encodedTypeName = slug[0]
-		typename = decodeURIComponent(decodeAndEncodeTypeName(encodedTypeName))
+		typeName = decodeURIComponent(encodedTypeName)
+		console.log('Decoded Type Name:', typeName)
 		if (slug.length === 3 && slug[1] === 'page') {
 			currentPage = Number.parseInt(slug[2], 10)
 		} else if (slug.length !== 1) {
@@ -77,16 +68,16 @@ export default async function TypePaginationPage({ params }: PageProps) {
 		notFound()
 	}
 
-	if (Number.isNaN(currentPage) || currentPage < 1 || !typename) {
+	if (Number.isNaN(currentPage) || currentPage < 1 || !typeName) {
 		notFound()
 	}
 
 	try {
 		// APIリクエストのURLを出力
 		const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-type-pagination?type=${encodeURIComponent(
-			typename,
+			typeName,
 		)}&page=${currentPage}`
-		console.log('APIリクエストURL:', apiUrl) // リクエストURLを出力
+		console.log('APIリクエストURL:', apiUrl)
 
 		const response = await fetch(apiUrl)
 
@@ -105,17 +96,16 @@ export default async function TypePaginationPage({ params }: PageProps) {
 		}
 
 		// レスポンスデータを出力
-		console.log('APIレスポンスデータ:', data) // レスポンスデータを出力
+		console.log('APIレスポンスデータ:', data)
 
 		return (
 			<section className='max-w-7xl mx-auto'>
 				<Suspense fallback={<LoadingSpinner />}>
-					{/* DMMItemContainerPagination に props を渡す */}
 					<DMMItemContainerPagination
 						items={data.items}
 						currentPage={data.currentPage}
 						totalPages={data.totalPages}
-						category={typename}
+						category={typeName}
 						categoryType='type'
 					/>
 				</Suspense>

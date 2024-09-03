@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
 
 		const response = await fetch(`${WORKER_URL}/items-by-actress?${apiParams}`, {
 			signal: controller.signal,
-			headers: headers // APIキーをヘッダーに追加
+			headers: headers, // APIキーをヘッダーに追加
 		})
 
 		clearTimeout(timeoutId)
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
 			console.error('API Route error:', response.status, errorData)
 			return NextResponse.json(
 				{ error: 'Failed to fetch data from API route', details: errorData },
-				{ status: response.status }
+				{ status: response.status },
 			)
 		}
 
@@ -60,17 +60,18 @@ export async function GET(request: NextRequest) {
 
 			return NextResponse.json(validatedData, {
 				headers: {
-					'Cache-Control': 'public, max-age=60, stale-while-revalidate=300'
-				}
+					'Cache-Control': 'public, max-age=60, stale-while-revalidate=300',
+				},
 			})
-		} else {
-			throw new Error('Invalid response format from API route')
 		}
 	} catch (error) {
 		console.error('Fetch error:', error)
 		return NextResponse.json(
-			{ error: 'Internal Server Error', details: error instanceof Error ? error.message : 'Unknown error' },
-			{ status: 500 }
+			{
+				error: 'Internal Server Error',
+				details: error instanceof Error ? error.message : 'Unknown error',
+			},
+			{ status: 500 },
 		)
 	}
 }

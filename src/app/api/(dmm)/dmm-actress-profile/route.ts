@@ -4,7 +4,17 @@ import { z } from 'zod'
 
 // 型ガード関数
 function isValidApiResponse(data: unknown): data is DMMActressProfile {
-	return typeof data === 'object' && data !== null && 'actress' in data && typeof (data as any).actress === 'object'
+	// data が object かつ null でないことを確認
+	if (typeof data !== 'object' || data === null) {
+		return false
+	}
+	// actress プロパティが存在し、object 型であることを確認
+	if (!('actress' in data) || typeof data.actress !== 'object') {
+		return false
+	}
+	// さらに、actress プロパティが object 型で、必要なプロパティを持っていることを確認
+	// ... (DMMActressProfile のプロパティに応じて追加)
+	return true
 }
 
 // APIエンドポイント
@@ -21,12 +31,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
 	if (!API_KEY) {
 		console.error('CLOUDFLARE_DMM_API_TOKENが設定されていません')
-		return NextResponse.json({ error: 'CLOUDFLARE_DMM_API_TOKENが環境変数に設定されていません' }, { status: 500 })
+		return NextResponse.json(
+			{ error: 'CLOUDFLARE_DMM_API_TOKENが環境変数に設定されていません' },
+			{ status: 500 },
+		)
 	}
 
 	if (!WORKER_URL) {
 		console.error('DMM_ACTRESS_DETAIL_WORKER_URLが設定されていません')
-		return NextResponse.json({ error: 'DMM_ACTRESS_DETAIL_WORKER_URLが環境変数に設定されていません' }, { status: 500 })
+		return NextResponse.json(
+			{ error: 'DMM_ACTRESS_DETAIL_WORKER_URLが環境変数に設定されていません' },
+			{ status: 500 },
+		)
 	}
 
 	const encodedActressName = encodeURIComponent(actressname)
@@ -35,9 +51,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 		const response = await fetch(`${WORKER_URL}/${encodedActressName}`, {
 			headers: {
 				'Content-Type': 'application/json',
-				'X-API-Key': API_KEY
+				'X-API-Key': API_KEY,
 			},
-			next: { revalidate: 2592000 } // 30日間キャッシュ
+			next: { revalidate: 2592000 }, // 30日間キャッシュ
 		})
 
 		if (response.status === 404) {
@@ -65,8 +81,14 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 	} catch (error) {
 		console.error('APIルートでエラーが発生しました:', error)
 		if (error instanceof z.ZodError) {
-			return NextResponse.json({ error: 'データの形式が不正です', details: error.errors }, { status: 500 })
+			return NextResponse.json(
+				{ error: 'データの形式が不正です', details: error.errors },
+				{ status: 500 },
+			)
 		}
-		return NextResponse.json({ error: 'サーバー内部エラー', details: (error as Error).message }, { status: 500 })
+		return NextResponse.json(
+			{ error: 'サーバー内部エラー', details: (error as Error).message },
+			{ status: 500 },
+		)
 	}
 }

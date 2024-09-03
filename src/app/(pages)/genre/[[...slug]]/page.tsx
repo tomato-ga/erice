@@ -1,5 +1,5 @@
 import DMMItemContainerPagination from '@/app/components/dmmcomponents/Pagination/Pagination'
-import { DMMItemProps } from '@/types/dmmtypes'
+import { DMMItemProps, ImageURLs } from '@/types/dmmtypes'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
@@ -88,7 +88,7 @@ export default async function GenrePaginationPage({ params }: PageProps) {
 		)}&page=${currentPage}`
 		console.log('APIリクエストURL:', apiUrl) // リクエストURLを出力
 
-		const response = await fetch(apiUrl)
+		const response = await fetch(apiUrl, { next: { revalidate: 10080 } })
 
 		// レスポンスのステータスコードを出力
 		console.log('ジャンルレスポンスステータスコード:', response.status)
@@ -104,6 +104,18 @@ export default async function GenrePaginationPage({ params }: PageProps) {
 			genre?: string
 		}
 
+		// 画像URLの優先順位を考慮して新しいプロパティを追加
+		const itemsWithPriorityImage = data.items.map(item => {
+			let priorityImageURL = ''
+			try {
+				const imageURLs = JSON.parse(item.imageURL) as ImageURLs
+				priorityImageURL = imageURLs.large ?? imageURLs.small ?? imageURLs.list ?? ''
+			} catch (error) {
+				console.error('Failed to parse imageURL:', error)
+			}
+			return { ...item, priorityImageURL }
+		})
+
 		// レスポンスデータを出力
 		console.log('APIレスポンスデータ:', data) // レスポンスデータを出力
 
@@ -112,7 +124,7 @@ export default async function GenrePaginationPage({ params }: PageProps) {
 				<Suspense fallback={<LoadingSpinner />}>
 					{/* DMMItemContainerPagination に props を渡す */}
 					<DMMItemContainerPagination
-						items={data.items}
+						items={itemsWithPriorityImage}
 						currentPage={data.currentPage}
 						totalPages={data.totalPages}
 						category={genrename}

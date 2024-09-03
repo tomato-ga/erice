@@ -11,7 +11,7 @@ interface APIResponse {
 
 // 変換後のデータ構造を定義
 interface TransformedAPIResponse {
-	items: { db_id: string; title: string; imageURL: string; content_id: string }[]
+	items: { id: string; title: string; imageURL: string; content_id: string }[]
 	currentPage: number
 	totalPages: number
 }
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
 	try {
 		const response = await fetch(`${WORKER_URL}/items-by-genre?${apiParams}`, {
 			headers: headers,
-			cache: 'force-cache'
+			cache: 'force-cache',
 		})
 
 		if (!response.ok) {
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
 			console.error('API Route error:', response.status, errorData)
 			return NextResponse.json(
 				{ error: 'Failed to fetch data from API route', details: errorData },
-				{ status: response.status }
+				{ status: response.status },
 			)
 		}
 
@@ -59,26 +59,26 @@ export async function GET(request: NextRequest) {
 			// idをdb_idに変換
 			const transformedData: TransformedAPIResponse = {
 				...validatedData,
-				items: validatedData.items.map((item) => ({
+				items: validatedData.items.map(item => ({
 					...item,
-					db_id: item.id,
-					id: undefined
-				}))
+					id: item.id,
+				})),
 			}
 
 			return NextResponse.json(transformedData, {
 				headers: {
-					'Cache-Control': 'public, max-age=60, stale-while-revalidate=300'
-				}
+					'Cache-Control': 'public, max-age=60, stale-while-revalidate=300',
+				},
 			})
-		} else {
-			throw new Error('Invalid response format from API route')
 		}
 	} catch (error) {
 		console.error('Fetch error:', error)
 		return NextResponse.json(
-			{ error: 'Internal Server Error', details: error instanceof Error ? error.message : 'Unknown error' },
-			{ status: 500 }
+			{
+				error: 'Internal Server Error',
+				details: error instanceof Error ? error.message : 'Unknown error',
+			},
+			{ status: 500 },
 		)
 	}
 }

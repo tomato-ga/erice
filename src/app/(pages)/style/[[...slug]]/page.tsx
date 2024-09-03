@@ -1,27 +1,14 @@
 import DMMItemContainerPagination from '@/app/components/dmmcomponents/Pagination/Pagination'
-import { DMMItemProps } from '@/types/dmmtypes'
-import { Metadata } from 'next'
+import { DMMItemProps, ImageURLs } from '@/types/dmmtypes'
+import next, { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { Suspense } from 'react'
+import { Suspense, cache } from 'react'
 
 interface PageProps {
 	params: { slug?: string[] }
 }
 
 const SITE_NAME = 'エロコメスト'
-
-function decodeAndEncodeStyleName(encodedName: string): string {
-	try {
-		const decodedName = decodeURIComponent(encodedName)
-		console.log('Decoded Name:', decodedName) // デコードされた名前をログに出力
-		const reEncodedName = encodeURIComponent(decodedName)
-		console.log('Re-encoded Name:', reEncodedName) // 再エンコードされた名前をログに出力
-		return reEncodedName
-	} catch (error) {
-		console.error('Failed to decode/encode style name:', error)
-		return encodedName
-	}
-}
 
 export function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	const [encodedStyleName, , page] = params.slug || []
@@ -34,11 +21,11 @@ export function generateMetadata({ params }: PageProps): Promise<Metadata> {
 		})
 	}
 
-	const stylename = decodeURIComponent(decodeAndEncodeStyleName(encodedStyleName))
+	const styleName = decodeURIComponent(encodedStyleName)
 
 	try {
-		const pageTitle = `${stylename} ${currentPage > 1 ? ` - ページ ${currentPage}` : ''} | ${SITE_NAME}`
-		const description = `${stylename} の動画一覧です。${currentPage}ページ目を表示しています。`
+		const pageTitle = `${styleName} ${currentPage > 1 ? ` - ページ ${currentPage}` : ''} | ${SITE_NAME}`
+		const description = `${styleName} の動画一覧です。${currentPage}ページ目を表示しています。`
 
 		return Promise.resolve({
 			title: pageTitle,
@@ -56,8 +43,8 @@ export function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	} catch (error) {
 		console.error('[Server] Failed to fetch metadata:', error)
 		return Promise.resolve({
-			title: `${stylename} | ${SITE_NAME}`,
-			description: `${stylename} の動画一覧です。`,
+			title: `${styleName} | ${SITE_NAME}`,
+			description: `${styleName} の動画一覧です。`,
 		})
 	}
 }
@@ -65,14 +52,13 @@ export function generateMetadata({ params }: PageProps): Promise<Metadata> {
 export default async function StylePaginationPage({ params }: PageProps) {
 	const { slug = [] } = params
 	let currentPage = 1
-	let stylename: string | undefined
+	let styleName: string | undefined
 
 	// URLパターンの解析
 	if (slug.length >= 1) {
 		const encodedStyleName = slug[0]
-		console.log('Encoded Style Name:', encodedStyleName) // エンコードされたスタイル名をログに出力
-		stylename = decodeURIComponent(decodeAndEncodeStyleName(encodedStyleName))
-		console.log('Style Name:', stylename) // スタイル名をログに出力
+		styleName = decodeURIComponent(encodedStyleName)
+		console.log('Decoded Style Name:', styleName)
 		if (slug.length === 3 && slug[1] === 'page') {
 			currentPage = Number.parseInt(slug[2], 10)
 		} else if (slug.length !== 1) {
@@ -82,18 +68,16 @@ export default async function StylePaginationPage({ params }: PageProps) {
 		notFound()
 	}
 
-	if (Number.isNaN(currentPage) || currentPage < 1 || !stylename) {
+	if (Number.isNaN(currentPage) || currentPage < 1 || !styleName) {
 		notFound()
 	}
 
 	try {
 		// APIリクエストのURLを出力
-		const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-style-pagination?style=${encodeURIComponent(
-			stylename,
-		)}&page=${currentPage}`
-		console.log('APIリクエストURL:', apiUrl) // リクエストURLを出力
+		const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-style-pagination?style=${encodeURIComponent(styleName)}&page=${currentPage}`
+		console.log('APIリクエストURL:', apiUrl)
 
-		const response = await fetch(apiUrl)
+		const response = await fetch(apiUrl, { next: { revalidate: 10080 } })
 
 		// レスポンスのステータスコードを出力
 		console.log('スタイルレスポンスステータスコード:', response.status)
@@ -110,24 +94,16 @@ export default async function StylePaginationPage({ params }: PageProps) {
 		}
 
 		// レスポンスデータを出力
-		console.log('APIレスポンスデータ:', data) // レスポンスデータを出力
-
-		// 画像URLの優先順位を考慮して新しいプロパティを追加
-		const itemsWithPriorityImage = data.items.map(item => {
-			const { imageURL } = item
-			const priorityImageURL = imageURL.large || imageURL.small || imageURL.list
-			return { ...item, priorityImageURL }
-		})
+		console.log('APIレスポンスデータ:', data)
 
 		return (
 			<section className='max-w-7xl mx-auto'>
 				<Suspense fallback={<LoadingSpinner />}>
-					{/* DMMItemContainerPagination に props を渡す */}
 					<DMMItemContainerPagination
-						items={itemsWithPriorityImage}
+						items={data.items}
 						currentPage={data.currentPage}
 						totalPages={data.totalPages}
-						category={stylename}
+						category={styleName}
 						categoryType='style'
 					/>
 				</Suspense>

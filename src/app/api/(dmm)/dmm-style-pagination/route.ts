@@ -21,7 +21,7 @@ type APIResponse = z.infer<typeof APIResponseSchema>
 // 変換後のレスポンスの型定義
 interface TransformedAPIResponse {
 	items: {
-		db_id: string
+		id: string
 		title: string
 		imageURL: { large: string; list: string; small: string }
 		content_id: string
@@ -57,9 +57,7 @@ export async function GET(request: NextRequest) {
 	const apiParams = new URLSearchParams()
 	apiParams.append('page', page)
 	if (style) {
-		const encodedStyle = encodeURIComponent(style)
-		console.log('Encoded style parameter:', encodedStyle) // エンコードされたstyleパラメータをログに出力
-		apiParams.append('style', encodedStyle)
+		apiParams.append('style', style) // エンコードせずにそのまま追加
 	}
 
 	const requestUrl = `${WORKER_URL}?${apiParams.toString()}`
@@ -96,7 +94,7 @@ export async function GET(request: NextRequest) {
 		const transformedData: TransformedAPIResponse = {
 			...validatedData,
 			items: validatedData.items.map(item => ({
-				db_id: item.id,
+				id: item.id,
 				title: item.title,
 				imageURL: item.imageURL, // すでにオブジェクトとしてパースされている
 				content_id: item.content_id,

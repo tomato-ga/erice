@@ -164,18 +164,18 @@ export interface DMMSaleItem extends Omit<DMMItem, 'imageURL' | 'genre'> {
 export type DMMSaleApiResponse = DMMSaleItem[]
 
 // DMMItemProps型定義
-export type DMMItemProps = {
-	content_id: string
-	affiliateURL: string
-	sampleImageURL?: string[]
-	imageURL?: string
-	title: string
-	price?: string
-	actress?: string
-	genre?: string[]
-	salecount?: string
-	salePrice?: string
-	db_id: number
+export interface DMMItemProps {
+	id: string;
+	content_id: string;
+	title: string;
+	imageURL: string; // JSON文字列
+	// 他のプロパティ...
+}
+
+export interface ImageURLs {
+	large?: string;
+	list?: string;
+	small?: string;
 }
 
 export interface ActressItem {
