@@ -30,7 +30,7 @@ const ActressCard = ({ actress }: { actress: Actress }) => (
 		<div className='flex items-center mb-2 sm:mb-3'>
 			<h2 className='text-lg sm:text-xl font-bold text-gray-800'>{actress.name}</h2>
 		</div>
-		<div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3'>
+		<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
 			{actress.items.slice(0, 4).map(item => (
 				<ItemCard key={item.id} item={item} />
 			))}
