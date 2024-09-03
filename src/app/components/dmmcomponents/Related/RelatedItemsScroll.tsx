@@ -72,8 +72,8 @@ const RelatedItemsScroll: React.FC<RelatedItemsScrollProps> = ({ items, itemType
 					className='flex overflow-x-auto space-x-4 scrollbar-hide scroll-smooth'
 					style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
 					{shuffledItems.map(item => (
-						<div key={item.db_id || item.content_id} className='flex-none w-64'>
-							<Link href={`/item/${item.content_id}`}>
+						<div key={item.db_id} className='flex-none w-64'>
+							<Link href={`/item/${item.db_id}`}>
 								<div className='bg-white overflow-hidden'>
 									<img src={getImageUrl(item)} alt={item.title} className='w-full h-40 object-contain' />
 									<div className='p-4'>
