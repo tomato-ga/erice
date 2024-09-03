@@ -35,7 +35,8 @@
 			"recommended": true,
 			"suspicious": {
 				"noConsoleLog": "off",
-				"noArrayIndexKey": "off"
+				"noArrayIndexKey": "off",
+				"useAwait": "off"
 			},
 			"style": {
 				"useImportType": "off",
@@ -46,7 +47,7 @@
 			},
 			"correctness": {
 				"noUnusedVariables": "off",
-				"noUnusedImports": "warn",
+				"noUnusedImports": "off",
 				"noUndeclaredVariables": "off"
 			},
 			"a11y": {
