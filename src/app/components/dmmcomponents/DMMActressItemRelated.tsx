@@ -51,7 +51,7 @@ const ActressRelatedItemTimelineCard = ({ item }: { item: ActressRelatedItem }) 
 
 const ActressRelatedItemsTimeLine = async ({ actressName }: { actressName: string }) => {
 	if (!actressName) {
-		return <div>女優名指定されていません。</div>
+		return
 	}
 
 	const ActressItemsResult = await fetchActressRelatedItem(actressName)

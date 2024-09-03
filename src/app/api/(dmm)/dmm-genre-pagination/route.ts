@@ -11,7 +11,7 @@ interface APIResponse {
 
 // 変換後のデータ構造を定義
 interface TransformedAPIResponse {
-	items: { id: string; title: string; imageURL: string; content_id: string }[]
+	items: { db_id: string; title: string; imageURL: string; content_id: string }[]
 	currentPage: number
 	totalPages: number
 }
@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
 				...validatedData,
 				items: validatedData.items.map(item => ({
 					...item,
-					id: item.id,
+					db_id: item.id,
 				})),
 			}
 
