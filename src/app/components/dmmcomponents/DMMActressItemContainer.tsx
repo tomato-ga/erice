@@ -58,12 +58,16 @@ export default async function DMMActressItemContainer({
 
 	return (
 		<div
-			className={`bg-gradient-to-br ${gradients[actressType]} shadow-lg p-4 sm:p-4 md:p-8 transition duration-300 ease-in-out`}>
-			<h2 className='text-3xl font-bold mb-6 text-center text-gray-800'>
-				<span className='bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600'>
-					{titles[actressType]}
-				</span>
-			</h2>
+			className={`bg-gradient-to-r ${
+				gradients[actressType]
+			} shadow-lg p-4 sm:p-4 md:p-8 transition duration-300 ease-in-out`}>
+			<div className='text-center mb-8'>
+				<h2 className='text-4xl font-extrabold mb-4'>
+					<span className='text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600'>
+						{titles[actressType]}
+					</span>
+				</h2>
+			</div>
 			<ActressItemList actresses={actresses} actressType={actressType} from={from} />
 		</div>
 	)
