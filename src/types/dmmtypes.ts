@@ -165,7 +165,7 @@ export type DMMSaleApiResponse = DMMSaleItem[]
 
 // DMMItemProps型定義
 export interface DMMItemProps {
-	id: string;
+	db_id: string;
 	content_id: string;
 	title: string;
 	imageURL: string; // JSON文字列

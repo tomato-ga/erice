@@ -59,8 +59,8 @@ export default function DMMItemContainerPagination({
 			</div>
 			<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
 				{items.map(item => (
-					<div key={item.id} className='bg-white dark:bg-gray-800 shadow-md overflow-hidden'>
-						<Link href={`/item/${item.id}`} className='block'>
+					<div key={item.db_id} className='bg-white dark:bg-gray-800 shadow-md overflow-hidden'>
+						<Link href={`/item/${item.db_id}`} className='block'>
 							<div className='relative aspect-[3/2] w-full'>
 								{item.imageURL ? (
 									<img
@@ -77,7 +77,7 @@ export default function DMMItemContainerPagination({
 						</Link>
 						<div className='p-4'>
 							<h3 className='text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-2 hover:underline'>
-								<Link href={`/item/${item.id}`}>{item.title}</Link>
+								<Link href={`/item/${item.db_id}`}>{item.title}</Link>
 							</h3>
 							{/* ... 他の情報を表示 ... */}
 						</div>
