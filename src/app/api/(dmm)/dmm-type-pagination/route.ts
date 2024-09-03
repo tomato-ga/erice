@@ -21,7 +21,7 @@ type APIResponse = z.infer<typeof APIResponseSchema>
 // 変換後のレスポンスの型定義
 interface TransformedAPIResponse {
 	items: {
-		id: string
+		db_id: string
 		title: string
 		imageURL: { large: string; list: string; small: string }
 		content_id: string
@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
 		const transformedData: TransformedAPIResponse = {
 			...validatedData,
 			items: validatedData.items.map(item => ({
-				id: item.id,
+				db_id: item.id,
 				title: item.title,
 				imageURL: JSON.parse(item.imageURL),
 				content_id: item.content_id,

@@ -94,7 +94,7 @@ export default async function StylePaginationPage({ params }: PageProps) {
 		}
 
 		// レスポンスデータを出力
-		console.log('APIレスポンスデータ:', data)
+		console.log('APIレスポンスデータ:', data.items[0])
 
 		return (
 			<section className='max-w-7xl mx-auto'>

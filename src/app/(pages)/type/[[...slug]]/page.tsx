@@ -95,7 +95,7 @@ export default async function TypePaginationPage({ params }: PageProps) {
 			type?: string
 		}
 
-		console.log('APIレスポンスデータ:', data)
+		console.log('APIレスポンスデータ:', data.items[0])
 
 		return (
 			<section className='max-w-7xl mx-auto'>

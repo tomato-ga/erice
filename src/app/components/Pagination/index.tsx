@@ -29,23 +29,8 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({
 	}, [currentPage, totalPages])
 
 	const getHref = (page: number) => {
-		if (categoryType === 'actress') {
-			if (page === 1) {
-				return `/actress/${encodeURIComponent(category as string)}`
-			}
-			return `/actress/${encodeURIComponent(category as string)}/page/${page}`
-		}
-		if (categoryType === 'genre') {
-			if (page === 1) {
-				return `/genre/${encodeURIComponent(category as string)}`
-			}
-			return `/genre/${encodeURIComponent(category as string)}/page/${page}`
-		}
-		// どちらでもない場合はルートパスへ
-		if (page === 1) {
-			return '/'
-		}
-		return `/page/${page}`
+		const basePath = category ? `/${categoryType}/${encodeURIComponent(category)}` : ''
+		return page === 1 ? basePath || '/' : `${basePath}/page/${page}`
 	}
 
 	if (totalPages <= 1) {
