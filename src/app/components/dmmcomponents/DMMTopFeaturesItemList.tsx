@@ -93,7 +93,7 @@ const DMMFeaturesItemList = <T extends DMMFeaturedItemProps>({
 	type: string
 	umamifrom: UmamiTrackingFromType
 }) => {
-	const displayCount = from === 'top' ? 8 : items.length
+	const displayCount = from === 'top' || from === 'antenna-detail' ? 8 : items.length
 	return (
 		<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
 			{items.slice(0, displayCount).map(item => (
