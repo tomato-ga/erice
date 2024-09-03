@@ -1,10 +1,10 @@
-import { DMMItemProps } from '@/types/dmmtypes'
+import { DMMFeaturedItemProps } from '@/types/dmmtypes'
 import { UmamiTrackingFromType } from '@/types/umamiTypes'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { UmamiTracking } from './UmamiTracking'
 
-interface DMMFeaturedItemContainerProps<T extends DMMItemProps> {
+interface DMMFeaturedItemContainerProps<T extends DMMFeaturedItemProps> {
 	from: string
 	bgGradient?: string
 	endpoint: string
@@ -15,7 +15,7 @@ interface DMMFeaturedItemContainerProps<T extends DMMItemProps> {
 	umamifrom: UmamiTrackingFromType
 }
 
-async function fetchData<T extends DMMItemProps>(endpoint: string): Promise<T[]> {
+async function fetchData<T extends DMMFeaturedItemProps>(endpoint: string): Promise<T[]> {
 	const fetchOptions = { next: { revalidate: 43200 } }
 
 	try {
@@ -39,7 +39,7 @@ const PriceDisplay = ({
 	</div>
 )
 
-const DMMFeaturedItemCard = <T extends DMMItemProps>({
+const DMMFeaturedItemCard = <T extends DMMFeaturedItemProps>({
 	item,
 	type,
 	from,
@@ -84,7 +84,7 @@ const DMMFeaturedItemCard = <T extends DMMItemProps>({
 	</div>
 )
 
-const DMMFeaturedItemList = <T extends DMMItemProps>({
+const DMMFeaturedItemList = <T extends DMMFeaturedItemProps>({
 	items,
 	from,
 	type,
@@ -112,7 +112,7 @@ const DMMFeaturedItemList = <T extends DMMItemProps>({
 	)
 }
 
-export default async function DMMFeaturedItemContainer<T extends DMMItemProps>({
+export default async function DMMFeaturedItemContainer<T extends DMMFeaturedItemProps>({
 	from,
 	bgGradient,
 	endpoint,

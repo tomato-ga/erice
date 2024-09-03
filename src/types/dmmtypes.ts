@@ -165,17 +165,17 @@ export type DMMSaleApiResponse = DMMSaleItem[]
 
 // DMMItemProps型定義
 export interface DMMItemProps {
-	db_id: string;
-	content_id: string;
-	title: string;
-	imageURL: string; // JSON文字列
-	// 他のプロパティ...
+	content_id: string
+	title: string
+	imageURL: string
+	db_id: string
+	// ... other common properties
 }
 
 export interface ImageURLs {
-	large?: string;
-	list?: string;
-	small?: string;
+	large?: string
+	list?: string
+	small?: string
 }
 
 export interface ActressItem {
@@ -219,5 +219,35 @@ export interface DMMBaseItem {
 	date?: string
 }
 
-export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale' | 'actress' | 'genre';
-export type CategoryType = 'style' | 'type';
+export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale' | 'actress' | 'genre'
+export type CategoryType = 'style' | 'type'
+
+export interface DMMFeaturedItemProps extends DMMItemProps {
+	salecount?: string
+	salePrice?: string
+	price?: string
+	actress?: string
+}
+
+export interface SaleItemProps extends DMMItemProps {
+	salecount?: string
+	salePrice?: string
+}
+
+export interface NewItemProps extends DMMItemProps {
+	price?: string
+	actress?: string
+	// ... new item specific properties
+}
+
+export interface DebutItemProps extends DMMItemProps {
+	price?: string
+	actress?: string
+	// ... debut item specific properties
+}
+
+export interface FeatureItemProps extends DMMItemProps {
+	price?: string
+	actress?: string
+	// ... feature item specific properties
+}
