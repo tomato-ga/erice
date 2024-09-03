@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { DMMItem, ExtendedDMMItem, ItemType } from '@/types/dmmtypes'

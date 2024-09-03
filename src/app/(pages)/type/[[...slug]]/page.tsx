@@ -85,7 +85,7 @@ export default async function TypePaginationPage({ params }: PageProps) {
 		console.log('タイプレスポンスステータスコード:', response.status)
 
 		if (!response.ok) {
-			throw new Error('API request failed.')
+			throw new Error('API request failed.') // ← エラー発生箇所
 		}
 
 		const data = (await response.json()) as {
