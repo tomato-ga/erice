@@ -31,29 +31,23 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
 	if (!API_KEY) {
 		console.error('CLOUDFLARE_DMM_API_TOKENが設定されていません')
-		return NextResponse.json(
-			{ error: 'CLOUDFLARE_DMM_API_TOKENが環境変数に設定されていません' },
-			{ status: 500 },
-		)
+		return NextResponse.json({ error: 'CLOUDFLARE_DMM_API_TOKENが環境変数に設定されていません' }, { status: 500 })
 	}
 
 	if (!WORKER_URL) {
 		console.error('DMM_ACTRESS_DETAIL_WORKER_URLが設定されていません')
-		return NextResponse.json(
-			{ error: 'DMM_ACTRESS_DETAIL_WORKER_URLが環境変数に設定されていません' },
-			{ status: 500 },
-		)
+		return NextResponse.json({ error: 'DMM_ACTRESS_DETAIL_WORKER_URLが環境変数に設定されていません' }, { status: 500 })
 	}
 
 	const encodedActressName = encodeURIComponent(actressname)
 
 	try {
-		const response = await fetch(`${WORKER_URL}/actress?actressname=${encodedActressName}`, {
+		const response = await fetch(`${WORKER_URL}/${encodedActressName}`, {
 			headers: {
 				'Content-Type': 'application/json',
-				'X-API-Key': API_KEY,
+				'X-API-Key': API_KEY
 			},
-			cache: 'force-cache',
+			cache: 'force-cache'
 		})
 
 		if (!response.ok) {
@@ -69,10 +63,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
 		if (!validationResult.success) {
 			// 検証エラー時の処理
-			console.warn(
-				'女優情報のデータ形式が予期しないものでした:',
-				JSON.stringify(validationResult.error, null, 2),
-			)
+			console.warn('女優情報のデータ形式が予期しないものでした:', JSON.stringify(validationResult.error, null, 2))
 			// エラーではなく、空のデータを返す
 			return NextResponse.json({ actress: null })
 		}
@@ -81,9 +72,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 		return NextResponse.json(validationResult.data)
 	} catch (error) {
 		console.error('APIルートでエラーが発生しました:', error)
-		return NextResponse.json(
-			{ error: 'サーバー内部エラー', details: (error as Error).message },
-			{ status: 500 },
-		)
+		return NextResponse.json({ error: 'サーバー内部エラー', details: (error as Error).message }, { status: 500 })
 	}
 }
