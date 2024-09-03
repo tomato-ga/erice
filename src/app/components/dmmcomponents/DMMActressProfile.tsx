@@ -17,18 +17,21 @@ const hasAdditionalInfo = (actress: DMMActressProfile['actress']) => {
 }
 
 const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActressProfile }) => {
-	// console.log('actressProfileData:', actressProfileData)
-
 	// actressProfileDataとactressProfileData.actressの存在をチェック
 	if (!actressProfileData) {
-		console.error('actressProfileData が undefined です')
+		console.error('actressProfileData または actressProfileData.actress が undefined です')
 		return null
 	}
+
+	console.log('actressProfileData', actressProfileData)
 
 	const parseResult = DMMActressProfileSchema.safeParse(actressProfileData)
 
 	if (!parseResult.success) {
-		console.error('データの検証に失敗しました:', parseResult.error)
+		console.error(
+			'ActressProfile, データの検証に失敗しました:',
+			JSON.stringify(parseResult.error, null, 2),
+		)
 		return null
 	}
 

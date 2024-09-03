@@ -1,9 +1,9 @@
-// components/DMMItemContainer.tsx
-import Link from 'next/link'
 import { DMMItemProps, ItemType } from '@/types/dmmtypes'
-import DMMItemList from './DMMItemList'
 import { ArrowRight } from 'lucide-react'
 import { revalidateTag } from 'next/cache'
+// components/DMMItemContainer.tsx
+import Link from 'next/link'
+import DMMItemList from './DMMItemList'
 
 interface DMMItemContainerProps {
 	itemType: ItemType
@@ -17,24 +17,29 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 	let fetchOptions: RequestInit & { next?: NextFetchRequestConfig } = {}
 
 	switch (itemType) {
-		case 'todaynew':
+		case 'todaynew': {
 			endpoint = '/api/dmm-todaynew-getkv'
 			fetchOptions = { cache: 'no-store' }
 			break
-		case 'debut':
+		}
+		case 'debut': {
 			endpoint = '/api/dmm-debut-getkv'
 			fetchOptions = { next: { revalidate: 43200 } }
 			break
-		case 'feature':
+		}
+		case 'feature': {
 			endpoint = '/api/dmm-feature-getkv'
 			fetchOptions = { next: { revalidate: 43200 } }
 			break
-		case 'sale':
+		}
+		case 'sale': {
 			endpoint = '/api/dmm-sale-getkv'
 			fetchOptions = { next: { revalidate: 43200 } }
 			break
-		default:
+		}
+		default: {
 			throw new Error(`Invalid itemType: ${itemType}`)
+		}
 	}
 
 	try {
@@ -61,7 +66,11 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 	}
 }
 
-export default async function DMMItemContainer({ itemType, from, bgGradient }: DMMItemContainerProps) {
+export default async function DMMItemContainer({
+	itemType,
+	from,
+	bgGradient,
+}: DMMItemContainerProps) {
 	console.log('DMMItemContainer itemType: ', itemType)
 
 	const items = await fetchData(itemType)
@@ -76,7 +85,7 @@ export default async function DMMItemContainer({ itemType, from, bgGradient }: D
 		feature: 'from-pink-500 to-purple-500',
 		sale: 'from-blue-500 to-purple-500',
 		actress: 'from-blue-500 to-purple-500',
-		genre: 'from-blue-500 to-purple-500'
+		genre: 'from-blue-500 to-purple-500',
 	}
 
 	const titles = {
@@ -85,7 +94,7 @@ export default async function DMMItemContainer({ itemType, from, bgGradient }: D
 		feature: '注目作品',
 		sale: '限定セール',
 		actress: 'アクトレス',
-		genre: 'ジャンル'
+		genre: 'ジャンル',
 	}
 
 	const linkTexts = {
@@ -94,14 +103,14 @@ export default async function DMMItemContainer({ itemType, from, bgGradient }: D
 		feature: '全ての注目作品を見る',
 		sale: '全ての限定セール商品を見る',
 		actress: '全てのアクトレスを見る',
-		genre: '全てのジャンルを見る'
+		genre: '全てのジャンルを見る',
 	}
 
 	return (
 		<div className={`${bgGradient} shadow-lg p-4 sm:p-4 md:p-8 transition duration-300 ease-in-out`}>
 			{from !== 'only' && (
-				<div className="text-center mb-8">
-					<h2 className="text-4xl font-extrabold mb-4">
+				<div className='text-center mb-8'>
+					<h2 className='text-4xl font-extrabold mb-4'>
 						<span className={`text-transparent bg-clip-text bg-gradient-to-r ${gradients[itemType]}`}>
 							{titles[itemType]}
 						</span>
@@ -112,10 +121,9 @@ export default async function DMMItemContainer({ itemType, from, bgGradient }: D
 							gradients[itemType]
 						}  shadow-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-${
 							gradients[itemType].split('-')[1]
-						}-400 focus:ring-opacity-50`}
-					>
+						}-400 focus:ring-opacity-50`}>
 						{linkTexts[itemType]}
-						<ArrowRight className="ml-2 h-5 w-5 animate-bounce" />
+						<ArrowRight className='ml-2 h-5 w-5 animate-bounce' />
 					</Link>
 				</div>
 			)}

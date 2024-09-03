@@ -48,44 +48,39 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 	const encodedActressName = encodeURIComponent(actressname)
 
 	try {
-		const response = await fetch(`${WORKER_URL}/${encodedActressName}`, {
+		const response = await fetch(`${WORKER_URL}/actress?actressname=${encodedActressName}`, {
 			headers: {
 				'Content-Type': 'application/json',
 				'X-API-Key': API_KEY,
 			},
-			next: { revalidate: 2592000 }, // 30日間キャッシュ
+			cache: 'force-cache',
 		})
 
-		if (response.status === 404) {
-			console.log(`女優が見つかりません: ${actressname}`)
-			return NextResponse.json({ error: '女優が見つかりません' }, { status: 404 })
-		}
-
 		if (!response.ok) {
-			console.error(`Cloudflare Worker APIエラー: ${response.status} ${response.statusText}`)
-			throw new Error(`Cloudflare Workerからのデータ取得に失敗しました: ${response.status}`)
+			const errorMessage = `女優情報の取得に失敗しました。ステータスコード: ${response.status} ${response.statusText}`
+			console.error(errorMessage)
+			return NextResponse.json({ error: errorMessage }, { status: response.status })
 		}
 
 		const data = await response.json()
 
-		// console.log('dmm-actress-profile data: ', data)
+		// Zodスキーマを用いてレスポンスデータの検証
+		const validationResult = DMMActressProfileSchema.safeParse(data)
 
-		if (!isValidApiResponse(data)) {
-			throw new Error('不正なレスポンス形式')
+		if (!validationResult.success) {
+			// 検証エラー時の処理
+			console.warn(
+				'女優情報のデータ形式が予期しないものでした:',
+				JSON.stringify(validationResult.error, null, 2),
+			)
+			// エラーではなく、空のデータを返す
+			return NextResponse.json({ actress: null })
 		}
 
-		const validatedData = DMMActressProfileSchema.parse(data)
-		console.log('dmm-actress-profile validatedData', validatedData)
-
-		return NextResponse.json(validatedData)
+		// 検証に成功した場合は、データを返す
+		return NextResponse.json(validationResult.data)
 	} catch (error) {
 		console.error('APIルートでエラーが発生しました:', error)
-		if (error instanceof z.ZodError) {
-			return NextResponse.json(
-				{ error: 'データの形式が不正です', details: error.errors },
-				{ status: 500 },
-			)
-		}
 		return NextResponse.json(
 			{ error: 'サーバー内部エラー', details: (error as Error).message },
 			{ status: 500 },

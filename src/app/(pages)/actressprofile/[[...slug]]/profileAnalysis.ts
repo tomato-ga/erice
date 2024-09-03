@@ -2,7 +2,7 @@
 
 import { ActressDetails, DMMActressProfile } from '@/types/APItypes'
 
-export function parseDetails(details: string | null): ActressDetails | null {
+export function parseDetails(details: string | null | undefined): ActressDetails | null {
 	if (!details) {
 		return null
 	}

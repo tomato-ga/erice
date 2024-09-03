@@ -1,10 +1,10 @@
-import { DMMItemProps } from '@/types/dmmtypes'
+import { DMMFeaturedItemProps } from '@/types/dmmtypes'
 import { UmamiTrackingFromType } from '@/types/umamiTypes'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { UmamiTracking } from './UmamiTracking'
 
-interface DMMFeaturesItemContainerProps<T extends DMMItemProps> {
+interface DMMFeaturesItemContainerProps<T extends DMMFeaturedItemProps> {
 	from: string
 	bgGradient?: string
 	endpoint: string
@@ -15,7 +15,7 @@ interface DMMFeaturesItemContainerProps<T extends DMMItemProps> {
 	umamifrom: UmamiTrackingFromType
 }
 
-async function fetchData<T extends DMMItemProps>(endpoint: string): Promise<T[]> {
+async function fetchData<T extends DMMFeaturedItemProps>(endpoint: string): Promise<T[]> {
 	try {
 		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
 			cache: 'no-store',
@@ -31,16 +31,14 @@ async function fetchData<T extends DMMItemProps>(endpoint: string): Promise<T[]>
 	}
 }
 
-const PriceDisplay = (
-	{ listPrice, salePrice }: { listPrice?: string; salePrice: string }, // listPriceをオプショナルに変更
-) => (
+const PriceDisplay = ({ listPrice, salePrice }: { listPrice?: string; salePrice: string }) => (
 	<div className='mb-2'>
 		<span className='text-gray-500 line-through mr-2'>{listPrice}</span>
 		<span className='text-red-600 font-bold'>{salePrice}</span>
 	</div>
 )
 
-const DMMFeaturesItemCard = <T extends DMMItemProps>({
+const DMMFeaturesItemCard = <T extends DMMFeaturedItemProps>({
 	item,
 	type,
 	from,
@@ -66,7 +64,7 @@ const DMMFeaturesItemCard = <T extends DMMItemProps>({
 						{item.title}
 					</h2>
 					{'salecount' in item && item.salePrice && (
-						<PriceDisplay listPrice={item.salecount || ''} salePrice={item.salePrice} />
+						<PriceDisplay listPrice={item.salecount} salePrice={item.salePrice} />
 					)}
 					{!('salecount' in item && item.salePrice) && item.price && (
 						<div className='mb-2'>
@@ -84,7 +82,7 @@ const DMMFeaturesItemCard = <T extends DMMItemProps>({
 	</div>
 )
 
-const DMMFeaturesItemList = <T extends DMMItemProps>({
+const DMMFeaturesItemList = <T extends DMMFeaturedItemProps>({
 	items,
 	from,
 	type,
@@ -107,7 +105,7 @@ const DMMFeaturesItemList = <T extends DMMItemProps>({
 	)
 }
 
-export default async function DMMFeaturesItemContainer<T extends DMMItemProps>({
+export default async function DMMFeaturesItemContainer<T extends DMMFeaturedItemProps>({
 	from,
 	bgGradient,
 	endpoint,
@@ -118,8 +116,6 @@ export default async function DMMFeaturesItemContainer<T extends DMMItemProps>({
 	umamifrom,
 }: DMMFeaturesItemContainerProps<T>) {
 	const items = await fetchData<T>(endpoint)
-
-	// console.log('DMMFeaturesItemContainer items:', items)
 
 	return (
 		<div

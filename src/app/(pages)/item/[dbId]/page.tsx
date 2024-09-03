@@ -16,7 +16,7 @@ import {
 	fetchRelatedItems,
 } from '@/app/components/dmmcomponents/fetch/itemFetchers'
 import { DMMItem, DMMItemMainResponse } from '@/types/dmmitemzodschema'
-import { ItemType } from '@/types/dmmtypes'
+import { ExtendedDMMItem, ItemType } from '@/types/dmmtypes'
 import { formatDate } from '@/utils/dmmUtils'
 import { ArrowRight, ExternalLink, Video } from 'lucide-react'
 import { Metadata } from 'next'
@@ -157,7 +157,7 @@ export default async function DMMKobetuItemPage({
 	const relatedItemsData = await Promise.all(
 		relatedItemTypes.map(async type => ({
 			type,
-			items: await fetchRelatedItems(type),
+			items: (await fetchRelatedItems(type)) as ExtendedDMMItem[],
 		})),
 	)
 
@@ -202,7 +202,7 @@ export default async function DMMKobetuItemPage({
 								target='_blank'
 								rel='noopener noreferrer'
 								className='inline-flex items-center justify-center text-xl font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-full shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 px-6 sm:px-8 py-3 sm:py-4'>
-								<span className='mr-2'>高画質動画を見る</span>
+								<span className='mr-2'>高画質��画を見る</span>
 								<ExternalLink className='w-5 h-5 sm:w-6 sm:h-6 animate-pulse' />
 							</Link>
 						</UmamiTracking>

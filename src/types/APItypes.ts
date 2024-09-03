@@ -35,7 +35,7 @@ export const DMMActressProfileSchema = z.object({
 		image_url_large: z.string().nullable(),
 		list_url: z.string().nullable(),
 		cup: z.string().nullable(),
-		details: z.string().nullable(),
+		details: z.string().nullable().optional(), // optional に変更
 		styles: z.array(z.string()).nullable().optional(), // 変更点: optional() を追加
 		types: z.array(z.string()).nullable().optional(), // 変更点: optional() を追加
 	}),

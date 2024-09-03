@@ -2,7 +2,7 @@
 
 // src/app/components/dmmcomponents/DMMItemList.tsx
 
-import { CategoryType, DMMItemProps, ItemType } from '@/types/dmmtypes'
+import { CategoryType, DMMFeaturedItemProps, DMMItemProps, ItemType } from '@/types/dmmtypes'
 import Link from 'next/link'
 
 // PriceDisplay コンポーネント：価格表示部分
@@ -37,7 +37,7 @@ const GenreTag = ({ genre }: { genre: string[] }) => {
 
 // DMMItemCard コンポーネント：個々の商品カード表示部分
 // item: 商品情報 (T )
-const DMMItemCard = <T extends DMMItemProps>({
+const DMMItemCard = <T extends DMMFeaturedItemProps>({
 	item,
 	itemType,
 	from,
@@ -80,7 +80,7 @@ const DMMItemCard = <T extends DMMItemProps>({
 
 // DMMItemList コンポーネント：商品リスト全体表示部分
 // items: 商品情報の配列 (T[] 型)
-const DMMItemList = <T extends DMMItemProps>({
+const DMMItemList = <T extends DMMFeaturedItemProps>({
 	items,
 	itemType,
 	from,

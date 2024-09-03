@@ -251,3 +251,12 @@ export interface FeatureItemProps extends DMMItemProps {
 	actress?: string
 	// ... feature item specific properties
 }
+
+// DMMItemを拡張した新しい型を定義
+export type ExtendedDMMItem = DMMItem & {
+	imageURL: string | { large: string }
+	db_id?: string
+	content_id: string
+	title: string
+	prices?: { price: string }
+}
