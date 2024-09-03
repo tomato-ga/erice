@@ -1,8 +1,6 @@
-import { ArrowRight } from 'lucide-react'
-import { Suspense } from 'react'
 import DMMActressItemContainer from './components/dmmcomponents/DMMActressItemContainer'
 
-import DMMTopFeaturedItemContainer from './components/dmmcomponents/DMMFeaturedItemContainer'
+// import DMMTopFeaturedItemContainer from './components/dmmcomponents/DMMFeaturedItemContainer'
 import DMMFeaturedItemContainer from './components/dmmcomponents/DMMFeaturedItemContainer'
 import DMMFeaturesItemContainer from './components/dmmcomponents/DMMTopFeaturesItemList'
 

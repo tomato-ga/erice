@@ -1,26 +1,23 @@
 // /Volumes/SSD_1TB/erice2/erice/src/app/(pages)/item/[dbId]/page.tsx
 
 import { PostList } from '@/app/components/antennacomponents/PostList'
-import { r18antennaFetch } from '@/app/components/antennacomponents/PostList/r18fetch'
 import { CommentSection } from '@/app/components/dmmcomponents/Comment/CommentSection'
-import ActressRelatedItems from '@/app/components/dmmcomponents/DMMActressItemRelated'
 import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
 import ItemDetails from '@/app/components/dmmcomponents/ItemDetails'
 import RelatedItemsScroll from '@/app/components/dmmcomponents/Related/RelatedItemsScroll'
 import { UmamiTracking } from '@/app/components/dmmcomponents/UmamiTracking'
 import {
-	fetchDataKV,
 	fetchItemDetailByContentId,
 	fetchItemMainByContentId,
 	fetchItemMainByContentIdToActressInfo,
 	fetchRelatedItems,
 } from '@/app/components/dmmcomponents/fetch/itemFetchers'
-import { DMMItem, DMMItemMainResponse } from '@/types/dmmitemzodschema'
+import { DMMItemMainResponse } from '@/types/dmmitemzodschema'
 import { ExtendedDMMItem, ItemType } from '@/types/dmmtypes'
 import { formatDate } from '@/utils/dmmUtils'
-import { ArrowRight, ExternalLink, Video } from 'lucide-react'
+import { ExternalLink } from 'lucide-react'
 import { Metadata } from 'next'
-import dynamic from 'next/dynamic'
+
 import Link from 'next/link'
 import { Suspense } from 'react'
 

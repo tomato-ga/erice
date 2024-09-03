@@ -1,6 +1,6 @@
 'use client'
 
-import { DMMItem, ExtendedDMMItem, ItemType } from '@/types/dmmtypes'
+import {  ExtendedDMMItem, ItemType } from '@/types/dmmtypes'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'

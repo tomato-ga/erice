@@ -1,8 +1,8 @@
 import DMMItemContainerPagination from '@/app/components/dmmcomponents/Pagination/Pagination'
-import { DMMItemProps, ImageURLs } from '@/types/dmmtypes'
-import next, { Metadata } from 'next'
+import { DMMItemProps } from '@/types/dmmtypes'
+import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { Suspense, cache } from 'react'
+import { Suspense } from 'react'
 
 interface PageProps {
 	params: { slug?: string[] }

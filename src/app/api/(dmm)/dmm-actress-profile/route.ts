@@ -1,6 +1,6 @@
 import { DMMActressProfile, DMMActressProfileSchema } from '@/types/APItypes'
 import { NextRequest, NextResponse } from 'next/server'
-import { z } from 'zod'
+// import { z } from 'zod'
 
 // 型ガード関数
 function isValidApiResponse(data: unknown): data is DMMActressProfile {

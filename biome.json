@@ -1,10 +1,12 @@
 {
 	"$schema": "https://biomejs.dev/schemas/1.5.2/schema.json",
-	"files": {
-	  "ignore": ["public"]
-	},
-	"organizeImports": {
-	  "enabled": true
+	"formatter": {
+		"enabled": true,
+		"formatWithErrors": false,
+		"indentStyle": "space",
+		"indentWidth": 2,
+		"lineWidth": 100,
+		"lineEnding": "lf"
 	},
 	"javascript": {
 		"formatter": {
@@ -13,58 +15,65 @@
 			"quoteProperties": "asNeeded",
 			"semicolons": "asNeeded",
 			"arrowParentheses": "asNeeded",
-			"enabled": true,
-			"indentStyle": "tab",
-			"indentWidth": 1,
-			"lineEnding": "lf",
-			"lineWidth": 100,
 			"bracketSameLine": true,
 			"bracketSpacing": true
-		  }
+		}
+	},
+	"json": {
+		"parser": {
+			"allowComments": true
+		},
+		"formatter": {
+			"enabled": true,
+			"indentStyle": "tab",
+			"indentWidth": 2
+		}
 	},
 	"linter": {
-	  "enabled": true,
-	  "rules": {
-		"all": true,
-		"suspicious": {
-			"noConsoleLog":"off",
-			"noArrayIndexKey":"off"
-		},
-		"style": {
-		  "useImportType": "off",
-		  "useNamingConvention": "off",
-		  "useTemplate": "off",
-		  "useBlockStatements": "off",
-		"noDefaultExport": "off"
-
-		},
-		"correctness": {
-		  "noUnusedVariables": "off",
-		  "noUnusedImports": "off",
-		  "noUndeclaredVariables": "off"
-		},
-		"a11y": {
-		  "useKeyWithClickEvents": "off"
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"suspicious": {
+				"noConsoleLog": "off",
+				"noArrayIndexKey": "off"
+			},
+			"style": {
+				"useImportType": "off",
+				"useNamingConvention": "off",
+				"useTemplate": "off",
+				"useBlockStatements": "off",
+				"noDefaultExport": "off"
+			},
+			"correctness": {
+				"noUnusedVariables": "off",
+				"noUnusedImports": "warn",
+				"noUndeclaredVariables": "off"
+			},
+			"a11y": {
+				"useKeyWithClickEvents": "off"
+			}
 		}
-	  }
+	},
+	"organizeImports": {
+		"enabled": true
+	},
+	"files": {
+		"ignore": ["node_modules", "dist", "build", "public", "**/*.min.js"]
 	},
 	"overrides": [
-	  {
-		"include": [
-		  "next.config.js",
-		  "layout.tsx",
-		  "page.tsx",
-		  "loading.tsx",
-		  "error.tsx",
-		  "not-found.tsx"
-		],
-		"linter": {
-		  "rules": {
-			"style": {
-			  "noDefaultExport": "off"
+		{
+			"include": [
+				"next.config.js",
+				"**/pages/**/*.{js,ts,jsx,tsx}",
+				"**/components/**/*.{js,ts,jsx,tsx}"
+			],
+			"linter": {
+				"rules": {
+					"style": {
+						"noDefaultExport": "off"
+					}
+				}
 			}
-		  }
 		}
-	  }
 	]
-  }
+}

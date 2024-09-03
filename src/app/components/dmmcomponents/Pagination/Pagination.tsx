@@ -1,7 +1,6 @@
 'use client'
 
 import { DMMItemProps, ImageURLs } from '@/types/dmmtypes'
-import Image from 'next/image'
 import Link from 'next/link'
 import PaginationComponent from '../../Pagination'
 
