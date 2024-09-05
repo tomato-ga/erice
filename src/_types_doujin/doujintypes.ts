@@ -21,7 +21,6 @@ const DoujinBaseItemSchema = z.object({
 	price: z.string().nullable().optional(),
 	// doujin specific properties
 	maker: z.string(),
-	circle: z.string(),
 	author: z.string(),
 	genres: z.array(z.string()),
 	release_date: z.string(),
@@ -47,7 +46,6 @@ export const DoujinItemDetailResponseSchema = z.object({
 	release_date: z.string().nullable().optional(),
 	price: z.string().nullable().optional(),
 	maker: z.string().nullable().optional(),
-	circle: z.string().nullable().optional(),
 	author: z.string().nullable().optional(),
 	genres: z.array(z.string()).nullable().optional(),
 })
