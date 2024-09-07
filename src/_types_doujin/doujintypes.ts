@@ -1,78 +1,79 @@
+import { UmamiTrackingFromType } from '@/types/umamiTypes'
+
 import { z } from 'zod'
 
-// 基本的なDoujinアイテムのスキーマ
-const DoujinBaseItemSchema = z.object({
+// DMM APIのレスポンス型をzodスキーマで定義
+const RawDMMItemSchema = z.object({
+	content_id: z.string().nullable(),
+	product_id: z.string().nullable(),
+	title: z.string().nullable(),
+	volume: z.string().nullable(),
+	review: z
+		.object({
+			count: z.string().nullable(),
+			average: z.string().nullable()
+		})
+		.nullable()
+		.optional(), // review プロパティを optional に変更
+	URL: z.string().nullable(),
+	affiliateURL: z.string().nullable(),
+	date: z.string().nullable(),
+	service_code: z.string().nullable(),
+	service_name: z.string().nullable(),
+	floor_code: z.string().nullable(),
+	floor_name: z.string().nullable(),
+	prices: z.any().nullable(),
+	imageURL: z.any().nullable(),
+	iteminfo: z
+		.object({
+			genre: z.array(z.object({ id: z.number(), name: z.string() })).optional(), // genre を optional に変更
+			series: z.array(z.object({ id: z.number(), name: z.string() })).optional(), // series を optional に変更
+			maker: z.array(z.object({ id: z.number(), name: z.string() })).optional() // maker を optional に変更
+		})
+		.nullable(),
+	category_name: z.string().nullable(),
+	campaign: z
+		.array(
+			z.object({
+				date_begin: z.string(),
+				date_end: z.string(),
+				title: z.string()
+			})
+		)
+		.nullable()
+		.optional()
+})
+
+// RawDMMItem 型定義
+export type RawDMMItem = z.infer<typeof RawDMMItemSchema>
+
+export const FetchDoujinItemSchema = z.object({
+	db_id: z.number(),
 	content_id: z.string(),
 	title: z.string(),
-	affiliateURL: z.string(),
-	imageURL: z.object({
-		list: z.string(),
-		small: z.string(),
-		large: z.string(),
-	}),
-	sampleImageURL: z.object({
-		sample_s: z.object({
-			image: z.array(z.string()),
-		}),
-		sample_l: z.object({
-			image: z.array(z.string()),
-		}),
-	}),
-	price: z.string().nullable().optional(),
-	// doujin specific properties
-	maker: z.string(),
-	author: z.string(),
-	genres: z.array(z.string()),
-	release_date: z.string(),
-	review: z.object({
-		count: z.number(),
-		average: z.number(),
-	}),
+	volume: z.string().nullish().optional(),
+	affiliate_url: z.string(),
+	package_images: z.object({}).passthrough().nullish().optional(),
+	sample_images: z.array(z.object({}).passthrough()).nullish().optional(),
+	release_date: z.string().optional(),
+	review_count: z.number().nullish(),
+	review_average: z.number().nullish(),
+	prices: z.object({}).passthrough().nullish(),
+	genres: z.array(z.object({}).passthrough()).nullish(),
+	makers: z.array(z.object({}).passthrough()).nullish(),
+	series: z.array(z.object({}).passthrough()).nullish(),
+	campaign: z.array(z.object({}).passthrough()).nullish()
 })
 
-/////////////////// 商品個別ページのfetch用スキーマ /////////////////////
-export const DoujinItemMainResponseSchema = z.object({
-	content_id: z.string(),
-	affiliateURL: z.string().url(),
-	sampleImageURL: DoujinBaseItemSchema.shape.sampleImageURL,
-	imageURL: DoujinBaseItemSchema.shape.imageURL,
-	title: z.string(),
+export type FetchDoujinItem = z.infer<typeof FetchDoujinItemSchema>
+
+export type DoujinTopItem = z.infer<typeof FetchDoujinItemSchema>
+
+// APIレスポンスのスキーマを定義
+export const DoujinTopApiResponseSchema = z.object({
+	result: z.object({
+		items: z.array(FetchDoujinItemSchema)
+	})
 })
 
-export type DoujinItemMainResponse = z.infer<typeof DoujinItemMainResponseSchema>
-
-/////////////////// 商品詳細ページのfetch用スキーマ /////////////////////
-export const DoujinItemDetailResponseSchema = z.object({
-	release_date: z.string().nullable().optional(),
-	price: z.string().nullable().optional(),
-	maker: z.string().nullable().optional(),
-	author: z.string().nullable().optional(),
-	genres: z.array(z.string()).nullable().optional(),
-})
-
-export type DoujinItemDetailResponse = z.infer<typeof DoujinItemDetailResponseSchema>
-
-/////////////////// 商品詳細ページのfetch用スキーマ /////////////////////
-
-// セールアイテム特有のプロパティ
-const DoujinSaleItemExtraSchema = z.object({
-	salecount: z.string().nullable().optional(),
-	salePrice: z.string().nullable().optional(),
-	rate: z.string().nullable().optional(),
-	listprice: z.string().nullable().optional(),
-})
-
-// 全てのDoujinアイテムに対応するスキーマ
-export const DoujinItemSchema = DoujinBaseItemSchema.merge(DoujinSaleItemExtraSchema.partial())
-
-export type DoujinItem = z.infer<typeof DoujinItemSchema>
-
-// DoujinItemProps型定義
-export interface DoujinItemProps extends DoujinItem {
-	db_id: string
-}
-
-// DoujinページのAPIレスポンス
-export interface DoujinApiResponse {
-	items: DoujinItem[]
-}
+export type DoujinTopApiResponse = z.infer<typeof DoujinTopApiResponseSchema>

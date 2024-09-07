@@ -22,8 +22,19 @@ export type UmamiTrackingFromType =
 	| 'antenna-post-list'
 	| 'antenna-postpage-detail'
 	| 'newdebutpage-item'
+	| 'top-doujin-sale'
 	| string
-export type UmamiFeatureType = '/sale' | '/todaynew' | '/debut' | '/feature'
+
+export type UmamiFeatureType =
+	| '/sale'
+	| '/todaynew'
+	| '/debut'
+	| '/feature'
+	| '/doujin-sale'
+	| '/doujin-newrank'
+	| '/doujin-newrelease'
+	| '/doujin-popular-circles'
+	| '/doujin-review'
 
 export type UmamiTrackingData = {
 	dataType: UmamiTrackingDataType
@@ -46,7 +57,7 @@ export const UmamiTrackingDataSchema = z.object({
 	from: z.enum([
 		'top-sale',
 		'top-todaynew',
-		'top-debut', // この行を追加
+		'top-debut',
 		'top-feature',
 		'top-new-actress',
 		'top-popular-actress',
@@ -61,9 +72,22 @@ export const UmamiTrackingDataSchema = z.object({
 		'other',
 		'antenna-post-list',
 		'antenna-postpage-detail',
-		'newdebutpage-item'
+		'newdebutpage-item',
+		'top-doujin-sale'
 	]),
-	featureType: z.enum(['/sale', '/todaynew', '/debut', '/feature']).optional(),
+	featureType: z
+		.enum([
+			'/sale',
+			'/todaynew',
+			'/debut',
+			'/feature',
+			'/doujin-sale',
+			'/doujin-newrank',
+			'/doujin-newrelease',
+			'/doujin-popular-circles',
+			'/doujin-review'
+		])
+		.optional(),
 	item: z
 		.object({
 			content_id: z.string(),
