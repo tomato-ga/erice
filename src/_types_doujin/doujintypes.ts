@@ -11,7 +11,7 @@ const RawDMMItemSchema = z.object({
 	review: z
 		.object({
 			count: z.string().nullable(),
-			average: z.string().nullable()
+			average: z.string().nullable(),
 		})
 		.nullable()
 		.optional(), // review プロパティを optional に変更
@@ -28,7 +28,7 @@ const RawDMMItemSchema = z.object({
 		.object({
 			genre: z.array(z.object({ id: z.number(), name: z.string() })).optional(), // genre を optional に変更
 			series: z.array(z.object({ id: z.number(), name: z.string() })).optional(), // series を optional に変更
-			maker: z.array(z.object({ id: z.number(), name: z.string() })).optional() // maker を optional に変更
+			maker: z.array(z.object({ id: z.number(), name: z.string() })).optional(), // maker を optional に変更
 		})
 		.nullable(),
 	category_name: z.string().nullable(),
@@ -37,11 +37,11 @@ const RawDMMItemSchema = z.object({
 			z.object({
 				date_begin: z.string(),
 				date_end: z.string(),
-				title: z.string()
-			})
+				title: z.string(),
+			}),
 		)
 		.nullable()
-		.optional()
+		.optional(),
 })
 
 // RawDMMItem 型定義
@@ -53,7 +53,7 @@ export const FetchDoujinItemSchema = z.object({
 	title: z.string(),
 	volume: z.string().nullish(),
 	affiliate_url: z.string(),
-	package_images: z.object({}).passthrough().nullish().optional(),
+	package_images: z.string().nullish(),
 	sample_images: z.array(z.object({}).passthrough()).nullish().optional(),
 	release_date: z.string().optional(),
 	review_count: z.number().nullish(),
@@ -62,7 +62,7 @@ export const FetchDoujinItemSchema = z.object({
 	genres: z.array(z.object({}).passthrough()).nullish(),
 	makers: z.array(z.object({}).passthrough()).nullish(),
 	series: z.array(z.object({}).passthrough()).nullish(),
-	campaign: z.array(z.object({}).passthrough()).nullish()
+	campaign: z.array(z.object({}).passthrough()).nullish(),
 })
 
 export type FetchDoujinItem = z.infer<typeof FetchDoujinItemSchema>
@@ -72,8 +72,8 @@ export type DoujinTopItem = z.infer<typeof FetchDoujinItemSchema>
 // APIレスポンスのスキーマを定義
 export const DoujinTopApiResponseSchema = z.object({
 	result: z.object({
-		items: z.array(FetchDoujinItemSchema)
-	})
+		items: z.array(FetchDoujinItemSchema),
+	}),
 })
 
 export type DoujinTopApiResponse = z.infer<typeof DoujinTopApiResponseSchema>
