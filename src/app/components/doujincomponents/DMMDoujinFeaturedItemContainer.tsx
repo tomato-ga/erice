@@ -47,13 +47,10 @@ async function fetchData(endpoint: string): Promise<DoujinTopItem[]> {
 	}
 }
 
-const PriceDisplay = ({
-	listPrice,
-	salePrice,
-}: { listPrice: string | undefined; salePrice: string }) => (
-	<div className='mb-2'>
-		<span className='text-gray-500 line-through mr-2'>{listPrice}</span>
-		<span className='text-red-600 font-bold'>{salePrice}</span>
+const PriceDisplay = ({ listPrice, salePrice }: { listPrice: string | undefined; salePrice: string }) => (
+	<div className="mb-2">
+		<span className="text-gray-500 line-through mr-2">{listPrice}</span>
+		<span className="text-red-600 font-bold">{salePrice}</span>
 	</div>
 )
 
@@ -61,7 +58,7 @@ const DMMDoujinFeaturedItemCard = ({
 	item,
 	type,
 	from,
-	umamifrom,
+	umamifrom
 }: {
 	item: DoujinTopItem
 	type: string
@@ -69,10 +66,7 @@ const DMMDoujinFeaturedItemCard = ({
 	umamifrom: UmamiTrackingFromType
 }) => {
 	const getImageUrl = (packageImages: unknown): string => {
-		if (
-			packageImages &&
-			isValidObject<{ list?: string; large?: string }>(packageImages, ['list', 'large'])
-		) {
+		if (packageImages && isValidObject<{ list?: string; large?: string }>(packageImages, ['list', 'large'])) {
 			return packageImages.large || packageImages.list || ''
 		}
 		return ''
@@ -87,41 +81,39 @@ const DMMDoujinFeaturedItemCard = ({
 	}
 
 	return (
-		<div className='bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-md flex flex-col h-full'>
+		<div className="bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-md flex flex-col h-full">
 			<UmamiTracking
 				trackingData={{
 					dataType: 'item',
 					from: umamifrom,
 					featureType: type as DMMDoujinFeaturedItemType,
-					item: item,
-				}}>
-				<Link href={`/itemd/${item.db_id}`}>
-					<div className='relative overflow-hidden bg-gray-100 p-4'>
+					item: item
+				}}
+			>
+				<Link href={`/doujin/itemd/${item.db_id}`}>
+					<div className="relative overflow-hidden bg-gray-100 p-4">
 						<img
 							src={getImageUrl(item.package_images)}
 							alt={item.title}
-							className='w-full h-auto min-h-[200px] object-contain'
+							className="w-full h-auto min-h-[200px] object-contain"
 						/>
 					</div>
-					<div className='p-4 flex flex-col flex-grow'>
-						<h2 className='text-lg font-semibold mb-2 line-clamp-2 h-14' title={item.title}>
+					<div className="p-4 flex flex-col flex-grow">
+						<h2 className="text-lg font-semibold mb-2 line-clamp-2 h-14" title={item.title}>
 							{item.title}
 						</h2>
 						{isValidObject(item.prices, ['list_price', 'price']) && (
-							<div className='mb-2'>
+							<div className="mb-2">
 								{formatPrice(item.prices.list_price) !== formatPrice(item.prices.price) && (
-									<span className='text-gray-500 line-through mr-2'>
-										{formatPrice(item.prices.list_price)}円
-									</span>
+									<span className="text-gray-500 line-through mr-2">{formatPrice(item.prices.list_price)}円</span>
 								)}
-								<span className='text-red-600 font-bold'>{formatPrice(item.prices.price)}円</span>
+								<span className="text-red-600 font-bold">{formatPrice(item.prices.price)}円</span>
 							</div>
 						)}
 						<p
-							className='text-sm text-gray-600 mb-2 line-clamp-1'
-							title={
-								isValidObject(item.makers?.[0], ['name']) ? `メーカー: ${item.makers[0].name}` : ''
-							}>
+							className="text-sm text-gray-600 mb-2 line-clamp-1"
+							title={isValidObject(item.makers?.[0], ['name']) ? `メーカー: ${item.makers[0].name}` : ''}
+						>
 							{isValidObject(item.makers?.[0], ['name']) ? `メーカー: ${item.makers[0].name}` : ''}
 						</p>
 					</div>
@@ -135,7 +127,7 @@ const DMMDoujinFeaturedItemList = ({
 	items,
 	from,
 	type,
-	umamifrom,
+	umamifrom
 }: {
 	items: DoujinTopItem[]
 	from: string
@@ -146,15 +138,10 @@ const DMMDoujinFeaturedItemList = ({
 	const defaultUmamiFrom: UmamiTrackingFromType = 'other'
 
 	return (
-		<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-			{items.slice(0, displayCount).map(item => (
+		<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+			{items.slice(0, displayCount).map((item) => (
 				<div key={item.content_id}>
-					<DMMDoujinFeaturedItemCard
-						item={item}
-						from={from}
-						type={type}
-						umamifrom={umamifrom || defaultUmamiFrom}
-					/>
+					<DMMDoujinFeaturedItemCard item={item} from={from} type={type} umamifrom={umamifrom || defaultUmamiFrom} />
 				</div>
 			))}
 		</div>
@@ -169,26 +156,24 @@ export default async function DMMDoujinFeaturedItemContainer({
 	linkText,
 	linkHref,
 	textGradient,
-	umamifrom,
+	umamifrom
 }: DMMDoujinFeaturedItemContainerProps) {
 	const items = await fetchData(endpoint)
 
 	console.log('DMMDoujinFeaturedItemContainer items:', items)
 
 	return (
-		<div
-			className={`bg-gradient-to-r ${bgGradient} shadow-lg p-4 sm:p-4 md:p-8 transition duration-300 ease-in-out`}>
-			<div className='text-center mb-8'>
-				<h2 className='text-4xl font-extrabold mb-4'>
-					<span className={`text-transparent bg-clip-text bg-gradient-to-r ${textGradient}`}>
-						{title}
-					</span>
+		<div className={`bg-gradient-to-r ${bgGradient} shadow-lg p-4 sm:p-4 md:p-8 transition duration-300 ease-in-out`}>
+			<div className="text-center mb-8">
+				<h2 className="text-4xl font-extrabold mb-4">
+					<span className={`text-transparent bg-clip-text bg-gradient-to-r ${textGradient}`}>{title}</span>
 				</h2>
 				<Link
 					href={linkHref}
-					className={`inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r ${textGradient} shadow-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50`}>
+					className={`inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r ${textGradient} shadow-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50`}
+				>
 					{linkText}
-					<ArrowRight className='ml-2 h-5 w-5 animate-bounce' />
+					<ArrowRight className="ml-2 h-5 w-5 animate-bounce" />
 				</Link>
 			</div>
 			<DMMDoujinFeaturedItemList items={items} from={from} type={linkHref} umamifrom={umamifrom} />

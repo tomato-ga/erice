@@ -51,7 +51,7 @@ export const FetchDoujinItemSchema = z.object({
 	db_id: z.number(),
 	content_id: z.string(),
 	title: z.string(),
-	volume: z.string().nullish().optional(),
+	volume: z.string().nullish(),
 	affiliate_url: z.string(),
 	package_images: z.object({}).passthrough().nullish().optional(),
 	sample_images: z.array(z.object({}).passthrough()).nullish().optional(),
