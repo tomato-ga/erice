@@ -1,23 +1,13 @@
-import { FetchDoujinItem, FetchDoujinItemSchema } from '@/_types_doujin/doujintypes'
-import { ZodError } from 'zod'
-
-import { DoujinTopItem } from '@/_types_doujin/doujintypes'
-import PriceDisplay from '@/app/components/doujincomponents/kobetu/PriceDisplay'
-import ProductHeader from '@/app/components/doujincomponents/kobetu/ProductHeader'
-import ProductMetadata from '@/app/components/doujincomponents/kobetu/ProductMetadata'
-import ReviewInfo from '@/app/components/doujincomponents/kobetu/ReviewInfo'
-import SampleImages from '@/app/components/doujincomponents/kobetu/SampleImage'
-import { Metadata, ResolvingMetadata } from 'next'
+import { DoujinKobetuItem } from '@/_types_doujin/doujintypes'
+import { UmamiTracking } from '@/app/components/dmmcomponents/UmamiTracking'
+import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
+import { ExternalLink } from 'lucide-react'
 
-function isValidFetchDoujinItem(data: unknown): data is FetchDoujinItem {
-	return FetchDoujinItemSchema.safeParse(data).success
-}
-
-async function fetchItemData(dbId: string): Promise<DoujinTopItem> {
-	// http://localhost:3000/api/doujin-item?db_id=2
+async function fetchItemData(dbId: string): Promise<DoujinKobetuItem> {
 	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/doujin-item?db_id=${dbId}`, {
-		next: { revalidate: 3600 },
+		next: { revalidate: 3600 }
 	})
 
 	if (!res.ok) {
@@ -29,66 +19,181 @@ async function fetchItemData(dbId: string): Promise<DoujinTopItem> {
 
 type Props = {
 	params: { dbId: string }
-	searchParams: { [key: string]: string | string[] | undefined }
 }
 
-export async function generateMetadata(
-	{ params, searchParams }: Props,
-	parent: ResolvingMetadata,
-): Promise<Metadata> {
-	const dbId = params.dbId
-	console.log(dbId)
-
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	try {
 		const item = await fetchItemData(params.dbId)
-		// const previousImages = (await parent).openGraph?.images || []
-
 		return {
 			title: `${item.title} | エロコメスト`,
 			description: `${item.title}の商品詳細ページです。`,
 			openGraph: {
 				title: `${item.title} | エロコメスト`,
 				description: `${item.title}の商品詳細ページです。`,
-				// images: item.package_images?.large ? [{ url: item.package_images.large }, ...previousImages] : previousImages
-			},
+				images: [{ url: item.package_images }]
+			}
 		}
 	} catch (error) {
 		console.error('Error generating metadata:', error)
 		return {
 			title: 'エロコメスト - 商品詳細',
-			description: '商品詳細ページです。',
+			description: '商品詳細ページです。'
 		}
 	}
 }
 
-export default async function ItemDetailPage({ params }: Props) {
+export default async function DoujinKobetuItemPage({ params }: Props) {
 	try {
-		const rawItem = await fetchItemData(params.dbId)
-
-		if (!isValidFetchDoujinItem(rawItem)) {
-			throw new Error('Invalid item data structure')
-		}
-
-		const item: FetchDoujinItem = rawItem
+		const item = await fetchItemData(params.dbId)
 
 		return (
-			<div className='container mx-auto px-4 py-8'>
-				<ProductHeader
-					title={item.title}
-					package_images={item.package_images ?? ''} // 型を適切に修正
-					affiliate_url={item.affiliate_url}
-					umamifrom='item-detail'
-				/>
-				{/* <div className="mt-8 bg-white shadow-lg rounded-lg p-6"></div> */}
+			<div className="bg-gray-50 dark:bg-gray-900 min-h-screen">
+				<div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
+					<article className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8 space-y-8">
+						<div className="relative aspect-w-16 aspect-h-9 overflow-hidden rounded-lg">
+							<UmamiTracking
+								trackingData={{
+									dataType: 'item',
+									from: 'kobetu-img-top',
+									item: { title: item.title, content_id: item.content_id }
+								}}
+							>
+								<Link href={item.affiliate_url} target="_blank" rel="noopener noreferrer">
+									<img
+										src={item.package_images}
+										alt={`${item.title}のパッケージ画像`}
+										className="w-full h-full object-contain transition-transform duration-300"
+									/>
+								</Link>
+							</UmamiTracking>
+						</div>
+
+						<h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 text-center">
+							{item.title}
+						</h1>
+
+						<div className="flex justify-center">
+							<UmamiTracking
+								trackingData={{
+									dataType: 'item',
+									from: 'kobetu-exlink-top',
+									item: { title: item.title, content_id: item.content_id }
+								}}
+							>
+								<Link
+									href={item.affiliate_url}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="inline-flex items-center justify-center text-xl font-semibold text-white bg-gradient-to-r from-pink-500 to-rose-600 dark:from-pink-600 dark:to-rose-700 rounded-full shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 dark:focus:ring-pink-400 px-8 py-4"
+								>
+									<span className="mr-2">商品ページへ</span>
+									<ExternalLink className="w-6 h-6 animate-pulse" />
+								</Link>
+							</UmamiTracking>
+						</div>
+
+						<div className="space-y-6">
+							<div className="text-center">
+								<span className="text-red-600 font-bold text-3xl">
+									{typeof item.prices === 'string' ? `${item.prices}円` : 'N/A'}
+								</span>
+							</div>
+
+							{/** {item.review_count != null && item.review_average != null && (
+								<div className="flex items-center justify-center">
+									<span className="text-gray-600">
+										評価: {item.review_average?.toFixed(1) ?? 'N/A'} ({item.review_count?.toLocaleString() ?? '0'}{' '}
+										レビュー)
+									</span>
+								</div>
+							)} **/}
+
+							<div className="space-y-8">
+								{item.genres && item.genres.length > 0 && (
+									<div>
+										<h2 className="font-semibold text-xl mb-4 text-gray-800 dark:text-gray-200">ジャンル</h2>
+										<div className="flex flex-wrap gap-3">
+											{item.genres.map((genre, index) => (
+												<span
+													key={index}
+													className="bg-blue-50 text-blue-700 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-blue-100 hover:shadow-md border border-blue-200"
+												>
+													<Link
+														href={`/doujin/genre/${encodeURIComponent(genre)}`}
+														className="text-base text-blue-600 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500"
+														prefetch={true}
+													>
+														{genre}
+													</Link>
+												</span>
+											))}
+										</div>
+									</div>
+								)}
+
+								{item.makers && item.makers.length > 0 && (
+									<div>
+										<h2 className="font-semibold text-xl mb-4 text-gray-800 dark:text-gray-200">メーカー</h2>
+										<div className="flex flex-wrap gap-3">
+											{item.makers.map((maker, index) => (
+												<span
+													key={index}
+													className="bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-green-100 hover:shadow-md border border-green-200"
+												>
+													{maker}
+												</span>
+											))}
+										</div>
+									</div>
+								)}
+
+								{item.series && item.series.length > 0 && (
+									<div>
+										<h2 className="font-semibold text-xl mb-4 text-gray-800 dark:text-gray-200">シリーズ</h2>
+										<div className="flex flex-wrap gap-3">
+											{item.series.map((series, index) => (
+												<span
+													key={index}
+													className="bg-purple-50 text-purple-700 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-purple-100 hover:shadow-md border border-purple-200"
+												>
+													{series}
+												</span>
+											))}
+										</div>
+									</div>
+								)}
+							</div>
+						</div>
+
+						<div className="mt-8">
+							<UmamiTracking
+								trackingData={{
+									dataType: 'item',
+									from: 'kobetu-exlink-bottom',
+									item: { title: item.title, content_id: item.content_id }
+								}}
+							>
+								<div className="flex justify-center">
+									<Link
+										href={item.affiliate_url}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="inline-flex items-center justify-center text-xl font-semibold text-white bg-gradient-to-r from-pink-500 to-rose-600 dark:from-pink-600 dark:to-rose-700 rounded-sm shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 dark:focus:ring-pink-400 px-8 py-4"
+									>
+										<span className="mr-2 break-words">{item.title}の商品ページへ</span>
+										<ExternalLink className="w-6 h-6 animate-pulse flex-shrink-0" />
+									</Link>
+								</div>
+							</UmamiTracking>
+						</div>
+					</article>
+				</div>
 			</div>
 		)
 	} catch (error) {
 		console.error('Error fetching item data:', error)
-		notFound()
+		return notFound()
 	}
 }
 
-// <PriceDisplay prices={item.prices || {}} />
-// 					<ReviewInfo review_count={item.review_count} review_average={item.review_average} />
-// 					<ProductMetadata genres={item.genres} makers={item.makers} series={item.series} />
-// 					<SampleImages sample_images={item.sample_images} />
+export const revalidate = 86400

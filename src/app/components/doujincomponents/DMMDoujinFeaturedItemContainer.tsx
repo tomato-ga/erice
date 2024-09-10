@@ -65,13 +65,6 @@ const DMMDoujinFeaturedItemCard = ({
 	from: string
 	umamifrom: UmamiTrackingFromType
 }) => {
-	const getImageUrl = (packageImages: unknown): string => {
-		if (packageImages && isValidObject<{ list?: string; large?: string }>(packageImages, ['list', 'large'])) {
-			return packageImages.large || packageImages.list || ''
-		}
-		return ''
-	}
-
 	const formatPrice = (price: unknown): string => {
 		if (typeof price === 'string' || typeof price === 'number') {
 			// 数値を日本円フォーマットに変換
@@ -93,7 +86,7 @@ const DMMDoujinFeaturedItemCard = ({
 				<Link href={`/doujin/itemd/${item.db_id}`}>
 					<div className="relative overflow-hidden bg-gray-100 p-4">
 						<img
-							src={getImageUrl(item.package_images)}
+							src={item.package_images?.large || ''}
 							alt={item.title}
 							className="w-full h-auto min-h-[200px] object-contain"
 						/>
@@ -159,8 +152,6 @@ export default async function DMMDoujinFeaturedItemContainer({
 	umamifrom
 }: DMMDoujinFeaturedItemContainerProps) {
 	const items = await fetchData(endpoint)
-
-	console.log('DMMDoujinFeaturedItemContainer items:', items)
 
 	return (
 		<div className={`bg-gradient-to-r ${bgGradient} shadow-lg p-4 sm:p-4 md:p-8 transition duration-300 ease-in-out`}>
