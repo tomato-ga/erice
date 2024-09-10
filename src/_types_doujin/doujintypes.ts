@@ -11,7 +11,7 @@ const RawDMMItemSchema = z.object({
 	review: z
 		.object({
 			count: z.string().nullable(),
-			average: z.string().nullable()
+			average: z.string().nullable(),
 		})
 		.nullable()
 		.optional(), // review プロパティを optional に変更
@@ -28,7 +28,7 @@ const RawDMMItemSchema = z.object({
 		.object({
 			genre: z.array(z.object({ id: z.number(), name: z.string() })).optional(), // genre を optional に変更
 			series: z.array(z.object({ id: z.number(), name: z.string() })).optional(), // series を optional に変更
-			maker: z.array(z.object({ id: z.number(), name: z.string() })).optional() // maker を optional に変更
+			maker: z.array(z.object({ id: z.number(), name: z.string() })).optional(), // maker を optional に変更
 		})
 		.nullable(),
 	category_name: z.string().nullable(),
@@ -37,11 +37,11 @@ const RawDMMItemSchema = z.object({
 			z.object({
 				date_begin: z.string(),
 				date_end: z.string(),
-				title: z.string()
-			})
+				title: z.string(),
+			}),
 		)
 		.nullable()
-		.optional()
+		.optional(),
 })
 
 // RawDMMItem 型定義
@@ -55,7 +55,7 @@ export const FetchDoujinItemSchema = z.object({
 	affiliate_url: z.string(),
 	package_images: z
 		.object({
-			large: z.string()
+			large: z.string(),
 		})
 		.nullish(),
 	sample_images: z.array(z.object({}).passthrough()).nullish().optional(),
@@ -66,7 +66,7 @@ export const FetchDoujinItemSchema = z.object({
 	genres: z.array(z.object({}).passthrough()).nullish(),
 	makers: z.array(z.object({}).passthrough()).nullish(),
 	series: z.array(z.object({}).passthrough()).nullish(),
-	campaign: z.array(z.object({}).passthrough()).nullish()
+	campaign: z.array(z.object({}).passthrough()).nullish(),
 })
 
 export type FetchDoujinItem = z.infer<typeof FetchDoujinItemSchema>
@@ -76,15 +76,24 @@ export const DoujinKobetuItemSchema = FetchDoujinItemSchema.extend({
 	package_images: z.string(),
 	genres: z.array(z.string()),
 	makers: z.array(z.string()).nullish(),
-	series: z.array(z.string()).nullish()
+	series: z.array(z.string()).nullish(),
 })
 export type DoujinKobetuItem = z.infer<typeof DoujinKobetuItemSchema>
 
 // APIレスポンスのスキーマを定義
 export const DoujinTopApiResponseSchema = z.object({
 	result: z.object({
-		items: z.array(FetchDoujinItemSchema)
-	})
+		items: z.array(FetchDoujinItemSchema),
+	}),
 })
 
 export type DoujinTopApiResponse = z.infer<typeof DoujinTopApiResponseSchema>
+
+export const DoujinGenrePaginationSchema = z.object({
+	db_id: z.number(),
+	content_id: z.string(),
+	title: z.string(),
+	affiliate_url: z.string(),
+	package_images: z.string(),
+})
+export type DoujinGenrePaginationProps = z.infer<typeof DoujinGenrePaginationSchema>
