@@ -7,52 +7,52 @@ interface HomePageProps {
 export default function DoujinHomePage({ searchParams }: HomePageProps) {
 	return (
 		<>
-			<section className="space-y-16 py-12">
+			<section className='space-y-16 py-12'>
 				<DMMDoujinFeaturedItemContainer
-					from="top"
-					bgGradient="bg-gradient-to-r from-blue-50 to-purple-50"
-					endpoint="/api/doujin-get-top-sale-items"
+					from='top'
+					bgGradient='bg-gradient-to-r from-blue-50 to-purple-50'
+					endpoint='/api/doujin-get-top-sale-items'
 					title={titles.sale}
 					linkText={linkTexts.sale}
-					linkHref="/doujin-sale"
-					umamifrom="top-doujin-sale"
-					textGradient="from-blue-500 to-purple-500"
+					linkHref='/doujin-sale'
+					umamifrom='top-doujin-sale'
+					textGradient='from-blue-500 to-purple-500'
 				/>
 
 				<DMMDoujinFeaturedItemContainer
-					from="top"
-					bgGradient="bg-gradient-to-r from-blue-50 to-purple-50"
-					endpoint="/api/doujin-get-top-newrank-items"
+					from='top'
+					bgGradient='bg-gradient-to-r from-blue-50 to-purple-50'
+					endpoint='/api/doujin-get-top-newrank-items'
 					title={titles.newrank}
 					linkText={linkTexts.newrank}
-					linkHref="/doujin-sale"
-					umamifrom="top-doujin-sale"
-					textGradient="from-blue-500 to-purple-500"
+					linkHref='/doujin-sale'
+					umamifrom='top-doujin-sale'
+					textGradient='from-blue-500 to-purple-500'
 				/>
 
 				<DMMDoujinFeaturedItemContainer
-					from="top"
-					bgGradient="bg-gradient-to-r from-blue-50 to-purple-50"
-					endpoint="/api/doujin-get-top-newrelease-items"
+					from='top'
+					bgGradient='bg-gradient-to-r from-blue-50 to-purple-50'
+					endpoint='/api/doujin-get-top-newrelease-items'
 					title={titles.newrelease}
 					linkText={linkTexts.newrelease}
-					linkHref="/doujin-sale"
-					umamifrom="top-doujin-sale"
-					textGradient="from-blue-500 to-purple-500"
+					linkHref='/doujin-sale'
+					umamifrom='top-doujin-sale'
+					textGradient='from-blue-500 to-purple-500'
 				/>
 
 				<DMMDoujinFeaturedItemContainer
-					from="top"
-					bgGradient="bg-gradient-to-r from-blue-50 to-purple-50"
-					endpoint="/api/doujin-get-top-review-items"
+					from='top'
+					bgGradient='bg-gradient-to-r from-blue-50 to-purple-50'
+					endpoint='/api/doujin-get-top-review-items'
 					title={titles.review}
 					linkText={linkTexts.review}
-					linkHref="/doujin-sale"
-					umamifrom="top-doujin-sale"
-					textGradient="from-blue-500 to-purple-500"
+					linkHref='/doujin-sale'
+					umamifrom='top-doujin-sale'
+					textGradient='from-blue-500 to-purple-500'
 				/>
 
-				<DMMDoujinFeaturedItemContainer
+				{/* <DMMDoujinFeaturedItemContainer
 					from="top"
 					bgGradient="bg-gradient-to-r from-blue-50 to-purple-50"
 					endpoint="/api/doujin-get-top-popular-circles-items"
@@ -61,7 +61,7 @@ export default function DoujinHomePage({ searchParams }: HomePageProps) {
 					linkHref="/doujin-sale"
 					umamifrom="top-doujin-sale"
 					textGradient="from-blue-500 to-purple-500"
-				/>
+				/> */}
 			</section>
 		</>
 	)
@@ -73,7 +73,7 @@ const gradients = {
 	feature: 'from-pink-500 to-purple-500',
 	sale: 'from-blue-500 to-purple-500',
 	actress: 'from-blue-500 to-purple-500',
-	genre: 'from-blue-500 to-purple-500'
+	genre: 'from-blue-500 to-purple-500',
 }
 
 const titles = {
@@ -82,7 +82,7 @@ const titles = {
 	review: '評価の高い作品',
 	sale: '限定セール',
 	circle: '人気サークル',
-	genre: 'ジャンル'
+	genre: 'ジャンル',
 }
 
 const linkTexts = {
@@ -91,5 +91,5 @@ const linkTexts = {
 	review: '全ての評価の高い作品を見る',
 	sale: '全ての限定セール商品を見る',
 	circle: '全ての人気サークルを見る',
-	genre: '全てのジャンルを見る'
+	genre: '全てのジャンルを見る',
 }
