@@ -18,7 +18,7 @@ async function fetchTotalCount(): Promise<number> {
 			'Content-Type': 'application/json',
 			'X-API-Key': API_KEY,
 		},
-		cache: 'no-store',
+		cache: 'no-cache',
 	})
 
 	if (!response.ok) {
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 		const idWithoutExtension = params.id.replace('.xml', '')
 		const id = Number.parseInt(idWithoutExtension, 10)
 
-		if (Number.isNaN(id) || id < 0) {
+		if (Number.isNaN(id) || !Number.isInteger(id) || id < 0) {
 			return new NextResponse('Invalid sitemap ID', { status: 400 })
 		}
 
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 			.map(
 				product => `
   <url>
-    <loc>${BASE_URL}/item/${product.id}</loc>
+    <loc>${BASE_URL}/doujin/itemd/${product.id}</loc>
     <lastmod>${product.date}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
