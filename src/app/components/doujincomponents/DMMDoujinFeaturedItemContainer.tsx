@@ -1,17 +1,10 @@
 import { isValidObject } from '@/utils/typeGuards'
 
 import { DoujinTopApiResponse, DoujinTopItem } from '@/_types_doujin/doujintypes'
-import { UmamiTrackingFromType } from '@/types/umamiTypes'
+import { DMMDoujinFeaturedItemType, UmamiTrackingFromType } from '@/types/umamiTypes'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { UmamiTracking } from '../dmmcomponents/UmamiTracking'
-
-type DMMDoujinFeaturedItemType =
-	| '/doujin-sale'
-	| '/doujin-newrank'
-	| '/doujin-newrelease'
-	| '/doujin-popular-circles'
-	| '/doujin-review'
 
 interface DMMDoujinFeaturedItemContainerProps {
 	from: string
@@ -172,13 +165,12 @@ export default async function DMMDoujinFeaturedItemContainer({
 						{title}
 					</span>
 				</h2>
-				{/* <Link
-					href={linkHref}
-					className={`inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r ${textGradient} shadow-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50`}
-				>
+				<Link
+					href={'/doujin' + `${linkHref}`}
+					className={`inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r ${textGradient} shadow-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50`}>
 					{linkText}
-					<ArrowRight className="ml-2 h-5 w-5 animate-bounce" />
-				</Link> */}
+					<ArrowRight className='ml-2 h-5 w-5 animate-bounce' />
+				</Link>
 			</div>
 			<DMMDoujinFeaturedItemList items={items} from={from} type={linkHref} umamifrom={umamifrom} />
 		</div>

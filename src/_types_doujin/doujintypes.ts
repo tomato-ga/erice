@@ -95,3 +95,6 @@ export interface DoujinGenrePaginationProps {
 	package_images: string
 	title: string
 }
+
+export type DoujinItemType = 'newrank' | 'newrelease' | 'review' | 'sale'
+

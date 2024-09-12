@@ -30,16 +30,18 @@ export type UmamiFeatureType =
 	| '/todaynew'
 	| '/debut'
 	| '/feature'
-	| '/doujin-sale'
-	| '/doujin-newrank'
-	| '/doujin-newrelease'
-	| '/doujin-popular-circles'
-	| '/doujin-review'
+
+export type DMMDoujinFeaturedItemType =
+	| '/sale'
+	| '/newrank'
+	| '/newrelease'
+	| '/popular-circles'
+	| '/review'
 
 export type UmamiTrackingData = {
 	dataType: UmamiTrackingDataType
 	from: UmamiTrackingFromType
-	featureType?: UmamiFeatureType
+	featureType?: UmamiFeatureType | DMMDoujinFeaturedItemType
 	item?: Partial<DMMItemMainResponse>
 	actressInfo?: Partial<DMMActressInfo> | null
 	otherData?: Record<string, unknown>

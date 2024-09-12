@@ -16,6 +16,8 @@ interface DMMFeaturedItemContainerProps<T extends DMMFeaturedItemProps> {
 }
 
 async function fetchData<T extends DMMFeaturedItemProps>(endpoint: string): Promise<T[]> {
+	console.log('fetchData endpoint:', endpoint)
+
 	const fetchOptions = { next: { revalidate: 43200 } }
 
 	try {
@@ -124,7 +126,7 @@ export default async function DMMFeaturedItemContainer<T extends DMMFeaturedItem
 }: DMMFeaturedItemContainerProps<T>) {
 	const items = await fetchData<T>(endpoint)
 
-	// console.log('DMMFeaturedItemContainer items:', items)
+	console.log('DMMFeaturedItemContainer items:', items)
 
 	return (
 		<div

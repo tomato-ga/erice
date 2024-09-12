@@ -14,7 +14,7 @@ export default function DoujinHomePage({ searchParams }: HomePageProps) {
 					endpoint='/api/doujin-get-top-sale-items'
 					title={titles.sale}
 					linkText={linkTexts.sale}
-					linkHref='/doujin-sale'
+					linkHref='/sale'
 					umamifrom='top-doujin-sale'
 					textGradient='from-blue-500 to-purple-500'
 				/>
@@ -25,7 +25,7 @@ export default function DoujinHomePage({ searchParams }: HomePageProps) {
 					endpoint='/api/doujin-get-top-newrank-items'
 					title={titles.newrank}
 					linkText={linkTexts.newrank}
-					linkHref='/doujin-sale'
+					linkHref='/newrank'
 					umamifrom='top-doujin-sale'
 					textGradient='from-blue-500 to-purple-500'
 				/>
@@ -36,7 +36,7 @@ export default function DoujinHomePage({ searchParams }: HomePageProps) {
 					endpoint='/api/doujin-get-top-newrelease-items'
 					title={titles.newrelease}
 					linkText={linkTexts.newrelease}
-					linkHref='/doujin-sale'
+					linkHref='/newrelease'
 					umamifrom='top-doujin-sale'
 					textGradient='from-blue-500 to-purple-500'
 				/>
@@ -47,7 +47,7 @@ export default function DoujinHomePage({ searchParams }: HomePageProps) {
 					endpoint='/api/doujin-get-top-review-items'
 					title={titles.review}
 					linkText={linkTexts.review}
-					linkHref='/doujin-sale'
+					linkHref='/review'
 					umamifrom='top-doujin-sale'
 					textGradient='from-blue-500 to-purple-500'
 				/>
