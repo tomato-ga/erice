@@ -37,7 +37,22 @@ const Sidebar: React.FC = () => {
 								<div className='text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-500 text-extrabold text-xl'>
 									えろぉアンテナ
 								</div>
-								<div className='text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-pink-500 text-extrabold text-xl'>
+							</Link>
+						</li>
+						<li>
+							<Link
+								href='/doujin'
+								className='flex items-center text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md p-2 transition-colors duration-200 font-semibold'>
+								<svg
+									className='w-5 h-5 mr-3'
+									fill='none'
+									stroke='currentColor'
+									viewBox='0 0 24 24'
+									xmlns='http://www.w3.org/2000/svg'>
+									<title>サークルアイコン</title>
+									<circle cx='12' cy='12' r='10' strokeWidth='2' />
+								</svg>
+								<div className='text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-500 text-extrabold text-xl'>
 									同人トップページ
 								</div>
 							</Link>
