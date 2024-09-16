@@ -37,6 +37,7 @@ const RelatedItemsScroll: React.FC<RelatedItemsScrollProps> = ({ items, itemType
 		sale: 'from-blue-500 to-purple-500',
 		actress: 'from-blue-500 to-purple-500',
 		genre: 'from-blue-500 to-purple-500',
+		last7days: 'from-yellow-500 to-red-500',
 	}
 
 	const scroll = (direction: 'left' | 'right') => {
