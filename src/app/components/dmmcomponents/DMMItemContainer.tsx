@@ -86,6 +86,7 @@ export default async function DMMItemContainer({
 		sale: 'from-blue-500 to-purple-500',
 		actress: 'from-blue-500 to-purple-500',
 		genre: 'from-blue-500 to-purple-500',
+		last7days: 'from-yellow-500 to-red-500',
 	}
 
 	const titles = {
@@ -95,6 +96,7 @@ export default async function DMMItemContainer({
 		sale: '限定セール',
 		actress: 'アクトレス',
 		genre: 'ジャンル',
+		last7days: '過去7日間の新作',
 	}
 
 	const linkTexts = {
@@ -104,14 +106,17 @@ export default async function DMMItemContainer({
 		sale: '全ての限定セール商品を見る',
 		actress: '全てのアクトレスを見る',
 		genre: '全てのジャンルを見る',
+		last7days: '全ての過去7日間の新作を見る',
 	}
 
 	return (
-		<div className={`${bgGradient} shadow-lg p-4 sm:p-4 md:p-8 transition duration-300 ease-in-out`}>
+		<div
+			className={`${bgGradient} shadow-lg p-4 sm:p-4 md:p-8 transition duration-300 ease-in-out`}>
 			{from !== 'only' && (
 				<div className='text-center mb-8'>
 					<h2 className='text-4xl font-extrabold mb-4'>
-						<span className={`text-transparent bg-clip-text bg-gradient-to-r ${gradients[itemType]}`}>
+						<span
+							className={`text-transparent bg-clip-text bg-gradient-to-r ${gradients[itemType]}`}>
 							{titles[itemType]}
 						</span>
 					</h2>
