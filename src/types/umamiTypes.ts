@@ -1,8 +1,16 @@
 import { z } from 'zod'
-import { DMMItemMainResponseSchema, DMMItemMainResponse } from './dmmitemzodschema'
 import { DMMActressInfo } from './APItypes'
+import { DMMItemMainResponse, DMMItemMainResponseSchema } from './dmmitemzodschema'
 
-export type UmamiTrackingDataType = 'item' | 'actress' | 'combined' | 'other' | 'actress-name' | 'genre' | 'antenna'
+export type UmamiTrackingDataType =
+	| 'item'
+	| 'actress'
+	| 'combined'
+	| 'other'
+	| 'actress-name'
+	| 'genre'
+	| 'antenna'
+	| 'doujin-item'
 export type UmamiTrackingFromType =
 	| 'top-sale'
 	| 'top-todaynew'
@@ -25,11 +33,7 @@ export type UmamiTrackingFromType =
 	| 'top-doujin-sale'
 	| string
 
-export type UmamiFeatureType =
-	| '/sale'
-	| '/todaynew'
-	| '/debut'
-	| '/feature'
+export type UmamiFeatureType = '/sale' | '/todaynew' | '/debut' | '/feature'
 
 export type DMMDoujinFeaturedItemType =
 	| '/sale'
@@ -55,7 +59,16 @@ export interface UmamiTrackingProps {
 }
 
 export const UmamiTrackingDataSchema = z.object({
-	dataType: z.enum(['item', 'actress', 'combined', 'other', 'actress-name', 'genre', 'antenna']),
+	dataType: z.enum([
+		'item',
+		'actress',
+		'combined',
+		'other',
+		'actress-name',
+		'genre',
+		'antenna',
+		'doujin-item',
+	]),
 	from: z.enum([
 		'top-sale',
 		'top-todaynew',
@@ -75,7 +88,7 @@ export const UmamiTrackingDataSchema = z.object({
 		'antenna-post-list',
 		'antenna-postpage-detail',
 		'newdebutpage-item',
-		'top-doujin-sale'
+		'top-doujin-sale',
 	]),
 	featureType: z
 		.enum([
@@ -87,13 +100,13 @@ export const UmamiTrackingDataSchema = z.object({
 			'/doujin-newrank',
 			'/doujin-newrelease',
 			'/doujin-popular-circles',
-			'/doujin-review'
+			'/doujin-review',
 		])
 		.optional(),
 	item: z
 		.object({
 			content_id: z.string(),
-			title: z.string()
+			title: z.string(),
 		})
 		.partial()
 		.optional(),
@@ -102,13 +115,13 @@ export const UmamiTrackingDataSchema = z.object({
 			data: z.array(
 				z.object({
 					actress_id: z.string(),
-					actress_name: z.string()
-				})
-			)
+					actress_name: z.string(),
+				}),
+			),
 		})
 		.nullable()
 		.optional(),
-	otherData: z.record(z.unknown()).optional()
+	otherData: z.record(z.unknown()).optional(),
 })
 
 export function validateUmamiTrackingData(data: unknown): data is UmamiTrackingData {

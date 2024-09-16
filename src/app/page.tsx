@@ -109,6 +109,7 @@ const titles = {
 	sale: '限定セール',
 	actress: 'アクトレス',
 	genre: 'ジャンル',
+	last7days: '過去7日間の新作',
 }
 
 const linkTexts = {
@@ -118,4 +119,5 @@ const linkTexts = {
 	sale: '全ての限定セール商品を見る',
 	actress: '全てのアクトレスを見る',
 	genre: '全てのジャンルを見る',
+	last7days: '全ての過去7日間の新作を見る',
 }
