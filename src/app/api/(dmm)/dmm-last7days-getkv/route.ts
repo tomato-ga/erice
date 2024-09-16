@@ -3,16 +3,7 @@ import { revalidateTag } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 
 interface ApiResponse {
-	request: {
-		parameters: {
-			[key: string]: string
-		}
-	}
 	result: {
-		status: number
-		result_count: number
-		total_count: number
-		first_position: number
 		items: DMMItem[]
 	}
 }
@@ -41,16 +32,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 		)
 	}
 
-	// 次の0時までの秒数を計算する関数
-	const getSecondsUntilMidnight = () => {
-		const now = new Date()
-		const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
-		return Math.floor((tomorrow.getTime() - now.getTime()) / 1000)
-	}
-
 	try {
 		// console.log(`Fetching data from ${WORKER_URL}`)
-		const response = await fetch(`${WORKER_URL}/today-new-items`, {
+		const response = await fetch(`${WORKER_URL}/last-7days-items`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',

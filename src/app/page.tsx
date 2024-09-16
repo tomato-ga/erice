@@ -38,6 +38,17 @@ export default function HomePage({ searchParams }: HomePageProps) {
 				<DMMFeaturedItemContainer
 					from='top'
 					bgGradient='bg-gradient-to-r from-yellow-50 to-red-50'
+					endpoint='/api/dmm-last7days-getkv'
+					title={titles.debut}
+					linkText={linkTexts.debut}
+					linkHref='/last7days'
+					umamifrom='top-debut'
+					textGradient='from-yellow-500 to-red-500'
+				/>
+
+				<DMMFeaturedItemContainer
+					from='top'
+					bgGradient='bg-gradient-to-r from-yellow-50 to-red-50'
 					endpoint='/api/dmm-debut-getkv'
 					title={titles.debut}
 					linkText={linkTexts.debut}

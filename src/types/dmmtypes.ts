@@ -219,9 +219,8 @@ export interface DMMBaseItem {
 	date?: string
 }
 
-export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale' | 'actress' | 'genre'
+export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale' | 'actress' | 'genre' | 'last7days'
 export type CategoryType = 'style' | 'type'
-
 
 export interface DMMFeaturedItemProps extends DMMItemProps {
 	salecount?: string

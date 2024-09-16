@@ -21,6 +21,7 @@ export default function DMMGenericPage({ params }: { params: { itemType: DoujinI
 				return '/api/doujin-get-top-review-items'
 			case 'sale':
 				return '/api/doujin-get-top-sale-items'
+
 		}
 	}
 

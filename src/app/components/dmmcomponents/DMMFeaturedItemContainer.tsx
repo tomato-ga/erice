@@ -10,7 +10,7 @@ interface DMMFeaturedItemContainerProps<T extends DMMFeaturedItemProps> {
 	endpoint: string
 	title: string
 	linkText: string
-	linkHref: '/sale' | '/todaynew' | '/debut' | '/feature'
+	linkHref: '/sale' | '/todaynew' | '/debut' | '/feature' | '/last7days'
 	textGradient: string
 	umamifrom: UmamiTrackingFromType
 }
@@ -150,3 +150,5 @@ export default async function DMMFeaturedItemContainer<T extends DMMFeaturedItem
 }
 
 export const revalidate = 43200
+// 1日は24時間、1時間は60分、1分は60秒なので、
+// 1日 = 24時間 * 60分/時間 * 60秒/分 = 86400秒

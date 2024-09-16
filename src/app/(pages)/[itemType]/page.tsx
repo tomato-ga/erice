@@ -16,6 +16,7 @@ export default function DMMGenericPage({ params }: { params: { itemType: string 
 		sale: '限定セール',
 		actress: 'アクトレス',
 		genre: 'ジャンル',
+		last7days: '過去7日間の新作',
 	}
 
 	const gradients: Record<ItemType, { bg: string; text: string }> = {
@@ -25,6 +26,7 @@ export default function DMMGenericPage({ params }: { params: { itemType: string 
 		sale: { bg: 'from-blue-50 to-purple-50', text: 'from-blue-500 to-purple-500' },
 		actress: { bg: 'from-blue-50 to-purple-50', text: 'from-red-500 to-blue-500' },
 		genre: { bg: 'from-blue-50 to-purple-50', text: 'from-red-500 to-blue-500' },
+		last7days: { bg: 'from-yellow-50 to-red-50', text: 'from-yellow-500 to-red-500' },
 	}
 
 	if (!Object.keys(pageTitles).includes(itemType)) {
