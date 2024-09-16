@@ -39,10 +39,10 @@ export default function HomePage({ searchParams }: HomePageProps) {
 					from='top'
 					bgGradient='bg-gradient-to-r from-yellow-50 to-red-50'
 					endpoint='/api/dmm-last7days-getkv'
-					title={titles.debut}
-					linkText={linkTexts.debut}
+					title={titles.last7days}
+					linkText={linkTexts.last7days}
 					linkHref='/last7days'
-					umamifrom='top-debut'
+					umamifrom='top-last7days'
 					textGradient='from-yellow-500 to-red-500'
 				/>
 

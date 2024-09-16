@@ -33,7 +33,9 @@ export default function DMMGenericPage({ params }: { params: { itemType: string 
 		return (
 			<div className='container mx-auto px-4 py-12'>
 				<h1 className='text-3xl font-bold text-red-600 text-center mb-4'>無効な itemType です</h1>
-				<p className='text-center'>有効な itemType は `todaynew`, `debut`, `feature`, `sale` です。</p>
+				<p className='text-center'>
+					有効な itemType は `todaynew`, `debut`, `feature`, `sale` です。
+				</p>
 			</div>
 		)
 	}
@@ -47,7 +49,7 @@ export default function DMMGenericPage({ params }: { params: { itemType: string 
 					endpoint={`/api/dmm-${itemType}-getkv`}
 					title={pageTitles[itemType]}
 					linkText='すべて見る'
-					linkHref={`/${itemType}` as '/sale' | '/todaynew' | '/debut' | '/feature'}
+					linkHref={`/${itemType}` as '/sale' | '/todaynew' | '/debut' | '/feature' | '/last7days'}
 					textGradient={gradients[itemType].text}
 					umamifrom={`only-${itemType}`}
 				/>
