@@ -1,3 +1,4 @@
+// components/ItemDetails.tsx
 import {
 	generateRefinedProfileDescription,
 	parseDetails,
@@ -13,6 +14,14 @@ import { fetchActressProfile, fetchItemDetailByContentId } from './fetch/itemFet
 interface ItemDetailsProps {
 	contentId: string
 	dbId: number
+}
+
+const parseActresses = (actressString: string | null | undefined): string[] => {
+	if (!actressString) return []
+	return actressString
+		.split(',')
+		.map(name => name.trim())
+		.filter(name => name.length > 0)
 }
 
 const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActressProfile }) => {
@@ -42,7 +51,7 @@ const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActress
 				{/* 女優名をリンクにする */}
 				<h2 className='text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400'>
 					<Link href={`/actressprofile/${encodeURIComponent(actress.name)}`}>
-						{actress.name}のプロフィール
+						この動画の出演者「{actress.name}」のプロフィール
 					</Link>
 				</h2>
 				<div className='flex flex-col lg:flex-row lg:space-x-8'>
@@ -100,20 +109,41 @@ const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActress
 	)
 }
 
-export default async function ItemDetails({ contentId, dbId }: ItemDetailsProps) {
-	// TODO 複数の女優が存在する場合は全て取得する
-	const itemDetailPromise = fetchItemDetailByContentId(dbId)
+const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
+	const itemDetail = await fetchItemDetailByContentId(dbId)
 
-	const actressProfileDataPromise = itemDetailPromise.then(detail =>
-		detail?.actress ? fetchActressProfile(detail.actress) : null,
+	if (!itemDetail) {
+		return null
+	}
+
+	// 女優名を解析（単一またはカンマ区切り）
+	const actresses = parseActresses(itemDetail.actress)
+
+	if (actresses.length === 0) {
+		return null
+	}
+
+	// 各女優のプロフィールをフェッチ
+	const actressProfileDataPromises = actresses.map((actressName: string) =>
+		fetchActressProfile(actressName),
+	)
+	const actressProfilesData = await Promise.all(actressProfileDataPromises)
+
+	// フィルタリング: null を除去
+	const validActressProfiles = actressProfilesData.filter(
+		(profile): profile is DMMActressProfile => profile !== null && profile.actress !== undefined,
 	)
 
-	const [itemDetail, actressProfileData] = await Promise.all([
-		itemDetailPromise,
-		actressProfileDataPromise,
-	])
+	// 重要なデータを持つプロファイルのみ
+	const hasEssentialData = (data: DMMActressProfile | null | undefined) => {
+		if (!data || !data.actress) return false
+		const { birthday, blood_type, hobby, prefectures, name } = data.actress
+		return birthday || blood_type || hobby || prefectures || (name && name.trim() !== '')
+	}
 
-	console.log('actressProfileData', actressProfileData)
+	const essentialActressProfiles = validActressProfiles.filter((profile: DMMActressProfile) =>
+		hasEssentialData(profile),
+	)
 
 	// プレースホルダー画像かどうかをチェックする関数
 	const isPlaceholderImage = (imageUrl: string | null | undefined) => {
@@ -121,28 +151,30 @@ export default async function ItemDetails({ contentId, dbId }: ItemDetailsProps)
 		return imageUrl.includes('printing.jpg')
 	}
 
-	// 少なくとも1つの重要なフィールドが存在するかをチェック
-	const hasEssentialData = (data: DMMActressProfile | null | undefined) => {
-		if (!data || !data.actress) return false
-		const { birthday, blood_type, hobby, prefectures, name } = data.actress
-		return birthday || blood_type || hobby || prefectures || (name && name.trim() !== '')
-	}
-
 	return (
 		<>
-			{itemDetail && (
+			{itemDetail.actress && (
 				<Suspense fallback={<LoadingSpinner />}>
-					<ActressRelatedItemsTimeLine actressName={itemDetail.actress || ''} />
+					{/* 女優ごとに関連アイテムのタイムラインを表示 */}
+					{actresses.map((actressName: string, index: number) => (
+						<ActressRelatedItemsTimeLine key={index} actressName={actressName} />
+					))}
 				</Suspense>
 			)}
 
-			{actressProfileData?.actress &&
-				!isPlaceholderImage(actressProfileData.actress.image_url_large) &&
-				hasEssentialData(actressProfileData) && (
-					<Suspense fallback={<LoadingSpinner />}>
-						<ActressProfile actressProfileData={actressProfileData} />
-					</Suspense>
+			{/* 各女優のプロフィールを表示 */}
+			<div className='grid grid-cols-1 gap-8 mt-8'>
+				{essentialActressProfiles.map(
+					(profile: DMMActressProfile) =>
+						!isPlaceholderImage(profile.actress.image_url_large) && (
+							<Suspense key={profile.actress.name} fallback={<LoadingSpinner />}>
+								<ActressProfile actressProfileData={profile} />
+							</Suspense>
+						),
 				)}
+			</div>
 		</>
 	)
 }
+
+export default ItemDetails
