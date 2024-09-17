@@ -16,6 +16,10 @@ interface ItemDetailsProps {
 }
 
 const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActressProfile }) => {
+	if (!actressProfileData || !actressProfileData.actress) {
+		return null
+	}
+
 	const { actress } = actressProfileData
 	const details = parseDetails(actress.details)
 	const description = generateRefinedProfileDescription(actressProfileData)
@@ -86,7 +90,7 @@ export default async function ItemDetails({ contentId, dbId }: ItemDetailsProps)
 	const itemDetailPromise = fetchItemDetailByContentId(dbId)
 
 	const actressProfileDataPromise = itemDetailPromise.then(detail =>
-		detail ? fetchActressProfile(detail.actress || '') : null,
+		detail?.actress ? fetchActressProfile(detail.actress) : null,
 	)
 
 	const [itemDetail, actressProfileData] = await Promise.all([
@@ -96,6 +100,19 @@ export default async function ItemDetails({ contentId, dbId }: ItemDetailsProps)
 
 	console.log('actressProfileData', actressProfileData)
 
+	// プレースホルダー画像かどうかをチェックする関数
+	const isPlaceholderImage = (imageUrl: string | null | undefined) => {
+		if (!imageUrl) return true
+		return imageUrl.includes('printing.jpg')
+	}
+
+	// 少なくとも1つの重要なフィールドが存在するかをチェック
+	const hasEssentialData = (data: DMMActressProfile | null | undefined) => {
+		if (!data || !data.actress) return false
+		const { birthday, blood_type, hobby, prefectures, name } = data.actress
+		return birthday || blood_type || hobby || prefectures || (name && name.trim() !== '')
+	}
+
 	return (
 		<>
 			{itemDetail && (
@@ -104,11 +121,13 @@ export default async function ItemDetails({ contentId, dbId }: ItemDetailsProps)
 				</Suspense>
 			)}
 
-			{/* {actressProfileData && (
-				<Suspense fallback={<LoadingSpinner />}>
-					<ActressProfile actressProfileData={actressProfileData} />
-				</Suspense>
-			)} */}
+			{actressProfileData?.actress &&
+				!isPlaceholderImage(actressProfileData.actress.image_url_large) &&
+				hasEssentialData(actressProfileData) && (
+					<Suspense fallback={<LoadingSpinner />}>
+						<ActressProfile actressProfileData={actressProfileData} />
+					</Suspense>
+				)}
 		</>
 	)
 }
