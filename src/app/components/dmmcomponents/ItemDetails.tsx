@@ -39,16 +39,22 @@ const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActress
 	return (
 		<div className='bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 shadow-2xl rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl mt-8'>
 			<div className='p-8'>
+				{/* 女優名をリンクにする */}
 				<h2 className='text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400'>
-					{actress.name}のプロフィール
+					<Link href={`/actressprofile/${encodeURIComponent(actress.name)}`}>
+						{actress.name}のプロフィール
+					</Link>
 				</h2>
 				<div className='flex flex-col lg:flex-row lg:space-x-8'>
+					{/* 画像をリンクにする */}
 					<div className='lg:w-1/3 mb-6 lg:mb-0'>
-						<img
-							src={actress.image_url_large || '/placeholder-image.jpg'}
-							alt={actress.name}
-							className='w-full object-contain aspect-[3/4] transition-transform'
-						/>
+						<Link href={`/actressprofile/${encodeURIComponent(actress.name)}`}>
+							<img
+								src={actress.image_url_large || '/placeholder-image.jpg'}
+								alt={actress.name}
+								className='w-full object-contain aspect-[3/4] transition-transform'
+							/>
+						</Link>
 					</div>
 					<div className='lg:w-2/3'>
 						<div className='overflow-x-auto'>
@@ -81,12 +87,21 @@ const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActress
 						</div>
 					</div>
 				</div>
+				{/* プロフィールページへ遷移する文言を追加 */}
+				<div className='mt-4 text-center'>
+					<Link
+						href={`/actressprofile/${encodeURIComponent(actress.name)}`}
+						className='text-blue-500 hover:underline'>
+						詳細プロフィールを見る
+					</Link>
+				</div>
 			</div>
 		</div>
 	)
 }
 
 export default async function ItemDetails({ contentId, dbId }: ItemDetailsProps) {
+	// TODO 複数の女優が存在する場合は全て取得する
 	const itemDetailPromise = fetchItemDetailByContentId(dbId)
 
 	const actressProfileDataPromise = itemDetailPromise.then(detail =>
