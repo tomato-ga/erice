@@ -9,6 +9,9 @@ interface DMMItemContainerProps {
 	itemType: ItemType
 	from: string
 	bgGradient?: string
+	title: string
+	textGradient: string
+	umamifrom: string
 }
 
 // MEMO todaynewだけキャッシュ期限を付与
@@ -34,6 +37,11 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 		}
 		case 'sale': {
 			endpoint = '/api/dmm-sale-getkv'
+			fetchOptions = { next: { revalidate: 43200 } }
+			break
+		}
+		case 'last7days': {
+			endpoint = '/api/dmm-last7days-getkv'
 			fetchOptions = { next: { revalidate: 43200 } }
 			break
 		}
@@ -70,6 +78,9 @@ export default async function DMMItemContainer({
 	itemType,
 	from,
 	bgGradient,
+	title,
+	textGradient,
+	umamifrom,
 }: DMMItemContainerProps) {
 	console.log('DMMItemContainer itemType: ', itemType)
 
@@ -115,27 +126,23 @@ export default async function DMMItemContainer({
 			{from !== 'only' && (
 				<div className='text-center mb-8'>
 					<h2 className='text-4xl font-extrabold mb-4'>
-						<span
-							className={`text-transparent bg-clip-text bg-gradient-to-r ${gradients[itemType]}`}>
-							{titles[itemType]}
+						<span className={`text-transparent bg-clip-text bg-gradient-to-r ${textGradient}`}>
+							{title}
 						</span>
 					</h2>
 					<Link
 						href={`/${itemType}`}
-						className={`inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r ${
-							gradients[itemType]
-						}  shadow-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-${
-							gradients[itemType].split('-')[1]
+						className={`inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r ${textGradient}  shadow-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-${
+							textGradient.split('-')[1]
 						}-400 focus:ring-opacity-50`}>
 						{linkTexts[itemType]}
 						<ArrowRight className='ml-2 h-5 w-5 animate-bounce' />
 					</Link>
 				</div>
 			)}
-			<DMMItemList items={items} itemType={itemType} from={from} />
+			<DMMItemList items={items} itemType={itemType} from={umamifrom} />
 		</div>
 	)
 }
-
 // // 12時間キャッシュ
 // export const revalidate = 43200

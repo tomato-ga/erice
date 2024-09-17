@@ -48,7 +48,7 @@ const DMMFeaturedItemCard = <T extends DMMFeaturedItemProps>({
 	umamifrom,
 }: {
 	item: T
-	type: '/sale' | '/todaynew' | '/debut' | '/feature'
+	type: '/sale' | '/todaynew' | '/debut' | '/feature' | '/last7days' // '/last7days' を追加
 	from: string
 	umamifrom: UmamiTrackingFromType
 }) => (
@@ -97,19 +97,46 @@ const DMMFeaturedItemList = <T extends DMMFeaturedItemProps>({
 	type: string
 	umamifrom: UmamiTrackingFromType
 }) => {
-	const displayCount = from === 'top' ? 8 : items.length
+	// linkHref が /last7days の場合、表示数を16にする
+	const displayCount = from === 'top' ? 8 : type === '/last7days' ? 16 : items.length
+	// items の要素数が displayCount より少ない場合は、items の要素数を使用する
+	const sliceCount = Math.min(displayCount, items.length)
+
+	// Fisher-Yates shuffle アルゴリズムを使用して items 配列をシャッフルする関数
+	const shuffleArray = (array: T[]) => {
+		for (let i = array.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1))
+			;[array[i], array[j]] = [array[j], array[i]]
+		}
+		return array
+	}
+
 	return (
 		<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-			{items.slice(0, displayCount).map(item => (
-				<div key={item.content_id}>
-					<DMMFeaturedItemCard
-						item={item}
-						from={from}
-						type={type as '/sale' | '/todaynew' | '/debut' | '/feature'}
-						umamifrom={umamifrom}
-					/>
-				</div>
-			))}
+			{/* linkHref が /last7days の場合、items をシャッフルして先頭から 8 個の要素��選択する */}
+			{type === '/last7days'
+				? shuffleArray(items)
+						.slice(0, 8)
+						.map(item => (
+							<div key={item.content_id}>
+								<DMMFeaturedItemCard
+									item={item}
+									from={from}
+									type={type as '/sale' | '/todaynew' | '/debut' | '/feature' | '/last7days'}
+									umamifrom={umamifrom}
+								/>
+							</div>
+						))
+				: items.slice(0, sliceCount).map(item => (
+						<div key={item.content_id}>
+							<DMMFeaturedItemCard
+								item={item}
+								from={from}
+								type={type as '/sale' | '/todaynew' | '/debut' | '/feature' | '/last7days'}
+								umamifrom={umamifrom}
+							/>
+						</div>
+					))}
 		</div>
 	)
 }

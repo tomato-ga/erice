@@ -40,6 +40,23 @@ export default function DMMGenericPage({ params }: { params: { itemType: string 
 		)
 	}
 
+	// last7days ページ用の特別な処理
+	if (itemType === 'last7days') {
+		return (
+			<div className='w-full'>
+				<DMMItemContainer
+					itemType={itemType}
+					from='only'
+					bgGradient={`bg-gradient-to-r ${gradients[itemType].bg}`}
+					title={pageTitles[itemType]}
+					textGradient={gradients[itemType].text}
+					umamifrom={`only-${itemType}`}
+				/>
+			</div>
+		)
+	}
+
+	// その他のページ用の既存の処理
 	return (
 		<div className='w-full'>
 			<div className='w-full'>
