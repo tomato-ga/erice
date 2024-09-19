@@ -1,6 +1,6 @@
 'use client'
 
-import {  ExtendedDMMItem, ItemType } from '@/types/dmmtypes'
+import { ExtendedDMMItem, ItemType } from '@/types/dmmtypes'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -38,6 +38,7 @@ const RelatedItemsScroll: React.FC<RelatedItemsScrollProps> = ({ items, itemType
 		actress: 'from-blue-500 to-purple-500',
 		genre: 'from-blue-500 to-purple-500',
 		last7days: 'from-yellow-500 to-red-500',
+		top100: 'from-purple-500 to-pink-500',
 	}
 
 	const scroll = (direction: 'left' | 'right') => {
@@ -75,7 +76,11 @@ const RelatedItemsScroll: React.FC<RelatedItemsScrollProps> = ({ items, itemType
 						<div key={item.db_id} className='flex-none w-64'>
 							<Link href={`/item/${item.db_id}`}>
 								<div className='bg-white overflow-hidden'>
-									<img src={getImageUrl(item)} alt={item.title} className='w-full h-40 object-contain' />
+									<img
+										src={getImageUrl(item)}
+										alt={item.title}
+										className='w-full h-40 object-contain'
+									/>
 									<div className='p-4'>
 										<h4 className='text-sm font-semibold mb-2 line-clamp-2'>{item.title}</h4>
 										<p className='text-xs text-gray-600'>
