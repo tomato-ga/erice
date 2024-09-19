@@ -16,6 +16,7 @@ export default function DMMGenericPage() {
 		last7days: '過去7日間の新作',
 		actress: 'アクトレス',
 		genre: 'ジャンル',
+		top100: 'TOP',
 	}
 
 	const gradients: Record<ItemType, { bg: string; text: string }> = {
@@ -26,6 +27,7 @@ export default function DMMGenericPage() {
 		actress: { bg: 'from-blue-50 to-purple-50', text: 'from-red-500 to-blue-500' },
 		genre: { bg: 'from-blue-50 to-purple-50', text: 'from-red-500 to-blue-500' },
 		last7days: { bg: 'from-yellow-50 to-red-50', text: 'from-yellow-500 to-red-500' },
+		top100: { bg: 'from-purple-50 to-pink-50', text: 'from-purple-500 to-pink-500' },
 	}
 
 	if (!Object.keys(pageTitles).includes(itemType)) {

@@ -19,7 +19,7 @@ export default function DMMGenericPage({ params }: { params: { itemType: string 
 		actress: 'アクトレス',
 		genre: 'ジャンル',
 		last7days: '過去7日間の新作',
-		top100: 'Top 100 キーワード',
+		top100: 'TOP',
 	}
 
 	const gradients: Record<ItemType, { bg: string; text: string }> = {
