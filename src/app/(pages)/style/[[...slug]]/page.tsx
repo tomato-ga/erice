@@ -124,9 +124,5 @@ function LoadingSpinner() {
 }
 
 function ErrorDisplay({ message }: { message: string }) {
-	return (
-		<div className='text-center text-red-600 py-8' role='alert'>
-			<p>{message}</p>
-		</div>
-	)
+	return <p className='text-center text-red-600 py-8'>{message}</p>
 }
