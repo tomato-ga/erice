@@ -14,7 +14,7 @@ export type UmamiTrackingDataType =
 export type UmamiTrackingFromType =
 	| 'top-sale'
 	| 'top-todaynew'
-	| 'top-debut' // この行を追加
+	| 'top-debut'
 	| 'top-feature'
 	| 'top-new-actress'
 	| 'top-popular-actress'
@@ -42,7 +42,7 @@ export type DMMDoujinFeaturedItemType =
 	| '/popular-circles'
 	| '/review'
 
-export type CombinedFeatureType = UmamiFeatureType | DMMDoujinFeaturedItemType
+export type CombinedFeatureType = UmamiFeatureType | DMMDoujinFeaturedItemType | '/top100'
 
 export type UmamiTrackingData = {
 	dataType: UmamiTrackingDataType
@@ -104,6 +104,7 @@ export const UmamiTrackingDataSchema = z.object({
 			'/doujin-newrelease',
 			'/doujin-popular-circles',
 			'/doujin-review',
+			'/top100',
 		])
 		.optional(),
 	item: z

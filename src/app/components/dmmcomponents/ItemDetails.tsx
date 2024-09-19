@@ -70,7 +70,7 @@ const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActress
 							<table className='w-full text-left text-sm sm:text-base'>
 								<tbody>
 									{renderProfileRow('生年月日', actress.birthday, 'birthday')}
-									{renderProfileRow('血液型', actress.blood_type, 'blood_type')}
+									{renderProfileRow('血��型', actress.blood_type, 'blood_type')}
 									{renderProfileRow('出身地', actress.prefectures, 'prefectures')}
 									{renderProfileRow('趣味', actress.hobby, 'hobby')}
 									{renderProfileRow(

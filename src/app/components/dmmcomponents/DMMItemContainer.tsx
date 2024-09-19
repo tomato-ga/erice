@@ -90,17 +90,18 @@ export default async function DMMItemContainer({
 		return null
 	}
 
-	const gradients = {
-		todaynew: 'from-green-500 to-blue-500',
-		debut: 'from-yellow-500 to-red-500',
-		feature: 'from-pink-500 to-purple-500',
-		sale: 'from-blue-500 to-purple-500',
-		actress: 'from-blue-500 to-purple-500',
-		genre: 'from-blue-500 to-purple-500',
-		last7days: 'from-yellow-500 to-red-500',
+	const gradients: Record<ItemType, { bg: string; text: string }> = {
+		todaynew: { bg: 'from-green-50 to-blue-50', text: 'from-green-500 to-blue-500' },
+		debut: { bg: 'from-yellow-50 to-red-50', text: 'from-yellow-500 to-red-500' },
+		feature: { bg: 'from-pink-50 to-purple-50', text: 'from-pink-500 to-purple-500' },
+		sale: { bg: 'from-blue-50 to-purple-50', text: 'from-blue-500 to-purple-500' },
+		actress: { bg: 'from-blue-50 to-purple-50', text: 'from-red-500 to-blue-500' },
+		genre: { bg: 'from-blue-50 to-purple-50', text: 'from-red-500 to-blue-500' },
+		last7days: { bg: 'from-yellow-50 to-red-50', text: 'from-yellow-500 to-red-500' },
+		top100: { bg: 'from-purple-50 to-pink-50', text: 'from-purple-500 to-pink-500' }, // 追加
 	}
 
-	const titles = {
+	const titles: Record<ItemType, string> = {
 		todaynew: '今日配信の新作',
 		debut: 'デビュー作品',
 		feature: '注目作品',
@@ -108,9 +109,10 @@ export default async function DMMItemContainer({
 		actress: 'アクトレス',
 		genre: 'ジャンル',
 		last7days: '過去7日間の新作',
+		top100: 'Top 100 キーワード', // 追加
 	}
 
-	const linkTexts = {
+	const linkTexts: Record<ItemType, string> = {
 		todaynew: '全ての新作商品を見る',
 		debut: '全てのデビュー作品を見る',
 		feature: '全ての注目作品を見る',
@@ -118,6 +120,7 @@ export default async function DMMItemContainer({
 		actress: '全てのアクトレスを見る',
 		genre: '全てのジャンルを見る',
 		last7days: '全ての過去7日間の新作を見る',
+		top100: '全てのTop 100を見る', // 追加
 	}
 
 	return (

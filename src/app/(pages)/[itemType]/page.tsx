@@ -1,3 +1,5 @@
+// /Volumes/SSD_1TB/erice2/erice/src/app/(pages)/[itemType]/page.tsx
+
 import DMMFeaturedItemContainer from '@/app/components/dmmcomponents/DMMFeaturedItemContainer'
 import DMMItemContainer from '@/app/components/dmmcomponents/DMMItemContainer'
 import { ItemType } from '@/types/dmmtypes'
@@ -17,6 +19,7 @@ export default function DMMGenericPage({ params }: { params: { itemType: string 
 		actress: 'アクトレス',
 		genre: 'ジャンル',
 		last7days: '過去7日間の新作',
+		top100: 'Top 100 キーワード',
 	}
 
 	const gradients: Record<ItemType, { bg: string; text: string }> = {
@@ -26,7 +29,8 @@ export default function DMMGenericPage({ params }: { params: { itemType: string 
 		sale: { bg: 'from-blue-50 to-purple-50', text: 'from-blue-500 to-purple-500' },
 		actress: { bg: 'from-blue-50 to-purple-50', text: 'from-red-500 to-blue-500' },
 		genre: { bg: 'from-blue-50 to-purple-50', text: 'from-red-500 to-blue-500' },
-		last7days: { bg: 'from-yellow-50 to-red-50', text: 'from-yellow-500 to-red-500' },
+		last7days: { bg: 'from-emerald-50 to-yellow-50', text: 'from-emerald-500 to-yellow-500' }, // Updated gradient
+		top100: { bg: 'from-purple-50 to-pink-50', text: 'from-purple-500 to-pink-500' },
 	}
 
 	if (!Object.keys(pageTitles).includes(itemType)) {
@@ -34,23 +38,25 @@ export default function DMMGenericPage({ params }: { params: { itemType: string 
 			<div className='container mx-auto px-4 py-12'>
 				<h1 className='text-3xl font-bold text-red-600 text-center mb-4'>無効な itemType です</h1>
 				<p className='text-center'>
-					有効な itemType は `todaynew`, `debut`, `feature`, `sale` です。
+					有効な itemType は `todaynew`, `debut`, `feature`, `sale`, `top100` です。
 				</p>
 			</div>
 		)
 	}
 
-	// last7days ページ用の特別な処理
-	if (itemType === 'last7days') {
+	// top100 ページ用の処理を追加
+	if (itemType === 'top100') {
 		return (
 			<div className='w-full'>
-				<DMMItemContainer
-					itemType={itemType}
-					from='only'
-					bgGradient={`bg-gradient-to-r ${gradients[itemType].bg}`}
+				<DMMFeaturedItemContainer
+					from='top100'
+					bgGradient={'bg-gradient-to-r ' + gradients[itemType].bg}
+					endpoint='/api/getkv-top100?keywords=くびれ,爆乳'
 					title={pageTitles[itemType]}
+					linkText='すべて見る'
+					linkHref='/top100'
 					textGradient={gradients[itemType].text}
-					umamifrom={`only-${itemType}`}
+					umamifrom={'only-' + itemType}
 				/>
 			</div>
 		)

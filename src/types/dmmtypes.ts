@@ -219,7 +219,15 @@ export interface DMMBaseItem {
 	date?: string
 }
 
-export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale' | 'actress' | 'genre' | 'last7days'
+export type ItemType =
+	| 'todaynew'
+	| 'debut'
+	| 'feature'
+	| 'sale'
+	| 'actress'
+	| 'genre'
+	| 'last7days'
+	| 'top100'
 export type CategoryType = 'style' | 'type'
 
 export interface DMMFeaturedItemProps extends DMMItemProps {
@@ -259,4 +267,16 @@ export type ExtendedDMMItem = DMMItem & {
 	content_id: string
 	title: string
 	prices?: { price: string }
+}
+
+// TOP100専用の型定義
+export interface GetKVTop100Response {
+	keyword: string
+	items: DMMItem[]
+	createdAt: string
+}
+
+export interface ErrorResponse {
+	error: string
+	message?: string
 }

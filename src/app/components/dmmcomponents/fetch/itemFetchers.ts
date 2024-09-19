@@ -22,7 +22,7 @@ import {
 	DMMTodayNewItem,
 	DMMTodayNewItemSchema,
 } from '@/types/dmmitemzodschema'
-import { ItemType } from '@/types/dmmtypes'
+import { GetKVTop100Response, ItemType } from '@/types/dmmtypes'
 import { DMMItemProps } from '@/types/dmmtypes'
 import { revalidateTag } from 'next/cache'
 import { z } from 'zod'
@@ -34,7 +34,8 @@ export type FetchableItemType = 'todaynew' | 'debut' | 'feature' | 'sale'
 const itemTypeConfig = {
 	todaynew: {
 		endpoint: '/api/dmm-todaynew-getkv',
-		parseFunction: (data: unknown) => z.array(DMMTodayNewItemSchema).parse(data) as DMMTodayNewItem[],
+		parseFunction: (data: unknown) =>
+			z.array(DMMTodayNewItemSchema).parse(data) as DMMTodayNewItem[],
 	},
 	debut: {
 		endpoint: '/api/dmm-debut-getkv',
@@ -125,7 +126,7 @@ export async function fetchItemMainByContentId(dbId: number): Promise<DMMItemMai
 export async function fetchItemDetailByContentId(
 	dbId: number,
 ): Promise<DMMItemDetailResponse | null> {
-	// console.log('fetchItemDetailByContentId関数を呼び出します', contentId)
+	// console.log('fetchItemDetailByContentId関数を呼出します', contentId)
 
 	try {
 		const response = await fetch(
@@ -295,6 +296,37 @@ export async function fetchItemMainByContentIdToActressInfo(
 		} else {
 			console.error('Unknown error occurred while fetching data')
 		}
+		return null
+	}
+}
+
+export async function fetchData<TResponse>(
+	endpoint: string,
+	queryParams?: Record<string, string>,
+): Promise<TResponse | null> {
+	console.log('fetchData endpoint:', endpoint, 'queryParams:', queryParams)
+
+	// クエリパラメータが存在する場合、URLに追加
+	const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`)
+	if (queryParams) {
+		for (const [key, value] of Object.entries(queryParams)) {
+			url.searchParams.append(key, value)
+		}
+	}
+
+	const fetchOptions = { next: { revalidate: 43200 } }
+
+	try {
+		const response = await fetch(url.toString(), fetchOptions)
+		if (!response.ok) {
+			console.error(`Failed to fetch data from ${url}: ${response.statusText}`)
+			return null
+		}
+
+		const data: TResponse = await response.json()
+		return data
+	} catch (error) {
+		console.error('データの取得に失敗しました:', error)
 		return null
 	}
 }

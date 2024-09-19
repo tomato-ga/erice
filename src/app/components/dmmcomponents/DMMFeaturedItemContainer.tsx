@@ -1,8 +1,19 @@
-import { DMMFeaturedItemProps } from '@/types/dmmtypes'
+// app/components/dmmcomponents/DMMFeaturedItemContainer.tsx
+import { DMMFeaturedItemProps, GetKVTop100Response } from '@/types/dmmtypes'
 import { UmamiTrackingFromType } from '@/types/umamiTypes'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { UmamiTracking } from './UmamiTracking'
+import { fetchData } from './fetch/itemFetchers'
+
+// shuffleArray 関数を追加
+const shuffleArray = <T,>(array: T[]): T[] => {
+	for (let i = array.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1))
+		;[array[i], array[j]] = [array[j], array[i]]
+	}
+	return array
+}
 
 interface DMMFeaturedItemContainerProps<T extends DMMFeaturedItemProps> {
 	from: string
@@ -10,25 +21,10 @@ interface DMMFeaturedItemContainerProps<T extends DMMFeaturedItemProps> {
 	endpoint: string
 	title: string
 	linkText: string
-	linkHref: '/sale' | '/todaynew' | '/debut' | '/feature' | '/last7days'
+	linkHref: '/sale' | '/todaynew' | '/debut' | '/feature' | '/last7days' | '/top100'
 	textGradient: string
 	umamifrom: UmamiTrackingFromType
-}
-
-async function fetchData<T extends DMMFeaturedItemProps>(endpoint: string): Promise<T[]> {
-	console.log('fetchData endpoint:', endpoint)
-
-	const fetchOptions = { next: { revalidate: 43200 } }
-
-	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, fetchOptions)
-		if (!response.ok) return []
-		const data: T[] = await response.json()
-		return Array.isArray(data) ? data : []
-	} catch (error) {
-		console.error('データの取得に失敗しました:', error)
-		return []
-	}
+	keywords?: string[] // 追加: キーワードをオプションで受け取る
 }
 
 const PriceDisplay = ({
@@ -48,7 +44,7 @@ const DMMFeaturedItemCard = <T extends DMMFeaturedItemProps>({
 	umamifrom,
 }: {
 	item: T
-	type: '/sale' | '/todaynew' | '/debut' | '/feature' | '/last7days' // '/last7days' を追加
+	type: '/sale' | '/todaynew' | '/debut' | '/feature' | '/last7days' | '/top100'
 	from: string
 	umamifrom: UmamiTrackingFromType
 }) => (
@@ -97,48 +93,86 @@ const DMMFeaturedItemList = <T extends DMMFeaturedItemProps>({
 	type: string
 	umamifrom: UmamiTrackingFromType
 }) => {
-	// linkHref が /last7days の場合、表示数を16にする
-	const displayCount = from === 'top' ? 8 : type === '/last7days' ? 16 : items.length
-	// items の要素数が displayCount より少ない場合は、items の要素数を使用する
-	const sliceCount = Math.min(displayCount, items.length)
-
-	// Fisher-Yates shuffle アルゴリズムを使用して items 配列をシャッフルする関数
-	const shuffleArray = (array: T[]) => {
-		for (let i = array.length - 1; i > 0; i--) {
-			const j = Math.floor(Math.random() * (i + 1))
-			;[array[i], array[j]] = [array[j], array[i]]
-		}
-		return array
-	}
-
-	return (
-		<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-			{/* linkHref が /last7days の場合、items をシャッフルして先頭から 8 個の要素��選択する */}
-			{type === '/last7days'
-				? shuffleArray(items)
-						.slice(0, 8)
+	// {{ edit_1 }} ロジックの修正開始
+	if (from === 'top') {
+		if (type === '/last7days') {
+			// トップページから /last7days を呼び出す場合、16件目以降の8件を表示
+			return (
+				<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+					{shuffleArray(items)
+						.slice(16, 24) // 16件目から24件目（8件）
 						.map(item => (
 							<div key={item.content_id}>
 								<DMMFeaturedItemCard
 									item={item}
 									from={from}
-									type={type as '/sale' | '/todaynew' | '/debut' | '/feature' | '/last7days'}
+									type={
+										type as '/sale' | '/todaynew' | '/debut' | '/feature' | '/last7days' | '/top100'
+									}
 									umamifrom={umamifrom}
 								/>
 							</div>
-						))
-				: items.slice(0, sliceCount).map(item => (
+						))}
+				</div>
+			)
+		}
+		// トップページからその他のタイプを呼び出す場合、8件のみ表示
+		return (
+			<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+				{shuffleArray(items)
+					.slice(0, 8) // 最初の8件
+					.map(item => (
 						<div key={item.content_id}>
 							<DMMFeaturedItemCard
 								item={item}
 								from={from}
-								type={type as '/sale' | '/todaynew' | '/debut' | '/feature' | '/last7days'}
+								type={
+									type as '/sale' | '/todaynew' | '/debut' | '/feature' | '/last7days' | '/top100'
+								}
 								umamifrom={umamifrom}
 							/>
 						</div>
 					))}
+			</div>
+		)
+	}
+
+	if (type === '/last7days') {
+		// /last7days ページから呼び出す場合、全て表示
+		return (
+			<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+				{shuffleArray(items).map(item => (
+					<div key={item.content_id}>
+						<DMMFeaturedItemCard
+							item={item}
+							from={from}
+							type={
+								type as '/sale' | '/todaynew' | '/debut' | '/feature' | '/last7days' | '/top100'
+							}
+							umamifrom={umamifrom}
+						/>
+					</div>
+				))}
+			</div>
+		)
+	}
+
+	// その他の場合は全件表示
+	return (
+		<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+			{shuffleArray(items).map(item => (
+				<div key={item.content_id}>
+					<DMMFeaturedItemCard
+						item={item}
+						from={from}
+						type={type as '/sale' | '/todaynew' | '/debut' | '/feature' | '/last7days' | '/top100'}
+						umamifrom={umamifrom}
+					/>
+				</div>
+			))}
 		</div>
 	)
+	// {{ edit_1 }} ロジックの修正終了
 }
 
 export default async function DMMFeaturedItemContainer<T extends DMMFeaturedItemProps>({
@@ -150,8 +184,31 @@ export default async function DMMFeaturedItemContainer<T extends DMMFeaturedItem
 	linkHref,
 	textGradient,
 	umamifrom,
+	keywords, // 追加
 }: DMMFeaturedItemContainerProps<T>) {
-	const items = await fetchData<T>(endpoint)
+	let items: T[] = []
+	let createdAt: string | undefined = undefined
+
+	if (from === 'top100') {
+		try {
+			const top100Response = await fetchData<GetKVTop100Response>(
+				'/api/getkv-top100',
+				keywords ? { keywords: keywords.join(',') } : undefined, // 修正
+			)
+			if (top100Response) {
+				items = top100Response.items as unknown as T[]
+				createdAt = top100Response.createdAt
+			}
+		} catch (error) {
+			console.error('Failed to fetch Top 100 data:', error)
+			items = []
+		}
+	} else {
+		const data = await fetchData<T[]>(endpoint)
+		if (data) {
+			items = data
+		}
+	}
 
 	console.log('DMMFeaturedItemContainer items:', items)
 
@@ -171,11 +228,8 @@ export default async function DMMFeaturedItemContainer<T extends DMMFeaturedItem
 					<ArrowRight className='ml-2 h-5 w-5 animate-bounce' />
 				</Link>
 			</div>
+			{from === 'top100' && createdAt && <p className='text-sm'>更新日時: {createdAt}</p>}
 			<DMMFeaturedItemList items={items} from={from} type={linkHref} umamifrom={umamifrom} />
 		</div>
 	)
 }
-
-export const revalidate = 43200
-// 1日は24時間、1時間は60分、1分は60秒なので、
-// 1日 = 24時間 * 60分/時間 * 60秒/分 = 86400秒
