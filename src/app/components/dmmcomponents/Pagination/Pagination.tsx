@@ -1,9 +1,9 @@
 'use client'
 
 import { DoujinGenrePaginationProps } from '@/_types_doujin/doujintypes'
-import { DoujinGenrePaginationProps } from '@/_types_doujin/doujintypes'
 import { DMMItemProps, ImageURLs } from '@/types/dmmtypes'
 import Link from 'next/link'
+import PaginationComponent from '../../Pagination'
 
 export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale' | 'actress' | 'genre'
 
