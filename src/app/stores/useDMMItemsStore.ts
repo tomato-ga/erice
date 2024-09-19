@@ -19,6 +19,7 @@ export const useDMMItemsStore = create<ItemsStore>(set => ({
 	feature: [],
 	todaynew: [],
 	debut: [],
+	top100: [], // 追加
 	last7days: [], // 追加
 
 	fetchItems: async (itemType, endpoint) => {
