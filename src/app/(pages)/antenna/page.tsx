@@ -57,7 +57,7 @@ const Header: React.FC = () => (
 )
 
 const SearchForm: React.FC = () => (
-	<form className='relative bg-white h-[60px] mb-4' role='search'>
+	<form className='relative bg-white h-[60px] mb-4'>
 		<input
 			type='search'
 			placeholder='タイトルを検索'

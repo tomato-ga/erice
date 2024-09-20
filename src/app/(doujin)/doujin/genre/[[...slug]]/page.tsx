@@ -27,7 +27,7 @@ export function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	if (!encodedGenreName) {
 		return Promise.resolve({
 			title: 'ページが見つかりません | ' + SITE_NAME,
-			description: '指定されたページは存在しません。'
+			description: '指定されたページは存在しません。',
 		})
 	}
 
@@ -42,19 +42,19 @@ export function generateMetadata({ params }: PageProps): Promise<Metadata> {
 			description: description,
 			openGraph: {
 				title: pageTitle,
-				description: description
+				description: description,
 			},
 			twitter: {
 				card: 'summary',
 				title: pageTitle,
-				description: description
-			}
+				description: description,
+			},
 		})
 	} catch (error) {
 		console.error('[Server] Failed to fetch metadata:', error)
 		return Promise.resolve({
 			title: `${genrename} | ${SITE_NAME}`,
-			description: `${genrename} の動画一覧です。`
+			description: `${genrename} の動画一覧です。`,
 		})
 	}
 }
@@ -84,7 +84,7 @@ export default async function GenrePaginationPage({ params }: PageProps) {
 	try {
 		// APIリクエストのURLを出力
 		const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/doujin-genre-pagination?genre=${encodeURIComponent(
-			genrename
+			genrename,
 		)}&page=${currentPage}`
 		console.log('APIリクエストURL:', apiUrl) // リクエストURLを出力
 
@@ -108,7 +108,7 @@ export default async function GenrePaginationPage({ params }: PageProps) {
 		console.log('APIレスポンスデータ:', data) // レスポンスデータを出力
 
 		return (
-			<section className="max-w-7xl mx-auto">
+			<section className='max-w-7xl mx-auto'>
 				<Suspense fallback={<LoadingSpinner />}>
 					{/* DMMItemContainerPagination に props を渡す */}
 					<DMMItemContainerPagination
@@ -116,28 +116,28 @@ export default async function GenrePaginationPage({ params }: PageProps) {
 						currentPage={data.currentPage}
 						totalPages={data.totalPages}
 						category={genrename}
-						categoryType="doujingenre"
+						categoryType='doujingenre'
 					/>
 				</Suspense>
 			</section>
 		)
 	} catch (error) {
 		console.error('[Server] Failed to fetch data:', error)
-		return <ErrorDisplay message="データの取得に失敗しました。後でもう一度お試しください。" />
+		return <ErrorDisplay message='データの取得に失敗しました。後でもう一度お試しください。' />
 	}
 }
 
 function LoadingSpinner() {
 	return (
-		<div className="flex justify-center items-center h-64" aria-label="読み込み中">
-			<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900" />
+		<div className='flex justify-center items-center h-64' aria-label='読み込み中'>
+			<div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900' />
 		</div>
 	)
 }
 
 function ErrorDisplay({ message }: { message: string }) {
 	return (
-		<div className="text-center text-red-600 py-8" role="alert">
+		<div className='text-center text-red-600 py-8'>
 			<p>{message}</p>
 		</div>
 	)

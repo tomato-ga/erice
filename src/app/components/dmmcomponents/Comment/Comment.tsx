@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Comment } from '@/types/comment'
 import { deleteComment } from '@/app/actions/commentActions'
+import { Comment } from '@/types/comment'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 interface CommentProps {
 	comment: Comment
@@ -36,9 +36,9 @@ export function CommentComponent({ comment, contentId }: CommentProps) {
 	}
 
 	return (
-		<div className="bg-white shadow-md rounded-lg p-4 mb-4">
-			<p className="text-gray-800 mb-2">{comment.comment}</p>
-			<div className="flex justify-between items-center text-sm text-gray-500">
+		<div className='bg-white shadow-md rounded-lg p-4 mb-4'>
+			<p className='text-gray-800 mb-2'>{comment.comment}</p>
+			<div className='flex justify-between items-center text-sm text-gray-500'>
 				<span>{new Date(comment.createdAt!).toLocaleString()}</span>
 				{/* MEMO 削除ボタン除外 <button
 					onClick={handleDelete}
@@ -49,11 +49,7 @@ export function CommentComponent({ comment, contentId }: CommentProps) {
 					{isDeleting ? '削除中...' : '削除'}
 				</button> */}
 			</div>
-			{error && (
-				<p className="mt-2 text-sm text-red-600" role="alert">
-					{error}
-				</p>
-			)}
+			{error && <p className='mt-2 text-sm text-red-600'>{error}</p>}
 		</div>
 	)
 }

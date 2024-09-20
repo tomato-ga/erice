@@ -24,7 +24,7 @@ const KeywordsPage = () => {
 										<li key={keyword}>
 											<button
 												type='button'
-												className='bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded dark:text-blue-200 dark:border-blue-400 dark:hover:bg-blue-600 dark:hover:text-white'>
+												className='bg-transparent hover:bg-pink-600 text-pink-500 font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded dark:text-pink-200 dark:border-pink-400 dark:hover:bg-pink-600 dark:hover:text-white'>
 												{keyword}
 											</button>
 										</li>
