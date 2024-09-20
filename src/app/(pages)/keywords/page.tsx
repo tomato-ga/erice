@@ -1,7 +1,13 @@
-// src/app/(pages)/keywords/page.tsx
+// src/app/keywords/page.tsx
+import Link from 'next/link'
 import React from 'react'
 import { AllCategories } from '../../components/dmmcomponents/Top100/keywords'
 
+/**
+ * キーワード一覧ページコンポーネント
+ * 各キーワードへのリンクを表示します。
+ * @returns JSX.Element
+ */
 const KeywordsPage = () => {
 	return (
 		<div className='container mx-auto px-6 py-12 bg-gray-50 dark:bg-gray-900 transition-colors duration-300'>
@@ -15,18 +21,19 @@ const KeywordsPage = () => {
 							<div
 								key={sub.SubCategoryName}
 								className='bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md shadow-slate-200 transition-shadow'>
-								{/* サブカテゴリー名にグラデーション色を追加 */}
 								<h3 className='text-2xl font-semibold mb-6 text-slate-700'>
 									{sub.SubCategoryName}
 								</h3>
 								<ul className='flex flex-wrap gap-4'>
 									{sub.Keywords.map(keyword => (
 										<li key={keyword}>
-											<button
-												type='button'
-												className='bg-transparent hover:bg-pink-600 text-pink-500 font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded dark:text-pink-200 dark:border-pink-400 dark:hover:bg-pink-600 dark:hover:text-white'>
-												{keyword}
-											</button>
+											<Link href={`/keywords/${keyword}`} passHref>
+												<button
+													type='button'
+													className='bg-transparent hover:bg-pink-600 text-pink-500 font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded dark:text-pink-200 dark:border-pink-400 dark:hover:bg-pink-600 dark:hover:text-white'>
+													{keyword}
+												</button>
+											</Link>
 										</li>
 									))}
 								</ul>

@@ -22,7 +22,7 @@ import {
 	DMMTodayNewItem,
 	DMMTodayNewItemSchema,
 } from '@/types/dmmitemzodschema'
-import { GetKVTop100Response, ItemType } from '@/types/dmmtypes'
+import { ErrorResponse, GetKVTop100Response, ItemType } from '@/types/dmmtypes'
 import { DMMItemProps } from '@/types/dmmtypes'
 import { revalidateTag } from 'next/cache'
 import { z } from 'zod'
@@ -327,6 +327,53 @@ export async function fetchData<TResponse>(
 		return data
 	} catch (error) {
 		console.error('データの取得に失敗しました:', error)
+		return null
+	}
+}
+
+/**
+ * キーワードに基づいてTop100データを取得します。
+ * @param keyword - 検索キーワード
+ * @returns GetKVTop100Response | null - データ取得結果またはnull
+ */
+export async function fetchTOP100KeywordData(keyword: string): Promise<GetKVTop100Response | null> {
+	try {
+		const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-top100-getkv?keywords=${keyword}`
+
+		// デバッグログ: リクエストURL
+		console.debug(`データ取得用APIエンドポイント: ${apiUrl}`)
+
+		const res = await fetch(apiUrl, {
+			cache: 'no-store', // 常に最新データを取得
+		})
+
+		// デバッグログ: レスポンスURLとステータス
+		console.debug(`リクエストURL: ${res.url}`)
+		console.debug(`レスポンスステータス: ${res.status}`)
+
+		if (!res.ok) {
+			// デバッグログ: レスポンスエラー
+			console.error(
+				`キーワード「${keyword}」のデータ取得に失敗しました。ステータスコード: ${res.status}`,
+			)
+			return null
+		}
+
+		const data: GetKVTop100Response = await res.json()
+
+		// デバッグログ: 取得したデータ
+		// console.debug('取得したデータ件数:', data.items.length)
+
+		return data
+	} catch (error: unknown) {
+		if (error instanceof Error) {
+			// デバッグログ: エラー内容
+			console.error(
+				`キーワード「${keyword}」のデータ取得中にエラーが発生しました: ${error.message}`,
+			)
+		} else {
+			console.error(`キーワード「${keyword}」のデータ取得中に予期せぬエラーが発生しました。`)
+		}
 		return null
 	}
 }

@@ -60,7 +60,7 @@ export async function GET(req: NextRequest) {
 		const data: GetKVTop100Response = await response.json() // { keyword: string; items: DMMItem[]; createdAt: string }
 
 		// デバッグログ
-		console.log('Received data from Worker:', data)
+		// console.log('Received data from Worker:', data)
 
 		// Workerからのレスポンス構造に合わせてレスポンスを整形
 		const getKVTop100Response: GetKVTop100Response = {
