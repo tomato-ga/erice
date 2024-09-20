@@ -22,7 +22,9 @@ import {
 	DMMTodayNewItem,
 	DMMTodayNewItemSchema,
 } from '@/types/dmmitemzodschema'
-import { ErrorResponse, GetKVTop100Response, ItemType } from '@/types/dmmtypes'
+import { ItemType } from '@/types/dmmtypes'
+
+import { ErrorResponse, GetKVTop100Response } from '@/types/dmm-keywordpage'
 import { DMMItemProps } from '@/types/dmmtypes'
 import { revalidateTag } from 'next/cache'
 import { z } from 'zod'

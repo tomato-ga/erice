@@ -269,14 +269,3 @@ export type ExtendedDMMItem = DMMItem & {
 	prices?: { price: string }
 }
 
-// TOP100専用の型定義
-export interface GetKVTop100Response {
-	keyword: string
-	items: DMMItem[]
-	createdAt: string
-}
-
-export interface ErrorResponse {
-	error: string
-	message?: string
-}

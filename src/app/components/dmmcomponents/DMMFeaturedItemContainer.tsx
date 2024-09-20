@@ -1,5 +1,6 @@
+import { GetKVTop100Response } from '@/types/dmm-keywordpage'
 // app/components/dmmcomponents/DMMFeaturedItemContainer.tsx
-import { DMMFeaturedItemProps, GetKVTop100Response } from '@/types/dmmtypes'
+import { DMMFeaturedItemProps } from '@/types/dmmtypes'
 import { UmamiTrackingFromType } from '@/types/umamiTypes'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'

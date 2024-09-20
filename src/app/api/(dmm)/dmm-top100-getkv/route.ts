@@ -1,7 +1,7 @@
 // app/api/getkv-top100/route.ts
 
 import { NextRequest, NextResponse } from 'next/server'
-import { DMMItem, ErrorResponse, GetKVTop100Response } from '../../../../types/dmmtypes'
+import { DMMItem, ErrorResponse, GetKVTop100Response } from '../../../../types/dmm-keywordpage'
 
 export async function GET(req: NextRequest) {
 	const { searchParams } = new URL(req.url)
