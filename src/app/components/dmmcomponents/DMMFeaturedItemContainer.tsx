@@ -1,4 +1,4 @@
-import { GetKVTop100Response } from '@/types/dmm-keywordpage'
+import { GetKVTop100Response } from '@/types/dmm-keywordpage-types'
 // app/components/dmmcomponents/DMMFeaturedItemContainer.tsx
 import { DMMFeaturedItemProps } from '@/types/dmmtypes'
 import { UmamiTrackingFromType } from '@/types/umamiTypes'
