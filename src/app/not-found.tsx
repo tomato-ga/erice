@@ -49,10 +49,6 @@ export default function NotFound() {
 					textGradient='from-blue-500 to-purple-500'
 					umamifrom='notfound-sale'
 				/>
-
-				{/* 女優セクション */}
-				<DMMActressItemContainer actressType='new' from='top' />
-				<DMMActressItemContainer actressType='popular' from='top' />
 			</div>
 		</div>
 	)

@@ -1,10 +1,58 @@
-import { DoujinKobetuItem } from '@/_types_doujin/doujintypes'
+import { DoujinItemType, DoujinKobetuItem } from '@/_types_doujin/doujintypes'
+import { CommentSection } from '@/app/components/dmmcomponents/Comment/CommentSection'
+
+import RelatedItemsScroll from '@/app/components/dmmcomponents/Related/RelatedItemsScroll'
 import { UmamiTracking } from '@/app/components/dmmcomponents/UmamiTracking'
+import { fetchRelatedItems } from '@/app/components/dmmcomponents/fetch/itemFetchers'
 import { ExternalLink } from 'lucide-react'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 
+// 型定義をそのまま使用
+type Props = {
+	params: { dbId: string }
+}
+
+// ItemType を拡張して 'review' を含める
+type ExtendedItemType = DoujinItemType | 'review'
+
+// メタデータ生成の強化
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+	try {
+		const item = await fetchItemData(params.dbId)
+		const title = `${item.title} | エロコメスト`
+		const description = `${item.title}の商品詳細ページです。`
+		const url = `https://yourwebsite.com/doujin/${params.dbId}` // 実際のURLに置き換えてください
+
+		return {
+			title,
+			description,
+			openGraph: {
+				title,
+				description,
+				type: 'article',
+				url,
+				images: [{ url: item.package_images }],
+			},
+			twitter: {
+				card: 'summary_large_image',
+				title,
+				description,
+				images: [item.package_images],
+			},
+		}
+	} catch (error) {
+		console.error('Error generating metadata:', error)
+		return {
+			title: 'エロコメスト - 商品詳細',
+			description: '商品詳細ページです。',
+		}
+	}
+}
+
+// アイテムデータの取得関数
 async function fetchItemData(dbId: string): Promise<DoujinKobetuItem> {
 	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/doujin-item?db_id=${dbId}`, {
 		next: { revalidate: 3600 },
@@ -17,34 +65,29 @@ async function fetchItemData(dbId: string): Promise<DoujinKobetuItem> {
 	return res.json()
 }
 
-type Props = {
-	params: { dbId: string }
+// ローディングスピナーのコンポーネント
+function LoadingSpinner() {
+	return (
+		<div className='flex justify-center items-center h-64' aria-label='読み込み中'>
+			<div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900' />
+		</div>
+	)
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-	try {
-		const item = await fetchItemData(params.dbId)
-		return {
-			title: `${item.title} | エロコメスト`,
-			description: `${item.title}の商品詳細ページです。`,
-			openGraph: {
-				title: `${item.title} | エロコメスト`,
-				description: `${item.title}の商品詳細ページです。`,
-				images: [{ url: item.package_images }],
-			},
-		}
-	} catch (error) {
-		console.error('Error generating metadata:', error)
-		return {
-			title: 'エロコメスト - 商品詳細',
-			description: '商品詳細ページです。',
-		}
-	}
-}
-
+// メインのコンポーネント
 export default async function DoujinKobetuItemPage({ params }: Props) {
 	try {
 		const item = await fetchItemData(params.dbId)
+		console.log('item:', item)
+
+		// 関連アイテムのデータを取得
+		// const relatedItemTypes: ExtendedItemType[] = ['newrank', 'newrelease', 'review', 'sale']
+		// const relatedItemsData = await Promise.all(
+		// 	relatedItemTypes.map(async type => ({
+		// 		type,
+		// 		items: await fetchRelatedItems(type as DoujinItemType),
+		// 	})),
+		// )
 
 		return (
 			<div className='bg-gray-50 dark:bg-gray-900 min-h-screen'>
@@ -96,14 +139,7 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 								</span>
 							</div>
 
-							{/** {item.review_count != null && item.review_average != null && (
-								<div className="flex items-center justify-center">
-									<span className="text-gray-600">
-										評価: {item.review_average?.toFixed(1) ?? 'N/A'} ({item.review_count?.toLocaleString() ?? '0'}{' '}
-										レビュー)
-									</span>
-								</div>
-							)} **/}
+							{/* ここではレビューセクションはコメントアウトされています */}
 
 							<div className='space-y-8'>
 								{item.genres && item.genres.length > 0 && (
@@ -164,6 +200,53 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 							</div>
 						</div>
 
+						{/* サンプル画像の表示 */}
+						{item.sample_images && item.sample_images.length > 0 && (
+							<div className='mt-8'>
+								<h2 className='text-center font-bold mb-6'>
+									<span className='text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text'>
+										サンプル画像
+									</span>
+								</h2>
+								<div className='grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4'>
+									{item.sample_images.map((imageObj, index) => (
+										<div
+											key={index}
+											className='aspect-w-16 aspect-h-9 relative overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300'>
+											<img
+												src={imageObj ? imageObj : ''}
+												alt={`${item.title} のサンプル画像 ${index + 1}`}
+												className='w-full h-full object-contain transition-transform duration-300'
+											/>
+										</div>
+									))}
+								</div>
+							</div>
+						)}
+
+						{/* コメントセクションの追加 */}
+						<Suspense fallback={<LoadingSpinner />}>
+							<CommentSection contentId={item.content_id} />
+						</Suspense>
+
+						{/* 関連アイテムの表示 */}
+						{/* {relatedItemsData.map(({ type, items }) => (
+							<RelatedItemsScroll
+								key={type}
+								items={items}
+								itemType={type}
+								title={
+									type === 'newrank'
+										? '新着ランキング'
+										: type === 'newrelease'
+											? '新着作品'
+											: type === 'review'
+												? 'レビュー作品'
+												: '限定セール'
+								}
+							/>
+						))} */}
+
 						<div className='mt-8'>
 							<UmamiTracking
 								trackingData={{
@@ -193,4 +276,5 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 	}
 }
 
+// キャッシュの再検証時間を24時間に変更
 export const revalidate = 86400

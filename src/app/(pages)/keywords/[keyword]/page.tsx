@@ -348,7 +348,7 @@ const KeywordPage = async ({
 				の人気エロ動画を厳選して{items.length}件集めました
 			</h1>
 			<p className='pb-2 font-semibold'>
-				FANZAで人気の「{decodeURIComponent(keyword)}」作品を{items.length}件集めました。
+				FANZAで人気の「{decodeURIComponent(keyword)}」エロ動画作品を{items.length}件集めました。
 				<br />
 				<br />
 				今すぐサンプル視聴・ダウンロード・ストリーミングが可能で、好きなときにどこでも視聴できます。
