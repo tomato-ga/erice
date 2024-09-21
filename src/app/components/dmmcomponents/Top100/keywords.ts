@@ -80,8 +80,10 @@ export const AllCategories: Category[] = [
 			{
 				SubCategoryName: '学生・学校',
 				Keywords: [
-					'女子○生風',
-					'女子大生・JD',
+					'女子校生',
+					'JK',
+					'女子大生',
+					'JD',
 					'現役女子大生',
 					'教え子',
 					'専門学生',
@@ -345,6 +347,7 @@ export const AllCategories: Category[] = [
 				SubCategoryName: '女性のタイプ',
 				Keywords: [
 					'芸能人',
+					'モデル',
 					'元グラビアアイドル',
 					'元アイドル',
 					'元アナウンサー',
@@ -417,6 +420,8 @@ export const AllCategories: Category[] = [
 					'着衣フェチ',
 					// '死体フェチ',
 					'女装',
+					'男の娘',
+					'ニューハーフ',
 					// 'M格闘フェチ',
 					// '複数プレイフェチ',
 					'JOI',
