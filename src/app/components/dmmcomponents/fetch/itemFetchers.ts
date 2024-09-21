@@ -346,7 +346,7 @@ export async function fetchTOP100KeywordData(keyword: string): Promise<GetKVTop1
 		console.debug(`データ取得用APIエンドポイント: ${apiUrl}`)
 
 		const res = await fetch(apiUrl, {
-			cache: 'no-store', // 常に最新データを取得
+			next: { revalidate: 1209600 }, // 2週間キャッシュ
 		})
 
 		// デバッグログ: レスポンスURLとステータス

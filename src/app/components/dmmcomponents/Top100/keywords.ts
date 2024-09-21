@@ -10,6 +10,12 @@ export interface Category {
 	Subcategories: SubCategory[]
 }
 
+// 新規追加: GroupedCombinedKeywords の型定義
+export interface GroupedCombinedKeywords {
+	base: string
+	combinations: string[]
+}
+
 export const AllCategories: Category[] = [
 	{
 		MainCategoryName: 'シチュエーション',
@@ -152,7 +158,7 @@ export const AllCategories: Category[] = [
 					'彼女・恋人',
 					'同棲',
 					'友人の彼女',
-					'元カノ・元カレ',
+					'元カ��・元カレ',
 					'カップル',
 					// 'はじめての彼女',
 					'年上彼女',
@@ -511,7 +517,7 @@ export const AllCategories: Category[] = [
 					'透明人間',
 					'ゲーム系',
 					'バラエティ',
-					// '壁チ○コ系',
+					// '壁チ○���系',
 					'実況・解説',
 				],
 			},
@@ -685,3 +691,55 @@ export const AllCategories: Category[] = [
 		],
 	},
 ]
+
+/**
+ * 2つのサブカテゴリーのキーワードを基に、両方向の組み合わせをグループ化して生成します。
+ *
+ * @param subcat1 - 第一のサブカテゴリー名
+ * @param subcat2 - 第二のサブカテゴリー名
+ * @returns GroupedCombinedKeywords の配列
+ */
+export function GenerateCombinedKeywordsGeneric(
+	subcat1: string,
+	subcat2: string,
+): GroupedCombinedKeywords[] {
+	// サブカテゴリー1のキーワードを取得
+	const keywords1 = AllCategories.flatMap(category =>
+		category.Subcategories.filter(sub => sub.SubCategoryName === subcat1).flatMap(
+			sub => sub.Keywords,
+		),
+	)
+
+	// サブカテゴリー2のキーワードを取得
+	const keywords2 = AllCategories.flatMap(category =>
+		category.Subcategories.filter(sub => sub.SubCategoryName === subcat2).flatMap(
+			sub => sub.Keywords,
+		),
+	)
+
+	const groups: GroupedCombinedKeywords[] = []
+
+	// サブカテゴリー1を基にした組み合わせを生成
+	for (const k1 of keywords1) {
+		groups.push({
+			base: k1,
+			combinations: keywords2.map(k2 => `${k1}×${k2}`),
+		})
+	}
+
+	// サブカテゴリー2を基にした組み合わせを生成
+	for (const k2 of keywords2) {
+		groups.push({
+			base: k2,
+			combinations: keywords1.map(k1 => `${k2}×${k1}`),
+		})
+	}
+
+	return groups
+}
+
+// 体型とバストの組み合わせキーワードをグループ化して生成
+export const CombinedGroupedKeywords: GroupedCombinedKeywords[] = GenerateCombinedKeywordsGeneric(
+	'体型',
+	'バスト',
+)
