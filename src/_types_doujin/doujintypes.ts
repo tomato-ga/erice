@@ -70,9 +70,9 @@ export const FetchDoujinItemSchema = z.object({
 	review_count: z.number().nullish(),
 	review_average: z.number().nullish(),
 	prices: z.object({}).passthrough().nullish(),
-	genres: z.array(z.string()).nullish(), // genres を string 配列として定義
-	makers: z.array(z.string()).nullish(), // makers を string 配列として定義
-	series: z.array(z.string()).nullish(), // series を string 配列として定義
+	genres: z.array(z.object({ dmm_id: z.number(), name: z.string() })).nullish(), // genres を string 配列として定義
+	makers: z.array(z.object({ dmm_id: z.number(), name: z.string() })).nullish(), // makers を string 配列として定義
+	series: z.array(z.object({ dmm_id: z.number(), name: z.string() })).nullish(), // series を string 配列として定義
 	campaign: z.array(z.object({})).nullish(), // 必要に応じて詳細を定義
 })
 

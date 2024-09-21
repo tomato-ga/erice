@@ -4,6 +4,7 @@ import { CommentSection } from '@/app/components/dmmcomponents/Comment/CommentSe
 import RelatedItemsScroll from '@/app/components/dmmcomponents/Related/RelatedItemsScroll'
 import { UmamiTracking } from '@/app/components/dmmcomponents/UmamiTracking'
 import { fetchRelatedItems } from '@/app/components/dmmcomponents/fetch/itemFetchers'
+import { formatPrice } from '@/utils/typeGuards'
 import { ExternalLink } from 'lucide-react'
 import { Metadata } from 'next'
 import Link from 'next/link'
@@ -126,18 +127,28 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 									target='_blank'
 									rel='noopener noreferrer'
 									className='inline-flex items-center justify-center text-xl font-semibold text-white bg-gradient-to-r from-pink-500 to-rose-600 dark:from-pink-600 dark:to-rose-700 rounded-full shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 dark:focus:ring-pink-400 px-8 py-4'>
-									<span className='mr-2'>商品ページへ</span>
+									<span className='mr-2'>作品をフルで見る</span>
 									<ExternalLink className='w-6 h-6 animate-pulse' />
 								</Link>
 							</UmamiTracking>
 						</div>
 
 						<div className='space-y-6'>
-							<div className='text-center'>
+							{/* TODO 価格表示は考える セール価格もあるかもしれないのでAPIに含める*/}
+							{/* <div className='text-center'>
 								<span className='text-red-600 font-bold text-3xl'>
 									{typeof item.prices === 'string' ? `${item.prices}円` : 'N/A'}
 								</span>
-							</div>
+							</div> */}
+
+							{/* <div className='mb-2'>
+								{formatPrice(item.prices) !== formatPrice(item.prices) && (
+									<span className='text-gray-500 line-through mr-2'>
+										{formatPrice(item.prices.list_price)}円
+									</span>
+								)}
+								<span className='text-red-600 font-bold'>{formatPrice(item.prices.price)}円</span>
+							</div> */}
 
 							{/* ここではレビューセクションはコメントアウトされています */}
 
@@ -224,6 +235,8 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 							</div>
 						)}
 
+						<div className='w-full text-sm text-center my-4'>このページに広告を設置しています</div>
+
 						{/* コメントセクションの追加 */}
 						<Suspense fallback={<LoadingSpinner />}>
 							<CommentSection contentId={item.content_id} />
@@ -260,7 +273,7 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 										target='_blank'
 										rel='noopener noreferrer'
 										className='inline-flex items-center justify-center text-xl font-semibold text-white bg-gradient-to-r from-pink-500 to-rose-600 dark:from-pink-600 dark:to-rose-700 rounded-sm shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 dark:focus:ring-pink-400 px-8 py-4'>
-										<span className='mr-2 break-words'>{item.title}の商品ページへ</span>
+										<span className='mr-2 break-words'>{item.title}をフルで見る</span>
 										<ExternalLink className='w-6 h-6 animate-pulse flex-shrink-0' />
 									</Link>
 								</div>

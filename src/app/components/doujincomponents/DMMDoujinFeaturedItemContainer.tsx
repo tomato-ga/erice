@@ -1,4 +1,4 @@
-import { isValidObject } from '@/utils/typeGuards'
+import { formatPrice, isValidObject } from '@/utils/typeGuards'
 
 import { DoujinTopApiResponse, DoujinTopItem } from '@/_types_doujin/doujintypes'
 import { DMMDoujinFeaturedItemType, UmamiTrackingFromType } from '@/types/umamiTypes'
@@ -61,13 +61,7 @@ const DMMDoujinFeaturedItemCard = ({
 	from: string
 	umamifrom: UmamiTrackingFromType
 }) => {
-	const formatPrice = (price: unknown): string => {
-		if (typeof price === 'string' || typeof price === 'number') {
-			// 数値を日本円フォーマットに変換
-			return new Intl.NumberFormat('ja-JP', { currency: 'JPY' }).format(Number(price))
-		}
-		return ''
-	}
+
 
 	return (
 		<div className='bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-md flex flex-col h-full'>
