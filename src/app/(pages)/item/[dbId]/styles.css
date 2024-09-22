@@ -2,8 +2,9 @@
 
 .bg-custom-gradient-exbutton {
     background-image: linear-gradient(-45deg, #ffcb47, #e34ba9, #369eff, #95f3d9);
-    background-size: 600% 600%; /* 拡大 */
+    background-size: 200% 200%; /* 拡大 */
     background-repeat: no-repeat;
+    -webkit-animation: myGradient 13s linear infinite;
     animation: myGradient 13s linear infinite; /* 継続時間とイージングを調整 */
   }
   
@@ -14,3 +15,33 @@
     75% { background-position: 50% 50%; }
     100% { background-position: 0% 50%; }
   }
+
+
+
+  /* .bg-custom-gradient-exbutton {
+    background-image: linear-gradient(
+        -45deg,
+        #ffcb47,
+        #e34ba9,
+        #369eff,
+        #95f3d9
+      );
+    -webkit-background-size: 400% 400%;
+    background-size: 400% 400%;
+    border-radius: inherit;
+    -webkit-animation: 5s myGradient 5s ease infinite;
+    animation: 5s myGradient 5s ease infinite;
+    position: relative;
+    z-index: 1;
+    border: none;
+    border-radius: 8px!important;
+}
+
+  @keyframes myGradient {
+    0% { background-position: 0% 50%; }
+    25% { background-position: 50% 50%; }
+    50% { background-position: 100% 50%; }
+    75% { background-position: 50% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+ */
