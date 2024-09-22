@@ -21,6 +21,16 @@ export const formatPrice = (price: unknown): string => {
 	return ''
 }
 
+export const processKeyword = (keyword: string): string => {
+	// `|` が含まれているかチェック
+	if (keyword.includes('|')) {
+		// `|` が含まれている場合のみ置換を行う
+		return keyword.replace(/\|/g, '×')
+	}
+	// `|` が含まれていない場合は元の文字列をそのまま返す
+	return keyword
+}
+
 // export function isDoujinTopItem(item: unknown): item is DoujinTopItem {
 // 	return (
 // 		typeof item === 'object' &&

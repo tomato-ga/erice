@@ -15,6 +15,7 @@ import {
 	DMMKeywordItemSchema,
 	GetKVTop100ResponseSchema,
 } from '@/types/dmm-keywordpage-types'
+import { processKeyword } from '@/utils/typeGuards'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import React from 'react'
@@ -43,7 +44,7 @@ const ItemDetailsTable: React.FC<{ item: DMMKeywordItemProps; keyword: string }>
 						<Link
 							href={`/item/${item.db_id}`}
 							className='text-blue-500 font-bold text-xl hover:underline'>
-							{item.title}
+							<h2>{item.title}</h2>
 						</Link>
 					</TableCell>
 				</TableRow>
@@ -164,8 +165,8 @@ export const generateMetadata = async ({
 
 	if (!data) {
 		return {
-			title: `${decodeURIComponent(keyword)} - 人気エロ動画`,
-			description: `キーワード「${decodeURIComponent(keyword)}」に該当するエロ動画のデータが見つかりませんでした。`,
+			title: `${processKeyword(decodeURIComponent(keyword))} - 人気エロ動画`,
+			description: `キーワード「${processKeyword(decodeURIComponent(keyword))}」に該当するエロ動画のデータが見つかりませんでした。`,
 		}
 	}
 
@@ -175,8 +176,8 @@ export const generateMetadata = async ({
 	const parsedData = GetKVTop100ResponseSchema.safeParse(data)
 	if (!parsedData.success) {
 		return {
-			title: `${decodeURIComponent(keyword)} - 人気エロ動画`,
-			description: `キーワード「${decodeURIComponent(keyword)}」に関するデータのバリデーションに失敗しました。`,
+			title: `${processKeyword(decodeURIComponent(keyword))} - 人気エロ動画`,
+			description: `キーワード「${processKeyword(decodeURIComponent(keyword))}」に関するデータのバリデーションに失敗しました。`,
 		}
 	}
 
@@ -298,11 +299,6 @@ const KeywordPage = async ({
 	const validData = parsedData.data
 
 	const allItemReviewCount = validData.items.reduce((acc, cur) => acc + (cur.review?.count || 0), 0)
-	// const allItemReviewAverageSums = validData.items.reduce(
-	// 	(acc, cur) => acc + (cur.review?.average || 0),
-	// 	0,
-	// )
-	// const allItemReviewAverage = allItemReviewAverageSums / validData.items.length
 
 	const actressCountMap: Record<string, number> = {}
 
@@ -344,22 +340,29 @@ const KeywordPage = async ({
 	return (
 		<div className='container mx-auto px-6 py-12'>
 			<h1 className='text-4xl font-extrabold mb-4 text-slate-800'>
-				【{new Date(validData.createdAt).getFullYear()}年最新】 {decodeURIComponent(keyword)}{' '}
-				の人気エロ動画を厳選して{items.length}件集めました
+				【{new Date(validData.createdAt).getFullYear()}年最新】{' '}
+				{processKeyword(decodeURIComponent(keyword))} の人気エロ動画を厳選して{items.length}
+				件集めました
 			</h1>
 			<p className='pb-2 font-semibold'>
-				FANZAで人気の「{decodeURIComponent(keyword)}」エロ動画作品を{items.length}件集めました。
+				FANZAで人気の「{processKeyword(decodeURIComponent(keyword))}」エロ動画作品を{items.length}
+				件集めました。
 				<br />
 				<br />
 				今すぐサンプル視聴・ダウンロード・ストリーミングが可能で、好きなときにどこでも視聴できます。
 				<br />
-				豊富な{decodeURIComponent(keyword)}
+				豊富な{processKeyword(decodeURIComponent(keyword))}
 				の作品の中から、観たい作品を見つけるのに役立ててください。
 			</p>
 			<p className='pb-2 font-semibold'>
-				ここで紹介している「{decodeURIComponent(keyword)}」作品に投稿されたレビュー合計数は{' '}
-				{allItemReviewCount}件です。「{decodeURIComponent(keyword)}」作品で最も多く登場する女優は{' '}
-				{sortedActessArray[0].name}です。
+				ここで紹介している「{processKeyword(decodeURIComponent(keyword))}
+				」作品に投稿されたレビュー合計数は {allItemReviewCount}件です。
+				{sortedActessArray.length > 0 && sortedActessArray[0].name && (
+					<>
+						「{processKeyword(decodeURIComponent(keyword))}」作品で最も多く登場する女優は{' '}
+						{sortedActessArray[0].name}です。
+					</>
+				)}
 			</p>
 			{validData.createdAt && (
 				<p className='text-sm text-gray-600 mb-8'>

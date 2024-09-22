@@ -11,9 +11,11 @@ export interface Category {
 }
 
 // 新規追加: GroupedCombinedKeywords の型定義
+// 更新されたGroupedCombinedKeywordsインターフェース
 export interface GroupedCombinedKeywords {
 	base: string
 	combinations: string[]
+	fetchCombinations: string[] // 新しく追加されたフィールド
 }
 
 export const AllCategories: Category[] = [
@@ -694,6 +696,7 @@ export const AllCategories: Category[] = [
 
 /**
  * 2つのサブカテゴリーのキーワードを基に、両方向の組み合わせをグループ化して生成します。
+ * 表示用と検索用の両方のフォーマットを生成します。
  *
  * @param subcat1 - 第一のサブカテゴリー名
  * @param subcat2 - 第二のサブカテゴリー名
@@ -724,6 +727,7 @@ export function GenerateCombinedKeywordsGeneric(
 		groups.push({
 			base: k1,
 			combinations: keywords2.map(k2 => `${k1}×${k2}`),
+			fetchCombinations: keywords2.map(k2 => `${k1}|${k2}`),
 		})
 	}
 
@@ -732,6 +736,7 @@ export function GenerateCombinedKeywordsGeneric(
 		groups.push({
 			base: k2,
 			combinations: keywords1.map(k1 => `${k2}×${k1}`),
+			fetchCombinations: keywords1.map(k1 => `${k2}|${k1}`),
 		})
 	}
 
