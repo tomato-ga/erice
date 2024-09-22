@@ -89,19 +89,19 @@ const config: Config = {
 		},
 	},
 	plugins: [
-		require('tailwindcss-animate'),
-		// カスタムユーティリティクラスの追加
-		({ addUtilities }) => {
-			const newUtilities = {
-				'.bg-custom-gradient-exbutton': {
-					backgroundImage: 'linear-gradient(-45deg, #ffcb47, #e34ba9, #369eff, #95f3d9)',
-					backgroundSize: '600% 600%',
-					backgroundRepeat: 'no-repeat',
-					animation: 'myGradient 10s ease infinite', // 一貫したアニメーション名と期間
-				},
-			}
-			addUtilities(newUtilities, ['responsive', 'hover'])
-		},
+		// require('tailwindcss-animate'),
+		// // カスタムユーティリティクラスの追加
+		// ({ addUtilities }) => {
+		// 	const newUtilities = {
+		// 		'.bg-custom-gradient-exbutton': {
+		// 			backgroundImage: 'linear-gradient(-45deg, #ffcb47, #e34ba9, #369eff, #95f3d9)',
+		// 			backgroundSize: '600% 600%',
+		// 			backgroundRepeat: 'no-repeat',
+		// 			animation: 'myGradient 10s ease infinite', // 一貫したアニメーション名と期間
+		// 		},
+		// 	}
+		// 	addUtilities(newUtilities, ['responsive', 'hover'])
+		// },
 	],
 } satisfies Config
 
