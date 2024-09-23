@@ -1,3 +1,6 @@
+import { processKeyword } from '@/utils/typeGuards'
+// pages/keywords/page.tsx
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import React from 'react'
 import {
@@ -5,21 +8,78 @@ import {
 	CombinedGroupedKeywords,
 } from '../../components/dmmcomponents/Top100/keywords'
 
-const KeywordButton: React.FC<{ keyword: string; href: string }> = ({ keyword, href }) => (
-	<Link href={href} passHref>
-		<button
-			type='button'
-			className='bg-transparent hover:bg-pink-600 text-pink-500 font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded dark:text-pink-200 dark:border-pink-400 dark:hover:bg-pink-600 dark:hover:text-white transition-colors duration-300'>
-			{keyword}
-		</button>
-	</Link>
-)
+/**
+ * ページのメタデータを生成します。
+ *
+ * @returns ページのメタデータオブジェクト
+ */
+export async function generateMetadata(): Promise<Metadata> {
+	const totalCategories = AllCategories.length
+	const totalSubcategories = AllCategories.reduce(
+		(acc, category) => acc + category.Subcategories.length,
+		0,
+	)
+	const totalKeywords = AllCategories.reduce(
+		(acc, category) =>
+			acc + category.Subcategories.reduce((subAcc, sub) => subAcc + sub.Keywords.length, 0),
+		0,
+	)
+	const totalCombinedKeywords = CombinedGroupedKeywords.length
 
+	const description = `人気のキーワードを${totalKeywords}件集めました。豊富なキーワードの中から、観たい作品を見つけるのに役立ててください。カテゴリーは${totalCategories}個、サブカテゴリは${totalSubcategories}個、組み合わせキーワードは${totalCombinedKeywords}件あります。レビュー合計数は多数です。最も多く登場する女優はN/Aです。`
+
+	return {
+		title: 'キーワード一覧',
+		description,
+		openGraph: {
+			title: 'キーワード一覧',
+			description,
+		},
+		twitter: {
+			card: 'summary_large_image',
+			title: 'キーワード一覧',
+			description,
+		},
+	}
+}
+
+/**
+ * キーワードページコンポーネント
+ *
+ * @returns キーワード一覧ページの JSX 要素
+ */
 const KeywordsPage: React.FC = () => {
+	// 動的データの定義（実際にはデータ取得処理を実装してください）
+	const validData = {
+		createdAt: new Date().toISOString(),
+	}
+	const keyword = 'サンプルキーワード' // 実際のキーワードを使用してください
+	const items = [{}, {}, {}] // 実際のアイテムデータに置き換えてください
+	const allItemReviewCount = 123 // 実際のレビュー数を使用してください
+	const sortedActessArray = [{ name: '女優名' }] // 実際の女優データを使用してください
+
 	return (
 		<div className='container mx-auto px-6 py-12 bg-gray-50 dark:bg-gray-900 transition-colors duration-300'>
+			{/* h1 と説明文の表示 */}
+			<h1 className='text-4xl font-extrabold mb-4 text-slate-800'>
+				【{new Date(validData.createdAt).getFullYear()}年最新】人気のエロ動画キーワード一覧
+			</h1>
+			<p className='pb-2 font-semibold'>
+				エロ動画で人気のキーワード一覧です。
+				<br />
+				<br />
+				キーワードのリンク先には、厳選したエロ動画をまとめています。観たい作品を見つけるのに役立ててください。
+			</p>
+
+			{/* 目次の表示 */}
+			<TableOfContents />
+
+			{/* カテゴリごとのキーワードセクション */}
 			{AllCategories.map((category, categoryIndex) => (
-				<section key={`${category.MainCategoryName}-${categoryIndex}`} className='mb-16'>
+				<section
+					key={`${category.MainCategoryName}-${categoryIndex}`}
+					id={`category-${categoryIndex}`}
+					className='mb-16'>
 					<h2 className='text-4xl font-extrabold mb-8 text-slate-800 dark:text-slate-200'>
 						{category.MainCategoryName}
 					</h2>
@@ -27,11 +87,12 @@ const KeywordsPage: React.FC = () => {
 						{category.Subcategories.map((sub, subIndex) => (
 							<div
 								key={`${sub.SubCategoryName}-${subIndex}`}
+								id={`subcategory-${categoryIndex}-${subIndex}`}
 								className='bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md shadow-slate-200 dark:shadow-slate-700 transition-shadow'>
 								<h3 className='text-2xl font-semibold mb-6 text-slate-700 dark:text-slate-300'>
 									{sub.SubCategoryName}
 								</h3>
-								<ul className='flex flex-wrap gap-4' >
+								<ul className='flex flex-wrap gap-4'>
 									{sub.Keywords.map((keyword, keywordIndex) => (
 										<li key={`${keyword}-${keywordIndex}`}>
 											<KeywordButton
@@ -47,9 +108,10 @@ const KeywordsPage: React.FC = () => {
 				</section>
 			))}
 
-			<section className='mb-16'>
+			{/* 体型とバストの組み合わせキーワードセクション */}
+			<section id='combined-keywords' className='mb-16'>
 				<h2 className='text-4xl font-extrabold mb-8 text-slate-800 dark:text-slate-200'>
-					体型とバストの組み合わせキーワード
+					体型とバストの組み合わせ
 				</h2>
 				<div className='grid grid-cols-1 gap-10'>
 					{CombinedGroupedKeywords.map((group, groupIndex) => (
@@ -59,12 +121,14 @@ const KeywordsPage: React.FC = () => {
 							<h3 className='text-2xl font-semibold mb-6 text-slate-700 dark:text-slate-300'>
 								{group.base}
 							</h3>
-							<ul className='flex flex-wrap gap-4' >
+							<ul className='flex flex-wrap gap-4'>
 								{group.combinations.map((combinedKeyword, combinedIndex) => (
 									<li key={`${group.base}-${combinedIndex}`}>
 										<KeywordButton
 											keyword={combinedKeyword}
-											href={`/keywords/${encodeURIComponent(group.fetchCombinations[combinedIndex])}`}
+											href={`/keywords/${encodeURIComponent(
+												group.fetchCombinations[combinedIndex],
+											)}`}
 										/>
 									</li>
 								))}
@@ -78,3 +142,64 @@ const KeywordsPage: React.FC = () => {
 }
 
 export default KeywordsPage
+
+/**
+ * キーワードボタンコンポーネント
+ *
+ * @param keyword - 表示するキーワード
+ * @param href - キーワードへのリンク先
+ * @returns キーワードボタンの JSX 要素
+ */
+const KeywordButton: React.FC<{ keyword: string; href: string }> = ({ keyword, href }) => (
+	<Link href={href} passHref>
+		<button
+			type='button'
+			className='bg-transparent hover:bg-pink-600 text-pink-500 font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded dark:text-pink-200 dark:border-pink-400 dark:hover:bg-pink-600 dark:hover:text-white transition-colors duration-300'>
+			{keyword}
+		</button>
+	</Link>
+)
+
+/**
+ * 目次コンポーネント
+ *
+ * @returns 目次の JSX 要素
+ */
+const TableOfContents: React.FC = () => {
+	return (
+		<nav className='mb-12'>
+			<h2 className='text-3xl font-bold mb-4 text-slate-800 dark:text-slate-200'>目次</h2>
+			<ul className='list-disc list-inside space-y-2'>
+				{AllCategories.map((category, categoryIndex) => (
+					<li key={`toc-category-${categoryIndex}`}>
+						<Link
+							href={`#category-${categoryIndex}`}
+							className='text-blue-500 hover:underline dark:text-blue-400 transition-colors duration-300'>
+							{category.MainCategoryName}
+						</Link>
+						{category.Subcategories.length > 0 && (
+							<ul className='list-inside list-disc ml-5 mt-2 space-y-1'>
+								{category.Subcategories.map((sub, subIndex) => (
+									<li key={`toc-subcategory-${categoryIndex}-${subIndex}`}>
+										<a
+											href={`#subcategory-${categoryIndex}-${subIndex}`}
+											className='text-blue-400 hover:underline dark:text-blue-300 transition-colors duration-300'>
+											{sub.SubCategoryName}
+										</a>
+									</li>
+								))}
+							</ul>
+						)}
+					</li>
+				))}
+				<li>
+					<a
+						href='#combined-keywords'
+						className='text-blue-500 hover:underline dark:text-blue-400 transition-colors duration-300'>
+						体型とバストの組み合わせ
+					</a>
+				</li>
+			</ul>
+		</nav>
+	)
+}
