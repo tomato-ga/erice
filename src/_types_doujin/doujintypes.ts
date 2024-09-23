@@ -70,9 +70,9 @@ export const FetchDoujinItemSchema = z.object({
 	review_count: z.number().nullish(),
 	review_average: z.number().nullish(),
 	prices: z.object({}).passthrough().nullish(),
-	genres: z.array(z.object({ dmm_id: z.number(), name: z.string() })).nullish(), // genres を string 配列として定義
-	makers: z.array(z.object({ dmm_id: z.number(), name: z.string() })).nullish(), // makers を string 配列として定義
-	series: z.array(z.object({ dmm_id: z.number(), name: z.string() })).nullish(), // series を string 配列として定義
+	genres: z.array(z.any()).nullish(), // genres を string 配列として定義
+	makers: z.array(z.any()).nullish(), // makers を string 配列として定義
+	series: z.array(z.any()).nullish(), // series を string 配列として定義
 	campaign: z.array(z.object({})).nullish(), // 必要に応じて詳細を定義
 })
 
@@ -82,9 +82,12 @@ export type DoujinTopItem = z.infer<typeof FetchDoujinItemSchema>
 // DoujinKobetuItemSchema の修正
 export const DoujinKobetuItemSchema = FetchDoujinItemSchema.extend({
 	package_images: z.string(),
-	genres: z.array(z.string()).nullish(),
-	makers: z.array(z.string()).nullish(),
-	series: z.array(z.string()).nullish(),
+	// 修正: genres を文字列の配列からオブジェクトの配列に変更
+	genres: z.array(z.object({ id: z.number(), name: z.string() })).nullish(),
+	// 修正: makers を文字列の配列からオブジェクトの配列に変更
+	makers: z.array(z.object({ id: z.number(), name: z.string() })).nullish(),
+	// 修正: series を文字列の配列からオブジェクトの配列に変更
+	series: z.array(z.object({ id: z.number(), name: z.string() })).nullish(),
 })
 
 export type DoujinKobetuItem = z.infer<typeof DoujinKobetuItemSchema>
@@ -106,3 +109,23 @@ export interface DoujinGenrePaginationProps {
 }
 
 export type DoujinItemType = 'newrank' | 'newrelease' | 'review' | 'sale'
+
+// PackageImages schema
+export const PackageImagesSchema = z.object({
+	list: z.string().url(),
+	large: z.string().url(),
+})
+
+// Timeline item schema
+export const TimelineItemSchema = z.object({
+	id: z.number(),
+	title: z.string(),
+	release_date: z.string(),
+	package_images: PackageImagesSchema.nullable(),
+})
+
+export type TimelineItem = z.infer<typeof TimelineItemSchema>
+
+// API response schema
+export const TimelineApiResponseSchema = z.array(TimelineItemSchema)
+export type TimelineApiResponse = z.infer<typeof TimelineApiResponseSchema>

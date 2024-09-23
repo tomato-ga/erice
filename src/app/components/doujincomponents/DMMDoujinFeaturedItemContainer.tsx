@@ -33,6 +33,8 @@ async function fetchData(endpoint: string): Promise<DoujinTopItem[]> {
 		}
 		const data: DoujinTopApiResponse = await response.json()
 
+		console.log('API Response:', data) // 追加: レスポンス内容をログ出力
+
 		return data.result.items
 	} catch (error) {
 		console.error('データの取得に失敗しました:', error)
@@ -61,8 +63,6 @@ const DMMDoujinFeaturedItemCard = ({
 	from: string
 	umamifrom: UmamiTrackingFromType
 }) => {
-
-
 	return (
 		<div className='bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-md flex flex-col h-full'>
 			<UmamiTracking
@@ -97,9 +97,13 @@ const DMMDoujinFeaturedItemCard = ({
 						<p
 							className='text-sm text-gray-600 mb-2 line-clamp-1'
 							title={
-								isValidObject(item.makers?.[0], ['name']) ? `メーカー: ${item.makers[0].name}` : ''
+								isValidObject(item.makers?.[0], ['name'])
+									? `メーカー: ${item.makers?.[0].name}`
+									: ''
 							}>
-							{isValidObject(item.makers?.[0], ['name']) ? `メーカー: ${item.makers[0].name}` : ''}
+							{isValidObject(item.makers?.[0], ['name'])
+								? `メーカー: ${item.makers?.[0].name}`
+								: ''}
 						</p>
 					</div>
 				</Link>

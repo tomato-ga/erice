@@ -1,9 +1,7 @@
 import { DoujinItemType, DoujinKobetuItem } from '@/_types_doujin/doujintypes'
 import { CommentSection } from '@/app/components/dmmcomponents/Comment/CommentSection'
 
-import RelatedItemsScroll from '@/app/components/dmmcomponents/Related/RelatedItemsScroll'
 import { UmamiTracking } from '@/app/components/dmmcomponents/UmamiTracking'
-import { fetchRelatedItems } from '@/app/components/dmmcomponents/fetch/itemFetchers'
 import { formatPrice } from '@/utils/typeGuards'
 import { ExternalLink } from 'lucide-react'
 import { Metadata } from 'next'
@@ -11,15 +9,103 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table' // shadcnのテーブルコンポーネントをインポート
+
 import '@/app/_css/styles.css'
+import MakerTimelinePage from '@/app/components/doujincomponents/kobetu/MakerTimeline'
+import SeriesTimelinePage from '@/app/components/doujincomponents/kobetu/SeriesTimeline'
 
 // 型定義をそのまま使用
 type Props = {
 	params: { dbId: string }
 }
 
-// ItemType を拡張して 'review' を含める
-type ExtendedItemType = DoujinItemType | 'review'
+// ItemDetailsTableコンポーネント
+const ItemDetailsTable: React.FC<{ item: DoujinKobetuItem }> = ({ item }) => {
+	return (
+		<Table className='w-full mt-4 text-lg'>
+			<TableBody>
+				<TableRow>
+					<TableCell className='font-semibold whitespace-nowrap'>タイトル</TableCell>
+					<TableCell>
+						<Link
+							href={`/doujin/itemd/${item.affiliate_url}`}
+							className='text-blue-500 font-bold text-xl hover:underline'>
+							<h2>{item.title}</h2>
+						</Link>
+					</TableCell>
+				</TableRow>
+				{item.release_date && (
+					<TableRow>
+						<TableCell className='font-semibold whitespace-nowrap'>発売日</TableCell>
+						<TableCell>
+							<div className='text-xl'>{new Date(item.release_date).toLocaleDateString()}</div>
+						</TableCell>
+					</TableRow>
+				)}
+				{item.prices && (
+					<TableRow>
+						<TableCell className='font-semibold whitespace-nowrap'>価格</TableCell>
+						<TableCell>
+							<div className='text-xl'>
+								{typeof item.prices === 'string' ? `${item.prices}円` : 'N/A'}
+							</div>
+						</TableCell>
+					</TableRow>
+				)}
+				{item.genres && item.genres.length > 0 && (
+					<TableRow>
+						<TableCell className='font-semibold whitespace-nowrap'>ジャンル</TableCell>
+						<TableCell>
+							<div className='flex flex-wrap space-x-2'>
+								{item.genres.map((genre, index) => (
+									<Link
+										key={index}
+										href={`/doujin/genre/${encodeURIComponent(genre.name)}`}
+										className='bg-blue-50 text-blue-700 p-3 m-1 rounded text-sm font-semibold transition-all duration-300 hover:bg-blue-100 hover:shadow-md border border-blue-200'>
+										{genre.name}
+									</Link>
+								))}
+							</div>
+						</TableCell>
+					</TableRow>
+				)}
+				{item.makers && item.makers.length > 0 && (
+					<TableRow>
+						<TableCell className='font-semibold whitespace-nowrap'>メーカー</TableCell>
+						<TableCell>
+							<div className='flex flex-wrap space-x-2'>
+								{item.makers.map((maker, index) => (
+									<span
+										key={index}
+										className='bg-green-50 text-green-700 p-3 m-1 rounded text-sm font-semibold transition-all duration-300 hover:bg-green-100 hover:shadow-md border border-green-200'>
+										{maker.name}
+									</span>
+								))}
+							</div>
+						</TableCell>
+					</TableRow>
+				)}
+				{item.series && item.series.length > 0 && (
+					<TableRow>
+						<TableCell className='font-semibold whitespace-nowrap'>シリーズ</TableCell>
+						<TableCell>
+							<div className='flex flex-wrap space-x-2'>
+								{item.series.map((series, index) => (
+									<span
+										key={index}
+										className='bg-purple-50 text-purple-700 p-3 m-1 rounded text-sm font-semibold transition-all duration-300 hover:bg-purple-100 hover:shadow-md border border-purple-200'>
+										{series.name}
+									</span>
+								))}
+							</div>
+						</TableCell>
+					</TableRow>
+				)}
+			</TableBody>
+		</Table>
+	)
+}
 
 // メタデータ生成の強化
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -83,15 +169,6 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 		const item = await fetchItemData(params.dbId)
 		console.log('item:', item)
 
-		// 関連アイテムのデータを取得
-		// const relatedItemTypes: ExtendedItemType[] = ['newrank', 'newrelease', 'review', 'sale']
-		// const relatedItemsData = await Promise.all(
-		// 	relatedItemTypes.map(async type => ({
-		// 		type,
-		// 		items: await fetchRelatedItems(type as DoujinItemType),
-		// 	})),
-		// )
-
 		return (
 			<div className='bg-gray-50 dark:bg-gray-900 min-h-screen'>
 				<div className='container mx-auto px-4 sm:px-6 py-8 sm:py-12'>
@@ -114,32 +191,21 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 						</div>
 
 						<h1 className='text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 text-center'>
-							{item.title}
+							<Link
+								href={`/doujin/itemd/${item.affiliate_url}`}
+								className='text-blue-500 font-bold hover:underline'>
+								{item.title}
+							</Link>
 						</h1>
 
-						{/* <div className='flex justify-center'>
-							<UmamiTracking
-								trackingData={{
-									dataType: 'doujin-item',
-									from: 'kobetu-exlink-top',
-									item: { title: item.title, content_id: item.content_id },
-								}}>
-								<Link
-									href={item.affiliate_url}
-									target='_blank'
-									rel='noopener noreferrer'
-									className='inline-flex items-center justify-center text-xl font-semibold text-white bg-gradient-to-r from-pink-500 to-rose-600 dark:from-pink-600 dark:to-rose-700 rounded-full shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 dark:focus:ring-pink-400 px-8 py-4'>
-									<span className='mr-2'>作品をフルで見る</span>
-									<ExternalLink className='w-6 h-6 animate-pulse' />
-								</Link>
-							</UmamiTracking>
-						</div> */}
+						{/* Item Details Table */}
+						<ItemDetailsTable item={item} />
 
+						{/* 外部リンクボタン */}
 						<div className='flex justify-center items-center'>
 							<div className='relative inline-block  items-center'>
 								{/* グラデーションオーバーレイ */}
 								<div className='absolute inset-2 rounded-full opacity-80 blur-lg group-hover:opacity-100 transition-opacity duration-500 ease-in-out bg-custom-gradient-exbutton bg-custom-gradient-exbutton--doujin z-0' />
-
 								{/* ボタン */}
 								<UmamiTracking
 									trackingData={{
@@ -156,84 +222,6 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 										<ExternalLink className='w-5 h-5 sm:w-6 sm:h-6 animate-pulse' />
 									</Link>
 								</UmamiTracking>
-							</div>
-						</div>
-
-						<div className='space-y-6'>
-							{/* TODO 価格表示は考える セール価格もあるかもしれないのでAPIに含める*/}
-							{/* <div className='text-center'>
-								<span className='text-red-600 font-bold text-3xl'>
-									{typeof item.prices === 'string' ? `${item.prices}円` : 'N/A'}
-								</span>
-							</div> */}
-
-							{/* <div className='mb-2'>
-								{formatPrice(item.prices) !== formatPrice(item.prices) && (
-									<span className='text-gray-500 line-through mr-2'>
-										{formatPrice(item.prices.list_price)}円
-									</span>
-								)}
-								<span className='text-red-600 font-bold'>{formatPrice(item.prices.price)}円</span>
-							</div> */}
-
-							{/* ここではレビューセクションはコメントアウトされています */}
-
-							<div className='space-y-8'>
-								{item.genres && item.genres.length > 0 && (
-									<div>
-										<h2 className='font-semibold text-xl mb-4 text-gray-800 dark:text-gray-200'>
-											ジャンル
-										</h2>
-										<div className='flex flex-wrap gap-3'>
-											{item.genres.map((genre, index) => (
-												<span
-													key={index}
-													className='bg-blue-50 text-blue-700 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-blue-100 hover:shadow-md border border-blue-200'>
-													<Link
-														href={`/doujin/genre/${encodeURIComponent(genre)}`}
-														className='text-base text-blue-600 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500'
-														prefetch={true}>
-														{genre}
-													</Link>
-												</span>
-											))}
-										</div>
-									</div>
-								)}
-
-								{item.makers && item.makers.length > 0 && (
-									<div>
-										<h2 className='font-semibold text-xl mb-4 text-gray-800 dark:text-gray-200'>
-											メーカー
-										</h2>
-										<div className='flex flex-wrap gap-3'>
-											{item.makers.map((maker, index) => (
-												<span
-													key={index}
-													className='bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-green-100 hover:shadow-md border border-green-200'>
-													{maker}
-												</span>
-											))}
-										</div>
-									</div>
-								)}
-
-								{item.series && item.series.length > 0 && (
-									<div>
-										<h2 className='font-semibold text-xl mb-4 text-gray-800 dark:text-gray-200'>
-											シリーズ
-										</h2>
-										<div className='flex flex-wrap gap-3'>
-											{item.series.map((series, index) => (
-												<span
-													key={index}
-													className='bg-purple-50 text-purple-700 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-purple-100 hover:shadow-md border border-purple-200'>
-													{series}
-												</span>
-											))}
-										</div>
-									</div>
-								)}
 							</div>
 						</div>
 
@@ -261,6 +249,24 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 							</div>
 						)}
 
+						{item.makers && item.makers.length > 0 && (
+							<MakerTimelinePage
+								searchParams={{
+									maker_id: item.makers[0].id.toString(),
+									maker_name: item.makers[0].name,
+								}}
+							/>
+						)}
+
+						{item.series && item.series.length > 0 && (
+							<SeriesTimelinePage
+								searchParams={{
+									series_id: item.series[0].id.toString(),
+									series_name: item.series[0].name,
+								}}
+							/>
+						)}
+
 						<div className='w-full text-sm text-center my-4'>このページに広告を設置しています</div>
 
 						{/* コメントセクションの追加 */}
@@ -268,24 +274,7 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 							<CommentSection contentId={item.content_id} />
 						</Suspense>
 
-						{/* 関連アイテムの表示 */}
-						{/* {relatedItemsData.map(({ type, items }) => (
-							<RelatedItemsScroll
-								key={type}
-								items={items}
-								itemType={type}
-								title={
-									type === 'newrank'
-										? '新着ランキング'
-										: type === 'newrelease'
-											? '新着作品'
-											: type === 'review'
-												? 'レビュー作品'
-												: '限定セール'
-								}
-							/>
-						))} */}
-
+						{/* 外部リンクボタン（下部） */}
 						<div className='flex justify-center items-center mt-8'>
 							<UmamiTracking
 								trackingData={{
