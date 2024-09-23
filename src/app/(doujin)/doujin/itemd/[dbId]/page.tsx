@@ -43,7 +43,7 @@ const ItemDetailsTable: React.FC<{ item: DoujinKobetuItem }> = ({ item }) => {
 						</TableCell>
 					</TableRow>
 				)}
-				{item.prices && (
+				{/* {item.prices && (
 					<TableRow>
 						<TableCell className='font-semibold whitespace-nowrap'>価格</TableCell>
 						<TableCell>
@@ -52,7 +52,7 @@ const ItemDetailsTable: React.FC<{ item: DoujinKobetuItem }> = ({ item }) => {
 							</div>
 						</TableCell>
 					</TableRow>
-				)}
+				)} */}
 				{item.genres && item.genres.length > 0 && (
 					<TableRow>
 						<TableCell className='font-semibold whitespace-nowrap'>ジャンル</TableCell>
