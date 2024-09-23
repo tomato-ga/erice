@@ -15,6 +15,7 @@ import {
 	DMMKeywordItemSchema,
 	GetKVTop100ResponseSchema,
 } from '@/types/dmm-keywordpage-types'
+import { formatDate } from '@/utils/dmmUtils'
 import { processKeyword } from '@/utils/typeGuards'
 import { Metadata } from 'next'
 import Link from 'next/link'
@@ -63,9 +64,7 @@ const ItemDetailsTable: React.FC<{ item: DMMKeywordItemProps; keyword: string }>
 				<TableRow>
 					<TableCell className='font-semibold whitespace-nowrap'>発売日</TableCell>
 					<TableCell>
-						<div className='text-xl'>
-							{item.date ? new Date(item.date).toLocaleDateString() : ''}
-						</div>
+						<div className='text-xl'>{item.date ? formatDate(item.date) : ''}</div>
 					</TableCell>
 				</TableRow>
 				<TableRow>

@@ -14,6 +14,7 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table' //
 import '@/app/_css/styles.css'
 import MakerTimelinePage from '@/app/components/doujincomponents/kobetu/MakerTimeline'
 import SeriesTimelinePage from '@/app/components/doujincomponents/kobetu/SeriesTimeline'
+import { formatDate } from '@/utils/dmmUtils'
 
 // 型定義をそのまま使用
 type Props = {
@@ -39,7 +40,7 @@ const ItemDetailsTable: React.FC<{ item: DoujinKobetuItem }> = ({ item }) => {
 					<TableRow>
 						<TableCell className='font-semibold whitespace-nowrap'>発売日</TableCell>
 						<TableCell>
-							<div className='text-xl'>{new Date(item.release_date).toLocaleDateString()}</div>
+							<div className='text-xl'>{formatDate(item.release_date)}</div>
 						</TableCell>
 					</TableRow>
 				)}
