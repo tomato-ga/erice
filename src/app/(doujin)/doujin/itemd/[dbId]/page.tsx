@@ -30,7 +30,7 @@ const ItemDetailsTable: React.FC<{ item: DoujinKobetuItem }> = ({ item }) => {
 					<TableCell className='font-semibold whitespace-nowrap'>タイトル</TableCell>
 					<TableCell>
 						<Link
-							href={`/doujin/itemd/${item.affiliate_url}`}
+							href={item.affiliate_url}
 							className='text-blue-500 font-bold text-xl hover:underline'>
 							<h2>{item.title}</h2>
 						</Link>
@@ -192,9 +192,7 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 						</div>
 
 						<h1 className='text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 text-center'>
-							<Link
-								href={`/doujin/itemd/${item.affiliate_url}`}
-								className='text-blue-500 font-bold hover:underline'>
+							<Link href={item.affiliate_url} className='text-blue-500 font-bold hover:underline'>
 								{item.title}
 							</Link>
 						</h1>
