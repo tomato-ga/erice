@@ -20,7 +20,7 @@ import { Metadata } from 'next'
 
 import Link from 'next/link'
 import { Suspense } from 'react'
-import './styles.css'
+import '@/app/_css/styles.css'
 
 interface Props {
 	params: { dbId: number }
@@ -208,7 +208,8 @@ export default async function DMMKobetuItemPage({
 
 						<div className='relative inline-block group'>
 							{/* グラデーションオーバーレイ */}
-							<div className='absolute inset-2 rounded-full opacity-80 blur-lg group-hover:opacity-100 transition-opacity duration-500 ease-in-out bg-custom-gradient-exbutton' />
+							<div className='absolute inset-2 rounded-full opacity-80 blur-lg group-hover:opacity-100 transition-opacity duration-500 ease-in-out bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm z-0' />
+
 							{/* ボタン */}
 							<UmamiTracking
 								trackingData={{
@@ -218,10 +219,11 @@ export default async function DMMKobetuItemPage({
 									actressInfo: actressInfo,
 								}}>
 								<Link
-									href={ItemMain.affiliateURL || '#'}
+									href={ItemMain.affiliateURL}
 									target='_blank'
 									rel='noopener noreferrer'
-									className='relative inline-flex items-center justify-center text-xl font-semibold text-white rounded-full shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 px-6 sm:px-8 py-3 sm:py-4 hover:bg-gray-700 transform hover:-translate-y-0.5 bg-custom-gradient-exbutton'>
+									className='relative z-10 inline-flex items-center justify-center text-xl font-semibold text-white rounded-full shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 px-6 sm:px-8 py-3 sm:py-4 hover:bg-gray-700 transform hover:-translate-y-0.5 bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm' /* 修飾クラスを追加 */
+								>
 									<span className='mr-2'>高画質動画を見る</span>
 									<ExternalLink className='w-5 h-5 sm:w-6 sm:h-6 animate-pulse' />
 								</Link>
@@ -317,7 +319,7 @@ export default async function DMMKobetuItemPage({
 									href={ItemMain.affiliateURL}
 									target='_blank'
 									rel='noopener noreferrer'
-									className='relative inline-flex items-center justify-center text-xl font-semibold text-white rounded-sm shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 px-6 sm:px-8 py-3 sm:py-4 hover:bg-gray-700 transform hover:-translate-y-0.5 bg-custom-gradient-exbutton'>
+									className='relative inline-flex items-center justify-center text-xl font-semibold text-white rounded-sm shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 px-6 sm:px-8 py-3 sm:py-4 hover:bg-gray-700 transform hover:-translate-y-0.5 bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm'>
 									<span className='mr-2'>{ItemMain.title}の高画質動画を見る</span>
 									<ExternalLink className='w-5 h-5 sm:w-6 sm:h-6 animate-pulse' />
 								</Link>

@@ -1,0 +1,122 @@
+/* styles.css */
+
+/* styles.css */
+
+/* 1. CSSカスタムプロパティを定義 */
+:root {
+  --gradient-angle: -45deg;
+  --gradient-colors: #ffcb47, #e34ba9, #369eff, #95f3d9;
+  --animation-duration: 13s;
+  --background-size: 400% 400%;
+  --animation-timing-function: linear;
+}
+
+/* 2. グラデーションアニメーション用のキーフレームを定義 */
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 50% 50%; }
+  50% { background-position: 100% 50%; }
+  75% { background-position: 50% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ベンダープレフィックス付きキーフレーム（必要に応じて） */
+@-webkit-keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 50% 50%; }
+  50% { background-position: 100% 50%; }
+  75% { background-position: 50% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 3. 再利用可能なグラデーション背景クラスを作成 */
+.bg-custom-gradient-exbutton {
+  /* 線形グラデーションを適用 */
+  background-image: linear-gradient(var(--gradient-angle), var(--gradient-colors));
+  
+  /* 背景サイズを設定し、繰り返しを防止 */
+  background-size: var(--background-size);
+  background-repeat: no-repeat;
+  
+  /* アニメーションを適用 */
+  animation: gradientAnimation var(--animation-duration) var(--animation-timing-function) infinite;
+  -webkit-animation: gradientAnimation var(--animation-duration) var(--animation-timing-function) infinite; /* 古いWebKitブラウザ向け */
+  
+  /* オプション：外観を向上させるスタイル */
+  /* border-radiusはTailwind CSSで制御 */
+  transition: background-position 0.5s ease-in-out;
+}
+
+/* 4. オプション：アニメーション速度を変更する修飾クラス */
+.bg-custom-gradient-exbutton--fast {
+  --animation-duration: 5s;
+}
+
+.bg-custom-gradient-exbutton--slow {
+  --animation-duration: 20s;
+}
+
+/* 5. オプション：異なる色のバージョンを作成する修飾クラス */
+.bg-custom-gradient-exbutton--dmm {
+  --gradient-colors: #f66946, #f8a76a, #fb5274, #f8788f;
+}
+
+
+.bg-custom-gradient-exbutton--doujin {
+  --gradient-colors: #ec4899, #f43f5e, #e11d48, #be185d;
+}
+
+.bg-custom-gradient-exbutton--var3 {
+  --gradient-colors: #f92f79, #ffe15d, #2770ef, #37fbe4;
+}
+
+
+/* 必要に応じてさらにバリアントを追加 */
+
+
+/* 2024/09/23 */
+/* .bg-custom-gradient-exbutton { */
+    /* background-image: linear-gradient(-45deg, #ffcb47, #e34ba9, #369eff, #95f3d9); */
+    /* background-size: 400% 400%; 拡大 */
+    /* background-repeat: no-repeat; */
+    /* -webkit-animation: myGradient 13s linear infinite; */
+    /* animation: myGradient 13s linear infinite; 継続時間とイージングを調整 */
+/* } */
+  
+/* @keyframes myGradient {
+    0% { background-position: 0% 50%; }
+    25% { background-position: 50% 50%; }
+    50% { background-position: 100% 50%; }
+    75% { background-position: 50% 50%; }
+    100% { background-position: 0% 50%; }
+  } */
+
+/*  */
+
+  /* .bg-custom-gradient-exbutton {
+    background-image: linear-gradient(
+        -45deg,
+        #ffcb47,
+        #e34ba9,
+        #369eff,
+        #95f3d9
+      );
+    -webkit-background-size: 400% 400%;
+    background-size: 400% 400%;
+    border-radius: inherit;
+    -webkit-animation: 5s myGradient 5s ease infinite;
+    animation: 5s myGradient 5s ease infinite;
+    position: relative;
+    z-index: 1;
+    border: none;
+    border-radius: 8px!important;
+}
+
+  @keyframes myGradient {
+    0% { background-position: 0% 50%; }
+    25% { background-position: 50% 50%; }
+    50% { background-position: 100% 50%; }
+    75% { background-position: 50% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+ */
