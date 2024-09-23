@@ -77,11 +77,12 @@ const ItemDetailsTable: React.FC<{ item: DoujinKobetuItem }> = ({ item }) => {
 						<TableCell>
 							<div className='flex flex-wrap space-x-2'>
 								{item.makers.map((maker, index) => (
-									<span
+									<Link
 										key={index}
+										href={`/doujin/maker/${encodeURIComponent(maker.name)}`}
 										className='bg-green-50 text-green-700 p-3 m-1 rounded text-sm font-semibold transition-all duration-300 hover:bg-green-100 hover:shadow-md border border-green-200'>
 										{maker.name}
-									</span>
+									</Link>
 								))}
 							</div>
 						</TableCell>

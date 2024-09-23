@@ -116,7 +116,7 @@ export default async function GenrePaginationPage({ params }: PageProps) {
 						currentPage={data.currentPage}
 						totalPages={data.totalPages}
 						category={genrename}
-						categoryType='doujingenre'
+						categoryType='doujinpagination'
 					/>
 				</Suspense>
 			</section>

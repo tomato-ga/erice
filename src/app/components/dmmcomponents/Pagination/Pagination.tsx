@@ -1,6 +1,6 @@
 'use client'
 
-import { DoujinGenrePaginationProps } from '@/_types_doujin/doujintypes'
+import { PaginationItem } from '@/_types_doujin/doujintypes'
 import { DMMItemProps, ImageURLs } from '@/types/dmmtypes'
 import Link from 'next/link'
 import PaginationComponent from '../../Pagination'
@@ -8,15 +8,15 @@ import PaginationComponent from '../../Pagination'
 export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale' | 'actress' | 'genre'
 
 interface DMMItemContainerPaginationProps {
-	items: DMMItemProps[] | DoujinGenrePaginationProps[]
+	items: DMMItemProps[] | PaginationItem[]
 	currentPage: number
 	totalPages: number
 	category: string | undefined
-	categoryType: 'actress' | 'genre' | 'style' | 'type' | 'doujingenre'
+	categoryType: 'actress' | 'genre' | 'style' | 'type' | 'doujinpagination'
 }
 
 // 型ガード関数
-function isDMMItemProps(item: DMMItemProps | DoujinGenrePaginationProps): item is DMMItemProps {
+function isDMMItemProps(item: DMMItemProps | PaginationItem): item is DMMItemProps {
 	return 'imageURL' in item
 }
 
@@ -37,7 +37,7 @@ export default function DMMItemContainerPagination({
 		genre: 'from-green-50 to-blue-50',
 		style: 'from-yellow-50 to-orange-50',
 		type: 'from-red-50 to-pink-50',
-		doujingenre: 'from-pink-50 to-red-50',
+		doujinpagination: 'from-pink-50 to-red-50',
 	}
 
 	const titles = {
@@ -45,7 +45,7 @@ export default function DMMItemContainerPagination({
 		genre: `${category}の動画`,
 		style: `${category}の動画`,
 		type: `${category}の動画`,
-		doujingenre: `${category}の同人`,
+		doujinpagination: `${category}の同人作品一覧`,
 	}
 
 	const getImageURL = (imageURL: string | ImageURLs): string => {
@@ -56,7 +56,7 @@ export default function DMMItemContainerPagination({
 	}
 
 	const getItemLink = (dbId: string | number) => {
-		return categoryType === 'doujingenre' ? `/doujin/itemd/${dbId}` : `/item/${dbId}`
+		return categoryType === 'doujinpagination' ? `/doujin/itemd/${dbId}` : `/item/${dbId}`
 	}
 
 	return (

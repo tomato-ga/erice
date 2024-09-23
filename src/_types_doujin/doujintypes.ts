@@ -58,22 +58,15 @@ export const FetchDoujinItemSchema = z.object({
 			large: z.string(),
 		})
 		.nullish(),
-	sample_images: z
-		.array(
-			z
-				.string()
-				.nullish(), // image_url を string として定義
-		)
-		.nullish()
-		.optional(),
+	sample_images: z.array(z.string().nullish()).nullish().optional(),
 	release_date: z.string().optional(),
 	review_count: z.number().nullish(),
 	review_average: z.number().nullish(),
 	prices: z.object({}).passthrough().nullish(),
-	genres: z.array(z.any()).nullish(), // genres を string 配列として定義
-	makers: z.array(z.any()).nullish(), // makers を string 配列として定義
-	series: z.array(z.any()).nullish(), // series を string 配列として定義
-	campaign: z.array(z.object({})).nullish(), // 必要に応じて詳細を定義
+	genres: z.array(z.any()).nullish(),
+	makers: z.array(z.any()).nullish(),
+	series: z.array(z.any()).nullish(),
+	campaign: z.array(z.object({})).nullish(),
 })
 
 export type FetchDoujinItem = z.infer<typeof FetchDoujinItemSchema>
@@ -129,3 +122,35 @@ export type TimelineItem = z.infer<typeof TimelineItemSchema>
 // API response schema
 export const TimelineApiResponseSchema = z.array(TimelineItemSchema)
 export type TimelineApiResponse = z.infer<typeof TimelineApiResponseSchema>
+
+// Common Pagination Item
+export interface PaginationItem {
+	db_id: number
+	content_id: string
+	package_images: string | null
+	title: string
+}
+
+// Pagination Response
+export interface PaginationResponse {
+	items: PaginationItem[]
+	currentPage: number
+	totalPages: number
+	category?: string
+}
+
+// Zod schema for pagination item
+export const PaginationItemSchema = z.object({
+	db_id: z.number(),
+	content_id: z.string(),
+	package_images: z.string().nullable(),
+	title: z.string(),
+})
+
+// Zod schema for pagination response
+export const PaginationResponseSchema = z.object({
+	items: z.array(PaginationItemSchema),
+	currentPage: z.number(),
+	totalPages: z.number(),
+	category: z.string().optional(),
+})
