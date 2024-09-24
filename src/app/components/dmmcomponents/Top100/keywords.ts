@@ -160,7 +160,8 @@ export const AllCategories: Category[] = [
 					'彼女・恋人',
 					'同棲',
 					'友人の彼女',
-					'元カ��・元カレ',
+					'元カノ',
+					'元カレ',
 					'カップル',
 					// 'はじめての彼女',
 					'年上彼女',
@@ -207,11 +208,11 @@ export const AllCategories: Category[] = [
 					'従姉妹',
 					'従姉',
 					'母娘',
-					'妻の母・義母',
+					'義母',
 					'妻の妹',
 					'父娘',
 					'義姉',
-					'弟の妻・義兄',
+					'義兄',
 					'結婚生活',
 					'双子',
 					'彼女の妹',
@@ -748,4 +749,3 @@ export const CombinedGroupedKeywords: GroupedCombinedKeywords[] = GenerateCombin
 	'体型',
 	'バスト',
 )
-
