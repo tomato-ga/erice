@@ -36,46 +36,46 @@ const ItemDetailsTable: React.FC<{ item: DMMKeywordItemProps; keyword: string }>
 	keyword,
 }) => {
 	return (
-		<Table className='w-full mt-4 text-lg'>
+		<Table className='w-full mt-3'>
 			{/* フォントサイズを大きく設定 */}
 			<TableBody>
 				<TableRow>
-					<TableCell className='font-semibold whitespace-nowrap'>タイトル</TableCell>
+					<TableCell className='whitespace-nowrap'>タイトル</TableCell>
 					<TableCell>
 						<Link
 							href={`/item/${item.db_id}`}
-							className='text-blue-500 font-bold text-xl hover:underline'>
+							className='text-blue-500 font-semibold  hover:underline'>
 							<h2>{item.title}</h2>
 						</Link>
 					</TableCell>
 				</TableRow>
 				{item.actress && item.actress.trim() !== '' && (
 					<TableRow>
-						<TableCell className='font-semibold whitespace-nowrap'>女優名</TableCell>
+						<TableCell className='whitespace-nowrap'>女優名</TableCell>
 						<TableCell>
 							<Link
 								href={`/actressprofile/${item.actress}`}
-								className='text-blue-500 font-bold text-xl hover:underline'>
+								className='text-blue-500 font-semibold  hover:underline'>
 								{item.actress}
 							</Link>
 						</TableCell>
 					</TableRow>
 				)}
 				<TableRow>
-					<TableCell className='font-semibold whitespace-nowrap'>発売日</TableCell>
+					<TableCell className='whitespace-nowrap'>発売日</TableCell>
 					<TableCell>
-						<div className='text-xl'>{item.date ? formatDate(item.date) : ''}</div>
+						<div className=''>{item.date ? formatDate(item.date) : ''}</div>
 					</TableCell>
 				</TableRow>
 				<TableRow>
-					<TableCell className='font-semibold whitespace-nowrap'>ジャンル</TableCell>
+					<TableCell className='whitespace-nowrap'>ジャンル</TableCell>
 					<TableCell>
-						<div className='flex flex-wrap space-x-2'>
+						<div className='flex flex-wrap gap-2'>
 							{item.iteminfo?.genre?.map(genre => (
 								<Link
 									key={genre.id}
 									href={`/genre/${encodeURIComponent(genre.name)}`}
-									className='bg-transparent hover:bg-pink-600 text-pink-500 font-semibold hover:text-white p-3 m-1 border border-pink-500 hover:border-transparent rounded dark:text-pink-200 dark:border-pink-400 dark:hover:bg-pink-600 dark:hover:text-white'>
+									className='bg-pink-100 hover:bg-pink-600 text-pink-500 border-pink-500 mr-2 px-2.5 py-0.5 rounded dark:bg-pink-900 dark:text-pink-300'>
 									{genre.name}
 								</Link>
 							)) || 'N/A'}
@@ -128,7 +128,7 @@ const KeywordFeaturedItemGrid: React.FC<{ items: DMMKeywordItemProps[]; keyword:
 								loading='lazy'
 								className='w-full h-auto object-contain'
 							/>
-							<div className='p-4 flex-1 flex flex-col'>
+							<div className='p-1 flex-1 flex flex-col'>
 								<ItemDetailsTable item={validItem} keyword={keyword} />
 							</div>
 						</div>
@@ -337,45 +337,47 @@ const KeywordPage = async ({
 	console.debug(`バリデーションを通過したアイテム数: ${featuredItems.length} 件`)
 
 	return (
-		<div className='container mx-auto px-6 py-12'>
-			<h1 className='text-4xl font-extrabold mb-4 text-slate-800'>
-				【{new Date(validData.createdAt).getFullYear()}年最新】{' '}
-				{processKeyword(decodeURIComponent(keyword))} の人気エロ動画を厳選して{items.length}
-				件集めました
-			</h1>
-			<p className='pb-2 font-semibold'>
-				FANZAで人気の「{processKeyword(decodeURIComponent(keyword))}」エロ動画作品を{items.length}
-				件集めました。
-				<br />
-				<br />
-				今すぐサンプル視聴・ダウンロード・ストリーミングが可能で、好きなときにどこでも視聴できます。
-				<br />
-				豊富な{processKeyword(decodeURIComponent(keyword))}
-				の作品の中から、観たい作品を見つけるのに役立ててください。
-			</p>
-			<p className='pb-2 font-semibold'>
-				ここで紹介している「{processKeyword(decodeURIComponent(keyword))}
-				」作品に投稿されたレビュー合計数は {allItemReviewCount}件です。
-				{sortedActessArray.length > 0 && sortedActessArray[0].name && (
-					<>
-						「{processKeyword(decodeURIComponent(keyword))}」作品で最も多く登場する女優は{' '}
-						{sortedActessArray[0].name}です。
-					</>
-				)}
-			</p>
-			{validData.createdAt && (
-				<p className='text-sm text-gray-600 mb-8'>
-					最終更新日時:{' '}
-					{new Date(validData.createdAt).toLocaleString(undefined, {
-						year: 'numeric',
-						month: 'numeric',
-						day: 'numeric',
-						hour: '2-digit',
-						minute: '2-digit',
-						hour12: false,
-					})}
+		<div className='container mx-auto px-1 py-4'>
+			<div className='px-3'>
+				<h1 className='text-4xl font-extrabold mb-4 text-slate-800'>
+					【{new Date(validData.createdAt).getFullYear()}年最新】{' '}
+					{processKeyword(decodeURIComponent(keyword))} の人気エロ動画を厳選して{items.length}
+					件集めました
+				</h1>
+				<p className='pb-2 font-semibold'>
+					FANZAで人気の「{processKeyword(decodeURIComponent(keyword))}」エロ動画作品を{items.length}
+					件集めました。
+					<br />
+					<br />
+					今すぐサンプル視聴・ダウンロード・ストリーミングが可能で、好きなときにどこでも視聴できます。
+					<br />
+					豊富な{processKeyword(decodeURIComponent(keyword))}
+					の作品の中から、観たい作品を見つけるのに役立ててください。
 				</p>
-			)}
+				<p className='pb-2 font-semibold'>
+					ここで紹介している「{processKeyword(decodeURIComponent(keyword))}
+					」作品に投稿されたレビュー合計数は {allItemReviewCount}件です。
+					{sortedActessArray.length > 0 && sortedActessArray[0].name && (
+						<>
+							「{processKeyword(decodeURIComponent(keyword))}」作品で最も多く登場する女優は{' '}
+							{sortedActessArray[0].name}です。
+						</>
+					)}
+				</p>
+				{validData.createdAt && (
+					<p className='text-sm text-gray-600 mb-8'>
+						最終更新日時:{' '}
+						{new Date(validData.createdAt).toLocaleString(undefined, {
+							year: 'numeric',
+							month: 'numeric',
+							day: 'numeric',
+							hour: '2-digit',
+							minute: '2-digit',
+							hour12: false,
+						})}
+					</p>
+				)}
+			</div>
 			{featuredItems.length > 0 ? (
 				<KeywordFeaturedItemGrid items={featuredItems} keyword={keyword} />
 			) : (

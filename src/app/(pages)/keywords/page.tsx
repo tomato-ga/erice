@@ -1,5 +1,4 @@
-import { processKeyword } from '@/utils/typeGuards'
-// pages/keywords/page.tsx
+// src/app/(pages)/keywords/page.tsx
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import React from 'react'
@@ -7,7 +6,8 @@ import {
 	AllCategories,
 	CombinedGroupedKeywords,
 } from '../../components/dmmcomponents/Top100/keywords'
-
+import HashScrollHandler from './HashScrollHandelr'
+import KeywordsNavigation from './KeywordNavigation'
 /**
  * ページのメタデータを生成します。
  *
@@ -60,6 +60,9 @@ const KeywordsPage: React.FC = () => {
 
 	return (
 		<div className='container mx-auto px-6 py-12 bg-gray-50 dark:bg-gray-900 transition-colors duration-300'>
+			{/* ハッシュスクロールハンドラー */}
+			<HashScrollHandler />
+
 			{/* h1 と説明文の表示 */}
 			<h1 className='text-4xl font-extrabold mb-4 text-slate-800'>
 				【{new Date(validData.createdAt).getFullYear()}年最新】人気のエロ動画キーワード一覧
@@ -72,7 +75,7 @@ const KeywordsPage: React.FC = () => {
 			</p>
 
 			{/* 目次の表示 */}
-			<TableOfContents />
+			<KeywordsNavigation categories={AllCategories} />
 
 			{/* カテゴリごとのキーワードセクション */}
 			{AllCategories.map((category, categoryIndex) => (
@@ -153,53 +156,7 @@ export default KeywordsPage
 const KeywordButton: React.FC<{ keyword: string; href: string }> = ({ keyword, href }) => (
 	<Link
 		href={href}
-		passHref
-		type='button'
 		className='bg-transparent hover:bg-pink-600 text-pink-500 font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded dark:text-pink-200 dark:border-pink-400 dark:hover:bg-pink-600 dark:hover:text-white transition-colors duration-300'>
 		{keyword}
 	</Link>
 )
-
-/**
- * 目次コンポーネント
- *
- * @returns 目次の JSX 要素
- */
-const TableOfContents: React.FC = () => {
-	return (
-		<nav className='mb-12'>
-			<h2 className='text-3xl font-bold mb-4 text-slate-800 dark:text-slate-200'>目次</h2>
-			<ul className='list-disc list-inside space-y-2'>
-				{AllCategories.map((category, categoryIndex) => (
-					<li key={`toc-category-${categoryIndex}`}>
-						<Link
-							href={`#category-${categoryIndex}`}
-							className='text-blue-500 hover:underline dark:text-blue-400 transition-colors duration-300'>
-							{category.MainCategoryName}
-						</Link>
-						{category.Subcategories.length > 0 && (
-							<ul className='list-inside list-disc ml-5 mt-2 space-y-1'>
-								{category.Subcategories.map((sub, subIndex) => (
-									<li key={`toc-subcategory-${categoryIndex}-${subIndex}`}>
-										<a
-											href={`#subcategory-${categoryIndex}-${subIndex}`}
-											className='text-blue-400 hover:underline dark:text-blue-300 transition-colors duration-300'>
-											{sub.SubCategoryName}
-										</a>
-									</li>
-								))}
-							</ul>
-						)}
-					</li>
-				))}
-				<li>
-					<a
-						href='#combined-keywords'
-						className='text-blue-500 hover:underline dark:text-blue-400 transition-colors duration-300'>
-						体型とバストの組み合わせ
-					</a>
-				</li>
-			</ul>
-		</nav>
-	)
-}
