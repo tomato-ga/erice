@@ -20,7 +20,12 @@
   background-repeat: no-repeat;
   animation: gradientAnimation var(--animation-duration) var(--animation-timing-function) infinite;
   transition: background-position 0.5s ease-in-out;
-  will-change: background-position;
+
+  /* この二つ実装したらフリッカーなくなった...? 2024/09/25 1:25 */
+  /* Safari フリッカー対策 */
+  backface-visibility: hidden;
+  /* GPUを強制的に使用 */
+  transform: translate3d(0, 0, 0);
 }
 
 .bg-custom-gradient-exbutton--dmm {
