@@ -28,7 +28,7 @@ const BottomNavigation: React.FC = () => {
 	// /doujin が pathname に含まれていない場合にナビゲーションを表示
 	if (!pathname.includes('/doujin')) {
 		return (
-			<nav className='fixed bottom-0 w-full bg-white border-t border-gray-200 md:hidden'>
+			<nav className='fixed bottom-0 w-full bg-white border-t border-gray-200 md:hidden' style={{ zIndex: 1000 }}>
 				<ul className='flex justify-around py-2'>
 					{navigationItems.map(item => {
 						const isActive = pathname === item.href

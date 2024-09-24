@@ -21,6 +21,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import '@/app/_css/styles.css'
+import SaleFloatingBanner from '@/app/components/dmmcomponents/FloatingBanner/FloatingBanner'
 
 interface Props {
 	params: { dbId: number }
@@ -188,27 +189,48 @@ export default async function DMMKobetuItemPage({
 						{ItemMain.title}
 					</h1>
 
-					<div className='flex justify-center'>
-						{/* <UmamiTracking
-							trackingData={{
-								dataType: 'combined',
-								from: 'kobetu-exlink-top',
-								item: ItemMain,
-								actressInfo: actressInfo,
-							}}>
-							<Link
-								href={ItemMain.affiliateURL || '#'}
-								target='_blank'
-								rel='noopener noreferrer'
-								className='inline-flex items-center justify-center text-xl font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-full shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 px-6 sm:px-8 py-3 sm:py-4'>
-								<span className='mr-2'>高画質動画を見る</span>
-								<ExternalLink className='w-5 h-5 sm:w-6 sm:h-6 animate-pulse' />
-							</Link>
-						</UmamiTracking> */}
+					{/* <div className='flex justify-center'>
+						<div className='relative inline-block group'>
+							<div className='absolute inset-2 rounded-full opacity-20 group-hover:opacity-100 transition-opacity duration-500 ease-in-out bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm z-0' />
+							<UmamiTracking
+								trackingData={{
+									dataType: 'combined',
+									from: 'kobetu-exlink-top',
+									item: ItemMain,
+									actressInfo: actressInfo,
+								}}>
+								<Link
+									href={ItemMain.affiliateURL}
+									target='_blank'
+									rel='noopener noreferrer'
+									className='relative z-10 inline-flex items-center justify-center text-xl font-semibold text-white rounded-full shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 px-6 sm:px-8 py-3 sm:py-4 transform hover:-translate-y-0.5 bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm'>
+									<span className='mr-2'>高画質動画を見る</span>
+									<ExternalLink className='w-5 h-5 sm:w-6 sm:h-6 animate-pulse' />
+								</Link>
+							</UmamiTracking>
+						</div>
+					</div> */}
 
+					{/* <div className='flex justify-center'>
+						<div className='relative inline-block group'>
+							<div className='absolute inset-2 rounded-full opacity-70 blur-xl group-hover:opacity-100 transition-opacity duration-500 ease-in-out bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm z-10' />
+							<div>
+								<Link
+									href='https://example.com/affiliate-link'
+									target='_blank'
+									rel='noopener noreferrer'
+									className='relative z-20 inline-flex items-center justify-center text-xl font-semibold text-white rounded-full shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 px-6 sm:px-8 py-3 sm:py-4 transform hover:-translate-y-0.5 bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm'>
+									<span className='mr-2'>高画質動画を見る</span>
+									<ExternalLink className='w-5 h-5 sm:w-6 sm:h-6 animate-pulse' />
+								</Link>
+							</div>
+						</div>
+					</div> */}
+
+					<div className='flex justify-center'>
 						<div className='relative inline-block group'>
 							{/* グラデーションオーバーレイ */}
-							<div className='absolute inset-2 rounded-full opacity-80 blur-lg group-hover:opacity-100 transition-opacity duration-500 ease-in-out bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm z-0' />
+							<div className='absolute inset-2 rounded-full opacity-80 blur-xl group-hover:opacity-100 transition-opacity duration-500 ease-in-out bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm z-0' />
 
 							{/* ボタン */}
 							<UmamiTracking
@@ -281,33 +303,12 @@ export default async function DMMKobetuItemPage({
 						</div>
 					)}
 
-					{/* <div className='mt-8'>
-						<UmamiTracking
-							trackingData={{
-								dataType: 'combined',
-								from: 'kobetu-exlink-bottom',
-								item: ItemMain,
-								actressInfo: actressInfo,
-							}}>
-							<div className='flex justify-center'>
-								<Link
-									href={ItemMain.affiliateURL || '#'}
-									target='_blank'
-									rel='noopener noreferrer'
-									className='inline-flex items-center justify-center text-lg sm:text-xl font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-sm shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 px-6 sm:px-8 py-3 sm:py-4 min-h-[3.5rem] sm:min-h-[4rem] max-w-[90%] text-center'>
-									<span className='mr-2 break-words'>{ItemMain.title}の高画質動画を見る</span>
-									<ExternalLink className='w-5 h-5 sm:w-6 sm:h-6 animate-pulse flex-shrink-0' />
-								</Link>
-							</div>
-						</UmamiTracking>
-					</div> */}
-
-					<div className='flex justify-center mt-8'>
+					<div className='flex justify-center'>
+						{/* 親要素に `group` クラスを追加 */}
 						<div className='relative inline-block group'>
 							{/* グラデーションオーバーレイ */}
-							<div className='absolute inset-2 rounded-full opacity-80 blur-lg group-hover:opacity-100 transition-opacity duration-500 ease-in-out bg-custom-gradient-exbutton' />
+							<div className='absolute inset-2 rounded-full opacity-80 blur-lg sm:group-hover:opacity-100 transition-opacity duration-500 ease-in-out bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm z-0 pointer-events-none will-change-opacity' />
 
-							{/* ボタン */}
 							<UmamiTracking
 								trackingData={{
 									dataType: 'combined',
@@ -319,7 +320,7 @@ export default async function DMMKobetuItemPage({
 									href={ItemMain.affiliateURL}
 									target='_blank'
 									rel='noopener noreferrer'
-									className='relative inline-flex items-center justify-center text-xl font-semibold text-white rounded-sm shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 px-6 sm:px-8 py-3 sm:py-4 hover:bg-gray-700 transform hover:-translate-y-0.5 bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm'>
+									className='relative z-10 inline-flex items-center justify-center text-xl font-semibold text-white rounded-sm shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 px-6 sm:px-8 py-3 sm:py-4 transform bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm will-change-background-position'>
 									<span className='mr-2'>{ItemMain.title}の高画質動画を見る</span>
 									<ExternalLink className='w-5 h-5 sm:w-6 sm:h-6 animate-pulse' />
 								</Link>
@@ -348,6 +349,7 @@ export default async function DMMKobetuItemPage({
 						/>
 					))}
 				</article>
+				<SaleFloatingBanner saleLink={ItemMain.affiliateURL} saleText={ItemMain.title} />
 			</div>
 		</div>
 	)

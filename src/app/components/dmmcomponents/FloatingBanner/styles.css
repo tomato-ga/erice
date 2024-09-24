@@ -1,0 +1,63 @@
+.sale-floating-banner {
+    position: fixed;
+    bottom: 32px;
+    right: 20px;
+    background: linear-gradient(109.6deg, rgb(245, 95, 95) 11.2%, rgb(255, 99, 71) 100.2%);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+    width: var(--banner-width, 300px);
+    height: fit-content;
+    z-index: 9999;
+}
+
+@media (max-width: 600px) {
+    .sale-floating-banner {
+        width: 85%; /* バナーの幅を少し狭くします */
+        right: 20px; /* 右側の余白を 20px に設定 */
+        bottom: 80px;
+    }
+}
+
+.sale-floating-banner__close-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.sale-floating-banner__close-button:hover {
+    color: #e5e7eb;
+}
+
+.sale-floating-banner__content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.sale-floating-banner__title {
+    font-size: 1.05rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.sale-floating-banner__link {
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.sale-floating-banner__link:hover {
+    color: #fef08a;
+    text-decoration: underline;
+}
