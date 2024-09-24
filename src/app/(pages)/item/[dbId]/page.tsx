@@ -349,7 +349,7 @@ export default async function DMMKobetuItemPage({
 						/>
 					))}
 				</article>
-				<SaleFloatingBanner saleLink={ItemMain.affiliateURL} saleText={ItemMain.title} />
+				{/* <SaleFloatingBanner saleLink={ItemMain.affiliateURL} saleText={ItemMain.title} /> */}
 			</div>
 		</div>
 	)
