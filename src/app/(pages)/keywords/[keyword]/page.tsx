@@ -75,7 +75,7 @@ const ItemDetailsTable: React.FC<{ item: DMMKeywordItemProps; keyword: string }>
 								<Link
 									key={genre.id}
 									href={`/genre/${encodeURIComponent(genre.name)}`}
-									className='bg-pink-100 hover:bg-pink-600 text-pink-500 border-pink-500 mr-2 px-2.5 py-0.5 rounded dark:bg-pink-900 dark:text-pink-300'>
+									className='bg-pink-100 hover:bg-pink-600 text-pink-500 border-pink-500 mr-2 px-2.5 py-0.5 rounded dark:text-pink-200 dark:border-pink-400 dark:hover:bg-pink-600 dark:hover:text-white'>
 									{genre.name}
 								</Link>
 							)) || 'N/A'}
