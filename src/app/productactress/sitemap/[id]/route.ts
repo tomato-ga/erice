@@ -23,8 +23,8 @@ async function fetchNames(): Promise<string[]> {
 		const response = await fetch(API_ENDPOINT, {
 			headers: {
 				'Content-Type': 'application/json',
-				'X-API-Key': API_KEY
-			}
+				'X-API-Key': API_KEY,
+			},
 		})
 
 		if (!response.ok) {
@@ -53,9 +53,9 @@ async function fetchNames(): Promise<string[]> {
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
 	try {
 		const idWithoutExtension = params.id.replace('.xml', '')
-		const id = parseInt(idWithoutExtension, 10)
+		const id = Number.parseInt(idWithoutExtension, 10)
 
-		if (isNaN(id) || id < 0) {
+		if (Number.isNaN(id) || id < 0) {
 			return new NextResponse('Invalid sitemap ID', { status: 400 })
 		}
 
@@ -76,13 +76,13 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 		const urls = names
 			.slice(start, end)
 			.map(
-				(name) => `
+				name => `
   <url>
     <loc>${BASE_URL}/actressprofile/${encodeURIComponent(name)}</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
-  </url>`
+  </url>`,
 			)
 			.join('')
 
@@ -95,8 +95,8 @@ ${urls}
 			status: 200,
 			headers: {
 				'Content-Type': 'application/xml',
-				'Cache-Control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400'
-			}
+				'Cache-Control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400',
+			},
 		})
 	} catch (error) {
 		console.error('Error generating sitemap:', error)
