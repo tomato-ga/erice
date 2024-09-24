@@ -230,7 +230,7 @@ export default async function DMMKobetuItemPage({
 					<div className='flex justify-center'>
 						<div className='relative inline-block group'>
 							{/* グラデーションオーバーレイ */}
-							<div className='absolute inset-2 rounded-full opacity-80 blur-xl group-hover:opacity-100 transition-opacity duration-500 ease-in-out bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm z-0' />
+							<div className='absolute inset-2 rounded-full opacity-70 blur-xl group-hover:opacity-100 transition-opacity duration-500 ease-in-out bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm z-0 pointer-events-none' />
 
 							{/* ボタン */}
 							<UmamiTracking
@@ -306,7 +306,7 @@ export default async function DMMKobetuItemPage({
 					<div className='flex justify-center'>
 						{/* 親要素に `group` クラスを追加 */}
 						<div className='relative inline-block group'>
-							<div className='absolute inset-2 rounded-full bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm z-0 pointer-events-none transform scale-95 group-hover:scale-100  duration-500 ease-in-out blur-lg' />
+							<div className='absolute inset-3 rounded-full bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm z-0 pointer-events-none transform group-hover:scale-100  duration-500 ease-in-out blur-lg' />
 
 							<UmamiTracking
 								trackingData={{
