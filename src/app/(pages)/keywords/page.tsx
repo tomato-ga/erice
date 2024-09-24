@@ -151,12 +151,12 @@ export default KeywordsPage
  * @returns キーワードボタンの JSX 要素
  */
 const KeywordButton: React.FC<{ keyword: string; href: string }> = ({ keyword, href }) => (
-	<Link href={href} passHref>
-		<button
-			type='button'
-			className='bg-transparent hover:bg-pink-600 text-pink-500 font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded dark:text-pink-200 dark:border-pink-400 dark:hover:bg-pink-600 dark:hover:text-white transition-colors duration-300'>
-			{keyword}
-		</button>
+	<Link
+		href={href}
+		passHref
+		type='button'
+		className='bg-transparent hover:bg-pink-600 text-pink-500 font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded dark:text-pink-200 dark:border-pink-400 dark:hover:bg-pink-600 dark:hover:text-white transition-colors duration-300'>
+		{keyword}
 	</Link>
 )
 
