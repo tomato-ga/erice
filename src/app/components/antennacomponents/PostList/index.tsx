@@ -8,12 +8,22 @@ import { r18antennaFetch } from './r18fetch'
 const PostItem: React.FC<{ post: antennaPost }> = ({ post }) => (
 	<article className='border-t border-[#dae0e6]'>
 		<div className='flex p-2 hover:bg-[#fff6fb] text-[#212526]'>
-			<div className='flex-grow pr-2 flex flex-col justify-between'>
+			{!!post.image_url && (
+				<Link href={post.url} target='_blank' className='no-underline'>
+					<img
+						src={post.image_url || ''}
+						alt={`${post.title}の画像`}
+						className='w-[90px] h-[60px] md:w-[120px] md:h-20 object-cover mr-2 md:mr-4'
+						loading='lazy'
+					/>
+				</Link>
+			)}
+			<div className='flex-grow pl-2 flex flex-col justify-between'>
 				<UmamiTracking
 					trackingData={{
 						dataType: 'antenna',
 						from: 'antenna-post-list',
-						otherData: { postId: post.id, postTitle: post.title, siteName: post.site_name }, // 追加のデータを含める
+						otherData: { postId: post.id, postTitle: post.title, siteName: post.site_name },
 					}}>
 					<Link href={post.url} target='_blank' className='no-underline text-[#212526]'>
 						<h3 className='text-base font-normal leading-tight mb-2 overflow-hidden line-clamp-3'>
@@ -27,16 +37,6 @@ const PostItem: React.FC<{ post: antennaPost }> = ({ post }) => (
 					</Link>
 				</div>
 			</div>
-			{!!post.image_url && (
-				<Link href={post.url} target='_blank' className='no-underline'>
-					<img
-						src={post.image_url || ''}
-						alt={`${post.title}の画像`}
-						className='w-[90px] h-[60px] md:w-[120px] md:h-20 object-cover ml-2 md:ml-4'
-						loading='lazy'
-					/>
-				</Link>
-			)}
 		</div>
 	</article>
 )
