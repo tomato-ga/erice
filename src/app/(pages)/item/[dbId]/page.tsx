@@ -1,7 +1,7 @@
 // /Volumes/SSD_1TB/erice2/erice/src/app/(pages)/item/[dbId]/page.tsx
 
 import { PostList } from '@/app/components/antennacomponents/PostList'
-import { CommentSection } from '@/app/components/dmmcomponents/Comment/CommentSection'
+import CommentSection from '@/app/components/dmmcomponents/Comment/CommentSection'
 import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
 import ItemDetails from '@/app/components/dmmcomponents/ItemDetails'
 import RelatedItemsScroll from '@/app/components/dmmcomponents/Related/RelatedItemsScroll'
@@ -12,6 +12,7 @@ import {
 	fetchItemMainByContentIdToActressInfo,
 	fetchRelatedItems,
 } from '@/app/components/dmmcomponents/fetch/itemFetchers'
+
 import { DMMItemMainResponse } from '@/types/dmmitemzodschema'
 import { ExtendedDMMItem, ItemType } from '@/types/dmmtypes'
 import { formatDate } from '@/utils/dmmUtils'
@@ -175,7 +176,7 @@ export default async function DMMKobetuItemPage({
 								item: ItemMain,
 								actressInfo: actressInfo,
 							}}>
-							<Link href={ItemMain.affiliateURL || '#'} target='_blank' rel='noopener noreferrer'>
+							<Link href={ItemMain.affiliateURL} target='_blank' rel='noopener noreferrer'>
 								<img
 									src={ItemMain.imageURL}
 									alt={`${ItemMain.title}のパッケージ画像`}

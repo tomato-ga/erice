@@ -1,11 +1,11 @@
 'use client'
 
 import { Comment } from '@/types/comment'
-import { Suspense, useCallback, useState } from 'react'
+import React, { Suspense, useCallback, useState } from 'react'
 import { CommentForm } from './CommentForm'
 import { CommentList } from './CommentList'
 
-export function CommentSection({ contentId }: { contentId: string }) {
+function CommentSection({ contentId }: { contentId: string }) {
 	const [comments, setComments] = useState<Comment[]>([])
 	const [latestComment, setLatestComment] = useState<Comment | null>(null)
 
@@ -42,3 +42,5 @@ export function CommentSection({ contentId }: { contentId: string }) {
 		</section>
 	)
 }
+
+export default React.memo(CommentSection)

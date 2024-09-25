@@ -3,7 +3,7 @@
 import { ExtendedDMMItem, ItemType } from '@/types/dmmtypes'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 interface RelatedItemsScrollProps {
 	items: ExtendedDMMItem[]
@@ -115,4 +115,4 @@ const RelatedItemsScroll: React.FC<RelatedItemsScrollProps> = ({ items, itemType
 	)
 }
 
-export default RelatedItemsScroll
+export default React.memo(RelatedItemsScroll)

@@ -26,7 +26,8 @@ import { ItemType } from '@/types/dmmtypes'
 
 import { ErrorResponse, GetKVTop100Response } from '@/types/dmm-keywordpage-types'
 import { DMMItemProps } from '@/types/dmmtypes'
-import { revalidateTag } from 'next/cache'
+import { revalidateTag, unstable_cache } from 'next/cache'
+import { validate } from 'uuid'
 import { z } from 'zod'
 
 // 型定義の修正
@@ -63,22 +64,35 @@ export async function fetchDataKV(
 	const config = itemTypeConfig[itemType]
 
 	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${config.endpoint}`, {
-			next: {
-				tags: [`item-${contentId}`],
-			},
-		})
+		// Define a fetch callback
+		const fetchCallback = async () => {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${config.endpoint}`, {
+				next: {
+					tags: [`item-${contentId}`],
+				},
+			})
+			return response
+		}
+
+		// Use unstable_cache with the fetch callback
+		const cachedFetch = unstable_cache(fetchCallback, ['fetchDataKV'])
+		const response = await cachedFetch()
+
 		const data: unknown = await response.json()
 
-		const validatedData = config.parseFunction(data)
-		const item = validatedData.find(item => item.content_id === contentId)
+		// Parse and validate the data using the parseFunction from config
+		const parsedData = config.parseFunction(data)
+
+		// Find the specific item by contentId
+		const item = parsedData.find(item => item.content_id === contentId) || null
 
 		if (item) {
 			revalidateTag(`item-${item.content_id}`)
 			return item
 		}
 
-		return null
+		// Type assertion to DMMItem
+		return item as DMMItem | null
 	} catch (error) {
 		if (error instanceof z.ZodError) {
 			console.error(`Validation error for ${itemType} with content_id ${contentId}:`, error.errors)
@@ -88,6 +102,39 @@ export async function fetchDataKV(
 		return null
 	}
 }
+
+// export async function fetchDataKV(
+// 	itemType: FetchableItemType,
+// 	contentId: string,
+// ): Promise<DMMItem | null> {
+// 	const config = itemTypeConfig[itemType]
+
+// 	try {
+// 		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${config.endpoint}`, {
+// 			next: {
+// 				tags: [`item-${contentId}`],
+// 			},
+// 		})
+// 		const data: unknown = await response.json()
+
+// 		const validatedData = config.parseFunction(data)
+// 		const item = validatedData.find(item => item.content_id === contentId)
+
+// 		if (item) {
+// 			revalidateTag(`item-${item.content_id}`)
+// 			return item
+// 		}
+
+// 		return null
+// 	} catch (error) {
+// 		if (error instanceof z.ZodError) {
+// 			console.error(`Validation error for ${itemType} with content_id ${contentId}:`, error.errors)
+// 		} else {
+// 			console.error(`Error fetching data for ${itemType} with content_id ${contentId}:`, error)
+// 		}
+// 		return null
+// 	}
+// }
 
 export async function fetchItemMainByContentId(dbId: number): Promise<DMMItemMainResponse | null> {
 	try {
