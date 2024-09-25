@@ -75,7 +75,7 @@ export async function fetchDataKV(
 		}
 
 		// Use unstable_cache with the fetch callback
-		const cachedFetch = unstable_cache(fetchCallback, ['fetchDataKV'])
+		const cachedFetch = unstable_cache(fetchCallback)
 		const response = await cachedFetch()
 
 		const data: unknown = await response.json()
@@ -264,90 +264,90 @@ export async function fetchActressProfile(actressName: string): Promise<DMMActre
 	}
 }
 
-export async function fetchActressProfileAndWorks(
-	actressName: string,
-): Promise<ActressProfileAndWorks | null> {
-	if (!actressName) {
-		console.error('女優名が指定されていません。')
-		return null
-	}
-
-	const encodedActressName = encodeURIComponent(actressName.trim())
-
-	try {
-		const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-profile-page?actressname=${encodedActressName}`
-		// console.log('Fetching from URL:', apiUrl) // デバッグ用
-
-		const response = await fetch(apiUrl, {
-			next: { revalidate: 2592000 }, // 30日キャッシュ
-		})
-
-		if (response.status === 404) {
-			// console.log(`女優が見つかりません: ${actressName}`)
+export const fetchActressProfileAndWorks = unstable_cache(
+	async (actressName: string): Promise<ActressProfileAndWorks | null> => {
+		if (!actressName) {
+			console.error('女優名が指定されていません。')
 			return null
 		}
 
-		if (!response.ok) {
-			console.error(`APIエラー: ${response.status} ${response.statusText}`)
-			throw new Error(`APIからのデータ取得に失敗しました: ${response.status}`)
-		}
+		const encodedActressName = encodeURIComponent(actressName.trim())
 
-		const data = await response.json()
-		// console.log('Received data:', data) // デバッグ用
+		try {
+			const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-profile-page?actressname=${encodedActressName}`
+			// console.log('Fetching from URL:', apiUrl) // デバッグ用
 
-		const validatedData = ActressProfileAndWorksSchema.parse(data)
-		// console.log('fetchActressProfileAndWorks validatedData', validatedData.profile.actress)
+			const response = await fetch(apiUrl, {
+				next: { revalidate: 2592000 }, // 30日キャッシュ
+			})
 
-		return validatedData
-	} catch (error) {
-		console.error('APIリクエストでエラーが発生しました:', error)
-		if (error instanceof z.ZodError) {
-			console.error('データの形式が不正です:', error.errors)
-		}
-		return null
-	}
-}
-
-export async function fetchItemMainByContentIdToActressInfo(
-	dbId: number,
-): Promise<DMMActressInfo | null> {
-	try {
-		const response = await fetch(
-			`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-actressonly-info?db_id=${dbId}`,
-			{
-				cache: 'force-cache',
-				next: {
-					tags: [`item-actressInfo-${dbId}`],
-				},
-			},
-		)
-		const data: DMMActressInfo[] = await response.json()
-
-		// console.log('Raw API response fetchItemMainByContentId:', data)
-
-		if (typeof data === 'object' && data !== null) {
-			const parseResult = DMMActressInfoSchema.safeParse(data)
-			if (parseResult.success) {
-				revalidateTag(`item-actressInfo-${dbId}`)
-				return parseResult.data
+			if (response.status === 404) {
+				// console.log(`女優が見つかりません: ${actressName}`)
+				return null
 			}
-		} else {
-			console.error('Unexpected data format:', data)
-		}
 
-		console.error('Unexpected data format:', data)
-		return null
-	} catch (error) {
-		if (error instanceof z.ZodError) {
-			console.error('Zod validation error:', error.errors)
-		} else if (error instanceof Error) {
-			console.error('Error fetching data:', error.message)
-		} else {
-			console.error('Unknown error occurred while fetching data')
+			if (!response.ok) {
+				console.error(`APIエラー: ${response.status} ${response.statusText}`)
+				throw new Error(`APIからのデータ取得に失敗しました: ${response.status}`)
+			}
+
+			const data = await response.json()
+			// console.log('Received data:', data) // デバッグ用
+
+			const validatedData = ActressProfileAndWorksSchema.parse(data)
+			// console.log('fetchActressProfileAndWorks validatedData', validatedData.profile.actress)
+
+			return validatedData
+		} catch (error) {
+			console.error('APIリクエストでエラーが発生しました:', error)
+			if (error instanceof z.ZodError) {
+				console.error('データの形式が不正です:', error.errors)
+			}
+			return null
 		}
-		return null
-	}
-}
+	},
+)
+
+export const fetchItemMainByContentIdToActressInfo = unstable_cache(
+	async (dbId: number): Promise<DMMActressInfo | null> => {
+		try {
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-actressonly-info?db_id=${dbId}`,
+				{
+					cache: 'force-cache',
+					next: {
+						tags: [`item-actressInfo-${dbId}`],
+					},
+				},
+			)
+			const data: DMMActressInfo[] = await response.json()
+
+			// console.log('Raw API response fetchItemMainByContentId:', data)
+
+			if (typeof data === 'object' && data !== null) {
+				const parseResult = DMMActressInfoSchema.safeParse(data)
+				if (parseResult.success) {
+					revalidateTag(`item-actressInfo-${dbId}`)
+					return parseResult.data
+				}
+			} else {
+				console.error('Unexpected data format:', data)
+			}
+
+			console.error('Unexpected data format:', data)
+			return null
+		} catch (error) {
+			if (error instanceof z.ZodError) {
+				console.error('Zod validation error:', error.errors)
+			} else if (error instanceof Error) {
+				console.error('Error fetching data:', error.message)
+			} else {
+				console.error('Unknown error occurred while fetching data')
+			}
+			return null
+		}
+	},
+)
 
 export async function fetchData<TResponse>(
 	endpoint: string,

@@ -1,9 +1,6 @@
-'use client'
-
 import { ExtendedDMMItem, ItemType } from '@/types/dmmtypes'
-import { ArrowLeft, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React from 'react'
 
 interface RelatedItemsScrollProps {
 	items: ExtendedDMMItem[]
@@ -12,24 +9,6 @@ interface RelatedItemsScrollProps {
 }
 
 const RelatedItemsScroll: React.FC<RelatedItemsScrollProps> = ({ items, itemType, title }) => {
-	const scrollRef = useRef<HTMLDivElement>(null)
-	const [shuffledItems, setShuffledItems] = useState<ExtendedDMMItem[]>([])
-
-	// アイテムをシャッフルする関数
-	const shuffleArray = useCallback((array: ExtendedDMMItem[]) => {
-		const shuffled = [...array]
-		for (let i = shuffled.length - 1; i > 0; i--) {
-			const j = Math.floor(Math.random() * (i + 1))
-			;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-		}
-		return shuffled
-	}, [])
-
-	// コンポーネントのマウント時にアイテムをシャッフル
-	useEffect(() => {
-		setShuffledItems(shuffleArray(items))
-	}, [items, shuffleArray])
-
 	const gradients: Record<ItemType, string> = {
 		todaynew: 'from-green-500 to-blue-500',
 		debut: 'from-yellow-500 to-red-500',
@@ -39,17 +18,6 @@ const RelatedItemsScroll: React.FC<RelatedItemsScrollProps> = ({ items, itemType
 		genre: 'from-blue-500 to-purple-500',
 		last7days: 'from-yellow-500 to-red-500',
 		top100: 'from-purple-500 to-pink-500',
-	}
-
-	const scroll = (direction: 'left' | 'right') => {
-		if (scrollRef.current) {
-			const { current } = scrollRef
-			const scrollAmount = current.clientWidth
-			current.scrollBy({
-				left: direction === 'left' ? -scrollAmount : scrollAmount,
-				behavior: 'smooth',
-			})
-		}
 	}
 
 	// 画像URLを取得する関数
@@ -69,10 +37,9 @@ const RelatedItemsScroll: React.FC<RelatedItemsScrollProps> = ({ items, itemType
 			</h3>
 			<div className='relative overflow-hidden'>
 				<div
-					ref={scrollRef}
 					className='flex overflow-x-auto space-x-4 scrollbar-hide scroll-smooth'
 					style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-					{shuffledItems.map(item => (
+					{items.map(item => (
 						<div key={item.db_id} className='flex-none w-64'>
 							<Link href={`/item/${item.db_id}`}>
 								<div className='bg-white overflow-hidden'>
@@ -96,20 +63,6 @@ const RelatedItemsScroll: React.FC<RelatedItemsScrollProps> = ({ items, itemType
 						</div>
 					))}
 				</div>
-				<button
-					onClick={() => scroll('left')}
-					className='absolute left-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 rounded-full p-2'
-					aria-label='Scroll left'
-					type='button'>
-					<ArrowLeft className='w-6 h-6' />
-				</button>
-				<button
-					onClick={() => scroll('right')}
-					className='absolute right-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 rounded-full p-2'
-					aria-label='Scroll right'
-					type='button'>
-					<ArrowRight className='w-6 h-6' />
-				</button>
 			</div>
 		</div>
 	)
