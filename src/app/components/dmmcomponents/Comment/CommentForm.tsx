@@ -85,11 +85,7 @@ export function CommentForm({ contentId, onCommentAdded }: CommentFormProps) {
 					placeholder='動画のどんなシーンが印象的だったか、どんなシーンが抜きポイントだったか、ぜひ教えてください'
 					aria-invalid={errors.comment ? 'true' : 'false'}
 				/>
-				{errors.comment && (
-					<p role='alert' className='mt-2 text-sm text-red-600'>
-						{errors.comment.message}
-					</p>
-				)}
+				{errors.comment && <p className='mt-2 text-sm text-red-600'>{errors.comment.message}</p>}
 			</div>
 			{serverError && <p className='text-red-600 mb-4'>{serverError}</p>}
 			{successMessage && <p className='text-green-600 mb-4'>{successMessage}</p>}
