@@ -5,7 +5,7 @@ import React, { Suspense, useCallback, useState } from 'react'
 import { CommentForm } from './CommentForm'
 import { CommentList } from './CommentList'
 
-function CommentSection({ contentId }: { contentId: string }) {
+export function CommentSection({ contentId }: { contentId: string }) {
 	const [comments, setComments] = useState<Comment[]>([])
 	const [latestComment, setLatestComment] = useState<Comment | null>(null)
 

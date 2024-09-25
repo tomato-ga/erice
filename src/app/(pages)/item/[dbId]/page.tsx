@@ -1,7 +1,7 @@
 // /Volumes/SSD_1TB/erice2/erice/src/app/(pages)/item/[dbId]/page.tsx
 
 import { PostList } from '@/app/components/antennacomponents/PostList'
-import CommentSection from '@/app/components/dmmcomponents/Comment/CommentSection'
+import { CommentSection } from '@/app/components/dmmcomponents/Comment/CommentSection'
 import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
 import ItemDetails from '@/app/components/dmmcomponents/ItemDetails'
 import RelatedItemsScroll from '@/app/components/dmmcomponents/Related/RelatedItemsScroll'
