@@ -5,6 +5,9 @@ import React from 'react'
 import { fetchItemDetailByContentId } from '../dmmcomponents/fetch/itemFetchers'
 import { UmamiTracking } from './UmamiTracking'
 
+// shadcnのテーブルコンポーネントをインポート
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
+
 const formatDate = (dateString: string) => {
 	const date = new Date(dateString)
 	return date.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })
@@ -51,40 +54,56 @@ const ItemDetailsTable = ({ item }: { item: ExtendedDMMItemDetailResponse }) => 
 		}
 	}
 
+	// 関数を定義してラベルに基づいてクラス名を取得
+	const getLinkClassName = (label: string) => {
+		if (label === 'ジャンル') {
+			return 'bg-pink-100 hover:bg-pink-600 text-pink-500 border-pink-500 mr-2 px-2.5 py-0.5 rounded dark:text-pink-200 dark:border-pink-400 dark:hover:bg-pink-600 dark:hover:text-white'
+		}
+		if (label === '女優名') {
+			return 'text-base text-blue-600 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500'
+		}
+		return 'text-base break-words mr-2' // デフォルトのクラス名
+	}
+
 	return (
-		<div className='space-y-3'>
-			{details.map(({ label, value, icon }) => (
-				<div key={label} className='bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4'>
-					<div className='flex items-start'>
-						<span className='text-2xl mr-4 opacity-80' aria-hidden='true'>
-							{icon}
-						</span>
-						<div className='flex-grow'>
-							<h3 className='text-sm font-medium text-gray-600 dark:text-gray-400 mb-1'>{label}</h3>
+		<Table className='w-full mt-3'>
+			<TableBody>
+				{details.map(({ label, value, icon }) => (
+					<TableRow key={label} className='bg-white dark:bg-gray-800'>
+						<TableCell className='whitespace-nowrap p-4 flex items-center'>
+							<span className='text-2xl mr-4 opacity-80' aria-hidden='true'>
+								{icon}
+							</span>
+							<span className='text-sm font-medium text-gray-600 dark:text-gray-400'>{label}</span>
+						</TableCell>
+						<TableCell className='p-4'>
 							{(label === '女優名' || label === 'ジャンル') && value !== '情報なし' ? (
-								<div>
+								<div className='flex flex-wrap gap-2'>
 									{Array.isArray(value) ? (
-										value.map((item, index) => (
-											<UmamiTracking key={index} trackingData={getUmamiTrackingData(label, item)}>
+										value.map((itemValue, index) => (
+											<UmamiTracking
+												key={index}
+												trackingData={getUmamiTrackingData(label, itemValue)}>
 												<Link
-													href={`/${label === '女優名' ? 'actressprofile' : 'genre'}/${encodeURIComponent(item)}`}
-													className='text-base text-blue-600 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500'
+													href={`/${label === '女優名' ? 'actressprofile' : 'genre'}/${encodeURIComponent(itemValue)}`}
+													className={getLinkClassName(label)}
 													prefetch={true}>
-													{item}
+													{itemValue}
 												</Link>
 											</UmamiTracking>
 										))
 									) : typeof value === 'string' ? (
-										value.split(',').map((item, index) => (
+										value.split(',').map((itemValue, index) => (
 											<UmamiTracking
 												key={index}
-												trackingData={getUmamiTrackingData(label, item.trim())}>
+												trackingData={getUmamiTrackingData(label, itemValue.trim())}>
 												<Link
 													href={`/${label === '女優名' ? 'actressprofile' : 'genre'}/${encodeURIComponent(
-														item.trim(),
+														itemValue.trim(),
 													)}`}
-													className='text-base text-blue-600 dark:text-gray-100 break-words mr-2 hover:border-b-2 hover:border-blue-500'>
-													{item.trim()}
+													className={getLinkClassName(label)}
+													prefetch={true}>
+													{itemValue.trim()}
 												</Link>
 											</UmamiTracking>
 										))
@@ -99,11 +118,11 @@ const ItemDetailsTable = ({ item }: { item: ExtendedDMMItemDetailResponse }) => 
 									{value || '情報なし'}
 								</p>
 							)}
-						</div>
-					</div>
-				</div>
-			))}
-		</div>
+						</TableCell>
+					</TableRow>
+				))}
+			</TableBody>
+		</Table>
 	)
 }
 
