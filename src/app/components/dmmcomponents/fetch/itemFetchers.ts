@@ -24,6 +24,12 @@ import {
 } from '@/types/dmmitemzodschema'
 import { ItemType } from '@/types/dmmtypes'
 
+import {
+	DMMCampaignItem,
+	GetKVCampaignItemsResponse,
+	GetKVCampaignItemsResponseSchema,
+	GetKVCampaignNamesResponseSchema,
+} from '@/types/dmm-campaignpage-types'
 import { ErrorResponse, GetKVTop100Response } from '@/types/dmm-keywordpage-types'
 import { DMMItemProps } from '@/types/dmmtypes'
 import { revalidateTag, unstable_cache } from 'next/cache'
@@ -423,6 +429,64 @@ export async function fetchTOP100KeywordData(keyword: string): Promise<GetKVTop1
 		} else {
 			console.error(`キーワード「${keyword}」のデータ取得中に予期せぬエラーが発生しました。`)
 		}
+		return null
+	}
+}
+
+// キャンペーン名を取得する関数
+export const fetchCampaignNames = async (): Promise<string[] | null> => {
+	try {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/campaign/names`)
+		if (!response.ok) {
+			console.error(`Failed to fetch campaign names: ${response.status} ${response.statusText}`)
+			return null
+		}
+		const data = await response.json()
+		const parseResult = GetKVCampaignNamesResponseSchema.safeParse(data)
+		if (!parseResult.success) {
+			console.error('Failed to parse campaign names:', parseResult.error)
+			return null
+		}
+		return parseResult.data.campaignNames
+	} catch (error) {
+		console.error('Error fetching campaign names:', error)
+		return null
+	}
+}
+
+// キャンペーンデータを取得する関数
+export const fetchCampaignData = async (
+	campaignName: string,
+): Promise<GetKVCampaignItemsResponse | null> => {
+	try {
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_API_URL}/api/campaign/data/${encodeURIComponent(campaignName)}`,
+			{
+				headers: {
+					'X-API-KEY': process.env.CLOUDFLARE_DMM_API_TOKEN || '',
+				},
+			},
+		)
+
+		if (!response.ok) {
+			console.error(
+				`Failed to fetch campaign data for ${campaignName}: ${response.status} ${response.statusText}`,
+			)
+			return null
+		}
+
+		const data = await response.json()
+		const parseResult = GetKVCampaignItemsResponseSchema.safeParse(data)
+
+		if (!parseResult.success) {
+			console.error('Failed to parse campaign data:', parseResult.error)
+			return null
+		}
+
+		const campaignData: GetKVCampaignItemsResponse = parseResult.data
+		return campaignData
+	} catch (error) {
+		console.error(`Error fetching campaign data for ${campaignName}:`, error)
 		return null
 	}
 }

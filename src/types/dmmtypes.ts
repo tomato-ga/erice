@@ -169,7 +169,6 @@ export interface DMMItemProps {
 	title: string
 	imageURL: string
 	db_id: string
-	// ... other common properties
 }
 
 export interface ImageURLs {
@@ -268,4 +267,3 @@ export type ExtendedDMMItem = DMMItem & {
 	title: string
 	prices?: { price: string }
 }
-

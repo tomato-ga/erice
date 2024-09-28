@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import React from 'react'
+import CampaignNames from '../Campaign/campaignNames'
 
-const EriceSidebar = () => {
+const DMMSidebar = () => {
 	return (
 		<nav className='bg-white dark:bg-gray-800 rounded-lg p-4'>
 			<ul className='space-y-3'>
@@ -137,9 +138,12 @@ const EriceSidebar = () => {
 						注目作品
 					</Link>
 				</li>
+				<li>
+					<CampaignNames />
+				</li>
 			</ul>
 		</nav>
 	)
 }
 
-export default EriceSidebar
+export default React.memo(DMMSidebar)

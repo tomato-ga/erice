@@ -127,6 +127,8 @@ const KeywordFeaturedItemGrid: React.FC<{ items: DMMKeywordItemProps[]; keyword:
 								alt={validItem.title}
 								loading='lazy'
 								className='w-full h-auto object-contain'
+								width={400} // widthを追加
+								height={600} // heightを追加
 							/>
 							<div className='p-1 flex-1 flex flex-col'>
 								<ItemDetailsTable item={validItem} keyword={keyword} />
@@ -184,20 +186,20 @@ export const generateMetadata = async ({
 
 	const allItemReviewCount = validData.items.reduce((acc, cur) => acc + (cur.review?.count || 0), 0)
 
-	const actressCountMap: Record<string, number> = {}
-
-	for (const item of validData.items) {
-		if (item.iteminfo?.actress) {
-			for (const actress of item.iteminfo.actress) {
-				if (actress.name) {
-					actressCountMap[actress.name] = (actressCountMap[actress.name] || 0) + 1
+	const actressCountMap = validData.items.reduce(
+		(acc, item) => {
+			if (item.iteminfo?.actress) {
+				for (const actress of item.iteminfo.actress) {
+					acc[actress.name] = (acc[actress.name] || 0) + 1
 				}
 			}
-		}
-	}
+			return acc
+		},
+		{} as Record<string, number>,
+	)
 
 	const sortedActessArray = Object.entries(actressCountMap)
-		.sort((a, b) => b[1] - a[1])
+		.sort(([, a], [, b]) => b - a)
 		.map(([name, count]) => ({ name, count }))
 
 	const featuredItems: DMMKeywordItemProps[] = validData.items
@@ -299,20 +301,20 @@ const KeywordPage = async ({
 
 	const allItemReviewCount = validData.items.reduce((acc, cur) => acc + (cur.review?.count || 0), 0)
 
-	const actressCountMap: Record<string, number> = {}
-
-	for (const item of validData.items) {
-		if (item.iteminfo?.actress) {
-			for (const actress of item.iteminfo.actress) {
-				if (actress.name) {
-					actressCountMap[actress.name] = (actressCountMap[actress.name] || 0) + 1
+	const actressCountMap = validData.items.reduce(
+		(acc, item) => {
+			if (item.iteminfo?.actress) {
+				for (const actress of item.iteminfo.actress) {
+					acc[actress.name] = (acc[actress.name] || 0) + 1
 				}
 			}
-		}
-	}
+			return acc
+		},
+		{} as Record<string, number>,
+	)
 
 	const sortedActessArray = Object.entries(actressCountMap)
-		.sort((a, b) => b[1] - a[1])
+		.sort(([, a], [, b]) => b - a)
 		.map(([name, count]) => ({ name, count }))
 
 	// アイテムをDMMKeywordItemProps型に変換
@@ -349,7 +351,7 @@ const KeywordPage = async ({
 					件集めました。
 					<br />
 					<br />
-					今すぐサンプル視聴・ダウンロード・ストリーミングが可能で、好きなときにどこでも視聴できます。
+					今すぐサンプル視聴・ダウロード・ストリーミングが可能で、好きなときにどこでも視聴できます。
 					<br />
 					豊富な{processKeyword(decodeURIComponent(keyword))}
 					の作品の中から、観たい作品を見つけるのに役立ててください。

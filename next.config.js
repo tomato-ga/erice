@@ -1,6 +1,23 @@
-module.exports = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
 	images: {
-		domains: ['pics.dmm.co.jp', 'livedoor.blogimg.jp'], // livedoor.blogimg.jp を追加
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: 'pics.dmm.co.jp',
+				// pathname: '/**', // 必要に応じてパスを指定
+			},
+			{
+				protocol: 'https',
+				hostname: 'livedoor.blogimg.jp',
+			},
+			// 他に許可するホスト名があれば追加
+		],
+	},
+	experimental: {
+		scrollRestoration: true,
 	},
 	// その他の設定
 }
+
+module.exports = nextConfig
