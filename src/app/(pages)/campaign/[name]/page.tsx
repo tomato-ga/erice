@@ -64,6 +64,6 @@ const CampaignDetailPage = async ({ params }: { params: { name: string } }) => {
 	)
 }
 
-export const revalidate = 60 * 60 * 24 * 7 // 1週間
+export const revalidate = 60 * 60 * 24  // 1週間
 
 export default CampaignDetailPage
