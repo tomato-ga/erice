@@ -1,5 +1,3 @@
-// src/types/dmm-keywordpage.ts
-
 import { z } from 'zod'
 
 // 画像URL用スキーマ
@@ -17,7 +15,7 @@ const InfoItemSchema = z.object({
 })
 
 // 商品詳細情報用スキーマ
-export const ItemInfoSchema = z.object({
+const ItemInfoSchema = z.object({
 	genre: z.array(InfoItemSchema).optional().nullable(),
 	series: z.array(InfoItemSchema).optional().nullable(),
 	maker: z.array(InfoItemSchema).optional().nullable(),
@@ -54,9 +52,10 @@ const SampleImageURLSchema = z.object({
 	}),
 	sample_l: z
 		.object({
+			// Changed from required to optional
 			image: z.array(z.string()),
 		})
-		.optional(),
+		.optional(), // Added `.optional()`
 })
 
 // サンプル動画URL用スキーマ
@@ -65,8 +64,8 @@ const SampleMovieURLSchema = z.object({
 	size_560_360: z.string(),
 	size_644_414: z.string(),
 	size_720_480: z.string(),
-	pc_flag: z.coerce.number(),
-	sp_flag: z.coerce.number(),
+	pc_flag: z.coerce.number(), // 数値型として定義
+	sp_flag: z.coerce.number(), // 数値型として定義
 })
 
 // CD情報用スキーマ
@@ -88,8 +87,8 @@ export const DMMItemSchema = z.object({
 	number: z.string().optional(),
 	review: z
 		.object({
-			count: z.coerce.number(),
-			average: z.coerce.number(),
+			count: z.coerce.number(), // 数値型として定義
+			average: z.coerce.number(), // 数値型として定義
 		})
 		.optional()
 		.nullable(),
@@ -131,25 +130,23 @@ export const DMMItemSchema = z.object({
 	directory: z
 		.array(
 			z.object({
-				id: z.coerce.number(),
+				id: z.coerce.number(), // 数値型として定義
 				name: z.string(),
 			}),
 		)
 		.optional()
 		.nullable(),
 	campaign: z.array(CampaignSchema).optional().nullable(),
-	db_id: z.coerce.number(),
+	db_id: z.coerce.number(), // 数値型として定義
 })
 
-// キャンペーンアイテムのリストをオブジェクト内の配列として取得
+// キャンペーンアイテムのリストを取得するスキーマ
 export const GetKVCampaignItemsResponseSchema = z.object({
-	campaignData: z.object({
-		items: z.array(DMMItemSchema),
-		createdAt: z.string(),
-	}),
+	items: z.array(DMMItemSchema),
+	createdAt: z.string(),
 })
 
-// キャンペーン名のリストを取得
+// キャンペーン名のリストを取得するスキーマ
 export const GetKVCampaignNamesResponseSchema = z.object({
 	campaignNames: z.array(z.string()),
 })

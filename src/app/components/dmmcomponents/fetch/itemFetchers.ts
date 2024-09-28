@@ -490,3 +490,55 @@ export const fetchCampaignData = async (
 		return null
 	}
 }
+
+/**
+ * キャンペーンバッチデータをフェッチする関数
+ * @param campaignName キャンペーン名
+ * @param batchIndex バッチ番号
+ * @returns DMMCampaignItem の配列
+ */
+export const fetchCampaignBatch = async (
+	campaignName: string,
+	batchIndex: number,
+): Promise<DMMCampaignItem[]> => {
+	// console.log(
+	// 	`fetchCampaignBatch: キャンペーン "${campaignName}", バッチ ${batchIndex} のデータをフェッチします`,
+	// )
+
+	const response = await fetch(
+		`/api/campaign/data/${encodeURIComponent(campaignName)}?batch=${batchIndex}`,
+		{
+			headers: {
+				'X-API-Key': process.env.CLOUDFLARE_DMM_API_TOKEN || '',
+			},
+		},
+	)
+
+	if (!response.ok) {
+		const errorText = await response.text()
+		console.error(
+			`fetchCampaignBatch: キャンペーン "${campaignName}", バッチ ${batchIndex} のフェッチに失敗しました: ${response.status} ${errorText}`,
+		)
+		throw new Error(
+			`Failed to fetch campaign data for ${campaignName}, batch ${batchIndex}: ${response.status} ${errorText}`,
+		)
+	}
+
+	const data = await response.json()
+
+	// デバッグログを追加
+	// console.log('fetchCampaignBatch: APIから取得したデータ:', JSON.stringify(data, null, 2))
+
+	// データのパース
+	const parsedData = GetKVCampaignItemsResponseSchema.safeParse(data)
+
+	if (!parsedData.success) {
+		console.error('fetchCampaignBatch: データのパースに失敗しました:', parsedData.error)
+		throw new Error(`Failed to parse campaign data for ${campaignName}, batch ${batchIndex}`)
+	}
+
+	// パース結果のデバッグログ
+	// console.log('fetchCampaignBatch: パース後のデータ:', JSON.stringify(parsedData.data, null, 2))
+
+	return parsedData.data.items
+}

@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import { Slash } from 'lucide-react'
+import Link from 'next/link'
 import * as React from 'react'
 
 import {
@@ -8,16 +8,16 @@ import {
 	BreadcrumbLink,
 	BreadcrumbList,
 	BreadcrumbPage,
-	BreadcrumbSeparator
+	BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 
-interface BreadcrumbItem {
+interface LocalBreadcrumbItem {
 	href?: string
 	label: string
 }
 
 interface BreadcrumbProps {
-	items: BreadcrumbItem[]
+	items: LocalBreadcrumbItem[]
 }
 
 export function BreadcrumbWithCustomSeparator({ items }: BreadcrumbProps) {
