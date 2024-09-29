@@ -53,7 +53,7 @@ export const generateArticleStructuredData = (
 	const relatedImages: ImageObject[] =
 		itemMain.sampleImageURL?.map((url, index) => ({
 			'@type': 'ImageObject',
-			contentUrl: url,
+			url: url,
 			description: `${itemMain.title}の画像${index + 1}`,
 		})) || []
 

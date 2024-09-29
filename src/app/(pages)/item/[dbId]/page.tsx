@@ -50,9 +50,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 		if (itemMain && itemDetail) {
 			title = `${itemMain.content_id} ${itemMain.title} | エロコメスト`
-			description = `${itemMain.title} ${itemMain.content_id}のページです。${
+			description = `${itemMain.title} ${itemMain.content_id}の詳細情報と、サンプル画像・サンプル動画を見ることができるページです。${
 				itemDetail.actress && itemDetail.date
-					? `女優は${itemDetail.actress}で、発売日は${formatDate(itemDetail.date)}です。`
+					? `女優は${itemDetail.actress}さんで、このアダルト動画の発売日は${formatDate(itemDetail.date)}です。`
 					: ''
 			}`
 		}
@@ -144,7 +144,7 @@ export default async function DMMKobetuItemPage({
 					{searchParams.itemType ? searchParams.itemType : '指定された'}
 					のアイテムが見つかりませんでした
 				</h1>
-				<p>アイテムが存在しないか、取得中にエラーが発生しました。</p>
+				<p>アイテムが存在しないか、取得中にエラーが発生しした。</p>
 			</div>
 		)
 	}
@@ -163,11 +163,33 @@ export default async function DMMKobetuItemPage({
 		return <div>ItemDetailが見つかりません</div>
 	}
 
-	const description = `${ItemMain.title} ${ItemMain.content_id}のページです。${
-		itemDetail.actress && itemDetail.date
-			? `女優は${itemDetail.actress}で、発売日は${formatDate(itemDetail.date)}です。`
-			: ''
-	}`
+	const description = (() => {
+		const parts = []
+		parts.push(
+			`${ItemMain.title} ${ItemMain.content_id}の詳細情報と、サンプル画像・サンプル動画を見ることができるページです。`,
+		)
+
+		if (itemDetail.actress) {
+			parts.push(`女優は${itemDetail.actress}さんです。`)
+		}
+
+		if (itemDetail.date) {
+			parts.push(`このアダルト動画の発売日は${formatDate(itemDetail.date)}。`)
+		}
+
+		if (itemDetail.director) {
+			const directors = Array.isArray(itemDetail.director)
+				? itemDetail.director.join('、')
+				: itemDetail.director
+			parts.push(`監督は${directors}さんです。`)
+		}
+
+		if (itemDetail.maker) {
+			parts.push(`メーカーは${itemDetail.maker}から発売されています。`)
+		}
+
+		return parts.join(' ')
+	})()
 
 	// JSON-LDを文字列に変換
 	const jsonLdString = JSON.stringify(
@@ -213,6 +235,7 @@ export default async function DMMKobetuItemPage({
 						<h1 className='text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 text-center'>
 							{ItemMain.title}
 						</h1>
+						<p className='text-gray-600 dark:text-gray-300 text-base mt-4'>{description}</p>
 
 						{/* ボタンやその他のコンテンツは省略 */}
 
