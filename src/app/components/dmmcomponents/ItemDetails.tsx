@@ -4,6 +4,7 @@ import {
 	parseDetails,
 	renderDetailValue,
 } from '@/app/(pages)/actressprofile/[[...slug]]/profileAnalysis'
+import { generatePersonStructuredData } from '@/app/components/json-ld/jsonld' // 先ほど作成した関数をインポート
 import { DMMActressProfile } from '@/types/APItypes'
 import Link from 'next/link'
 import { Suspense } from 'react'
@@ -151,8 +152,20 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 		return imageUrl.includes('printing.jpg')
 	}
 
+	// 構造化データの生成
+	const personStructuredData = generatePersonStructuredData(essentialActressProfiles[0])
+
+	// JSON-LDを文字列に変換
+	const jsonLdString = JSON.stringify(personStructuredData)
+
 	return (
 		<>
+			{/* JSON-LDを構造化データとして埋め込む */}
+			<script
+				id={`structured-data-${essentialActressProfiles[0].actress.name}`}
+				type='application/ld+json'
+				dangerouslySetInnerHTML={{ __html: jsonLdString }}
+			/>
 			{itemDetail.actress && (
 				<Suspense fallback={<LoadingSpinner />}>
 					{/* 女優ごとに関連アイテムのタイムラインを表示 */}

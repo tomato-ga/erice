@@ -23,7 +23,7 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import '@/app/_css/styles.css'
 // import Script from 'next/script' // 不要なのでコメントアウト
-import { generateStructuredData } from '@/app/components/json-ld/jsonld'
+import { generateArticleStructuredData } from '@/app/components/json-ld/jsonld'
 
 interface Props {
 	params: { dbId: number }
@@ -171,7 +171,7 @@ export default async function DMMKobetuItemPage({
 
 	// JSON-LDを文字列に変換
 	const jsonLdString = JSON.stringify(
-		generateStructuredData(ItemMain, itemDetail, description, params.dbId),
+		generateArticleStructuredData(ItemMain, itemDetail, description, params.dbId),
 	)
 
 	// デバッグ用にコンソールに出力（必要に応じて削除）
