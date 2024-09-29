@@ -29,7 +29,18 @@ export const generateStructuredData = (
 						`【${new Date().toLocaleDateString('ja-JP', { year: 'numeric' })} 最新】`,
 					description: description,
 					thumbnailUrl: itemMain.imageURL,
-					uploadDate: itemDetail.date || new Date().toISOString(),
+					uploadDate: itemDetail.date
+						? (() => {
+								const [datePart, timePart] = itemDetail.date.split(' ')
+								const [year, month, day] = datePart.split('-')
+								const [hour, minute, second] = timePart.split(':')
+								return `${year}-${month}-${day}T${hour}:${minute}:${second}+09:00`
+							})()
+						: new Date().toLocaleTimeString('ja-JP', {
+								year: 'numeric',
+								month: '2-digit',
+								day: '2-digit',
+							}),
 					embedUrl: itemMain.sampleMovieURL[0],
 					actor: itemDetail.actress ? { '@type': 'Person', name: itemDetail.actress } : undefined,
 					interactionStatistic: {
@@ -53,7 +64,7 @@ export const generateStructuredData = (
 				'@type': 'ListItem',
 				position: 2,
 				name: 'アイテム詳細',
-				item: `https://erice.cloud/item/${itemMain.content_id}`,
+				item: `https://erice.cloud/item/${dbId}`,
 			},
 		],
 	}
@@ -83,7 +94,7 @@ export const generateStructuredData = (
 			director: itemDetail.director ? { '@type': 'Person', name: itemDetail.director } : undefined,
 			datePublished: itemDetail.date || undefined,
 			thumbnailUrl: itemMain.imageURL,
-			image: Array.isArray(itemMain.sampleImageURL) ? itemMain.sampleImageURL : undefined,
+			image: Array.isArray(itemMain.sampleImageURL) ? relatedImages : undefined,
 		},
 		author: itemDetail.actress
 			? ({ '@type': 'Person', name: itemDetail.actress } as Person)
