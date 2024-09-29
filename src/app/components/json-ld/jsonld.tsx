@@ -45,7 +45,7 @@ export const generateArticleStructuredData = (
 	// itemMain.imageURLをImageObjectとして定義
 	const mainImage: ImageObject = {
 		'@type': 'ImageObject',
-		contentUrl: itemMain.imageURL,
+		url: itemMain.imageURL,
 		description: `${itemMain.title}のメイン画像`,
 	}
 
