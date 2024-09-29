@@ -23,7 +23,10 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import '@/app/_css/styles.css'
 // import Script from 'next/script' // 不要なのでコメントアウト
-import { generateArticleStructuredData } from '@/app/components/json-ld/jsonld'
+import {
+	generateArticleStructuredData,
+	generateBreadcrumbList,
+} from '@/app/components/json-ld/jsonld'
 
 interface Props {
 	params: { dbId: number }
@@ -191,10 +194,14 @@ export default async function DMMKobetuItemPage({
 		return parts.join(' ')
 	})()
 
-	// JSON-LDを文字列に変換
-	const jsonLdString = JSON.stringify(
+	// JSON-LDを生成
+	const jsonLdData = await Promise.all([
 		generateArticleStructuredData(ItemMain, itemDetail, description, params.dbId),
-	)
+		generateBreadcrumbList(params.dbId),
+	])
+
+	// JSON-LDを文字列に変換
+	const jsonLdString = JSON.stringify(jsonLdData)
 
 	// デバッグ用にコンソールに出力（必要に応じて削除）
 	console.log('JSON-LD:', jsonLdString)
@@ -209,6 +216,7 @@ export default async function DMMKobetuItemPage({
 					__html: jsonLdString,
 				}}
 			/>
+
 			<div className='bg-gray-50 dark:bg-gray-900 min-h-screen'>
 				<div className='container mx-auto px-2 sm:px-4 py-6 sm:py-8'>
 					<article className='bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 space-y-6 sm:space-y-8'>
