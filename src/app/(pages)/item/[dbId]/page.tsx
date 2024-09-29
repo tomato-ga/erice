@@ -180,11 +180,8 @@ export default async function DMMKobetuItemPage({
 			parts.push(`このアダルト動画の発売日は${formatDate(itemDetail.date)}。`)
 		}
 
-		if (itemDetail.director) {
-			const directors = Array.isArray(itemDetail.director)
-				? itemDetail.director.join('、')
-				: itemDetail.director
-			parts.push(`監督は${directors}さんです。`)
+		if (itemDetail.director && itemDetail.director.length > 0) {
+			parts.push(`監督は${itemDetail.director}さんです。`)
 		}
 
 		if (itemDetail.maker) {
