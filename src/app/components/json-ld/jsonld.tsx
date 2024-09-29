@@ -1,15 +1,7 @@
 // /src/utils/jsonld.ts
 
 import { DMMItemDetailResponse, DMMItemMainResponse } from '@/types/dmmitemzodschema'
-import {
-	BreadcrumbList,
-	ImageObject,
-	ItemPage,
-	Movie,
-	Person,
-	VideoObject,
-	WithContext,
-} from 'schema-dts'
+import { BreadcrumbList, ImageObject, ItemPage, Person, VideoObject, WithContext } from 'schema-dts'
 import SampleImages from '../doujincomponents/kobetu/SampleImage'
 
 // 構造化データを生成する関数
@@ -19,37 +11,6 @@ export const generateStructuredData = (
 	description: string,
 	dbId: number,
 ): WithContext<ItemPage> => {
-	// VideoObject（存在する場合）
-	const videoObject: VideoObject | undefined =
-		itemMain.sampleMovieURL && itemMain.sampleMovieURL.length > 0
-			? {
-					'@type': 'VideoObject',
-					name:
-						itemMain.title +
-						`【${new Date().toLocaleDateString('ja-JP', { year: 'numeric' })} 最新】`,
-					description: description,
-					thumbnailUrl: itemMain.imageURL,
-					uploadDate: itemDetail.date
-						? (() => {
-								const [datePart, timePart] = itemDetail.date.split(' ')
-								const [year, month, day] = datePart.split('-')
-								const [hour, minute, second] = timePart.split(':')
-								return `${year}-${month}-${day}T${hour}:${minute}:${second}+09:00`
-							})()
-						: new Date().toLocaleTimeString('ja-JP', {
-								year: 'numeric',
-								month: '2-digit',
-								day: '2-digit',
-							}),
-					embedUrl: itemMain.sampleMovieURL[0],
-					actor: itemDetail.actress ? { '@type': 'Person', name: itemDetail.actress } : undefined,
-					interactionStatistic: {
-						'@type': 'InteractionCounter',
-						interactionType: { '@type': 'WatchAction' },
-					},
-				}
-			: undefined
-
 	// BreadcrumbListの作成
 	const breadcrumb: BreadcrumbList = {
 		'@type': 'BreadcrumbList',
@@ -74,8 +35,32 @@ export const generateStructuredData = (
 		itemMain.sampleImageURL?.map((url, index) => ({
 			'@type': 'ImageObject',
 			contentUrl: url,
-			description: `サンプル画像 ${index + 1}`,
+			description: `${itemMain.title}の画像${index + 1}`,
 		})) || []
+
+	// VideoObject（存在する場合）
+	const videoObject: VideoObject | undefined =
+		itemMain.sampleMovieURL && itemMain.sampleMovieURL.length > 0
+			? {
+					'@type': 'VideoObject',
+					name:
+						itemMain.title +
+						`【${new Date().toLocaleDateString('ja-JP', { year: 'numeric' })} 最新】`,
+					description: description,
+					thumbnailUrl: itemMain.imageURL,
+					uploadDate: itemDetail.date
+						? (() => {
+								const [datePart, timePart] = itemDetail.date.split(' ')
+								const [year, month, day] = datePart.split('-')
+								const [hour, minute, second] = timePart.split(':')
+								return `${year}-${month}-${day}T${hour}:${minute}:${second}+09:00`
+							})()
+						: new Date().toISOString(),
+					contentUrl: itemMain.sampleMovieURL[0],
+					embedUrl: itemMain.sampleMovieURL[0],
+					actor: itemDetail.actress ? { '@type': 'Person', name: itemDetail.actress } : undefined,
+				}
+			: undefined
 
 	// ItemPage の定義
 	const itemPage: WithContext<ItemPage> = {
@@ -85,21 +70,29 @@ export const generateStructuredData = (
 		url: `https://erice.cloud/item/${dbId}`,
 		description: description,
 		breadcrumb: breadcrumb,
-		about: {
-			'@type': 'Movie',
+		mainEntity: {
+			'@type': 'Thing',
 			name: itemMain.title,
-			description: itemDetail.genre?.join(', ') || 'この作品に関する説明',
-			genre: itemDetail.genre?.join(', ') || 'ジャンル情報なし',
-			actor: itemDetail.actress ? { '@type': 'Person', name: itemDetail.actress } : undefined,
-			director: itemDetail.director ? { '@type': 'Person', name: itemDetail.director } : undefined,
-			datePublished: itemDetail.date || undefined,
-			thumbnailUrl: itemMain.imageURL,
-			image: Array.isArray(itemMain.sampleImageURL) ? relatedImages : undefined,
+			description: itemDetail.genre?.join(', ') || 'この商品に関する説明',
+			identifier: itemMain.content_id,
+			image: relatedImages,
 		},
-		author: itemDetail.actress
-			? ({ '@type': 'Person', name: itemDetail.actress } as Person)
+		video: videoObject,
+		genre: itemDetail.genre?.join(', ') || 'ジャンル情報なし',
+		datePublished: itemDetail.date
+			? (() => {
+					const [datePart, timePart] = itemDetail.date.split(' ')
+					const [year, month, day] = datePart.split('-')
+					const [hour, minute, second] = timePart.split(':')
+					return `${year}-${month}-${day}T${hour}:${minute}:${second}+09:00`
+				})()
+			: new Date().toISOString(),
+		provider: itemDetail.maker
+			? {
+					'@type': 'Organization',
+					name: itemDetail.maker,
+				}
 			: undefined,
-		mainEntity: videoObject,
 	}
 
 	return itemPage
