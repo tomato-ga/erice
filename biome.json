@@ -52,6 +52,9 @@
 			},
 			"a11y": {
 				"useKeyWithClickEvents": "off"
+			},
+			"security": {
+				"noDangerouslySetInnerHtml": "off"
 			}
 		}
 	},
