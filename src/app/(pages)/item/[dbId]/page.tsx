@@ -41,7 +41,7 @@ function LoadingSpinner() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-	console.log('params:', params)
+	// console.log('params:', params)
 
 	const dbId = params.dbId
 	let title = 'エロコメスト'
@@ -138,7 +138,7 @@ export default async function DMMKobetuItemPage({
 	}
 
 	const actressInfo = await fetchItemMainByContentIdToActressInfo(params.dbId)
-	console.log('Found actressInfo:', actressInfo)
+	// console.log('Found actressInfo:', actressInfo)
 
 	if (!ItemMain) {
 		return (
@@ -201,7 +201,7 @@ export default async function DMMKobetuItemPage({
 	const jsonLdString = JSON.stringify(jsonLdData)
 
 	// デバッグ用にコンソールに出力（必要に応じて削除）
-	console.log('JSON-LD:', jsonLdString)
+	// console.log('JSON-LD:', jsonLdString)
 
 	return (
 		<>
