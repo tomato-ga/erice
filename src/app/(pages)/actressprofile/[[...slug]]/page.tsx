@@ -1,5 +1,6 @@
 import LoadingSpinner from '@/app/components/Article/ArticleContent/loadingspinner'
 import { fetchActressProfileAndWorks } from '@/app/components/dmmcomponents/fetch/itemFetchers'
+import { generatePersonStructuredData } from '@/app/components/json-ld/jsonld'
 import { DMMActressProfile, DMMActressProfilePageItem } from '@/types/APItypes'
 import { formatDate } from '@/utils/dmmUtils'
 import { Metadata } from 'next'
@@ -68,77 +69,95 @@ const ActressProfileSection = ({ profile }: { profile: DMMActressProfile }) => {
 		)
 	}
 
+	const jsonLdData = generatePersonStructuredData(profile)
+	const jsonLdString = JSON.stringify(jsonLdData)
+
 	return (
-		<div className='bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 shadow-2xl rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl'>
-			<div className='p-8'>
-				<h2 className='text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400'>
-					{actress.name}のプロフィール
-				</h2>
-				<div className='flex flex-col lg:flex-row lg:space-x-8'>
-					<div className='lg:w-1/3 mb-6 lg:mb-0'>
-						<img
-							src={actress.image_url_large || '/placeholder-image.jpg'}
-							alt={actress.name}
-							className='w-full object-contain aspect-[3/4]  transition-transform'
-						/>
+		<>
+			<script
+				id={`structured-data-${actress.name}`}
+				type='application/ld+json'
+				dangerouslySetInnerHTML={{
+					__html: jsonLdString,
+				}}
+			/>
+			<div className='bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 shadow-2xl rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl'>
+				<div className='p-8'>
+					<h2 className='text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400'>
+						{actress.name}のプロフィール
+					</h2>
+					<div className='flex flex-col lg:flex-row lg:space-x-8'>
+						<div className='lg:w-1/3 mb-6 lg:mb-0'>
+							<img
+								src={actress.image_url_large || '/placeholder-image.jpg'}
+								alt={actress.name}
+								className='w-full object-contain aspect-[3/4]  transition-transform'
+							/>
+						</div>
+						<div className='lg:w-2/3'>
+							<div className='overflow-x-auto'>
+								<table className='w-full text-left text-sm sm:text-base'>
+									<tbody>
+										{renderProfileRow('生年月日', actress.birthday, 'birthday')}
+										{renderProfileRow('血液型', actress.blood_type, 'blood_type')}
+										{renderProfileRow('出身地', actress.prefectures, 'prefectures')}
+										{renderProfileRow('趣味', actress.hobby, 'hobby')}
+										{renderProfileRow(
+											'スリーサイズ',
+											actress.bust && actress.waist && actress.hip
+												? `B${actress.bust} W${actress.waist} H${actress.hip}`
+												: null,
+											'three_sizes',
+										)}
+										{renderProfileRow(
+											'身長',
+											actress.height ? `${actress.height}cm` : null,
+											'height',
+										)}
+										{renderProfileRow('カップ', actress.cup, 'cup')}
+										{details &&
+											Object.entries(details).map(([key, value], index) => {
+												if (['full_name', 'current_name', 'aliases'].includes(key)) return null
+												return renderProfileRow(key, renderDetailValue(value), `detail-${index}`)
+											})}
+									</tbody>
+								</table>
+							</div>
+						</div>
 					</div>
-					<div className='lg:w-2/3'>
-						<div className='overflow-x-auto'>
-							<table className='w-full text-left text-sm sm:text-base'>
-								<tbody>
-									{renderProfileRow('生年月日', actress.birthday, 'birthday')}
-									{renderProfileRow('血液型', actress.blood_type, 'blood_type')}
-									{renderProfileRow('出身地', actress.prefectures, 'prefectures')}
-									{renderProfileRow('趣味', actress.hobby, 'hobby')}
-									{renderProfileRow(
-										'スリーサイズ',
-										actress.bust && actress.waist && actress.hip
-											? `B${actress.bust} W${actress.waist} H${actress.hip}`
-											: null,
-										'three_sizes',
-									)}
-									{renderProfileRow('身長', actress.height ? `${actress.height}cm` : null, 'height')}
-									{renderProfileRow('カップ', actress.cup, 'cup')}
-									{details &&
-										Object.entries(details).map(([key, value], index) => {
-											if (['full_name', 'current_name', 'aliases'].includes(key)) return null
-											return renderProfileRow(key, renderDetailValue(value), `detail-${index}`)
-										})}
-								</tbody>
-							</table>
+					<div className='mt-8 text-lg text-gray-700 dark:text-gray-300 space-y-4'>
+						{description.split('\n').map((paragraph, index) => (
+							<p
+								key={index}
+								className='transition-opacity duration-300 ease-in-out hover:opacity-80'>
+								{paragraph}
+							</p>
+						))}
+					</div>
+
+					<div className='mt-8'>
+						<div className='flex flex-wrap gap-3'>
+							{actress.styles?.map((style, index) => (
+								<Link
+									key={index}
+									href={`/style/${encodeURIComponent(style)}`}
+									className='px-4 py-2 bg-indigo-50 text-indigo-600 font-bold rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out hover:underline'>
+									{style}
+								</Link>
+							))}
+							{actress.types?.map((type, index) => (
+								<Link
+									key={index}
+									href={`/type/${encodeURIComponent(type)}`}
+									className='px-4 py-2 bg-indigo-50 text-indigo-600 font-bold rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out hover:underline'>
+									{type}
+								</Link>
+							))}
 						</div>
 					</div>
 				</div>
-				<div className='mt-8 text-lg text-gray-700 dark:text-gray-300 space-y-4'>
-					{description.split('\n').map((paragraph, index) => (
-						<p key={index} className='transition-opacity duration-300 ease-in-out hover:opacity-80'>
-							{paragraph}
-						</p>
-					))}
-				</div>
-
-				<div className='mt-8'>
-					<div className='flex flex-wrap gap-3'>
-						{actress.styles?.map((style, index) => (
-							<Link
-								key={index}
-								href={`/style/${encodeURIComponent(style)}`}
-								className='px-4 py-2 bg-indigo-50 text-indigo-600 font-bold rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out hover:underline'>
-								{style}
-							</Link>
-						))}
-						{actress.types?.map((type, index) => (
-							<Link
-								key={index}
-								href={`/type/${encodeURIComponent(type)}`}
-								className='px-4 py-2 bg-indigo-50 text-indigo-600 font-bold rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out hover:underline'>
-								{type}
-							</Link>
-						))}
-					</div>
-				</div>
 			</div>
-		</div>
+		</>
 	)
 }
 

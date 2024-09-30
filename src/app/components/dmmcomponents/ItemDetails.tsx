@@ -1,21 +1,16 @@
+// components/ItemDetails.tsx
 import {
 	generateRefinedProfileDescription,
 	parseDetails,
 	renderDetailValue,
 } from '@/app/(pages)/actressprofile/[[...slug]]/profileAnalysis'
-import { generateWebPageStructuredData } from '@/app/components/json-ld/jsonld'
-import { DMMActressProfile, DMMActressRelatedItem } from '@/types/APItypes'
+import { generatePersonStructuredData } from '@/app/components/json-ld/jsonld' // 先ほど作成した関数をインポート
+import { DMMActressProfile } from '@/types/APItypes'
 import Link from 'next/link'
-// components/ItemDetails.tsx
-import React from 'react'
 import { Suspense } from 'react'
 import LoadingSpinner from '../Article/ArticleContent/loadingspinner'
 import ActressRelatedItemsTimeLine from './DMMActressItemRelated'
-import {
-	fetchActressProfile,
-	fetchActressRelatedItem,
-	fetchItemDetailByContentId,
-} from './fetch/itemFetchers'
+import { fetchActressProfile, fetchItemDetailByContentId } from './fetch/itemFetchers'
 
 interface ItemDetailsProps {
 	contentId: string
@@ -76,7 +71,7 @@ const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActress
 							<table className='w-full text-left text-sm sm:text-base'>
 								<tbody>
 									{renderProfileRow('生年月日', actress.birthday, 'birthday')}
-									{renderProfileRow('血液型', actress.blood_type, 'blood_type')}
+									{renderProfileRow('血��型', actress.blood_type, 'blood_type')}
 									{renderProfileRow('出身地', actress.prefectures, 'prefectures')}
 									{renderProfileRow('趣味', actress.hobby, 'hobby')}
 									{renderProfileRow(
@@ -119,12 +114,7 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 	const itemDetail = await fetchItemDetailByContentId(dbId)
 
 	if (!itemDetail) {
-		return (
-			<div className='text-center p-4 bg-red-100 border border-red-400 text-red-700 rounded'>
-				<p>アイテムの詳細情報を取得できませんでした。</p>
-				<p>後ほど再度お試しください。</p>
-			</div>
-		)
+		return null
 	}
 
 	// 女優名を解析（単一またはカンマ区切り）
@@ -134,32 +124,27 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 		return null
 	}
 
-	// 各女優のプロフィールと関連作品をフェッチ
-	const actressDataPromises = actresses.map(async (actressName: string) => {
-		const profile = await fetchActressProfile(actressName)
-		const relatedItems = profile ? await fetchActressRelatedItem(actressName) : []
-		return { profile, relatedItems }
-	})
-	const actressData = await Promise.all(actressDataPromises)
+	// 各女優のプロフィールをフェッチ
+	const actressProfileDataPromises = actresses.map((actressName: string) =>
+		fetchActressProfile(actressName),
+	)
+	const actressProfilesData = await Promise.all(actressProfileDataPromises)
 
 	// フィルタリング: null を除去
-	const validActressData = actressData.filter(
-		(data): data is { profile: DMMActressProfile; relatedItems: DMMActressRelatedItem[] } =>
-			data.profile !== null &&
-			data.profile.actress !== undefined &&
-			Array.isArray(data.relatedItems),
+	const validActressProfiles = actressProfilesData.filter(
+		(profile): profile is DMMActressProfile => profile !== null && profile.actress !== undefined,
 	)
 
 	// 重要なデータを持つプロファイルのみ
-	const hasEssentialData = (data: {
-		profile: DMMActressProfile
-		relatedItems: DMMActressRelatedItem[]
-	}) => {
-		const { birthday, blood_type, hobby, prefectures, name } = data.profile.actress
+	const hasEssentialData = (data: DMMActressProfile | null | undefined) => {
+		if (!data || !data.actress) return false
+		const { birthday, blood_type, hobby, prefectures, name } = data.actress
 		return birthday || blood_type || hobby || prefectures || (name && name.trim() !== '')
 	}
 
-	const essentialActressData = validActressData.filter(hasEssentialData)
+	const essentialActressProfiles = validActressProfiles.filter((profile: DMMActressProfile) =>
+		hasEssentialData(profile),
+	)
 
 	// プレースホルダー画像かどうかをチェックする関数
 	const isPlaceholderImage = (imageUrl: string | null | undefined) => {
@@ -167,43 +152,40 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 		return imageUrl.includes('printing.jpg')
 	}
 
-	if (essentialActressData.length === 0) {
-		return (
-			<div className='text-center p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded'>
-				<p>表示するプロフィールがありません。</p>
-			</div>
-		)
-	}
+	// 構造化データの生成
+	const personStructuredData = generatePersonStructuredData(essentialActressProfiles[0])
+
+	// JSON-LDを文字列に変換
+	const jsonLdString = JSON.stringify(personStructuredData)
 
 	return (
 		<>
-			{essentialActressData.map((data, index) => {
-				const structuredData = generateWebPageStructuredData(data.profile, data.relatedItems)
-				const jsonLdString = JSON.stringify(structuredData)
-				return (
-					<React.Fragment key={data.profile.actress.name}>
-						{/* JSON-LDを構造化データとして埋め込む */}
-						<script
-							id={`structured-data-${data.profile.actress.name}`}
-							type='application/ld+json'
-							dangerouslySetInnerHTML={{ __html: jsonLdString }}
-						/>
-						{/* 関連作品のタイムラインを表示 */}
-						<Suspense fallback={<LoadingSpinner />}>
-							<ActressRelatedItemsTimeLine
-								actressName={data.profile.actress.name}
-								relatedItems={data.relatedItems}
-							/>
-						</Suspense>
-						{/* 各女優のプロフィールを表示 */}
-						{!isPlaceholderImage(data.profile.actress.image_url_large) && (
-							<Suspense key={data.profile.actress.name} fallback={<LoadingSpinner />}>
-								<ActressProfile actressProfileData={data.profile} />
+			{/* JSON-LDを構造化データとして埋め込む */}
+			<script
+				id={`structured-data-${essentialActressProfiles[0].actress.name}`}
+				type='application/ld+json'
+				dangerouslySetInnerHTML={{ __html: jsonLdString }}
+			/>
+			{itemDetail.actress && (
+				<Suspense fallback={<LoadingSpinner />}>
+					{/* 女優ごとに関連アイテムのタイムラインを表示 */}
+					{actresses.map((actressName: string, index: number) => (
+						<ActressRelatedItemsTimeLine key={index} actressName={actressName} />
+					))}
+				</Suspense>
+			)}
+
+			{/* 各女優のプロフィールを表示 */}
+			<div className='grid grid-cols-1 gap-8 mt-8'>
+				{essentialActressProfiles.map(
+					(profile: DMMActressProfile) =>
+						!isPlaceholderImage(profile.actress.image_url_large) && (
+							<Suspense key={profile.actress.name} fallback={<LoadingSpinner />}>
+								<ActressProfile actressProfileData={profile} />
 							</Suspense>
-						)}
-					</React.Fragment>
-				)
-			})}
+						),
+				)}
+			</div>
 		</>
 	)
 }

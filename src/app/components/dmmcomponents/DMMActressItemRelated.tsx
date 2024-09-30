@@ -1,4 +1,3 @@
-import { DMMActressRelatedItem } from '@/types/APItypes'
 import { formatDate } from '@/utils/dmmUtils'
 import Link from 'next/link'
 import { z } from 'zod'
@@ -50,29 +49,34 @@ const ActressRelatedItemTimelineCard = ({ item }: { item: ActressRelatedItem }) 
 	)
 }
 
-interface ActressRelatedItemsTimeLineProps {
-	actressName: string
-	relatedItems: DMMActressRelatedItem[]
-}
-
-const ActressRelatedItemsTimeLine = ({
-	actressName,
-	relatedItems,
-}: ActressRelatedItemsTimeLineProps) => {
+const ActressRelatedItemsTimeLine = async ({ actressName }: { actressName: string }) => {
 	if (!actressName) {
+		return
+	}
+
+	const ActressItemsResult = await fetchActressRelatedItem(actressName)
+
+	if (ActressItemsResult === null) {
 		return null
 	}
 
-	if (relatedItems.length === 0) {
+	const ActressItemsSchema = z.array(ItemSchema)
+	const parseResult = ActressItemsSchema.safeParse(ActressItemsResult)
+
+	if (!parseResult.success) {
+		console.error('ActressRelatedItemsTimeLine, データの検証に失敗しました:', parseResult.error)
 		return (
-			<div className='text-center p-4 bg-gray-100 border border-gray-300 rounded'>
-				<p>関連作品が見つかりませんでした。</p>
+			<div className='text-center p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded'>
+				<p>データの形式が正しくありません。</p>
+				<p>管理者にお問い合わせください。</p>
 			</div>
 		)
 	}
 
+	const ActressItems = parseResult.data
+
 	return (
-		<div className='bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg p-4 sm:p-8 md:p-12 mt-8 rounded'>
+		<div className='bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg p-4 sm:p-8 md:p-12'>
 			<h2 className='text-3xl font-bold mb-12 text-center'>
 				<span className='bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500'>
 					{actressName}の出演作品タイムライン
@@ -80,7 +84,7 @@ const ActressRelatedItemsTimeLine = ({
 			</h2>
 			<div className='relative'>
 				<div className='absolute left-0 sm:left-1/4 top-0 bottom-0 w-px bg-gradient-to-b from-purple-500 to-pink-500' />
-				{relatedItems.map(item => (
+				{ActressItems.map(item => (
 					<ActressRelatedItemTimelineCard key={item.db_id} item={item} />
 				))}
 			</div>
