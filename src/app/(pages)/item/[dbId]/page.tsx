@@ -194,7 +194,7 @@ export default async function DMMKobetuItemPage({
 	// JSON-LDを生成
 	const jsonLdData = await Promise.all([
 		generateArticleStructuredData(ItemMain, itemDetail, description, params.dbId),
-		generateBreadcrumbList(params.dbId),
+		generateBreadcrumbList(params.dbId, itemDetail), // itemDetailを渡す
 	])
 
 	// JSON-LDを文字列に変換

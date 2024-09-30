@@ -15,24 +15,39 @@ import {
 } from 'schema-dts'
 
 // BreadcrumbListを生成する関数
-export const generateBreadcrumbList = (dbId: number): WithContext<BreadcrumbList> => {
+export const generateBreadcrumbList = (
+	dbId: number,
+	itemDetail?: DMMItemDetailResponse,
+): WithContext<BreadcrumbList> => {
+	const itemListElement: ListItem[] = [
+		{
+			'@type': 'ListItem',
+			position: 1,
+			name: 'ホーム',
+			item: 'https://erice.cloud/',
+		},
+	]
+
+	if (itemDetail?.actress) {
+		itemListElement.push({
+			'@type': 'ListItem',
+			position: 2,
+			name: itemDetail.actress,
+			item: `https://erice.cloud/actressprofile/${encodeURIComponent(itemDetail.actress)}`,
+		})
+	}
+
+	itemListElement.push({
+		'@type': 'ListItem',
+		position: itemDetail?.actress ? 3 : 2,
+		name: 'アイテム詳細',
+		item: `https://erice.cloud/item/${dbId}`,
+	})
+
 	return {
 		'@context': 'https://schema.org',
 		'@type': 'BreadcrumbList',
-		itemListElement: [
-			{
-				'@type': 'ListItem',
-				position: 1,
-				name: 'ホーム',
-				item: 'https://erice.cloud/',
-			},
-			{
-				'@type': 'ListItem',
-				position: 2,
-				name: 'アイテム詳細',
-				item: `https://erice.cloud/item/${dbId}`,
-			},
-		],
+		itemListElement,
 	}
 }
 
