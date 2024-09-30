@@ -81,7 +81,6 @@ const ActressProfileSection = ({
 		)
 	}
 
-	const personJsonLd = generatePersonStructuredData(profile)
 	const articleJsonLd = generateActressArticleStructuredData(
 		pageTitle,
 		descriptionFromMetadata || '',
@@ -94,7 +93,7 @@ const ActressProfileSection = ({
 				id={`structured-data-${actress.name}-person`}
 				type='application/ld+json'
 				dangerouslySetInnerHTML={{
-					__html: JSON.stringify(personJsonLd),
+					__html: JSON.stringify(articleJsonLd),
 				}}
 			/>
 			{/* <script

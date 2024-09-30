@@ -153,24 +153,6 @@ export const generateActressArticleStructuredData = (
 	description: string,
 	profile: DMMActressProfile,
 ): WithContext<Article> => {
-	// itemMain.imageURLをImageObjectとして定義
-	// const mainImage: ImageObject = {
-	// 	'@type': 'ImageObject',
-	// 	url: itemMain.imageURL,
-	// 	description: `${itemMain.title}のメイン画像`,
-	// }
-
-	// relatedImagesをImageObjectとして定義
-	// const relatedImages: ImageObject[] =
-	// 	itemMain.sampleImageURL?.map((url, index) => ({
-	// 		'@type': 'ImageObject',
-	// 		url: url,
-	// 		description: `${itemMain.title}の画像${index + 1}`,
-	// 	})) || []
-
-	// 全画像を統合
-	// const allImages: ImageObject[] = [mainImage, ...relatedImages]
-
 	// 固定のAuthorデータ
 	const author: Person = {
 		'@type': 'Person',
@@ -178,15 +160,24 @@ export const generateActressArticleStructuredData = (
 		url: 'https://erice.cloud',
 	}
 
+	// 女優のPerson構造化データを生成
+	const actressPersonData = generatePersonStructuredData(profile)
+
 	// Articleスキーマの生成
 	return {
 		'@context': 'https://schema.org',
 		'@type': 'Article',
 		headline: h1,
-		image: profile.actress.image_url_large || profile.actress.image_url_small || '',
+		image: [
+			profile.actress.image_url_large || profile.actress.image_url_small || '',
+			// 複数の画像サイズがある場合は追加することをお勧めします
+		],
 		author: author,
 		description: description,
+		datePublished: new Date().toISOString(), // 記事の公開日時
+		dateModified: new Date().toISOString(), // 記事の最終更新日時
 		mainEntityOfPage: `https://erice.cloud/actressprofile/${profile.actress.name}`,
+		about: actressPersonData, // 女優のPerson構造化データを追加
 	}
 }
 
