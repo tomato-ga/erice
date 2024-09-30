@@ -14,6 +14,7 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table' //
 import '@/app/_css/styles.css'
 import MakerTimelinePage from '@/app/components/doujincomponents/kobetu/MakerTimeline'
 import SeriesTimelinePage from '@/app/components/doujincomponents/kobetu/SeriesTimeline'
+import { generateDoujinKobetuItemStructuredData } from '@/app/components/json-ld/jsonld'
 import { formatDate } from '@/utils/dmmUtils'
 
 // 型定義をそのまま使用
@@ -115,7 +116,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		const item = await fetchItemData(params.dbId)
 		const title = `${item.title} | エロコメスト`
 		const description = `${item.title}の商品詳細ページです。`
-		const url = `https://yourwebsite.com/doujin/${params.dbId}` // 実際のURLに置き換えてください
+		const url = `https://erice.cloud/doujin/itemd/${params.dbId}` // 実際のURLに置き換えてください
+		const imageUrl = item.package_images ?? 'https://erice.cloud/ogp.jpg' // Fallback image URL
 
 		return {
 			title,
@@ -125,13 +127,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 				description,
 				type: 'article',
 				url,
-				images: [{ url: item.package_images }],
+				images: [{ url: imageUrl }], // Use imageUrl here
 			},
 			twitter: {
 				card: 'summary_large_image',
 				title,
 				description,
-				images: [item.package_images],
+				images: [imageUrl], // Use imageUrl here
 			},
 		}
 	} catch (error) {
@@ -169,132 +171,139 @@ function LoadingSpinner() {
 export default async function DoujinKobetuItemPage({ params }: Props) {
 	try {
 		const item = await fetchItemData(params.dbId)
-		console.log('item:', item)
+		const description = `${item.title}の商品詳細ページです。` // generate structured data description
+
+		const jsonLdData = generateDoujinKobetuItemStructuredData(item, description)
+		const jsonLdString = JSON.stringify(jsonLdData)
 
 		return (
-			<div className='bg-gray-50 dark:bg-gray-900 min-h-screen'>
-				<div className='container mx-auto px-4 sm:px-6 py-8 sm:py-12'>
-					<article className='bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8 space-y-8'>
-						<div className='relative aspect-w-16 aspect-h-9 overflow-hidden rounded-lg'>
-							<UmamiTracking
-								trackingData={{
-									dataType: 'doujin-item',
-									from: 'kobetu-img-top',
-									item: { title: item.title, content_id: item.content_id },
-								}}>
-								<Link href={item.affiliate_url} target='_blank' rel='noopener noreferrer'>
-									<img
-										src={item.package_images}
-										alt={`${item.title}のパッケージ画像`}
-										className='w-full h-full object-contain transition-transform duration-300'
-									/>
-								</Link>
-							</UmamiTracking>
-						</div>
-
-						<h1 className='text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 text-center'>
-							<Link href={item.affiliate_url} className='text-blue-500 font-bold hover:underline'>
-								{item.title}
-							</Link>
-						</h1>
-
-						{/* Item Details Table */}
-						<ItemDetailsTable item={item} />
-
-						{/* 外部リンクボタン */}
-						<div className='flex justify-center items-center'>
-							<div className='relative inline-block  items-center'>
-								{/* グラデーションオーバーレイ */}
-								<div className='absolute inset-2 rounded-full opacity-80 blur-lg group-hover:opacity-100 transition-opacity duration-500 ease-in-out bg-custom-gradient-exbutton bg-custom-gradient-exbutton--doujin z-0' />
-								{/* ボタン */}
+			<>
+				<script
+					id={`structured-data-${item.content_id}`}
+					type='application/ld+json'
+					dangerouslySetInnerHTML={{
+						__html: jsonLdString,
+					}}
+				/>
+				<div className='bg-gray-50 dark:bg-gray-900 min-h-screen'>
+					<div className='container mx-auto px-4 sm:px-6 py-8 sm:py-12'>
+						<article className='bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8 space-y-8'>
+							<div className='relative aspect-w-16 aspect-h-9 overflow-hidden rounded-lg'>
 								<UmamiTracking
 									trackingData={{
 										dataType: 'doujin-item',
-										from: 'kobetu-exlink-top',
+										from: 'kobetu-img-top',
+										item: { title: item.title, content_id: item.content_id },
+									}}>
+									<Link href={item.affiliate_url} target='_blank' rel='noopener noreferrer'>
+										<img
+											src={item.package_images}
+											alt={`${item.title}のパッケージ画像`}
+											className='w-full h-full object-contain transition-transform duration-300'
+										/>
+									</Link>
+								</UmamiTracking>
+							</div>
+							<h1 className='text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 text-center'>
+								<Link href={item.affiliate_url} className='text-blue-500 font-bold hover:underline'>
+									{item.title} {item.content_id}
+								</Link>
+							</h1>
+							<p className='text-gray-600 dark:text-gray-300 text-base mt-4'>{description}</p>{' '}
+							{/* Description added here */}
+							{/* Item Details Table */}
+							<ItemDetailsTable item={item} />
+							{/* 外部リンクボタン */}
+							<div className='flex justify-center items-center'>
+								<div className='relative inline-block  items-center'>
+									{/* グラデーションオーバーレイ */}
+									<div className='absolute inset-2 rounded-full opacity-80 blur-lg group-hover:opacity-100 transition-opacity duration-500 ease-in-out bg-custom-gradient-exbutton bg-custom-gradient-exbutton--doujin z-0' />
+									{/* ボタン */}
+									<UmamiTracking
+										trackingData={{
+											dataType: 'doujin-item',
+											from: 'kobetu-exlink-top',
+											item: { title: item.title, content_id: item.content_id },
+										}}>
+										<Link
+											href={item.affiliate_url}
+											target='_blank'
+											rel='noopener noreferrer'
+											className='relative inline-flex items-center justify-center text-xl font-semibold text-white rounded-full shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 px-6 sm:px-8 py-3 sm:py-4 hover:bg-gray-700 transform hover:-translate-y-0.5 bg-custom-gradient-exbutton bg-custom-gradient-exbutton--doujin'>
+											<span className='mr-2'>作品をフルで見る</span>
+											<ExternalLink className='w-5 h-5 sm:w-6 sm:h-6 animate-pulse' />
+										</Link>
+									</UmamiTracking>
+								</div>
+							</div>
+							{/* サンプル画像の表示 */}
+							{item.sample_images && item.sample_images.length > 0 && (
+								<div className='mt-8'>
+									<h2 className='text-center font-bold mb-6'>
+										<span className='text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text'>
+											サンプル画像
+										</span>
+									</h2>
+									<div className='grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4'>
+										{item.sample_images.map((imageObj, index) => (
+											<div
+												key={index}
+												className='aspect-w-16 aspect-h-9 relative overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300'>
+												<img
+													src={imageObj ? imageObj : ''}
+													alt={`${item.title} のサンプル画像 ${index + 1}`}
+													className='w-full h-full object-contain transition-transform duration-300'
+												/>
+											</div>
+										))}
+									</div>
+								</div>
+							)}
+							{item.makers && item.makers.length > 0 && (
+								<MakerTimelinePage
+									searchParams={{
+										maker_id: item.makers[0].id.toString(),
+										maker_name: item.makers[0].name,
+									}}
+								/>
+							)}
+							{item.series && item.series.length > 0 && (
+								<SeriesTimelinePage
+									searchParams={{
+										series_id: item.series[0].id.toString(),
+										series_name: item.series[0].name,
+									}}
+								/>
+							)}
+							<div className='w-full text-sm text-center my-4'>
+								このページに広告を設置しています
+							</div>
+							{/* コメントセクションの追加 */}
+							<Suspense fallback={<LoadingSpinner />}>
+								<CommentSection contentId={item.content_id} />
+							</Suspense>
+							{/* 外部リンクボタン（下部） */}
+							<div className='flex justify-center items-center mt-8'>
+								<UmamiTracking
+									trackingData={{
+										dataType: 'doujin-item',
+										from: 'kobetu-exlink-bottom',
 										item: { title: item.title, content_id: item.content_id },
 									}}>
 									<Link
 										href={item.affiliate_url}
 										target='_blank'
 										rel='noopener noreferrer'
-										className='relative inline-flex items-center justify-center text-xl font-semibold text-white rounded-full shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 px-6 sm:px-8 py-3 sm:py-4 hover:bg-gray-700 transform hover:-translate-y-0.5 bg-custom-gradient-exbutton bg-custom-gradient-exbutton--doujin'>
-										<span className='mr-2'>作品をフルで見る</span>
-										<ExternalLink className='w-5 h-5 sm:w-6 sm:h-6 animate-pulse' />
+										className='inline-flex items-center justify-center text-xl font-semibold text-white bg-gradient-to-r from-pink-500 to-rose-600 dark:from-pink-600 dark:to-rose-700 rounded-sm shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 dark:focus:ring-pink-400 px-8 py-4'>
+										<span className='mr-2 break-words'>{item.title}をフルで見る</span>
+										<ExternalLink className='w-6 h-6 animate-pulse flex-shrink-0' />
 									</Link>
 								</UmamiTracking>
 							</div>
-						</div>
-
-						{/* サンプル画像の表示 */}
-						{item.sample_images && item.sample_images.length > 0 && (
-							<div className='mt-8'>
-								<h2 className='text-center font-bold mb-6'>
-									<span className='text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text'>
-										サンプル画像
-									</span>
-								</h2>
-								<div className='grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4'>
-									{item.sample_images.map((imageObj, index) => (
-										<div
-											key={index}
-											className='aspect-w-16 aspect-h-9 relative overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300'>
-											<img
-												src={imageObj ? imageObj : ''}
-												alt={`${item.title} のサンプル画像 ${index + 1}`}
-												className='w-full h-full object-contain transition-transform duration-300'
-											/>
-										</div>
-									))}
-								</div>
-							</div>
-						)}
-
-						{item.makers && item.makers.length > 0 && (
-							<MakerTimelinePage
-								searchParams={{
-									maker_id: item.makers[0].id.toString(),
-									maker_name: item.makers[0].name,
-								}}
-							/>
-						)}
-
-						{item.series && item.series.length > 0 && (
-							<SeriesTimelinePage
-								searchParams={{
-									series_id: item.series[0].id.toString(),
-									series_name: item.series[0].name,
-								}}
-							/>
-						)}
-
-						<div className='w-full text-sm text-center my-4'>このページに広告を設置しています</div>
-
-						{/* コメントセクションの追加 */}
-						<Suspense fallback={<LoadingSpinner />}>
-							<CommentSection contentId={item.content_id} />
-						</Suspense>
-
-						{/* 外部リンクボタン（下部） */}
-						<div className='flex justify-center items-center mt-8'>
-							<UmamiTracking
-								trackingData={{
-									dataType: 'doujin-item',
-									from: 'kobetu-exlink-bottom',
-									item: { title: item.title, content_id: item.content_id },
-								}}>
-								<Link
-									href={item.affiliate_url}
-									target='_blank'
-									rel='noopener noreferrer'
-									className='inline-flex items-center justify-center text-xl font-semibold text-white bg-gradient-to-r from-pink-500 to-rose-600 dark:from-pink-600 dark:to-rose-700 rounded-sm shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 dark:focus:ring-pink-400 px-8 py-4'>
-									<span className='mr-2 break-words'>{item.title}をフルで見る</span>
-									<ExternalLink className='w-6 h-6 animate-pulse flex-shrink-0' />
-								</Link>
-							</UmamiTracking>
-						</div>
-					</article>
+						</article>
+					</div>
 				</div>
-			</div>
+			</>
 		)
 	} catch (error) {
 		console.error('Error fetching item data:', error)

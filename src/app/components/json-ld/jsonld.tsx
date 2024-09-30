@@ -133,8 +133,7 @@ export const generatePersonStructuredData = (
 	const actress = actressProfile.actress
 
 	// 女優の画像URL
-	const actressImage =
-		actress.image_url_large || actress.image_url_small || '/placeholder-image.jpg'
+	const actressImage = actress.image_url_large || actress.image_url_small || ''
 
 	return {
 		'@context': 'https://schema.org',
@@ -234,7 +233,7 @@ export const generateDoujinKobetuItemStructuredData = (
 		datePublished: formattedDate,
 		author: author,
 		description: description,
-		mainEntityOfPage: `https://yourwebsite.com/doujin/${item.content_id}`,
+		mainEntityOfPage: `https://erice.cloud/doujin/itemd/${item.db_id}`,
 		...(item.genres && { keywords: item.genres.map(genre => genre.name).join(', ') }),
 	}
 }
