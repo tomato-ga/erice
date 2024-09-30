@@ -3,6 +3,7 @@
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table' // shadcnのテーブルコンポーネントをインポート
 import { DMMCampaignItem, DMMItemSchema } from '@/types/dmm-campaignpage-types'
 import Image from 'next/image'
+import Link from 'next/link'
 import React from 'react'
 import ItemDetailsTable from './ItemDetailTable'
 
@@ -38,14 +39,16 @@ const CampaignFeaturedItemGrid: React.FC<CampaignFeaturedItemGridProps> = ({
 							key={validItem.content_id}
 							className='bg-white shadow-md overflow-hidden flex flex-col'>
 							{validItem.imageURL?.large && (
-								<Image
-									src={validItem.imageURL.large}
-									alt={validItem.title}
-									width={400}
-									height={600}
-									className='w-full h-auto object-cover'
-									loading='lazy'
-								/>
+								<Link href={`/item/${validItem.db_id}`}>
+									<Image
+										src={validItem.imageURL.large}
+										alt={validItem.title}
+										width={400}
+										height={600}
+										className='w-full h-auto object-cover'
+										loading='lazy'
+									/>
+								</Link>
 							)}
 							<div className='p-4 flex-1 flex flex-col'>
 								<ItemDetailsTable item={validItem} campaignName={campaignName} />

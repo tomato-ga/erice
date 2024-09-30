@@ -201,7 +201,7 @@ export const generateActressArticleStructuredData = (
 		datePublished: new Date().toISOString(), // 記事の公開日時
 		dateModified: new Date().toISOString(), // 記事の最終更新日時
 		mainEntityOfPage: `https://erice.cloud/actressprofile/${profile.actress.name}`,
-		about: actressPersonData, // 女優のPerson構造化��ータを追加
+		about: actressPersonData, // 女優のPerson構造化データを追加
 	}
 }
 

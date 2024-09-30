@@ -75,7 +75,7 @@ const ItemDetailsTable: React.FC<{ item: DMMKeywordItemProps; keyword: string }>
 								<Link
 									key={genre.id}
 									href={`/genre/${encodeURIComponent(genre.name)}`}
-									className='bg-pink-100 hover:bg-pink-600 text-pink-500 border-pink-500 mr-2 px-2.5 py-0.5 rounded dark:text-pink-200 dark:border-pink-400 dark:hover:bg-pink-600 dark:hover:text-white'>
+									className='bg-pink-50 text-pink-600 px-3 py-1 rounded text-sm font-semibold hover:bg-pink-100 transition-colors'>
 									{genre.name}
 								</Link>
 							)) || 'N/A'}
@@ -122,14 +122,16 @@ const KeywordFeaturedItemGrid: React.FC<{ items: DMMKeywordItemProps[]; keyword:
 						<div
 							key={validItem.content_id}
 							className='bg-white shadow-md overflow-hidden flex flex-col'>
-							<img
-								src={validItem.imageURL}
-								alt={validItem.title}
-								loading='lazy'
-								className='w-full h-auto object-contain'
-								width={400} // widthを追加
-								height={600} // heightを追加
-							/>
+							<Link href={`/item/${validItem.db_id}`}>
+								<img
+									src={validItem.imageURL}
+									alt={validItem.title}
+									loading='lazy'
+									className='w-full h-auto object-contain'
+									width={400} // widthを追加
+									height={600} // heightを追加
+								/>
+							</Link>
 							<div className='p-1 flex-1 flex flex-col'>
 								<ItemDetailsTable item={validItem} keyword={keyword} />
 							</div>
