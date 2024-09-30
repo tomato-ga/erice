@@ -75,14 +75,14 @@ function getBodyDescription(actress: DMMActressProfile['actress']): string {
 
 	return `
     ${name}さんのスタイルは、バストは${bust}cmで${bustDescription}、ウエストは${waistDescription}で、ヒップは${hipDescription}です。バストの大きさは${cup}カップで${getCupDescription(
-					cup,
-				)}サイズです。
+			cup,
+		)}サイズです。
 
     身長${height}cmの場合、理想のバストサイズは${idealBust.toFixed(2)}cm、理想のウエストサイズは${idealWaist.toFixed(
-					2,
-				)}cm、理想のヒップサイズは${idealHip.toFixed(
-					2,
-				)}cmとされています。${name}さんの身長からすると、バストは${bustDescription}、ウエストは${waistDescription}、ヒップは${hipDescription}です。
+			2,
+		)}cm、理想のヒップサイズは${idealHip.toFixed(
+			2,
+		)}cmとされています。${name}さんの身長からすると、バストは${bustDescription}、ウエストは${waistDescription}、ヒップは${hipDescription}です。
 
     ボディーライン比は、${bodyLineRatio} です。${getBodyLineDescription(bust / waist, hip / waist)}
   `
@@ -138,7 +138,7 @@ function generateBasicInfo(actress: DMMActressProfile['actress'], age: number | 
 	return generateNaturalSentence([
 		`${actress.name}さんは、`,
 		ageNumber ? `${ageNumber}歳の` : '',
-		'AV女優さんです。',
+		'セクシー女優さんです。',
 		actress.height ? `身長${actress.height}cmで、` : '',
 		'魅力的なボディラインの持ち主です。',
 	])

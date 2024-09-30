@@ -62,7 +62,9 @@ function NewActressCard({ item }: { item: ProcessedDMMItem }) {
 	return (
 		<Card className='overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300'>
 			<CardHeader>
-				<CardTitle className='text-2xl font-bold text-gray-900'>{item.actress || '名前なし'}</CardTitle>
+				<CardTitle className='text-2xl font-bold text-gray-900'>
+					{item.actress || '名前なし'}
+				</CardTitle>
 			</CardHeader>
 			<CardContent className='space-y-6'>
 				<div className='flex justify-center'>
@@ -162,7 +164,7 @@ export default async function NewActressesPage() {
 			<main className='max-w-7xl mx-auto space-y-8'>
 				<h1 className='text-4xl font-extrabold text-center sm:text-5xl md:text-6xl'>
 					<span className='block bg-gradient-to-r from-pink-500  to-rose-500 text-transparent bg-clip-text'>
-						新人AV女優{itemsdata.length}人の
+						新人セクシー女優{itemsdata.length}人の
 					</span>
 					<span className='block bg-gradient-to-r from-pink-500  to-rose-500 text-transparent bg-clip-text pt-1'>
 						最新デビュー作品一覧
@@ -171,7 +173,7 @@ export default async function NewActressesPage() {
 
 				<p className='mt-3 text-xl text-gray-500 sm:mt-5 sm:text-2xl max-w-prose mx-auto text-center'>
 					AVデビューした新人女優、素人女性の作品を紹介しています。
-					デビュー作品やこれから注目の新人AV女優・セクシー女優の作品がすぐに見つかるよう随時更新しています。
+					デビュー作品やこれから注目の新人セクシー女優・セクシー女優の作品がすぐに見つかるよう随時更新しています。
 				</p>
 
 				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>

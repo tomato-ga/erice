@@ -36,8 +36,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 	const { actress } = data.profile
 	const { name, birthday, prefectures } = actress
-	const title = ` AV女優「${name}」のエロ動画・アダルト動画が${data.works.length}作品あります`
-	const description = `${name}のAV女優プロフィールと作品一覧。${birthday ? `生年月日: ${birthday}、` : ''}${
+	const title = ` セクシー女優「${name}」のエロ動画・アダルト動画が${data.works.length}作品あります`
+	const description = `${name}のセクシー女優プロフィールと作品一覧。${birthday ? `生年月日: ${birthday}、` : ''}${
 		prefectures ? `出身地: ${prefectures}` : ''
 	}`
 
@@ -234,11 +234,11 @@ export default async function ActressProfilePage({ params }: PageProps) {
 	const { profile, works } = data
 
 	// タイトルと概要を再計算
-	const pageTitle = `AV女優「${profile.actress.name}」のエロ動画・アダルト動画が${works.length}作品あります`
+	const pageTitle = `セクシー女優「${profile.actress.name}」さんのエロ動画・アダルト動画が${works.length}作品あります`
 
 	const { birthday, prefectures, bust, waist, hip, height, cup } = profile.actress
 
-	const pageDescription = `${profile.actress.name}さんのAV女優プロフィールと作品一覧を見ることができるページです。${profile.actress.name}さんの${works.length ? `出演作品数は ${works.length}件です。` : ''}${birthday ? `生年月日は${birthday}、` : ''}${prefectures ? `出身地は${prefectures}です。` : ''}${bust && waist && hip ? `スリーサイズはB${bust} W${waist} H${hip}です。` : ''}${height ? `身長: ${height}cm` : ''}${cup ? `カップ数は${cup}です。` : ''}
+	const pageDescription = `${profile.actress.name}さんのセクシー女優プロフィールと作品一覧を見ることができるページです。${profile.actress.name}さんの${works.length ? `出演作品数は ${works.length}件です。` : ''}${birthday ? `生年月日は${birthday}、` : ''}${prefectures ? `出身地は${prefectures}です。` : ''}${bust && waist && hip ? `スリーサイズはB${bust} W${waist} H${hip}です。` : ''}${height ? `身長: ${height}cm` : ''}${cup ? `カップ数は${cup}です。` : ''}
 	${profile.actress.hobby ? `趣味は${profile.actress.hobby}です。` : ''}`
 
 	return (
