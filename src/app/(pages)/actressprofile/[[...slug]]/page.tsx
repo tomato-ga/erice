@@ -238,7 +238,8 @@ export default async function ActressProfilePage({ params }: PageProps) {
 
 	const { birthday, prefectures, bust, waist, hip, height, cup } = profile.actress
 
-	const pageDescription = `${profile.actress.name}さんのAV女優プロフィールと作品一覧を見ることができるページです。${profile.actress.name}さんの${works.length ? `出演作品数は ${works.length}件です` : ''}${birthday ? `生年月日は${birthday}、` : ''}${prefectures ? `出身地は${prefectures}です。` : ''}${bust && waist && hip ? `スリーサイズはB${bust} W${waist} H${hip}です。` : ''}${height ? `身長: ${height}cm` : ''}${cup ? `カップ数は${cup}です。` : ''}`
+	const pageDescription = `${profile.actress.name}さんのAV女優プロフィールと作品一覧を見ることができるページです。${profile.actress.name}さんの${works.length ? `出演作品数は ${works.length}件です。` : ''}${birthday ? `生年月日は${birthday}、` : ''}${prefectures ? `出身地は${prefectures}です。` : ''}${bust && waist && hip ? `スリーサイズはB${bust} W${waist} H${hip}です。` : ''}${height ? `身長: ${height}cm` : ''}${cup ? `カップ数は${cup}です。` : ''}
+	${profile.actress.hobby ? `趣味は${profile.actress.hobby}です。` : ''}`
 
 	return (
 		<div className='max-w-7xl mx-auto px-4 py-8'>
