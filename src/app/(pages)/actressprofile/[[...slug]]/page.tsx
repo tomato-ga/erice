@@ -236,9 +236,10 @@ export default async function ActressProfilePage({ params }: PageProps) {
 
 	// タイトルと概要を再計算
 	const pageTitle = `AV女優「${profile.actress.name}」のエロ動画・アダルト動画が${works.length}作品あります`
-	const pageDescription = `${profile.actress.name}のAV女優プロフィールと作品一覧。${profile.actress.birthday ? `生年月日: ${profile.actress.birthday}、` : ''}${
-		profile.actress.prefectures ? `出身地: ${profile.actress.prefectures}` : ''
-	}`
+
+	const { birthday, prefectures, bust, waist, hip, height, cup } = profile.actress
+
+	const pageDescription = `${profile.actress.name}さんのAV女優プロフィールと作品一覧を見ることができるページです。${birthday ? `生年月日: ${birthday}、` : ''}${prefectures ? `出身地: ${prefectures}、` : ''}${bust && waist && hip ? `スリーサイズ: B${bust} W${waist} H${hip}、` : ''}${height ? `身長: ${height}cm、` : ''}${cup ? `カップ: ${cup}、` : ''}`
 
 	return (
 		<div className='max-w-7xl mx-auto px-4 py-8'>
