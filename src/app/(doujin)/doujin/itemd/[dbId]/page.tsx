@@ -179,7 +179,7 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 			)
 
 			if (item.release_date) {
-				parts.push(`このアダルト動画の発売日は${formatDate(item.release_date)}。`)
+				parts.push(`この同人作品の発売日は${formatDate(item.release_date)}。`)
 			}
 
 			if (item.makers && item.makers.length > 0) {
