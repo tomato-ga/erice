@@ -21,6 +21,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import React from 'react'
 import { z } from 'zod'
+import StructuredDataScript from './StructuredData'
 
 /**
  * ItemDetailsTableコンポーネント
@@ -230,7 +231,7 @@ export const generateMetadata = async ({
 		keyword,
 	)}」作品を${items.length}件集めました。豊富な「${decodeURIComponent(
 		keyword,
-	)}」の作品の中から、観たい作品を見つけるのに役立ててください。レビュー合計数は${allItemReviewCount}件です。最も多く登場する女優は${sortedActessArray[0]?.name || 'N/A'}です。`
+	)}」の作品の中から、観たい作品を見つけるのに役立ててください。レビュー合計数は${allItemReviewCount}件です。最も多く登場する女優は${sortedActessArray.length > 0 ? sortedActessArray[0]?.name : ''}です。`
 
 	return {
 		title,
@@ -340,57 +341,63 @@ const KeywordPage = async ({
 	// デバッグログ: バリデーションを通過したアイテム数
 	console.debug(`バリデーションを通過したアイテム数: ${featuredItems.length} 件`)
 
+	const description = `FANZAで人気の「${decodeURIComponent(keyword)}」作品を${items.length}件集めました。豊富な「${decodeURIComponent(keyword)}」の作品の中から、観たい作品を見つけるのに役立ててください。レビュー合計数は${allItemReviewCount}件です。最も多く登場する女優は${sortedActessArray.length > 0 ? sortedActessArray[0]?.name : ''}です。`
+
 	return (
-		<div className='container mx-auto px-1 py-4'>
-			<div className='px-3'>
-				<h1 className='text-4xl font-extrabold mb-4 text-slate-800'>
-					【{new Date(validData.createdAt).getFullYear()}年最新】{' '}
-					{processKeyword(decodeURIComponent(keyword))} の人気エロ動画を厳選して{items.length}
-					件集めました
-				</h1>
-				<p className='pb-2 font-semibold'>
-					FANZAで人気の「{processKeyword(decodeURIComponent(keyword))}」エロ動画作品を{items.length}
-					件集めました。
-					<br />
-					<br />
-					今すぐサンプル視聴・ダウロード・ストリーミングが可能で、好きなときにどこでも視聴できます。
-					<br />
-					豊富な{processKeyword(decodeURIComponent(keyword))}
-					の作品の中から、観たい作品を見つけるのに役立ててください。
-				</p>
-				<p className='pb-2 font-semibold'>
-					ここで紹介している「{processKeyword(decodeURIComponent(keyword))}
-					」作品に投稿されたレビュー合計数は {allItemReviewCount}件です。
-					{sortedActessArray.length > 0 && sortedActessArray[0].name && (
-						<>
-							「{processKeyword(decodeURIComponent(keyword))}」作品で最も多く登場する女優は{' '}
-							{sortedActessArray[0].name}です。
-						</>
-					)}
-				</p>
-				{validData.createdAt && (
-					<p className='text-sm text-gray-600 mb-8'>
-						最終更新日時:{' '}
-						{new Date(validData.createdAt).toLocaleString(undefined, {
-							year: 'numeric',
-							month: 'numeric',
-							day: 'numeric',
-							hour: '2-digit',
-							minute: '2-digit',
-							hour12: false,
-						})}
+		<>
+			<StructuredDataScript keyword={keyword} data={validData} description={description} />
+			<div className='container mx-auto px-1 py-4'>
+				<div className='px-3'>
+					<h1 className='text-4xl font-extrabold mb-4 text-slate-800'>
+						【{new Date(validData.createdAt).getFullYear()}年最新】{' '}
+						{processKeyword(decodeURIComponent(keyword))} の人気エロ動画を厳選して{items.length}
+						件集めました
+					</h1>
+					<p className='pb-2 font-semibold'>
+						FANZAで人気の「{processKeyword(decodeURIComponent(keyword))}」エロ動画作品を
+						{items.length}
+						件集めました。
+						<br />
+						<br />
+						今すぐサンプル視聴・ダウロード・ストリーミングが可能で、好きなときにどこでも視聴できます。
+						<br />
+						豊富な{processKeyword(decodeURIComponent(keyword))}
+						の作品の中から、観たい作品を見つけるのに役立ててください。
 					</p>
+					<p className='pb-2 font-semibold'>
+						ここで紹介している「{processKeyword(decodeURIComponent(keyword))}
+						」作品に投稿されたレビュー合計数は {allItemReviewCount}件です。
+						{sortedActessArray.length > 0 && sortedActessArray[0].name && (
+							<>
+								「{processKeyword(decodeURIComponent(keyword))}」作品で最も多く登場する女優は{' '}
+								{sortedActessArray[0].name}です。
+							</>
+						)}
+					</p>
+					{validData.createdAt && (
+						<p className='text-sm text-gray-600 mb-8'>
+							最終更新日時:{' '}
+							{new Date(validData.createdAt).toLocaleString(undefined, {
+								year: 'numeric',
+								month: 'numeric',
+								day: 'numeric',
+								hour: '2-digit',
+								minute: '2-digit',
+								hour12: false,
+							})}
+						</p>
+					)}
+				</div>
+				{featuredItems.length > 0 ? (
+					<KeywordFeaturedItemGrid items={featuredItems} keyword={keyword} />
+				) : (
+					<p>このキーワードに該当するアイテムはありません。</p>
 				)}
+				<Link href='/' className='mt-8 inline-block text-blue-500 underline'>
+					ホームに戻る
+				</Link>
 			</div>
-			{featuredItems.length > 0 ? (
-				<KeywordFeaturedItemGrid items={featuredItems} keyword={keyword} />
-			) : (
-				<p>このキーワードに該当するアイテムはありません。</p>
-			)}
-			<Link href='/' className='mt-8 inline-block text-blue-500 underline'>
-				ホームに戻る
-			</Link>
-		</div>
+		</>
 	)
 }
 

@@ -2,6 +2,7 @@
 
 import { DoujinKobetuItem } from '@/_types_doujin/doujintypes'
 import { DMMActressProfile } from '@/types/APItypes'
+import { GetKVTop100Response } from '@/types/dmm-keywordpage-types'
 import { DMMItemDetailResponse, DMMItemMainResponse } from '@/types/dmmitemzodschema'
 import {
 	Article,
@@ -292,5 +293,53 @@ export const generateDoujinBreadcrumbList = (
 		'@context': 'https://schema.org',
 		'@type': 'BreadcrumbList',
 		itemListElement,
+	}
+}
+
+// キーワードページ用の Article 構造化データ生成関数
+export const generateKeywordArticleStructuredData = (
+	keyword: string,
+	data: GetKVTop100Response,
+	description: string,
+): WithContext<Article> => {
+	const currentYear = new Date(data.createdAt).getFullYear()
+	const decodedKeyword = decodeURIComponent(keyword)
+
+	return {
+		'@context': 'https://schema.org',
+		'@type': 'Article',
+		headline: `【${currentYear}年最新】${decodedKeyword} の人気エロ動画を厳選して${data.items.length}件集めました`,
+		description: description,
+		author: {
+			'@type': 'Person',
+			name: 'エロコメスト管理人',
+			url: 'https://erice.cloud',
+		},
+		datePublished: new Date(data.createdAt).toISOString(),
+		dateModified: new Date(data.createdAt).toISOString(),
+		image: data.items.slice(0, 3).map(item => item.imageURL?.large || ''),
+		mainEntityOfPage: `https://erice.cloud/keywords/${encodeURIComponent(decodedKeyword)}`,
+	}
+}
+
+// キーワードページ用の BreadcrumbList 構造化データ生成関数
+export const generateKeywordBreadcrumbList = (keyword: string): WithContext<BreadcrumbList> => {
+	return {
+		'@context': 'https://schema.org',
+		'@type': 'BreadcrumbList',
+		itemListElement: [
+			{
+				'@type': 'ListItem',
+				position: 1,
+				name: 'ホーム',
+				item: 'https://erice.cloud/',
+			},
+			{
+				'@type': 'ListItem',
+				position: 2,
+				name: `${keyword} の人気エロ動画`,
+				item: `https://erice.cloud/keywords/${encodeURIComponent(keyword)}`,
+			},
+		],
 	}
 }
