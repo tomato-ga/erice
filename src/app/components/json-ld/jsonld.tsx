@@ -129,6 +129,7 @@ export const generateArticleStructuredData = (
 // 女優のPerson構造化データを生成する関数
 export const generatePersonStructuredData = (
 	actressProfile: DMMActressProfile,
+	description: string,
 ): WithContext<Person> => {
 	const actress = actressProfile.actress
 
@@ -142,7 +143,7 @@ export const generatePersonStructuredData = (
 		birthDate: actress.birthday || undefined, // 誕生日がある場合のみ追加
 		height: actress.height ? `${actress.height}` : undefined, // 身長がある場合のみ追加
 		image: actressImage,
-		description: `人気セクシー女優 ${actress.name} のプロフィールです。`,
+		description: description,
 		sameAs: actress.list_url || undefined, // 外部の関連URLがあれば設定
 	}
 }
@@ -161,7 +162,7 @@ export const generateActressArticleStructuredData = (
 	}
 
 	// 女優のPerson構造化データを生成
-	const actressPersonData = generatePersonStructuredData(profile)
+	const actressPersonData = generatePersonStructuredData(profile, description)
 
 	// Articleスキーマの生成
 	return {
