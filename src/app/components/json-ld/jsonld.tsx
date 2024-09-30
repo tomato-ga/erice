@@ -276,7 +276,7 @@ export const generateDoujinBreadcrumbList = (
 	itemListElement.push({
 		'@type': 'ListItem',
 		position: item.makers && item.makers.length > 0 ? 4 : 3,
-		name: 'アイテム詳細',
+		name: item.title,
 		item: `https://erice.cloud/doujin/itemd/${item.db_id}`,
 	})
 
