@@ -175,7 +175,7 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 		const description = (() => {
 			const parts = []
 			parts.push(
-				`${item.title} ${item.content_id}の詳細情報と、サンプル画像・サンプル動画を見ることができるページです。`,
+				`${item.title} ${item.content_id}の詳細情報と、サンプル画像を見ることができるページです。`,
 			)
 
 			if (item.release_date) {
