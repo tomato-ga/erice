@@ -1,5 +1,6 @@
 // /src/utils/jsonld.ts
 
+import { DoujinKobetuItem } from '@/_types_doujin/doujintypes'
 import { DMMActressProfile } from '@/types/APItypes'
 import { DMMItemDetailResponse, DMMItemMainResponse } from '@/types/dmmitemzodschema'
 import {
@@ -187,5 +188,53 @@ export const generateActressArticleStructuredData = (
 		author: author,
 		description: description,
 		mainEntityOfPage: `https://erice.cloud/actressprofile/${profile.actress.name}`,
+	}
+}
+
+export const generateDoujinKobetuItemStructuredData = (
+	item: DoujinKobetuItem,
+	description: string,
+): WithContext<Article> => {
+	// メイン画像をImageObjectとして定義
+	const mainImage: ImageObject = {
+		'@type': 'ImageObject',
+		url: item.package_images,
+		description: `${item.title}のパッケージ画像`,
+	}
+
+	// サンプル画像をImageObjectとして定義
+	const sampleImages: ImageObject[] =
+		item.sample_images?.map((url, index) => ({
+			'@type': 'ImageObject',
+			url: url ?? '', // Provide an empty string as fallback
+			description: `${item.title}の画像${index + 1}`,
+		})) ?? []
+
+	// 全ての画像を統合
+	const allImages: ImageObject[] = [mainImage, ...sampleImages]
+
+	// 固定のAuthorデータ
+	const author: Person = {
+		'@type': 'Person',
+		name: 'エロコメスト管理人',
+		url: 'https://erice.cloud',
+	}
+
+	// 日付のフォーマット
+	const formattedDate = item.release_date
+		? new Date(item.release_date).toISOString()
+		: new Date().toISOString()
+
+	// Articleスキーマの生成
+	return {
+		'@context': 'https://schema.org',
+		'@type': 'Article',
+		headline: item.title,
+		image: allImages,
+		datePublished: formattedDate,
+		author: author,
+		description: description,
+		mainEntityOfPage: `https://yourwebsite.com/doujin/${item.content_id}`,
+		...(item.genres && { keywords: item.genres.map(genre => genre.name).join(', ') }),
 	}
 }

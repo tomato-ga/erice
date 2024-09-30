@@ -81,30 +81,23 @@ const ActressProfileSection = ({
 		)
 	}
 
-	const jsonLdPersonData = generatePersonStructuredData(profile) // PersonのJSON-LDを生成
-	const jsonLdPersonString = JSON.stringify(jsonLdPersonData)
-
-	const jsonLdArticleData = generateActressArticleStructuredData(
-		pageTitle, // pageTitleを使用
-		descriptionFromMetadata || '',
-		profile,
-	)
-	const jsonLdArticleString = JSON.stringify(jsonLdArticleData)
+	const jsonLdData = [
+		generatePersonStructuredData(profile),
+		generateActressArticleStructuredData(
+			pageTitle, // pageTitleを使用
+			descriptionFromMetadata || '',
+			profile,
+		),
+	]
+	const jsonLdString = JSON.stringify(jsonLdData)
 
 	return (
 		<>
 			<script
-				id={`structured-data-person-${actress.name}`}
+				id={`structured-data-${actress.name}`}
 				type='application/ld+json'
 				dangerouslySetInnerHTML={{
-					__html: jsonLdPersonString, // PersonのJSON-LDを追加
-				}}
-			/>
-			<script
-				id={`structured-data-article-${actress.name}`}
-				type='application/ld+json'
-				dangerouslySetInnerHTML={{
-					__html: jsonLdArticleString, // ArticleのJSON-LDを追加
+					__html: jsonLdString, // PersonのJSON-LDを追加
 				}}
 			/>
 
