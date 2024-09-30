@@ -91,19 +91,19 @@ const ActressProfileSection = ({
 	return (
 		<>
 			<script
-				id={`structured-data-${actress.name}`}
+				id={`structured-data-${actress.name}-person`}
 				type='application/ld+json'
 				dangerouslySetInnerHTML={{
 					__html: JSON.stringify(personJsonLd),
 				}}
 			/>
-			<script
+			{/* <script
 				id={`structured-data-${actress.name}-article`}
 				type='application/ld+json'
 				dangerouslySetInnerHTML={{
 					__html: JSON.stringify(articleJsonLd),
 				}}
-			/>
+			/> */}
 
 			<div className='bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 shadow-2xl rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl'>
 				<div className='p-8'>
