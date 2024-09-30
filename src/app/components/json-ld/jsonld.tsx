@@ -193,7 +193,7 @@ export const generateActressArticleStructuredData = (
 		datePublished: new Date().toISOString(), // 記事の公開日時
 		dateModified: new Date().toISOString(), // 記事の最終更新日時
 		mainEntityOfPage: `https://erice.cloud/actressprofile/${profile.actress.name}`,
-		about: actressPersonData, // 女優のPerson構造化データを追加
+		about: actressPersonData, // 女優のPerson構造化��ータを追加
 	}
 }
 
@@ -242,5 +242,47 @@ export const generateDoujinKobetuItemStructuredData = (
 		description: description,
 		mainEntityOfPage: `https://erice.cloud/doujin/itemd/${item.db_id}`,
 		...(item.genres && { keywords: item.genres.map(genre => genre.name).join(', ') }),
+	}
+}
+
+// 同人誌アイテム用のBreadcrumbListを生成する関数
+export const generateDoujinBreadcrumbList = (
+	item: DoujinKobetuItem,
+): WithContext<BreadcrumbList> => {
+	const itemListElement: ListItem[] = [
+		{
+			'@type': 'ListItem',
+			position: 1,
+			name: 'ホーム',
+			item: 'https://erice.cloud/',
+		},
+		{
+			'@type': 'ListItem',
+			position: 2,
+			name: '同人トップページ',
+			item: 'https://erice.cloud/doujin/',
+		},
+	]
+
+	if (item.makers && item.makers.length > 0) {
+		itemListElement.push({
+			'@type': 'ListItem',
+			position: 3,
+			name: item.makers[0].name,
+			item: `https://erice.cloud/doujin/maker/${encodeURIComponent(item.makers[0].name)}`,
+		})
+	}
+
+	itemListElement.push({
+		'@type': 'ListItem',
+		position: item.makers && item.makers.length > 0 ? 4 : 3,
+		name: 'アイテム詳細',
+		item: `https://erice.cloud/doujin/itemd/${item.db_id}`,
+	})
+
+	return {
+		'@context': 'https://schema.org',
+		'@type': 'BreadcrumbList',
+		itemListElement,
 	}
 }

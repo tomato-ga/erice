@@ -15,7 +15,19 @@ import '@/app/_css/styles.css'
 import MakerTimelinePage from '@/app/components/doujincomponents/kobetu/MakerTimeline'
 import SeriesTimelinePage from '@/app/components/doujincomponents/kobetu/SeriesTimeline'
 import { generateDoujinKobetuItemStructuredData } from '@/app/components/json-ld/jsonld'
+import { generateDoujinBreadcrumbList } from '@/app/components/json-ld/jsonld'
+import {
+	Breadcrumb,
+	BreadcrumbItem,
+	BreadcrumbLink,
+	BreadcrumbList,
+	BreadcrumbPage,
+} from '@/components/ui/breadcrumb'
 import { formatDate } from '@/utils/dmmUtils'
+import { HomeIcon } from 'lucide-react'
+
+// BreadcrumbListの型をインポート
+import { ListItem, BreadcrumbList as SchemaBreadcrumbList } from 'schema-dts'
 
 // 型定義をそのまま使用
 type Props = {
@@ -167,6 +179,9 @@ function LoadingSpinner() {
 	)
 }
 
+// BreadcrumbSeparatorコンポーネントを新たに定義
+const BreadcrumbSeparator = () => <span className='mx-2'>/</span>
+
 // メインのコンポーネント
 export default async function DoujinKobetuItemPage({ params }: Props) {
 	try {
@@ -196,6 +211,15 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 		const jsonLdData = generateDoujinKobetuItemStructuredData(item, description)
 		const jsonLdString = JSON.stringify(jsonLdData)
 
+		// パンくずリストデータの生成
+		const breadcrumbData = generateDoujinBreadcrumbList(item)
+
+		// breadcrumbDataの型を明示的に指定し、itemListElementの型も指定
+		const typedBreadcrumbData: SchemaBreadcrumbList & { itemListElement: ListItem[] } = {
+			...breadcrumbData,
+			itemListElement: breadcrumbData.itemListElement as ListItem[],
+		}
+
 		return (
 			<>
 				<script
@@ -207,6 +231,31 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 				/>
 				<div className='bg-gray-50 dark:bg-gray-900 min-h-screen'>
 					<div className='container mx-auto px-4 sm:px-6 py-8 sm:py-12'>
+						{/* パンくずリストの表示 */}
+						<Breadcrumb className='mb-4'>
+							<BreadcrumbList>
+								{typedBreadcrumbData.itemListElement.map((breadcrumbItem, index) => (
+									<BreadcrumbItem key={index}>
+										{index === 0 ? (
+											<BreadcrumbLink href={breadcrumbItem.item as string}>
+												<HomeIcon className='h-4 w-4' />
+												<span className='sr-only'>{breadcrumbItem.name as string}</span>
+											</BreadcrumbLink>
+										) : index === typedBreadcrumbData.itemListElement.length - 1 ? (
+											<BreadcrumbPage>{breadcrumbItem.name as string}</BreadcrumbPage>
+										) : (
+											<BreadcrumbLink href={breadcrumbItem.item as string}>
+												{breadcrumbItem.name as string}
+											</BreadcrumbLink>
+										)}
+										{index < typedBreadcrumbData.itemListElement.length - 1 && (
+											<BreadcrumbSeparator />
+										)}
+									</BreadcrumbItem>
+								))}
+							</BreadcrumbList>
+						</Breadcrumb>
+
 						<article className='bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8 space-y-8'>
 							<div className='relative aspect-w-16 aspect-h-9 overflow-hidden rounded-lg'>
 								<UmamiTracking

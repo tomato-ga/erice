@@ -27,6 +27,14 @@ import {
 	generateArticleStructuredData,
 	generateBreadcrumbList,
 } from '@/app/components/json-ld/jsonld'
+import {
+	Breadcrumb,
+	BreadcrumbItem,
+	BreadcrumbLink,
+	BreadcrumbList,
+	BreadcrumbPage,
+} from '@/components/ui/breadcrumb'
+import { HomeIcon } from 'lucide-react'
 
 interface Props {
 	params: { dbId: number }
@@ -126,6 +134,9 @@ const VideoPlayer = ({ src }: { src: string | null | undefined }) => {
 	)
 }
 
+// BreadcrumbSeparatorコンポーネントを新たに定義
+const BreadcrumbSeparator = () => <span className='mx-2'>/</span>
+
 export default async function DMMKobetuItemPage({
 	params,
 	searchParams,
@@ -165,6 +176,20 @@ export default async function DMMKobetuItemPage({
 	if (!itemDetail) {
 		return <div>ItemDetailが見つかりません</div>
 	}
+
+	// Breadcrumb用のデータを作成
+	const breadcrumbItems = [
+		{ name: 'ホーム', href: 'https://erice.cloud/' },
+		...(itemDetail.actress
+			? [
+					{
+						name: itemDetail.actress,
+						href: `https://erice.cloud/actressprofile/${encodeURIComponent(itemDetail.actress)}`,
+					},
+				]
+			: []),
+		{ name: ItemMain.title, href: `https://erice.cloud/item/${params.dbId}` },
+	]
 
 	const description = (() => {
 		const parts = []
@@ -216,6 +241,27 @@ export default async function DMMKobetuItemPage({
 
 			<div className='bg-gray-50 dark:bg-gray-900 min-h-screen'>
 				<div className='container mx-auto px-2 sm:px-4 py-6 sm:py-8'>
+					{/* Breadcrumb */}
+					<Breadcrumb className='mb-4'>
+						<BreadcrumbList>
+							{breadcrumbItems.map((item, index) => (
+								<BreadcrumbItem key={index}>
+									{index === 0 ? (
+										<BreadcrumbLink href={item.href}>
+											<HomeIcon className='h-4 w-4' />
+											<span className='sr-only'>{item.name}</span>
+										</BreadcrumbLink>
+									) : index === breadcrumbItems.length - 1 ? (
+										<BreadcrumbPage>{item.name}</BreadcrumbPage>
+									) : (
+										<BreadcrumbLink href={item.href}>{item.name}</BreadcrumbLink>
+									)}
+									{index < breadcrumbItems.length - 1 && <BreadcrumbSeparator />}
+								</BreadcrumbItem>
+							))}
+						</BreadcrumbList>
+					</Breadcrumb>
+
 					<article className='bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 space-y-6 sm:space-y-8'>
 						<PostList limit={12} />
 
