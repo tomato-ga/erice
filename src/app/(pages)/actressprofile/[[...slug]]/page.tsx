@@ -81,11 +81,7 @@ const ActressProfileSection = ({
 		)
 	}
 
-	const articleJsonLd = generateActressArticleStructuredData(
-		pageTitle,
-		descriptionFromMetadata || '',
-		profile,
-	)
+	const articleJsonLd = generateActressArticleStructuredData(pageTitle, description || '', profile)
 
 	return (
 		<>
