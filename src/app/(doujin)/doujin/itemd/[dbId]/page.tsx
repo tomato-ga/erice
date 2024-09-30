@@ -115,7 +115,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	try {
 		const item = await fetchItemData(params.dbId)
 		const title = `${item.title} | エロコメスト`
-		const description = `${item.title}の商品詳細ページです。`
+		const description = `${item.title} ${item.content_id}の詳細情報と、サンプル画像を見ることができるページです。`
 		const url = `https://erice.cloud/doujin/itemd/${params.dbId}` // 実際のURLに置き換えてください
 		const imageUrl = item.package_images ?? 'https://erice.cloud/ogp.jpg' // Fallback image URL
 
@@ -171,7 +171,27 @@ function LoadingSpinner() {
 export default async function DoujinKobetuItemPage({ params }: Props) {
 	try {
 		const item = await fetchItemData(params.dbId)
-		const description = `${item.title}の商品詳細ページです。` // generate structured data description
+
+		const description = (() => {
+			const parts = []
+			parts.push(
+				`${item.title} ${item.content_id}の詳細情報と、サンプル画像・サンプル動画を見ることができるページです。`,
+			)
+
+			if (item.release_date) {
+				parts.push(`このアダルト動画の発売日は${formatDate(item.release_date)}。`)
+			}
+
+			if (item.makers && item.makers.length > 0) {
+				parts.push(`メーカーは${item.makers[0].name}から発売されています。`)
+			}
+
+			if (item.series && item.series.length > 0) {
+				parts.push(`シリーズは${item.series[0].name}です。`)
+			}
+
+			return parts.join(' ')
+		})()
 
 		const jsonLdData = generateDoujinKobetuItemStructuredData(item, description)
 		const jsonLdString = JSON.stringify(jsonLdData)
