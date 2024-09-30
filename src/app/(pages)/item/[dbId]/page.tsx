@@ -35,6 +35,7 @@ import {
 	BreadcrumbPage,
 } from '@/components/ui/breadcrumb'
 import { HomeIcon } from 'lucide-react'
+import StructuredDataScript from './StructuredData'
 
 interface Props {
 	params: { dbId: number }
@@ -217,13 +218,13 @@ export default async function DMMKobetuItemPage({
 	})()
 
 	// JSON-LDを生成
-	const jsonLdData = await Promise.all([
-		generateArticleStructuredData(ItemMain, itemDetail, description, params.dbId),
-		generateBreadcrumbList(params.dbId, itemDetail), // itemDetailを渡す
-	])
+	// const jsonLdData = await Promise.all([
+	// 	generateArticleStructuredData(ItemMain, itemDetail, description, params.dbId),
+	// 	generateBreadcrumbList(params.dbId, itemDetail), // itemDetailを渡す
+	// ])
 
-	// JSON-LDを文字列に変換
-	const jsonLdString = JSON.stringify(jsonLdData)
+	// // JSON-LDを文字列に変換
+	// const jsonLdString = JSON.stringify(jsonLdData)
 
 	// デバッグ用にコンソールに出力（必要に応じて削除）
 	// console.log('JSON-LD:', jsonLdString)
@@ -231,13 +232,13 @@ export default async function DMMKobetuItemPage({
 	return (
 		<>
 			{/* 通常の <script> タグを使用し、JSON.stringify で文字列化 */}
-			<script
+			{/* <script
 				id={`structured-data-${ItemMain.content_id}`}
 				type='application/ld+json'
 				dangerouslySetInnerHTML={{
 					__html: jsonLdString,
 				}}
-			/>
+			/> */}
 
 			<div className='bg-gray-50 dark:bg-gray-900 min-h-screen'>
 				<div className='container mx-auto px-2 sm:px-4 py-6 sm:py-8'>
@@ -389,6 +390,14 @@ export default async function DMMKobetuItemPage({
 						<Suspense fallback={<LoadingSpinner />}>
 							<ItemDetails contentId={ItemMain.content_id} dbId={params.dbId} />
 						</Suspense>
+
+						{/* StructuredDataScript コンポーネントをHead内で使用 */}
+						<StructuredDataScript
+							itemMain={ItemMain}
+							itemDetail={itemDetail}
+							description={description}
+							dbId={params.dbId}
+						/>
 
 						{relatedItemsData.map(({ type, items }) => (
 							<RelatedItemsScroll

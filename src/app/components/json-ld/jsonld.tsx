@@ -57,6 +57,7 @@ export const generateArticleStructuredData = (
 	itemDetail: DMMItemDetailResponse,
 	description: string,
 	dbId: number,
+	actressProfile: DMMActressProfile | null,
 ): WithContext<Article> => {
 	// itemMain.imageURLをImageObjectとして定義
 	const mainImage: ImageObject = {
@@ -105,6 +106,12 @@ export const generateArticleStructuredData = (
 		url: 'https://erice.cloud',
 	}
 
+	// 女優情報
+	let personData: WithContext<Person> | null = null
+	if (actressProfile) {
+		personData = generatePersonStructuredData(actressProfile, description)
+	}
+
 	// directorデータの生成
 	const directors: Person[] | undefined = itemDetail.director
 		? itemDetail.director.map(directorName => ({
@@ -138,10 +145,7 @@ export const generateArticleStructuredData = (
 		...(videoObject && { video: videoObject }), // VideoObjectが存在する場合のみ追加
 		// ...(articleSection && { articleSection: articleSection }),
 		...(keywords && { keywords: keywords }),
-		about: {
-			'@type': 'Person',
-			name: `${itemDetail.actress}`,
-		},
+		...(personData && { about: personData }),
 	}
 }
 
