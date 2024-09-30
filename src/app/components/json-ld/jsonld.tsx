@@ -138,6 +138,10 @@ export const generateArticleStructuredData = (
 		...(videoObject && { video: videoObject }), // VideoObjectが存在する場合のみ追加
 		// ...(articleSection && { articleSection: articleSection }),
 		...(keywords && { keywords: keywords }),
+		about: {
+			'@type': 'Person',
+			name: `${itemDetail.actress}`,
+		},
 	}
 }
 

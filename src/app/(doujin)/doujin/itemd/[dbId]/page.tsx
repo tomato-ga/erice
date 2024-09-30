@@ -35,88 +35,103 @@ type Props = {
 }
 
 // ItemDetailsTableコンポーネント
+import React from 'react'
+
 const ItemDetailsTable: React.FC<{ item: DoujinKobetuItem }> = ({ item }) => {
+	const details = [
+		{ label: 'タイトル', value: item.title, icon: '🎬' },
+		{
+			label: '発売日',
+			value: item.release_date ? formatDate(item.release_date) : '情報なし',
+			icon: '📅',
+		},
+		{ label: 'コンテンツID', value: item.content_id, icon: '🔢' },
+		{ label: 'ボリューム', value: item.volume || '情報なし', icon: '📊' },
+		{
+			label: 'レビュー数',
+			value: item.review_count?.toString() ?? '情報なし',
+			icon: '📝',
+		},
+		{
+			label: 'ジャンル',
+			value: item.genres && item.genres.length > 0 ? item.genres : '情報なし',
+			icon: '📚',
+		},
+		{
+			label: 'メーカー',
+			value: item.makers && item.makers.length > 0 ? item.makers : '情報なし',
+			icon: '🏭',
+		},
+		{
+			label: 'シリーズ',
+			value: item.series && item.series.length > 0 ? item.series : '情報なし',
+			icon: '📺',
+		},
+	]
+
+	const getLinkClassName = (label: string) => {
+		if (label === 'ジャンル') {
+			return 'bg-blue-50 text-blue-700 px-3 py-1 rounded text-sm font-semibold hover:bg-blue-100 transition-colors'
+		}
+		if (label === 'メーカー' || label === 'シリーズ') {
+			return 'text-blue-600 hover:underline'
+		}
+		return ''
+	}
+
+	const getLink = (label: string, item: { id: number; name: string }) => {
+		switch (label) {
+			case 'ジャンル':
+				return `/doujin/genre/${encodeURIComponent(item.name)}`
+			case 'メーカー':
+				return `/doujin/maker/${encodeURIComponent(item.name)}`
+			case 'シリーズ':
+				return `/doujin/series/${encodeURIComponent(item.name)}`
+			default:
+				return '#'
+		}
+	}
+
 	return (
-		<Table className='w-full mt-4 text-lg'>
+		<Table className='w-full mt-3'>
 			<TableBody>
-				<TableRow>
-					<TableCell className='font-semibold whitespace-nowrap'>タイトル</TableCell>
-					<TableCell>
-						<Link
-							href={item.affiliate_url}
-							className='text-blue-500 font-bold text-xl hover:underline'>
-							<h2>{item.title}</h2>
-						</Link>
-					</TableCell>
-				</TableRow>
-				{item.release_date && (
-					<TableRow>
-						<TableCell className='font-semibold whitespace-nowrap'>発売日</TableCell>
-						<TableCell>
-							<div className='text-xl'>{formatDate(item.release_date)}</div>
+				{details.map(({ label, value, icon }) => (
+					<TableRow key={label} className='bg-white dark:bg-gray-800'>
+						<TableCell className='whitespace-nowrap p-4 flex items-center'>
+							<span className='text-2xl mr-4 opacity-80' aria-hidden='true'>
+								{icon}
+							</span>
+							<span className='text-sm font-medium text-gray-600 dark:text-gray-400'>{label}</span>
+						</TableCell>
+						<TableCell className='p-4'>
+							{(label === 'ジャンル' || label === 'メーカー' || label === 'シリーズ') &&
+							Array.isArray(value) ? (
+								<div className='flex flex-wrap gap-2'>
+									{value.map((item, index) => (
+										<Link
+											key={index}
+											href={getLink(label, item)}
+											className={getLinkClassName(label)}>
+											{item.name}
+										</Link>
+									))}
+								</div>
+							) : label === 'タイトル' ? (
+								<Link
+									href={item.affiliate_url}
+									className='text-blue-500 font-bold text-xl hover:underline'>
+									<h2>{Array.isArray(value) ? value.map(v => v.name).join(', ') : value}</h2>
+								</Link>
+							) : (
+								<p className='text-base text-gray-900 dark:text-gray-100 break-words'>
+									{Array.isArray(value)
+										? value.map(item => item.name).join(', ')
+										: value || '情報なし'}
+								</p>
+							)}
 						</TableCell>
 					</TableRow>
-				)}
-				{/* {item.prices && (
-					<TableRow>
-						<TableCell className='font-semibold whitespace-nowrap'>価格</TableCell>
-						<TableCell>
-							<div className='text-xl'>
-								{typeof item.prices === 'string' ? `${item.prices}円` : 'N/A'}
-							</div>
-						</TableCell>
-					</TableRow>
-				)} */}
-				{item.genres && item.genres.length > 0 && (
-					<TableRow>
-						<TableCell className='font-semibold whitespace-nowrap'>ジャンル</TableCell>
-						<TableCell>
-							<div className='flex flex-wrap space-x-2'>
-								{item.genres.map((genre, index) => (
-									<Link
-										key={index}
-										href={`/doujin/genre/${encodeURIComponent(genre.name)}`}
-										className='bg-blue-50 text-blue-700 p-3 m-1 rounded text-sm font-semibold transition-all duration-300 hover:bg-blue-100 hover:shadow-md border border-blue-200'>
-										{genre.name}
-									</Link>
-								))}
-							</div>
-						</TableCell>
-					</TableRow>
-				)}
-				{item.makers && item.makers.length > 0 && (
-					<TableRow>
-						<TableCell className='font-semibold whitespace-nowrap'>メーカー</TableCell>
-						<TableCell>
-							<div className='flex flex-wrap space-x-2'>
-								{item.makers.map((maker, index) => (
-									<Link
-										key={index}
-										href={`/doujin/maker/${encodeURIComponent(maker.name)}`}
-										className='bg-green-50 text-green-700 p-3 m-1 rounded text-sm font-semibold transition-all duration-300 hover:bg-green-100 hover:shadow-md border border-green-200'>
-										{maker.name}
-									</Link>
-								))}
-							</div>
-						</TableCell>
-					</TableRow>
-				)}
-				{item.series && item.series.length > 0 && (
-					<TableRow>
-						<TableCell className='font-semibold whitespace-nowrap'>シリーズ</TableCell>
-						<TableCell>
-							<div className='flex flex-wrap space-x-2'>
-								{item.series.map((series, index) => (
-									<span
-										key={index}
-										className='bg-purple-50 text-purple-700 p-3 m-1 rounded text-sm font-semibold transition-all duration-300 hover:bg-purple-100 hover:shadow-md border border-purple-200'>
-										{series.name}
-									</span>
-								))}
-							</div>
-						</TableCell>
-					</TableRow>
-				)}
+				))}
 			</TableBody>
 		</Table>
 	)
@@ -299,7 +314,7 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 							</div>
 							<h1 className='text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 text-center'>
 								<Link href={item.affiliate_url} className='text-blue-500 font-bold hover:underline'>
-									{item.title} {item.content_id}
+									{item.title}
 								</Link>
 							</h1>
 							<p className='text-gray-600 dark:text-gray-300 text-base mt-4'>{description}</p>{' '}

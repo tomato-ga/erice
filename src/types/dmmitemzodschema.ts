@@ -14,7 +14,7 @@ const DMMBaseItemSchema = z.object({
 	actress: z.string().nullable().optional(),
 	genre: z.array(z.string()).nullable().optional(),
 	date: z.string().nullable().optional(),
-	actress_id: z.number().nullable().optional()
+	actress_id: z.number().nullable().optional(),
 })
 
 /////////////////// 商品個別ページのfetch用スキーマ /////////////////////
@@ -24,7 +24,7 @@ export const DMMItemMainResponseSchema = z.object({
 	sampleImageURL: z.array(z.string()).nullable().optional(),
 	sampleMovieURL: z.array(z.string()).nullable().optional(),
 	imageURL: z.string().url(),
-	title: z.string()
+	title: z.string(),
 })
 
 export type DMMItemMainResponse = z.infer<typeof DMMItemMainResponseSchema>
@@ -40,7 +40,7 @@ export const DMMItemDetailResponseSchema = z.object({
 	director: z.array(z.string()).nullable().optional(),
 	label: z.array(z.string()).nullable().optional(),
 	series: z.array(z.string()).nullable().optional(),
-	maker: z.array(z.string()).nullable().optional()
+	maker: z.array(z.string()).nullable().optional(),
 })
 
 export type DMMItemDetailResponse = z.infer<typeof DMMItemDetailResponseSchema>
@@ -52,7 +52,7 @@ const DMMSaleItemExtraSchema = z.object({
 	salecount: z.string().nullable().optional(),
 	salePrice: z.string().nullable().optional(),
 	rate: z.string().nullable().optional(),
-	listprice: z.string().nullable().optional()
+	listprice: z.string().nullable().optional(),
 })
 
 const DMMItemInfo = z.object({
@@ -71,11 +71,13 @@ const DMMItemInfo = z.object({
 	director: z
 		.union([z.string(), z.array(z.string())])
 		.nullable()
-		.optional()
+		.optional(),
 })
 
 // 全てのDMMアイテムに対応するスキーマ
-export const DMMItemSchema = DMMBaseItemSchema.merge(DMMSaleItemExtraSchema.partial()).merge(DMMItemInfo)
+export const DMMItemSchema = DMMBaseItemSchema.merge(DMMSaleItemExtraSchema.partial()).merge(
+	DMMItemInfo,
+)
 
 export type DMMItem = z.infer<typeof DMMItemSchema>
 
