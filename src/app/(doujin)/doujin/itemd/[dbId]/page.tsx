@@ -127,7 +127,31 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	try {
 		const item = await fetchItemData(params.dbId)
 		const title = `${item.title} | エロコメスト`
-		const description = `${item.title} ${item.content_id}の詳細情報と、サンプル画像を見ることができるページです。`
+		const description = (() => {
+			const parts = []
+			parts.push(
+				`${item.title} ${item.content_id}の詳細情報と、サンプル画像を見ることができるページです。`,
+			)
+
+			if (item.release_date) {
+				parts.push(`発売日は${formatDate(item.release_date)}です。`)
+			}
+
+			if (item.makers && item.makers.length > 0) {
+				parts.push(`${item.makers[0].name}から発売されています。`)
+			}
+
+			if (item.series && item.series.length > 0) {
+				parts.push(`シリーズは「${item.series[0].name}」です。`)
+			}
+
+			if (item.genres && item.genres.length > 0) {
+				const genreNames = item.genres.map(genre => genre.name).join('、')
+				parts.push(`ジャンルは${genreNames}です。`)
+			}
+
+			return parts.join(' ')
+		})()
 		const url = `https://erice.cloud/doujin/itemd/${params.dbId}` // 実際のURLに置き換えてください
 		const imageUrl = item.package_images ?? 'https://erice.cloud/ogp.jpg' // Fallback image URL
 
