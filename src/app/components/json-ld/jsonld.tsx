@@ -1,15 +1,18 @@
 // /src/utils/jsonld.ts
 
-import { DMMActressProfile } from '@/types/APItypes'
+import { DMMActressProfile, DMMActressRelatedItem } from '@/types/APItypes'
 import { DMMItemDetailResponse, DMMItemMainResponse } from '@/types/dmmitemzodschema'
+import { ItemType } from '@/types/dmmtypes'
 import {
 	Article,
 	BreadcrumbList,
 	ImageObject,
 	ListItem,
+	OfferCatalog,
 	Organization,
 	Person,
 	VideoObject,
+	WebPage,
 	WithContext,
 } from 'schema-dts'
 
@@ -125,25 +128,66 @@ export const generateArticleStructuredData = (
 	}
 }
 
-// TODO https://schema.org/Collection CollectionでWorksを追加する
 // 女優のPerson構造化データを生成する関数
-export const generatePersonStructuredData = (
-	actressProfile: DMMActressProfile,
-): WithContext<Person> => {
-	const actress = actressProfile.actress
+// export const generatePersonStructuredData = (
+// 	actressProfile: DMMActressProfile,
+// ): WithContext<Person> => {
+// 	const actress = actressProfile.actress
 
-	// 女優の画像URL
-	const actressImage =
-		actress.image_url_large || actress.image_url_small || '/placeholder-image.jpg'
+// 	// 女優の画像URL
+// 	const actressImage = actress?.image_url_large || actress?.image_url_small || ''
+
+// 	return {
+// 		'@context': 'https://schema.org',
+// 		'@type': 'Person',
+// 		name: actress.name,
+// 		birthDate: actress.birthday || undefined, // 誕生日がある場合のみ追加
+// 		height: actress.height ? `${actress.height}` : undefined, // 身長がある場合のみ追加
+// 		image: actressImage,
+// 		description: `人気セクシー女優 ${actress.name} のプロフィールです。`,
+// 		sameAs: actress.list_url || undefined, // 外部の関連URLがあれば設定
+// 	}
+// }
+
+export const generateWebPageStructuredData = (
+	actressProfile: DMMActressProfile,
+	relatedItems: DMMActressRelatedItem[],
+): WithContext<WebPage> => {
+	const actress = actressProfile.actress
+	const actressImage = actress?.image_url_large || actress?.image_url_small || ''
+
+	const itemList: ListItem[] = relatedItems.map((item, index) => ({
+		'@type': 'ListItem',
+		position: index + 1,
+		url: item.url,
+		name: item.title,
+	}))
+
+	const offerCatalog: OfferCatalog = {
+		'@type': 'OfferCatalog',
+		name: `${actress.name} 出演作品`,
+		itemListElement: itemList,
+	}
+
+	const organization: Organization = {
+		'@type': 'Organization',
+		name: 'DMM',
+		hasOfferCatalog: offerCatalog,
+	}
 
 	return {
 		'@context': 'https://schema.org',
-		'@type': 'Person',
-		name: actress.name,
-		birthDate: actress.birthday || undefined, // 誕生日がある場合のみ追加
-		height: actress.height ? `${actress.height}` : undefined, // 身長がある場合のみ追加
-		image: actressImage,
-		description: `人気セクシー女優 ${actress.name} のプロフィールです。`,
-		sameAs: actress.list_url || undefined, // 外部の関連URLがあれば設定
+		'@type': 'WebPage',
+		name: `この動画の出演者「${actress.name}」のプロフィール`,
+		mainEntity: {
+			'@type': 'Person',
+			name: actress.name,
+			birthDate: actress.birthday || undefined,
+			height: actress.height ? `${actress.height}cm` : undefined,
+			image: actressImage,
+			description: `人気セクシー女優 ${actress.name} のプロフィールです。`,
+			sameAs: actress.list_url || undefined,
+			worksFor: organization, // worksForを追加
+		},
 	}
 }
