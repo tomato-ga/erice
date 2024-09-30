@@ -1,9 +1,13 @@
 import LoadingSpinner from '@/app/components/Article/ArticleContent/loadingspinner'
 import { fetchActressProfileAndWorks } from '@/app/components/dmmcomponents/fetch/itemFetchers'
-import { generatePersonStructuredData } from '@/app/components/json-ld/jsonld'
+import {
+	generateActressArticleStructuredData,
+	generatePersonStructuredData,
+} from '@/app/components/json-ld/jsonld'
 import { DMMActressProfile, DMMActressProfilePageItem } from '@/types/APItypes'
 import { formatDate } from '@/utils/dmmUtils'
 import { Metadata } from 'next'
+import Head from 'next/head' // Headコンポーネントをインポート
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
@@ -52,7 +56,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	}
 }
 
-const ActressProfileSection = ({ profile }: { profile: DMMActressProfile }) => {
+const ActressProfileSection = ({
+	profile,
+	pageTitle, // pageTitleを受け取る
+	descriptionFromMetadata,
+}: {
+	profile: DMMActressProfile
+	pageTitle: string // pageTitleの型を追加
+	descriptionFromMetadata: string | undefined
+}) => {
 	const { actress } = profile
 	const details = parseDetails(actress.details)
 	const description = generateRefinedProfileDescription(profile)
@@ -69,18 +81,33 @@ const ActressProfileSection = ({ profile }: { profile: DMMActressProfile }) => {
 		)
 	}
 
-	const jsonLdData = generatePersonStructuredData(profile)
-	const jsonLdString = JSON.stringify(jsonLdData)
+	const jsonLdPersonData = generatePersonStructuredData(profile) // PersonのJSON-LDを生成
+	const jsonLdPersonString = JSON.stringify(jsonLdPersonData)
+
+	const jsonLdArticleData = generateActressArticleStructuredData(
+		pageTitle, // pageTitleを使用
+		descriptionFromMetadata || '',
+		profile,
+	)
+	const jsonLdArticleString = JSON.stringify(jsonLdArticleData)
 
 	return (
 		<>
 			<script
-				id={`structured-data-${actress.name}`}
+				id={`structured-data-person-${actress.name}`}
 				type='application/ld+json'
 				dangerouslySetInnerHTML={{
-					__html: jsonLdString,
+					__html: jsonLdPersonString, // PersonのJSON-LDを追加
 				}}
 			/>
+			<script
+				id={`structured-data-article-${actress.name}`}
+				type='application/ld+json'
+				dangerouslySetInnerHTML={{
+					__html: jsonLdArticleString, // ArticleのJSON-LDを追加
+				}}
+			/>
+
 			<div className='bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 shadow-2xl rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl'>
 				<div className='p-8'>
 					<h2 className='text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400'>
@@ -209,20 +236,26 @@ export default async function ActressProfilePage({ params }: PageProps) {
 	}
 
 	const { profile, works } = data
-	const itemCount = works.length
 
-	console.log('profile:', JSON.stringify(profile, null, 2))
-	console.log('profile.actress:', profile.actress)
+	// タイトルと概要を再計算
+	const pageTitle = `AV女優「${profile.actress.name}」のエロ動画・アダルト動画が${works.length}作品あります`
+	const pageDescription = `${profile.actress.name}のAV女優プロフィールと作品一覧。${profile.actress.birthday ? `生年月日: ${profile.actress.birthday}、` : ''}${
+		profile.actress.prefectures ? `出身地: ${profile.actress.prefectures}` : ''
+	}`
 
 	return (
 		<div className='max-w-7xl mx-auto px-4 py-8'>
 			<h1 className='text-3xl font-bold mb-6 text-center'>
-				AV女優「{profile.actress.name}」のエロ動画・アダルト動画が{itemCount}作品あります
+				{pageTitle} {/* 再計算したpageTitleを使用 */}
 			</h1>
 
 			{profile.actress && (
 				<Suspense fallback={<LoadingSpinner />}>
-					<ActressProfileSection profile={profile} />
+					<ActressProfileSection
+						profile={profile}
+						pageTitle={pageTitle} // pageTitleを渡す
+						descriptionFromMetadata={pageDescription}
+					/>
 				</Suspense>
 			)}
 

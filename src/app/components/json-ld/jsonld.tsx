@@ -125,7 +125,6 @@ export const generateArticleStructuredData = (
 	}
 }
 
-// TODO https://schema.org/Collection CollectionでWorksを追加する
 // 女優のPerson構造化データを生成する関数
 export const generatePersonStructuredData = (
 	actressProfile: DMMActressProfile,
@@ -145,5 +144,48 @@ export const generatePersonStructuredData = (
 		image: actressImage,
 		description: `人気セクシー女優 ${actress.name} のプロフィールです。`,
 		sameAs: actress.list_url || undefined, // 外部の関連URLがあれば設定
+	}
+}
+
+// 女優ページの構造化データを生成する関数
+export const generateActressArticleStructuredData = (
+	h1: string,
+	description: string,
+	profile: DMMActressProfile,
+): WithContext<Article> => {
+	// itemMain.imageURLをImageObjectとして定義
+	// const mainImage: ImageObject = {
+	// 	'@type': 'ImageObject',
+	// 	url: itemMain.imageURL,
+	// 	description: `${itemMain.title}のメイン画像`,
+	// }
+
+	// relatedImagesをImageObjectとして定義
+	// const relatedImages: ImageObject[] =
+	// 	itemMain.sampleImageURL?.map((url, index) => ({
+	// 		'@type': 'ImageObject',
+	// 		url: url,
+	// 		description: `${itemMain.title}の画像${index + 1}`,
+	// 	})) || []
+
+	// 全画像を統合
+	// const allImages: ImageObject[] = [mainImage, ...relatedImages]
+
+	// 固定のAuthorデータ
+	const author: Person = {
+		'@type': 'Person',
+		name: 'エロコメスト管理人',
+		url: 'https://erice.cloud',
+	}
+
+	// Articleスキーマの生成
+	return {
+		'@context': 'https://schema.org',
+		'@type': 'Article',
+		headline: h1,
+		image: profile.actress.image_url_large || profile.actress.image_url_small || '',
+		author: author,
+		description: description,
+		mainEntityOfPage: `https://erice.cloud/actressprofile/${profile.actress.name}`,
 	}
 }
