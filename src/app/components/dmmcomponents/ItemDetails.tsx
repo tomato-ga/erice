@@ -153,19 +153,19 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 	}
 
 	// 構造化データの生成
-	const personStructuredData = generatePersonStructuredData(essentialActressProfiles[0])
+	// const personStructuredData = generatePersonStructuredData(essentialActressProfiles[0])
 
 	// JSON-LDを文字列に変換
-	const jsonLdString = JSON.stringify(personStructuredData)
+	// const jsonLdString = JSON.stringify(personStructuredData)
 
 	return (
 		<>
 			{/* JSON-LDを構造化データとして埋め込む */}
-			<script
+			{/* <script
 				id={`structured-data-${essentialActressProfiles[0].actress.name}`}
 				type='application/ld+json'
 				dangerouslySetInnerHTML={{ __html: jsonLdString }}
-			/>
+			/> */}
 			{itemDetail.actress && (
 				<Suspense fallback={<LoadingSpinner />}>
 					{/* 女優ごとに関連アイテムのタイムラインを表示 */}
