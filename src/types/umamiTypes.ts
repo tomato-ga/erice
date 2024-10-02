@@ -32,6 +32,7 @@ export type UmamiTrackingFromType =
 	| 'antenna-postpage-detail'
 	| 'newdebutpage-item'
 	| 'top-doujin-sale'
+	| string
 
 export type UmamiFeatureType = '/sale' | '/todaynew' | '/debut' | '/feature' | '/last7days'
 
