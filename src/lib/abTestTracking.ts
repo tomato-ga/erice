@@ -13,7 +13,7 @@ declare global {
 export const trackABTestEvent = (event: ABTestEvent) => {
 	// イベント名にテスト名、バリアント、イベントタイプを含める
 	const eventName = `${event.testName}-${event.variant}-${event.eventType}`
-	// 'variant' をイベントデータとして送信
+	// eventData には variant を含める
 	window.umami?.track(eventName, { variant: event.variant })
 }
 
