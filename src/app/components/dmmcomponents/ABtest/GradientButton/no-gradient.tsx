@@ -1,3 +1,5 @@
+'use client'
+
 import { trackClick, trackImpression } from '@/lib/abTestTracking'
 import { DMMActressInfo } from '@/types/APItypes'
 import { DMMItemMainResponse } from '@/types/dmmitemzodschema'

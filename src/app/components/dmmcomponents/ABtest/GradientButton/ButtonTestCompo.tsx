@@ -1,12 +1,12 @@
+import { DMMActressInfo } from '@/types/APItypes'
+import { DMMItemMainResponse } from '@/types/dmmitemzodschema'
 import { ButtonWithGradient } from './gradient'
 import { ButtonNoGradient } from './no-gradient'
-import { DMMItemMainResponse } from '@/types/dmmitemzodschema'
-import { DMMActressInfo } from '@/types/APItypes'
 
 // Define the props interface
 interface ButtonTestComponentProps {
-	ItemMain: DMMItemMainResponse;
-	actressInfo: DMMActressInfo | null;
+	ItemMain: DMMItemMainResponse
+	actressInfo: DMMActressInfo | null
 }
 
 export default function ButtonTestComponent({ ItemMain, actressInfo }: ButtonTestComponentProps) {
