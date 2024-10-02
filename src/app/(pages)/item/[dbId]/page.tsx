@@ -23,7 +23,7 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import '@/app/_css/styles.css'
 import ButtonTestComponent from '@/app/components/dmmcomponents/ABtest/GradientButton/ButtonTestCompo'
-// import Script from 'next/script' // 不要なのでコメントアウト
+
 import {
 	generateArticleStructuredData,
 	generateBreadcrumbList,
