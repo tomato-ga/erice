@@ -3,7 +3,7 @@ import { UmamiClickData, validateUmamiTrackingData } from '@/types/umamiTypes'
 declare global {
 	interface Window {
 		umami?: {
-			track: (eventName: string, eventData: Record<string, unknown>) => void
+			track: (eventName: string, eventData?: Record<string, unknown>) => void
 		}
 	}
 }
@@ -27,7 +27,7 @@ export const handleericeUmamiClick = (clickData: UmamiClickData) => {
 		const trackingData: Record<string, unknown> = {
 			click_type: clickData.dataType,
 			from: clickData.from,
-			...(clickData.featureType && { feature_type: clickData.featureType })
+			...(clickData.featureType && { feature_type: clickData.featureType }),
 		}
 
 		if (clickData.item) {

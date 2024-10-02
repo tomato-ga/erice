@@ -1,14 +1,6 @@
 // src/lib/abTestTracking.ts
 import { ABTestEvent } from '@/types/abTestTypes'
 
-declare global {
-	interface Window {
-		umami?: {
-			track: (eventName: string, eventData?: Record<string, unknown>) => void
-		}
-	}
-}
-
 // Umamiを使用してイベントをトラッキング
 export const trackABTestEvent = (event: ABTestEvent) => {
 	// イベント名にテスト名、バリアント、イベントタイプを含める
