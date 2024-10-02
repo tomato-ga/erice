@@ -11,6 +11,7 @@ export type UmamiTrackingDataType =
 	| 'genre'
 	| 'antenna'
 	| 'doujin-item'
+
 export type UmamiTrackingFromType =
 	| 'top-sale'
 	| 'top-todaynew'
@@ -31,7 +32,6 @@ export type UmamiTrackingFromType =
 	| 'antenna-postpage-detail'
 	| 'newdebutpage-item'
 	| 'top-doujin-sale'
-	| string
 
 export type UmamiFeatureType = '/sale' | '/todaynew' | '/debut' | '/feature' | '/last7days'
 
@@ -51,6 +51,7 @@ export type UmamiTrackingData = {
 	item?: Partial<DMMItemMainResponse>
 	actressInfo?: Partial<DMMActressInfo> | null
 	otherData?: Record<string, unknown>
+	abTest?: string // A/Bテスト用のフィールドを追加
 }
 
 export type UmamiClickData = UmamiTrackingData
@@ -126,15 +127,13 @@ export const UmamiTrackingDataSchema = z.object({
 		.nullable()
 		.optional(),
 	otherData: z.record(z.unknown()).optional(),
+	abTest: z.string().optional(), // A/Bテストのフィールドを型に追加
 })
 
 export function validateUmamiTrackingData(data: unknown): data is UmamiTrackingData {
-	// console.log('Validating UmamiTrackingData:', JSON.stringify(data, null, 2))
 	const result = UmamiTrackingDataSchema.safeParse(data)
 	if (!result.success) {
-		// console.error('Invalid UmamiTrackingData:', JSON.stringify(result.error.issues, null, 2))
 		return false
 	}
-	// console.log('UmamiTrackingData is valid')
 	return true
 }

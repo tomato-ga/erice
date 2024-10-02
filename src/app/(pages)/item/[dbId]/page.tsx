@@ -22,6 +22,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import '@/app/_css/styles.css'
+import ButtonTestComponent from '@/app/components/dmmcomponents/ABtest/GradientButton/ButtonTestCompo'
 // import Script from 'next/script' // 不要なのでコメントアウト
 import {
 	generateArticleStructuredData,
@@ -289,9 +290,11 @@ export default async function DMMKobetuItemPage({
 						</h1>
 						<p className='text-gray-600 dark:text-gray-300 text-base mt-4'>{description}</p>
 
-						{/* ボタンやその他のコンテンツは省略 */}
+						{/* ABテスト 2024/10/02 */}
+						<ButtonTestComponent ItemMain={ItemMain} actressInfo={actressInfo} />
 
-						<div className='flex justify-center'>
+						{/* グラデーションボタンへ変更 */}
+						{/* <div className='flex justify-center'>
 							<div className='relative inline-block group'>
 								<div className='absolute inset-2 rounded-full opacity-70 blur-xl group-hover:opacity-100 transition-opacity duration-500 ease-in-out bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm z-0 pointer-events-none' />
 
@@ -312,7 +315,7 @@ export default async function DMMKobetuItemPage({
 									</Link>
 								</UmamiTracking>
 							</div>
-						</div>
+						</div> */}
 
 						<Suspense fallback={<LoadingSpinner />}>
 							<CommentSection contentId={ItemMain.content_id} />
