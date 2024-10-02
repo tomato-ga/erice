@@ -1,3 +1,4 @@
+// ButtonWithGradient.tsx
 'use client'
 
 import { trackClick, trackImpression } from '@/lib/abTestTracking'
@@ -15,18 +16,12 @@ interface ButtonWithGradientProps {
 export const ButtonWithGradient = ({ ItemMain, actressInfo }: ButtonWithGradientProps) => {
 	useEffect(() => {
 		// インプレッションをトラッキング
-		trackImpression('ButtonGradientTest', 'with-gradient-button', {
-			itemId: ItemMain.content_id,
-			actressId: actressInfo?.data?.[0]?.actress_id,
-		})
-	}, [ItemMain, actressInfo])
+		trackImpression('ButtonGradientTest', 'with-gradient-button')
+	}, [])
 
 	const handleButtonClick = () => {
 		// クリックをトラッキング
-		trackClick('ButtonGradientTest', 'with-gradient-button', {
-			itemId: ItemMain.content_id,
-			actressId: actressInfo?.data?.[0]?.actress_id,
-		})
+		trackClick('ButtonGradientTest', 'with-gradient-button')
 	}
 
 	return (
