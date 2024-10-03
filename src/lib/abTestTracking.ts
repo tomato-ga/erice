@@ -1,4 +1,3 @@
-// TODO ???
 // src/lib/abTestTracking.ts
 import { ABTestEvent } from '@/types/abTestTypes'
 
@@ -15,7 +14,7 @@ export const trackImpression = (testName: string, variant: string) => {
 	const event: ABTestEvent = {
 		eventType: 'impression',
 		testName,
-		variant,
+		variant
 	}
 	trackABTestEvent(event)
 }
@@ -25,7 +24,7 @@ export const trackClick = (testName: string, variant: string) => {
 	const event: ABTestEvent = {
 		eventType: 'click',
 		testName,
-		variant,
+		variant
 	}
 	trackABTestEvent(event)
 }

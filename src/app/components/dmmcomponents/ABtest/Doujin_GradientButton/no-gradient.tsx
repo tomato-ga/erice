@@ -13,7 +13,7 @@ interface ButtonNoGradientProps {
 	item: DoujinKobetuItem
 }
 
-export const ButtonNoGradient = ({ item }: ButtonNoGradientProps) => {
+export const DoujinButtonNoGradient = ({ item }: ButtonNoGradientProps) => {
 	useEffect(() => {
 		// インプレッションをトラッキング
 		trackImpression('ButtonGradientTest-Doujin', 'no-gradient-button')
