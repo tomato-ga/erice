@@ -1,3 +1,5 @@
+// /Volumes/SSD_1TB/erice2/erice/src/app/(doujin)/doujin/itemd/[dbId]/page.tsx
+
 import { DoujinItemType, DoujinKobetuItem } from '@/_types_doujin/doujintypes'
 import { CommentSection } from '@/app/components/dmmcomponents/Comment/CommentSection'
 

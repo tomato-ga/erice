@@ -17,6 +17,8 @@ interface ButtonWithGradientProps {
 export const ButtonWithGradient = ({ ItemMain, actressInfo }: ButtonWithGradientProps) => {
 	useEffect(() => {
 		// インプレッションをトラッキング
+		console.log('DoujinButtonWithGradient', process.env.UMAMI_WEBSITE_ID)
+
 		trackImpression('ButtonGradientTest', 'with-gradient-button')
 	}, [])
 
