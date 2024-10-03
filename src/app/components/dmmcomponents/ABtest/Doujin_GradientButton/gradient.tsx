@@ -15,8 +15,7 @@ interface ButtonWithGradientProps {
 
 export const DoujinButtonWithGradient = ({ item }: ButtonWithGradientProps) => {
 	useEffect(() => {
-		// window.umami の存在を確認
-
+		// インプレッションをトラッキング
 		trackImpression('DojTEST', 'with-g')
 	}, [])
 

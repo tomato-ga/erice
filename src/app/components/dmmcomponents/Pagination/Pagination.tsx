@@ -27,7 +27,7 @@ export default function DMMItemContainerPagination({
 	category,
 	categoryType,
 }: DMMItemContainerPaginationProps) {
-	console.log('DMMItemContainerPagination categoryType:', categoryType)
+	// console.log('DMMItemContainerPagination categoryType:', categoryType)
 	if (!items || items.length === 0) {
 		return null
 	}
