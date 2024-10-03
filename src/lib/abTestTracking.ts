@@ -3,6 +3,10 @@ import { ABTestEvent } from '@/types/abTestTypes'
 
 // Umamiを使用してイベントをトラッキング
 export const trackABTestEvent = (event: ABTestEvent) => {
+	if (typeof window !== 'undefined' && window.umami) {
+		console.warn('Umami tracking is not available')
+	}
+
 	const eventName = `${event.testName}-${event.variant}-${event.eventType}`
 	// console.log('Tracking event:', eventName, window.umami) // umamiが存在するかログを出力
 	if (window.umami) {

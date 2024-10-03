@@ -1,6 +1,4 @@
 // src/app/components/dmmcomponents/ABtest/GradientButton/ButtonTestComponent.tsx
-import { DMMActressInfo } from '@/types/APItypes'
-import { DMMItemMainResponse } from '@/types/dmmitemzodschema'
 
 import { DoujinKobetuItem } from '@/_types_doujin/doujintypes'
 import { DoujinButtonWithGradient } from './gradient'
