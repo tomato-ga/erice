@@ -15,11 +15,15 @@ interface ButtonWithGradientProps {
 
 export const DoujinButtonWithGradient = ({ item }: ButtonWithGradientProps) => {
 	useEffect(() => {
-		if (typeof window !== 'undefined' && window.umami) {
-			trackImpression('ButtonGradientTest-Doujin', 'with-gradient-button')
-		} else {
-			console.error('Umami not available for impression tracking')
-		}
+		const timer = setTimeout(() => {
+			if (typeof window !== 'undefined' && window.umami) {
+				trackImpression('ButtonGradientTest-Doujin', 'with-gradient-button')
+			} else {
+				console.error('Umami still not available for impression tracking after delay')
+			}
+		}, 1000) // 1秒の遅延を追加
+
+		return () => clearTimeout(timer)
 	}, [])
 
 	const handleButtonClick = () => {
