@@ -17,7 +17,7 @@ interface ButtonNoGradientProps {
 export const ButtonNoGradient = ({ ItemMain, actressInfo }: ButtonNoGradientProps) => {
 	useEffect(() => {
 		// インプレッションをトラッキング
-		console.log('DoujinButtonWithGradient', process.env.UMAMI_WEBSITE_ID)
+		console.log('env', process.env.UMAMI_WEBSITE_ID)
 
 		trackImpression('ButtonGradientTest', 'no-gradient-button')
 	}, [])
