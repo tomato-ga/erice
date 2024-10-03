@@ -19,7 +19,7 @@ export const ButtonWithGradient = ({ ItemMain, actressInfo }: ButtonWithGradient
 		const trackImpressionWithWait = async () => {
 			if (typeof window !== 'undefined') {
 				await waitForUmami()
-				trackImpression('dmmTEST-1003', 'with-g').catch(console.error)
+				trackImpression('dmmTEST-1004', 'with-g').catch(console.error)
 			}
 		}
 		trackImpressionWithWait()
@@ -27,7 +27,7 @@ export const ButtonWithGradient = ({ ItemMain, actressInfo }: ButtonWithGradient
 
 	const handleButtonClick = () => {
 		// クリックをトラッキング
-		trackClick('dmmTEST', 'with-g')
+		trackClick('dmmTEST-1004', 'with-g')
 	}
 
 	return (

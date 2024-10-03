@@ -18,7 +18,7 @@ export const DoujinButtonNoGradient = ({ item }: ButtonNoGradientProps) => {
 		const trackImpressionWithWait = async () => {
 			if (typeof window !== 'undefined') {
 				await waitForUmami()
-				trackImpression('DojTEST', 'no-g').catch(console.error)
+				trackImpression('DojTEST-1004', 'no-g').catch(console.error)
 			}
 		}
 		trackImpressionWithWait()
@@ -27,7 +27,7 @@ export const DoujinButtonNoGradient = ({ item }: ButtonNoGradientProps) => {
 	const handleButtonClick = () => {
 		// クリックをトラッキング
 		try {
-			trackClick('DojTEST-1003', 'no-g')
+			trackClick('DojTEST-1004', 'no-g')
 		} catch (error) {
 			console.error('Error tracking click:', error)
 		}
