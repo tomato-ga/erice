@@ -16,7 +16,6 @@ interface ButtonNoGradientProps {
 export const DoujinButtonNoGradient = ({ item }: ButtonNoGradientProps) => {
 	useEffect(() => {
 		// window.umami の存在を確認
-		console.log('env', process.env.UMAMI_WEBSITE_ID)
 
 		if (typeof window !== 'undefined' && window.umami) {
 			console.log('Umami is available in DoujinButtonWithGradient component')
