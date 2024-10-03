@@ -26,6 +26,7 @@ import { ABTestEvent } from '@/types/abTestTypes'
 export const waitForUmami = (): Promise<void> => {
 	return new Promise(resolve => {
 		if (window.umami && typeof window.umami.track === 'function') {
+			// console.log('window.umami: ', window.umami.track)
 			resolve()
 		} else {
 			const interval = setInterval(() => {
@@ -39,15 +40,19 @@ export const waitForUmami = (): Promise<void> => {
 }
 
 // Umamiを使用してイベントをトラッキング
-export const trackABTestEvent = async (event: ABTestEvent) => {
-	const eventName = `${event.testName}-${event.variant}-${event.eventType}`
 
-	if (typeof window !== 'undefined' && window.umami) {
-		await waitForUmami() // Umamiが読み込まれるまで待機
-		window.umami.track(eventName, { variant: event.variant })
-		console.log('trackABTestEvent: Event tracked:', eventName)
-	} else {
-		console.error('Window is not available')
+export const trackABTestEvent = async (event: ABTestEvent) => {
+	try {
+		const eventName = `${event.testName}-${event.variant}-${event.eventType}`
+
+		if (typeof window !== 'undefined' && window.umami) {
+			await waitForUmami()
+			window.umami.track(eventName, { variant: event.variant })
+		} else {
+			console.error('Window is not available')
+		}
+	} catch (error) {
+		console.error('Error tracking event:', error)
 	}
 }
 
