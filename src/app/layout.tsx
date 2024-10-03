@@ -58,7 +58,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 				data-website-id={process.env.UMAMI_WEBSITE_ID}
 				data-do-not-track='true'
 				data-auto-track='true'
-				strategy='afterInteractive'
+				strategy='beforeInteractive'
+				//  strategy='afterInteractive'
 			/>
 			<Script id='microsoft-clarity' strategy='afterInteractive'>
 				{`
