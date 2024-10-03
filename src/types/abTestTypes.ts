@@ -1,5 +1,5 @@
 // src/types/abTestTypes.ts
-export type ABTestEventType = 'impression' | 'click'
+export type ABTestEventType = 'imp' | 'click'
 
 export interface ABTestEvent {
 	eventType: ABTestEventType

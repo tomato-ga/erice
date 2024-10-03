@@ -18,12 +18,12 @@ export const ButtonWithGradient = ({ ItemMain, actressInfo }: ButtonWithGradient
 	useEffect(() => {
 		// インプレッションをトラッキング
 
-		trackImpression('ButtonGradientTest', 'with-gradient-button')
+		trackImpression('dmmTEST', 'with-g')
 	}, [])
 
 	const handleButtonClick = () => {
 		// クリックをトラッキング
-		trackClick('ButtonGradientTest', 'with-gradient-button')
+		trackClick('dmmTEST', 'with-g')
 	}
 
 	return (

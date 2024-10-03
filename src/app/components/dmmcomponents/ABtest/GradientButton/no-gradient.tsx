@@ -18,12 +18,12 @@ export const ButtonNoGradient = ({ ItemMain, actressInfo }: ButtonNoGradientProp
 	useEffect(() => {
 		// インプレッションをトラッキング
 
-		trackImpression('ButtonGradientTest', 'no-gradient-button')
+		trackImpression('dmmTEST', 'no-g')
 	}, [])
 
 	const handleButtonClick = () => {
 		// クリックをトラッキング
-		trackClick('ButtonGradientTest', 'no-gradient-button')
+		trackClick('dmmTEST', 'no-g')
 	}
 
 	return (
