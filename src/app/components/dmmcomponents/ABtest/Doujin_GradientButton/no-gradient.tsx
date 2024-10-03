@@ -15,9 +15,11 @@ interface ButtonNoGradientProps {
 
 export const DoujinButtonNoGradient = ({ item }: ButtonNoGradientProps) => {
 	useEffect(() => {
-		// インプレッションをトラッキング
-
-		trackImpression('ButtonGradientTest-Doujin', 'no-gradient-button')
+		if (typeof window !== 'undefined' && window.umami) {
+			trackImpression('ButtonGradientTest-Doujin', 'with-gradient-button')
+		} else {
+			console.error('Umami not available for impression tracking')
+		}
 	}, [])
 
 	const handleButtonClick = () => {

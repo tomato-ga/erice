@@ -1,3 +1,4 @@
+
 import { UmamiClickData, validateUmamiTrackingData } from '@/types/umamiTypes'
 
 export const handleericeUmamiClick = (clickData: UmamiClickData) => {

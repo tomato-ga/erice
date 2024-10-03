@@ -15,10 +15,12 @@ interface ButtonWithGradientProps {
 
 export const DoujinButtonWithGradient = ({ item }: ButtonWithGradientProps) => {
 	useEffect(() => {
-		// インプレッションをトラッキング
-		console.log('trackImpression called for', item.title)
-		trackImpression('ButtonGradientTest-Doujin', 'with-gradient-button')
-	}, [item.title])
+		if (typeof window !== 'undefined' && window.umami) {
+			trackImpression('ButtonGradientTest-Doujin', 'with-gradient-button')
+		} else {
+			console.error('Umami not available for impression tracking')
+		}
+	}, [])
 
 	const handleButtonClick = () => {
 		// クリックをトラッキング
