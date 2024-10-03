@@ -14,5 +14,9 @@ interface ButtonTestComponentProps {
 export default function ButtonTestDoujinComponent({ item }: ButtonTestComponentProps) {
 	const showButtonA = Math.random() > 0.5 // A/Bテスト用のランダマイザー
 
-	return showButtonA ? <DoujinButtonWithGradient item={item} /> : <DoujinButtonNoGradient item={item} />
+	return showButtonA ? (
+		<DoujinButtonWithGradient item={item} />
+	) : (
+		<DoujinButtonNoGradient item={item} />
+	)
 }
