@@ -1,7 +1,7 @@
 // src/app/components/dmmcomponents/ABtest/GradientButton/no-gradient.tsx
 'use client'
 
-import { trackClick, trackImpression } from '@/lib/abTestTracking'
+import { trackClick, trackImpression, waitForUmami } from '@/lib/abTestTracking'
 
 import { DoujinKobetuItem } from '@/_types_doujin/doujintypes'
 import { ExternalLink } from 'lucide-react'
@@ -15,14 +15,22 @@ interface ButtonNoGradientProps {
 
 export const DoujinButtonNoGradient = ({ item }: ButtonNoGradientProps) => {
 	useEffect(() => {
-		// window.umami の存在を確認
-
-		trackImpression('DojTEST', 'no-g')
+		const trackImpressionWithWait = async () => {
+			if (typeof window !== 'undefined') {
+				await waitForUmami()
+				trackImpression('DojTEST', 'no-g').catch(console.error)
+			}
+		}
+		trackImpressionWithWait()
 	}, [])
 
 	const handleButtonClick = () => {
 		// クリックをトラッキング
-		trackClick('DojTEST', 'no-g')
+		try {
+			trackClick('DojTEST-1003', 'no-g')
+		} catch (error) {
+			console.error('Error tracking click:', error)
+		}
 	}
 
 	return (
@@ -32,7 +40,7 @@ export const DoujinButtonNoGradient = ({ item }: ButtonNoGradientProps) => {
 				{/* <div className="absolute inset-2 rounded-full opacity-80 blur-lg group-hover:opacity-100 transition-opacity duration-500 ease-in-out bg-custom-gradient-exbutton bg-custom-gradient-exbutton--doujin z-0" /> */}
 				{/* ボタン */}
 
-				<Link
+				<a
 					href={item.affiliate_url}
 					target='_blank'
 					rel='noopener noreferrer'
@@ -40,7 +48,7 @@ export const DoujinButtonNoGradient = ({ item }: ButtonNoGradientProps) => {
 					onClick={handleButtonClick}>
 					<span className='mr-2'>作品をフルで見る</span>
 					<ExternalLink className='w-5 h-5 sm:w-6 sm:h-6 animate-pulse' />
-				</Link>
+				</a>
 			</div>
 		</div>
 	)

@@ -1,7 +1,7 @@
 // src/app/components/dmmcomponents/ABtest/GradientButton/ButtonNoGradient.tsx
 'use client'
 
-import { trackClick, trackImpression } from '@/lib/abTestTracking'
+import { trackClick, trackImpression, waitForUmami } from '@/lib/abTestTracking'
 import { DMMActressInfo } from '@/types/APItypes'
 import { DMMItemMainResponse } from '@/types/dmmitemzodschema'
 import { ExternalLink } from 'lucide-react'
@@ -16,9 +16,13 @@ interface ButtonNoGradientProps {
 
 export const ButtonNoGradient = ({ ItemMain, actressInfo }: ButtonNoGradientProps) => {
 	useEffect(() => {
-		// インプレッションをトラッキング
-
-		trackImpression('dmmTEST', 'no-g')
+		const trackImpressionWithWait = async () => {
+			if (typeof window !== 'undefined') {
+				await waitForUmami()
+				trackImpression('dmmTEST-1003', 'no-g').catch(console.error)
+			}
+		}
+		trackImpressionWithWait()
 	}, [])
 
 	const handleButtonClick = () => {

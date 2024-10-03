@@ -20,32 +20,26 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-	/*
-	// MEMO
-	2024/10/03 19:48
-	strategy='afterInteractive' をやめて、beforeにしたら正常にイベントデータ取得が動き出したっぽい...
-	やっぱり取得できていない。。。
-	
-	*/
-
 	return (
 		<html lang='ja'>
-			<Script
-				src='https://analytics.erice.cloud/script.js'
-				data-website-id={process.env.UMAMI_WEBSITE_ID}
-				data-do-not-track='true'
-				data-auto-track='true'
-				strategy='beforeInteractive'
-			/>
-			<Script id='microsoft-clarity' strategy='afterInteractive'>
-				{`
+			<head>
+				<Script
+					src='https://analytics.erice.cloud/script.js'
+					data-website-id={process.env.UMAMI_WEBSITE_ID}
+					data-do-not-track='true'
+					data-auto-track='true'
+					strategy='afterInteractive'
+				/>
+				<Script id='microsoft-clarity' strategy='afterInteractive'>
+					{`
             (function(c,l,a,r,i,t,y){
               c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
               t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
               y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
             })(window, document, "clarity", "script", "nbajc9ngtj");
           `}
-			</Script>
+				</Script>
+			</head>
 			<body className='font-sans flex flex-col min-h-screen'>
 				<Header />
 				<div className='flex-grow flex flex-col md:flex-row'>
@@ -59,6 +53,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 				</div>
 				<Footer />
 			</body>
+
 			{!!process.env.GAID && <GoogleAnalytics gaId={process.env.GAID} />}
 		</html>
 	)
