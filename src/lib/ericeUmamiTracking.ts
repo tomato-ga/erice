@@ -1,13 +1,5 @@
 import { UmamiClickData, validateUmamiTrackingData } from '@/types/umamiTypes'
 
-declare global {
-	interface Window {
-		umami?: {
-			track: (eventName: string, eventData?: Record<string, unknown>) => void
-		}
-	}
-}
-
 export const handleericeUmamiClick = (clickData: UmamiClickData) => {
 	// console.log('handleericeUmamiClick called with:', JSON.stringify(clickData, null, 2))
 	// console.log('window.umami exists:', !!window.umami)
