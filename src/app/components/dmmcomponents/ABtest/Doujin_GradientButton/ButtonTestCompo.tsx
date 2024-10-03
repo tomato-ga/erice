@@ -3,19 +3,15 @@ import { DMMActressInfo } from '@/types/APItypes'
 import { DMMItemMainResponse } from '@/types/dmmitemzodschema'
 import { ButtonWithGradient } from './gradient'
 import { ButtonNoGradient } from './no-gradient'
+import { DoujinKobetuItem } from '@/_types_doujin/doujintypes'
 
 // Define the props interface
 interface ButtonTestComponentProps {
-	ItemMain: DMMItemMainResponse
-	actressInfo: DMMActressInfo | null
+	item: DoujinKobetuItem
 }
 
-export default function ButtonTestComponent({ ItemMain, actressInfo }: ButtonTestComponentProps) {
+export default function ButtonTestDoujinComponent({ item }: ButtonTestComponentProps) {
 	const showButtonA = Math.random() > 0.5 // A/Bテスト用のランダマイザー
 
-	return showButtonA ? (
-		<ButtonNoGradient ItemMain={ItemMain} actressInfo={actressInfo} />
-	) : (
-		<ButtonWithGradient ItemMain={ItemMain} actressInfo={actressInfo} />
-	)
+	return showButtonA ? <ButtonNoGradient item={item} /> : <ButtonWithGradient item={item} />
 }
