@@ -15,6 +15,13 @@ interface ButtonWithGradientProps {
 
 export const DoujinButtonWithGradient = ({ item }: ButtonWithGradientProps) => {
 	useEffect(() => {
+		// window.umami の存在を確認
+		if (typeof window !== 'undefined' && window.umami) {
+			console.log('Umami is available in DoujinButtonWithGradient component')
+		} else {
+			console.error('Umami is NOT available in DoujinButtonWithGradient component')
+		}
+
 		trackImpression('ButtonGradientTest-Doujin', 'with-gradient-button')
 	}, [])
 
