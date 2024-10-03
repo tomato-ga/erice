@@ -17,37 +17,6 @@ export const metadata: Metadata = {
 		'みんなの良かった抜き情報を共有し合うことで、新たな動画体験を提供することを目指しています。',
 	robots: 'index,follow',
 	referrer: 'origin-when-cross-origin',
-	// openGraph: {
-	// 	title: {
-	// 		default: 'エロコメスト',
-	// 		template: '%s | エロコメスト'
-	// 	},
-	// 	description: 'エロコメストは無料エロ動画を思う存分楽しめるサイトです。',
-	// 	images: [
-	// 		{
-	// 			url: 'opengraph-image.jpg',
-	// 			width: 1280,
-	// 			height: 720,
-	// 			alt: 'Open Graph Image'
-	// 		}
-	// 	]
-	// },
-	// twitter: {
-	// 	card: 'summary_large_image',
-	// 	title: {
-	// 		default: 'エロコメスト',
-	// 		template: '%s | エロコメスト'
-	// 	},
-	// 	description: 'エロコメストは無料エロ動画を思う存分楽しめるサイトです。',
-	// 	images: [
-	// 		{
-	// 			url: 'twitter-image.jpg',
-	// 			width: 1280,
-	// 			height: 720,
-	// 			alt: 'Twitter Image'
-	// 		}
-	// 	]
-	// }
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
