@@ -74,8 +74,8 @@ export default function HomePage({ searchParams }: HomePageProps) {
 				<DMMItemContainer itemType="sale" from="top" bgGradient="bg-gradient-to-r from-blue-50 to-purple-50" /> */}
 
 				{/* TODO 審査完了するまで非表示 -> 2024/08/20 審査通過コメント解除　女優セクション */}
-				<DMMActressItemContainer actressType='new' from='top' />
-				<DMMActressItemContainer actressType='popular' from='top' />
+				{/* <DMMActressItemContainer actressType='new' from='top' />
+				<DMMActressItemContainer actressType='popular' from='top' /> */}
 
 				{/* 既存の記事グリッドとページネーション */}
 				{/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
