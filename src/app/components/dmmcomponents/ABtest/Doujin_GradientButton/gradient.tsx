@@ -16,9 +16,9 @@ interface ButtonWithGradientProps {
 export const DoujinButtonWithGradient = ({ item }: ButtonWithGradientProps) => {
 	useEffect(() => {
 		// インプレッションをトラッキング
-
+		console.log('trackImpression called for', item.title)
 		trackImpression('ButtonGradientTest-Doujin', 'with-gradient-button')
-	}, [])
+	}, [item.title])
 
 	const handleButtonClick = () => {
 		// クリックをトラッキング

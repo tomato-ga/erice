@@ -16,6 +16,7 @@ interface ButtonNoGradientProps {
 export const DoujinButtonNoGradient = ({ item }: ButtonNoGradientProps) => {
 	useEffect(() => {
 		// インプレッションをトラッキング
+
 		trackImpression('ButtonGradientTest-Doujin', 'no-gradient-button')
 	}, [])
 
