@@ -51,6 +51,14 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+	/*
+	// MEMO
+	2024/10/03 19:48
+	strategy='afterInteractive' をやめて、beforeにしたら正常にイベントデータ取得が動き出したっぽい...
+	やっぱり取得できていない。。。
+	
+	*/
+
 	return (
 		<html lang='ja'>
 			<Script
@@ -59,7 +67,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 				data-do-not-track='true'
 				data-auto-track='true'
 				strategy='beforeInteractive'
-				//  strategy='afterInteractive'
 			/>
 			<Script id='microsoft-clarity' strategy='afterInteractive'>
 				{`
