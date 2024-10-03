@@ -24,12 +24,12 @@ export const DoujinButtonNoGradient = ({ item }: ButtonNoGradientProps) => {
 			console.error('Umami is NOT available in DoujinButtonWithGradient component')
 		}
 
-		trackImpression('ButtonGradientTest-Doujin', 'no-gradient-button')
+		trackImpression('ButtonGradientTest-DoujinTEST', 'no-gradient-button')
 	}, [])
 
 	const handleButtonClick = () => {
 		// クリックをトラッキング
-		trackClick('ButtonGradientTest-Doujin', 'no-gradient-button')
+		trackClick('ButtonGradientTest-DoujinTEST', 'no-gradient-button')
 	}
 
 	return (
