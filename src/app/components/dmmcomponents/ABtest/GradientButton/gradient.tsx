@@ -34,6 +34,7 @@ export const ButtonWithGradient = ({ ItemMain, actressInfo }: ButtonWithGradient
 
 	const handleButtonClick = () => {
 		// クリックをトラッキング
+		// console.log('クリックをトラッキングスタート')
 		trackClick('dmmTEST-1004-v2', 'with-g')
 	}
 

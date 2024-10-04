@@ -45,6 +45,10 @@ export const trackABTestEvent = async (event: ABTestEvent) => {
 	try {
 		const eventName = `${event.testName}-${event.variant}-${event.eventType}`
 
+		// if (event.eventType === 'click') {
+		// 	console.log('event.eventType === click: trackABTestEvent:クリックをトラッキングスタート')
+		// }
+
 		if (typeof window !== 'undefined' && window.umami) {
 			await waitForUmami()
 			window.umami.track(eventName, { variant: event.variant })
@@ -73,5 +77,7 @@ export const trackClick = (testName: string, variant: string): Promise<void> => 
 		testName,
 		variant,
 	}
+	// console.log('trackClick:クリックをトラッキングスタート')
+
 	return trackABTestEvent(event)
 }
