@@ -6,7 +6,7 @@ import { DMMActressInfo } from '@/types/APItypes'
 import { DMMItemMainResponse } from '@/types/dmmitemzodschema'
 import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { UmamiTracking } from '../../UmamiTracking'
 
 interface ButtonNoGradientProps {
@@ -15,19 +15,26 @@ interface ButtonNoGradientProps {
 }
 
 export const ButtonNoGradient = ({ ItemMain, actressInfo }: ButtonNoGradientProps) => {
+	const hasTrackedImpression = useRef(false)
+
 	useEffect(() => {
-		const trackImpressionWithWait = async () => {
-			if (typeof window !== 'undefined') {
+		// Use an Immediately Invoked Function Expression (IIFE) for async logic
+		;(async () => {
+			if (!hasTrackedImpression.current && typeof window !== 'undefined') {
 				await waitForUmami()
-				trackImpression('dmmTEST-1004', 'no-g').catch(console.error)
+				try {
+					await trackImpression('dmmTEST-1004-v2', 'no-g')
+					hasTrackedImpression.current = true // Mark impression as tracked
+				} catch (error) {
+					console.error('Error tracking impression:', error)
+				}
 			}
-		}
-		trackImpressionWithWait()
-	}, [])
+		})()
+	}, []) // Empty dependency array to run only once on mount
 
 	const handleButtonClick = () => {
 		// クリックをトラッキング
-		trackClick('dmmTEST-1004', 'no-g')
+		trackClick('dmmTEST-1004-v2', 'no-g')
 	}
 
 	return (

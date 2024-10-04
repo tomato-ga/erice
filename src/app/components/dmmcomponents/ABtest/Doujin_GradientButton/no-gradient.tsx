@@ -6,7 +6,7 @@ import { trackClick, trackImpression, waitForUmami } from '@/lib/abTestTracking'
 import { DoujinKobetuItem } from '@/_types_doujin/doujintypes'
 import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { UmamiTracking } from '../../UmamiTracking'
 
 interface ButtonNoGradientProps {
@@ -14,20 +14,28 @@ interface ButtonNoGradientProps {
 }
 
 export const DoujinButtonNoGradient = ({ item }: ButtonNoGradientProps) => {
+	// useRef to track if the impression has been tracked
+	const hasTrackedImpression = useRef(false)
+
 	useEffect(() => {
-		const trackImpressionWithWait = async () => {
-			if (typeof window !== 'undefined') {
+		// Use an Immediately Invoked Function Expression (IIFE) for async logic
+		;(async () => {
+			if (!hasTrackedImpression.current && typeof window !== 'undefined') {
 				await waitForUmami()
-				trackImpression('DojTEST-1004', 'no-g').catch(console.error)
+				try {
+					await trackImpression('DojTEST-1004-v2', 'no-g')
+					hasTrackedImpression.current = true // Mark impression as tracked
+				} catch (error) {
+					console.error('Error tracking impression:', error)
+				}
 			}
-		}
-		trackImpressionWithWait()
-	}, [])
+		})()
+	}, []) // Empty dependency array to run only once on mount
 
 	const handleButtonClick = () => {
 		// クリックをトラッキング
 		try {
-			trackClick('DojTEST-1004', 'no-g')
+			trackClick('DojTEST-1004-v2', 'no-g')
 		} catch (error) {
 			console.error('Error tracking click:', error)
 		}
