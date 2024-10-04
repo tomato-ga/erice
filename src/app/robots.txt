@@ -13,6 +13,15 @@ Disallow: /
 User-agent: AhrefsBot
 Disallow: /
 
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: SenutoBot
+Disallow: /
+
 User-agent: Amazonbot
 Disallow: /
 
@@ -122,4 +131,7 @@ User-agent: HaosouSpider
 Disallow: /
 
 User-agent: FacebookBot
+Disallow: /
+
+User-agent: archive.org_bot
 Disallow: /
