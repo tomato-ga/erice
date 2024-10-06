@@ -38,6 +38,15 @@ import {
 import { HomeIcon } from 'lucide-react'
 import StructuredDataScript from './StructuredData'
 
+// 1. dynamic をインポート
+import dynamic from 'next/dynamic'
+
+// 2. SaleFloatingBanner を動的にインポート（SSR 無効化）
+const SaleFloatingBanner = dynamic(
+	() => import('@/app/components/dmmcomponents/FloatingBanner/FloatingBanner'),
+	{ ssr: false },
+)
+
 interface Props {
 	params: { dbId: number }
 }
@@ -240,6 +249,8 @@ export default async function DMMKobetuItemPage({
 					__html: jsonLdString,
 				}}
 			/> */}
+
+			<SaleFloatingBanner />
 
 			<div className='bg-gray-50 dark:bg-gray-900 min-h-screen'>
 				<div className='container mx-auto px-2 sm:px-4 py-6 sm:py-8'>

@@ -1,65 +1,73 @@
 'use client'
-
 import { X } from 'lucide-react'
 import Link from 'next/link'
-import { useCallback, useEffect, useState } from 'react'
-import './styles.css'
+import { useEffect, useState } from 'react'
+import { fetchCampaignNames } from '../fetch/itemFetchers'
 
-interface SaleFloatingBannerProps {
-	saleLink: string
-	saleText: string
-	minWidth?: string
-	maxWidth?: string
-}
-
-export default function SaleFloatingBanner({
-	saleLink,
-	saleText,
-	minWidth = '300px',
-	maxWidth = '90%',
-}: SaleFloatingBannerProps) {
-	const [isVisible, setIsVisible] = useState(false)
-
-	const updateBannerWidth = useCallback(() => {
-		const isMobile = window.innerWidth <= 600
-		if (isMobile) {
-			const calculatedWidth = Math.min(window.innerWidth * 0.9, Number.parseInt(maxWidth))
-			document.documentElement.style.setProperty('--banner-width', `${calculatedWidth}px`)
-		} else {
-			document.documentElement.style.setProperty('--banner-width', minWidth)
-		}
-	}, [minWidth, maxWidth])
+export default function SaleFloatingBanner() {
+	const [isVisible, setIsVisible] = useState(true)
+	const [campaignNameOne, setCampaignNameOne] = useState<string | null>(null)
 
 	useEffect(() => {
-		const bannerClosed = localStorage.getItem('saleBannerClosed')
-		if (!bannerClosed) {
-			setIsVisible(true)
-		}
+		// 即時実行関数で非同期処理を実行
+		;(async () => {
+			try {
+				// sessionStorage の確認
+				const bannerClosed = sessionStorage.getItem('saleBannerClosed')
+				if (bannerClosed === 'true') {
+					setIsVisible(false)
+				}
 
-		updateBannerWidth()
-		window.addEventListener('resize', updateBannerWidth)
+				// キャンペーン名の取得
+				const names = await fetchCampaignNames()
+				console.log('取得したキャンペーン名:', names)
 
-		return () => {
-			window.removeEventListener('resize', updateBannerWidth)
-		}
-	}, [updateBannerWidth])
+				if (names && names.length > 0) {
+					const randomName = names[Math.floor(Math.random() * names.length)]
+					setCampaignNameOne(randomName)
+					console.log('選択されたキャンペーン名:', randomName)
+				} else {
+					console.error('キャンペーン名が取得できませんでした。')
+				}
+			} catch (error) {
+				console.error('エラーが発生しました:', error)
+			}
+		})()
+	}, [])
 
 	const closeBanner = () => {
 		setIsVisible(false)
-		localStorage.setItem('saleBannerClosed', 'true')
+		try {
+			sessionStorage.setItem('saleBannerClosed', 'true')
+		} catch (error) {
+			console.warn('sessionStorage の操作に失敗しました:', error)
+		}
 	}
 
-	if (!isVisible) return null
+	if (!isVisible) {
+		return null
+	}
 
 	return (
-		<div className='sale-floating-banner'>
-			<button onClick={closeBanner} className='sale-floating-banner__close-button' type='button'>
-				<X size={20} />
+		<div className='fixed bottom-16 md:bottom-4 right-2 bg-gradient-to-r from-red-600 to-orange-500 shadow-2xl z-50 p-3.5 rounded-lg transition-all duration-300 w-11/12 sm:w-[500px] border border-red-300'>
+			<button
+				onClick={closeBanner}
+				className='absolute top-1 right-1.5 text-white hover:text-red-100 focus:outline-none transition duration-300'
+				aria-label='Close'
+				type='button'>
+				<X size={16} />
 			</button>
-			<div className='sale-floating-banner__content'>
-				<p className='sale-floating-banner__title text-base'>セール情報</p>
-				<Link href={saleLink} className='sale-floating-banner__link'>
-					{saleText}
+			<div className='flex items-center space-x-4'>
+				<div className='flex-grow'>
+					<Link href={`/campaign/${encodeURIComponent(campaignNameOne || 'default-campaign')}`}>
+						<h3 className='text-xl font-bold text-white mb-1'>セール中！</h3>
+						<p className='text-red-50'>{campaignNameOne || 'お得なキャンペーン実施中！'}</p>
+					</Link>
+				</div>
+				<Link
+					href={`/campaign/${encodeURIComponent(campaignNameOne || 'default-campaign')}`}
+					className='flex-shrink-0 bg-yellow-400 text-red-600 font-bold py-2 px-3 rounded-md hover:bg-yellow-300 transform hover:-translate-y-1 transition duration-300'>
+					チェック
 				</Link>
 			</div>
 		</div>
