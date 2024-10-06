@@ -1,14 +1,15 @@
-// src/app/(pages)/campaign/[name]/CampaignBatch.tsx
+// src/app/campaign/[name]/CampaignBatch.tsx
 
-import CampaignFeaturedItemGrid from '@/app/components/dmmcomponents/Campaign/CampaignFeaturedItemGrid' // デフォルトインポート
-import { fetchCampaignBatch } from '@/app/components/dmmcomponents/fetch/itemFetchers'
-import { DMMCampaignItem, DMMItemSchema } from '@/types/dmm-campaignpage-types'
+import CampaignFeaturedItemGrid from '@/app/components/dmmcomponents/Campaign/CampaignFeaturedItemGrid'
+import LoadingSpinner from '@/app/components/dmmcomponents/Campaign/Loadingspinner'
+import { fetchCampaignBatchData } from '@/app/components/dmmcomponents/fetch/itemFetchers'
+import { DMMCampaignItem } from '@/types/dmm-campaignpage-types'
 import React, { useEffect, useState } from 'react'
 
 interface CampaignBatchProps {
 	campaignName: string
 	batchIndex: number
-	setHasMoreData: React.Dispatch<React.SetStateAction<boolean>>
+	setHasMoreData: (hasMore: boolean) => void
 	onLoad: () => void
 }
 
@@ -18,61 +19,30 @@ const CampaignBatch: React.FC<CampaignBatchProps> = ({
 	setHasMoreData,
 	onLoad,
 }) => {
-	const [items, setItems] = useState<DMMCampaignItem[] | null>(null)
-	const [error, setError] = useState<string | null>(null)
+	const [items, setItems] = useState<DMMCampaignItem[]>([])
+	const [isLoading, setIsLoading] = useState<boolean>(true)
 
 	useEffect(() => {
-		let isMounted = true
-		fetchCampaignBatch(campaignName, batchIndex)
-			.then(data => {
-				if (isMounted) {
-					console.log(`CampaignBatch: バッチ ${batchIndex} のデータ取得に成功しました`)
-					setItems(data) // APIレスポンスが直接アイテムの配列の場合
-					onLoad()
-				}
-			})
-			.catch(error => {
-				if (isMounted) {
-					console.error(
-						`CampaignBatch: バッチ ${batchIndex} のデータ取得に失敗しました: ${error.message}`,
-					)
-					if (error.message.includes('Batch not found') || error.message.includes('404')) {
-						setHasMoreData(false)
-					} else {
-						setError(error.message)
-					}
-					onLoad()
-				}
-			})
-		return () => {
-			isMounted = false
+		const fetchData = async () => {
+			const data = await fetchCampaignBatchData(campaignName, batchIndex)
+			if (data?.items && data.items.length > 0) {
+				setItems(data.items)
+			} else {
+				setHasMoreData(false)
+			}
+			setIsLoading(false)
+			onLoad()
 		}
+		fetchData()
 	}, [campaignName, batchIndex, setHasMoreData, onLoad])
 
-	if (error) {
-		return <p className='text-center text-red-500'>エラーが発生しました: {error}</p>
+	if (isLoading) {
+		return <LoadingSpinner />
 	}
 
-	if (!items) {
-		// items が null の間は何も表示しない（LoadingSpinner は親コンポーネントで表示）
-		return null
-	}
-
-	if (items.length === 0) {
-		if (batchIndex === 1) {
-			// batchIndex starts at 1
-			// 最初のバッチのみ "No items found." を表示
-			return <p className='text-center text-gray-500'>No items found.</p>
-		}
-		// それ以外のバッチでは何も表示しない
-		return null
-	}
-
-	return (
-		<div>
-			<CampaignFeaturedItemGrid items={items} campaignName={campaignName} />
-		</div>
-	)
+	return items.length > 0 ? (
+		<CampaignFeaturedItemGrid items={items} campaignName={campaignName} />
+	) : null
 }
 
-export default CampaignBatch
+export default React.memo(CampaignBatch)

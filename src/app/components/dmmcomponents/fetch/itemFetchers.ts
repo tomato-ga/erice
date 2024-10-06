@@ -491,6 +491,42 @@ export const fetchCampaignData = async (
 	}
 }
 
+// export const fetchCampaignData = async (
+// 	campaignName: string,
+// ): Promise<GetKVCampaignItemsResponse | null> => {
+// 	try {
+// 		const res = await fetch(`/api/campaign/data/${encodeURIComponent(campaignName)}`)
+// 		if (!res.ok) {
+// 			console.error('キャンペーンデータの取得に失敗しました')
+// 			return null
+// 		}
+// 		const data = await res.json()
+// 		return data as GetKVCampaignItemsResponse
+// 	} catch (error) {
+// 		console.error('データ取得エラー:', error)
+// 		return null
+// 	}
+// }
+
+export const fetchCampaignBatchData = async (
+	campaignName: string,
+	batchIndex: number,
+): Promise<GetKVCampaignItemsResponse | null> => {
+	try {
+		const res = await fetch(
+			`/api/campaign/data/${encodeURIComponent(campaignName)}?batch=${batchIndex}`,
+		)
+		if (!res.ok) {
+			return null
+		}
+		const data = await res.json()
+		return data as GetKVCampaignItemsResponse
+	} catch (error) {
+		console.error('バッチデータ取得エラー:', error)
+		return null
+	}
+}
+
 /**
  * キャンペーンバッチデータをフェッチする関数
  * @param campaignName キャンペーン名

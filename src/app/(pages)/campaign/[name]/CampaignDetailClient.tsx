@@ -1,11 +1,15 @@
-// src/app/(pages)/campaign/[name]/CampaignDetailClient.tsx
+// src/app/campaign/[name]/CampaignDetailClient.tsx
 
 'use client'
 
-import { fetchCampaignBatch } from '@/app/components/dmmcomponents/fetch/itemFetchers'
 import LoadingSpinner from '@/app/components/dmmcomponents/Campaign/Loadingspinner'
+import dynamic from 'next/dynamic'
 import React, { useEffect, useState, useRef, useCallback } from 'react'
-import CampaignBatch from './CampaignBatch' // CampaignBatch を正しくインポート
+
+// CampaignBatch を動的インポート
+const CampaignBatch = dynamic(() => import('./CampaignBatch'), {
+	loading: () => <LoadingSpinner />,
+})
 
 interface CampaignDetailClientProps {
 	name: string
@@ -13,9 +17,9 @@ interface CampaignDetailClientProps {
 
 const CampaignDetailClient: React.FC<CampaignDetailClientProps> = ({ name }) => {
 	const decodedName = decodeURIComponent(name)
-	const [batchIndex, setBatchIndex] = useState<number>(1) // 初期バッチを1に設定
+	const [batchIndex, setBatchIndex] = useState<number>(1)
 	const [hasMoreData, setHasMoreData] = useState<boolean>(true)
-	const [isLoading, setIsLoading] = useState<boolean>(false) // 初期ロード時にfalseに設定
+	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const observer = useRef<IntersectionObserver | null>(null)
 	const lastBatchRef = useRef<HTMLDivElement | null>(null)
 
@@ -33,7 +37,7 @@ const CampaignDetailClient: React.FC<CampaignDetailClientProps> = ({ name }) => 
 
 	// IntersectionObserver の設定
 	useEffect(() => {
-		if (!hasMoreData) return // データがない場合はオブザーバーを設定しない
+		if (!hasMoreData) return
 		if (observer.current) observer.current.disconnect()
 		observer.current = new IntersectionObserver(
 			entries => {
@@ -58,25 +62,22 @@ const CampaignDetailClient: React.FC<CampaignDetailClientProps> = ({ name }) => 
 	// 初回バッチロードをトリガー
 	useEffect(() => {
 		if (batchIndex === 1 && hasMoreData) {
-			// 初回ロード
 			setIsLoading(true)
 		}
 	}, [batchIndex, hasMoreData])
 
 	return (
 		<div className='container mx-auto px-4 py-6'>
-			{/* 上記のコメントアウトはネストされたコメントが原因でエラーを引き起こしていたため、完全に削除しました。 */}
-
 			<div>
 				{Array.from({ length: batchIndex }).map((_, idx) => (
-					<div key={idx}>
+					<React.Fragment key={idx}>
 						<CampaignBatch
 							campaignName={decodedName}
-							batchIndex={idx + 1} // 1-based index
+							batchIndex={idx + 1}
 							setHasMoreData={setHasMoreData}
 							onLoad={handleBatchLoad}
 						/>
-					</div>
+					</React.Fragment>
 				))}
 				{/* 監視用の要素 */}
 				{hasMoreData && <div ref={lastBatchRef} />}
@@ -91,4 +92,4 @@ const CampaignDetailClient: React.FC<CampaignDetailClientProps> = ({ name }) => 
 	)
 }
 
-export default CampaignDetailClient
+export default React.memo(CampaignDetailClient)
