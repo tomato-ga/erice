@@ -322,6 +322,7 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 								</Link>
 							</h1>
 							<p className='text-gray-600 dark:text-gray-300 text-base mt-4'>{description}</p>{' '}
+							<FanzaADBannerKobetu />
 							{/* Description added here */}
 							{/* Item Details Table */}
 							<ItemDetailsTable item={item} />
@@ -350,7 +351,6 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 							{/* </div> */}
 							{/* </div> */}
 							{/* サンプル画像の表示 */}
-							<FanzaADBannerKobetu />
 							{item.sample_images && item.sample_images.length > 0 && (
 								<div className='mt-8'>
 									<h2 className='text-center font-bold mb-6'>

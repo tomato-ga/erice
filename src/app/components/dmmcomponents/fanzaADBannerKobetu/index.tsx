@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from 'react'
 
-const FanzaADBannerDoujinKobetu: React.FC = () => {
+const FanzaADBannerFanzaKobetu: React.FC = () => {
 	const containerRef = useRef<HTMLDivElement>(null)
 
 	useEffect(() => {
@@ -16,14 +16,14 @@ const FanzaADBannerDoujinKobetu: React.FC = () => {
 			insElement.style.width = '640px'
 			insElement.style.height = '200px'
 			insElement.setAttribute('data-affiliate-id', 'kamipanmen-001')
-			insElement.setAttribute('data-banner-id', '1331_640_200')
+			insElement.setAttribute('data-banner-id', '1082_640_200')
 			insElement.setAttribute('data-full-width-responsive', 'false')
 
 			// スクリプトを挿入
 			const newScript = document.createElement('script')
 			newScript.className = 'widget-banner-script'
 			newScript.src =
-				'https://widget-view.dmm.co.jp/js/banner_placement.js?affiliate_id=kamipanmen-001&banner_id=1331_640_200'
+				'https://widget-view.dmm.co.jp/js/banner_placement.js?affiliate_id=kamipanmen-001&banner_id=1082_640_200'
 			newScript.async = true
 
 			newScript.onload = () => {
@@ -51,4 +51,4 @@ const FanzaADBannerDoujinKobetu: React.FC = () => {
 	)
 }
 
-export default React.memo(FanzaADBannerDoujinKobetu)
+export default React.memo(FanzaADBannerFanzaKobetu)
