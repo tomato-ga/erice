@@ -1,4 +1,4 @@
-import { combinedkeyword } from '@/app/components/dmmcomponents/Top100/AllKeywords'
+import { AllCategories } from '@/app/components/dmmcomponents/Top100/keywords'
 import { NextResponse } from 'next/server'
 
 const BASE_URL = 'https://erice.cloud' // 実際のベースURLに置き換えてください
@@ -8,8 +8,17 @@ export async function GET() {
 		// 現在の日時を取得（ISOフォーマット）
 		const lastMod = new Date().toISOString()
 
-		// combinedkeyword を基にURLエントリを生成
-		const keywordUrls = combinedkeyword
+		// AllCategories から全てのキーワードを抽出
+		const allKeywords = AllCategories.flatMap(category =>
+			category.Subcategories.flatMap(subcategory => subcategory.Keywords),
+		)
+
+		// 重複を除去
+		const uniqueKeywords = Array.from(new Set(allKeywords))
+		console.log('uniqueKeywords', uniqueKeywords)
+
+		// キーワードを基にURLエントリを生成
+		const keywordUrls = uniqueKeywords
 			.map(
 				keyword => `
   <url>
