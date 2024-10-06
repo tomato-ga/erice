@@ -13,11 +13,11 @@ const FanzaADBannerDoujinKobetu: React.FC = () => {
 			const insElement = document.createElement('ins')
 			insElement.className = 'widget-banner'
 			insElement.style.display = 'block'
-			insElement.style.width = '640px'
-			insElement.style.height = '200px'
+			insElement.style.width = '100%' // 幅をレスポンシブ対応に
+			insElement.style.height = 'auto' // 高さもコンテンツに応じて自動調整
 			insElement.setAttribute('data-affiliate-id', 'kamipanmen-001')
 			insElement.setAttribute('data-banner-id', '1331_640_200')
-			insElement.setAttribute('data-full-width-responsive', 'false')
+			insElement.setAttribute('data-full-width-responsive', 'true') // レスポンシブ対応
 
 			// スクリプトを挿入
 			const newScript = document.createElement('script')
@@ -45,8 +45,8 @@ const FanzaADBannerDoujinKobetu: React.FC = () => {
 	}, []) // 初回マウント時のみ実行
 
 	return (
-		<div className='flex justify-center items-center'>
-			<div ref={containerRef} />
+		<div className='flex justify-center items-center w-full'>
+			<div ref={containerRef} className='w-full' />
 		</div>
 	)
 }

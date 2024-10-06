@@ -13,8 +13,8 @@ const FanzaADBannerFanzaKobetu: React.FC = () => {
 			const insElement = document.createElement('ins')
 			insElement.className = 'widget-banner'
 			insElement.style.display = 'block'
-			insElement.style.width = '640px'
-			insElement.style.height = '200px'
+			insElement.style.width = '100%'
+			insElement.style.height = 'auto'
 			insElement.setAttribute('data-affiliate-id', 'kamipanmen-001')
 			insElement.setAttribute('data-banner-id', '1082_640_200')
 			insElement.setAttribute('data-full-width-responsive', 'false')
