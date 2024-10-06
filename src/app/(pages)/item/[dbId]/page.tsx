@@ -265,7 +265,7 @@ export default async function DMMKobetuItemPage({
 					</Breadcrumb>
 
 					<article className='bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 space-y-6 sm:space-y-8'>
-						<PostList limit={12} />
+						{/* 2024/10/06 停止 <PostList limit={12} /> */}
 
 						<div className='relative overflow-hidden aspect-w-16 aspect-h-9'>
 							<UmamiTracking
