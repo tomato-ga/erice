@@ -38,6 +38,7 @@ import {
 import { HomeIcon } from 'lucide-react'
 import StructuredDataScript from './StructuredData'
 
+import FanzaADBannerKobetu from '@/app/components/doujincomponents/fanzaADBannerKobetu'
 // 1. dynamic をインポート
 import dynamic from 'next/dynamic'
 
@@ -250,8 +251,6 @@ export default async function DMMKobetuItemPage({
 				}}
 			/> */}
 
-			<SaleFloatingBanner />
-
 			<div className='bg-gray-50 dark:bg-gray-900 min-h-screen'>
 				<div className='container mx-auto px-2 sm:px-4 py-6 sm:py-8'>
 					{/* Breadcrumb */}
@@ -277,6 +276,8 @@ export default async function DMMKobetuItemPage({
 
 					<article className='bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 space-y-6 sm:space-y-8'>
 						{/* 2024/10/06 停止 <PostList limit={12} /> */}
+
+						<FanzaADBannerKobetu />
 
 						<div className='relative overflow-hidden aspect-w-16 aspect-h-9'>
 							<UmamiTracking
@@ -331,6 +332,8 @@ export default async function DMMKobetuItemPage({
 						<Suspense fallback={<LoadingSpinner />}>
 							<CommentSection contentId={ItemMain.content_id} />
 						</Suspense>
+
+						<FanzaADBannerKobetu />
 
 						<div className='w-full text-sm text-center my-4'>このページに広告を設置しています</div>
 

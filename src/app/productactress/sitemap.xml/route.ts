@@ -23,8 +23,8 @@ export async function GET() {
 		const response = await fetch(API_ENDPOINT, {
 			headers: {
 				'Content-Type': 'application/json',
-				'X-API-Key': API_KEY
-			}
+				'X-API-Key': API_KEY,
+			},
 		})
 
 		if (!response.ok) {
@@ -32,7 +32,7 @@ export async function GET() {
 		}
 
 		const data = (await response.json()) as ApiResponse
-		console.log('productactress sitemap index API Response:', data) // デバッグ用ログ
+		// console.log('productactress sitemap index API Response:', data) // デバッグ用ログ
 
 		if (!Array.isArray(data.names) || data.names.length === 0) {
 			throw new Error('Invalid or empty response from API')
@@ -47,7 +47,7 @@ export async function GET() {
   <sitemap>
     <loc>${BASE_URL}/productactress/sitemap/${i}.xml</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
-  </sitemap>`
+  </sitemap>`,
 		).join('')
 
 		const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
@@ -59,8 +59,8 @@ ${sitemaps}
 			status: 200,
 			headers: {
 				'Content-Type': 'application/xml',
-				'Cache-Control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400'
-			}
+				'Cache-Control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400',
+			},
 		})
 	} catch (error) {
 		console.error('Error generating sitemap index:', error)

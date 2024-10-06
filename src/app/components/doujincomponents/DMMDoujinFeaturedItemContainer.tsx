@@ -33,7 +33,7 @@ async function fetchData(endpoint: string): Promise<DoujinTopItem[]> {
 		}
 		const data: DoujinTopApiResponse = await response.json()
 
-		console.log('API Response:', data) // 追加: レスポンス内容をログ出力
+		// console.log('API Response:', data) // 追加: レスポンス内容をログ出力
 
 		return data.result.items
 	} catch (error) {

@@ -37,6 +37,7 @@ type Props = {
 }
 
 import ButtonTestDoujinComponent from '@/app/components/dmmcomponents/ABtest/Doujin_GradientButton/ButtonTestCompo'
+import FanzaADBannerKobetu from '@/app/components/doujincomponents/fanzaADBannerKobetu'
 // ItemDetailsTableコンポーネント
 import React from 'react'
 
@@ -349,6 +350,7 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 							{/* </div> */}
 							{/* </div> */}
 							{/* サンプル画像の表示 */}
+							<FanzaADBannerKobetu />
 							{item.sample_images && item.sample_images.length > 0 && (
 								<div className='mt-8'>
 									<h2 className='text-center font-bold mb-6'>

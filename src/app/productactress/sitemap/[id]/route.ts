@@ -32,7 +32,7 @@ async function fetchNames(): Promise<string[]> {
 		}
 
 		const data = (await response.json()) as ApiResponse
-		console.log('productactress sitemap [id] API Response:', data) // デバッグ用ログ
+		// console.log('productactress sitemap [id] API Response:', data) // デバッグ用ログ
 
 		if (!data || typeof data.totalCount !== 'number') {
 			throw new Error('Invalid API response format')
