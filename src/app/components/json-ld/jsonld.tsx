@@ -337,6 +337,12 @@ export const generateKeywordBreadcrumbList = (keyword: string): WithContext<Brea
 			{
 				'@type': 'ListItem',
 				position: 2,
+				name: 'エロ動画キーワード一覧',
+				item: 'https://erice.cloud/keywords',
+			},
+			{
+				'@type': 'ListItem',
+				position: 3,
 				name: `${keyword} の人気エロ動画`,
 				item: `https://erice.cloud/keywords/${encodeURIComponent(keyword)}`,
 			},
