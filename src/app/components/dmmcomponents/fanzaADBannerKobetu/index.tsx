@@ -46,7 +46,7 @@ const FanzaADBannerFanzaKobetu: React.FC = () => {
 
 	return (
 		<div className='flex justify-center items-center'>
-			<div ref={containerRef} />
+			<div ref={containerRef}  />
 		</div>
 	)
 }

@@ -45,8 +45,8 @@ const FanzaADBannerDoujinKobetu: React.FC = () => {
 	}, []) // 初回マウント時のみ実行
 
 	return (
-		<div className='flex justify-center items-center w-full'>
-			<div ref={containerRef} className='w-full' />
+		<div className='flex justify-center items-center'>
+			<div ref={containerRef} />
 		</div>
 	)
 }
