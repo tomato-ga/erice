@@ -23,7 +23,7 @@ export const ButtonNoGradient = ({ ItemMain, actressInfo }: ButtonNoGradientProp
 			if (!hasTrackedImpression.current && typeof window !== 'undefined') {
 				await waitForUmami()
 				try {
-					await trackImpression('dmmTEST-1004-v2', 'no-g')
+					await trackImpression('dmmTEST-1006-v1', 'no-g')
 					hasTrackedImpression.current = true // Mark impression as tracked
 				} catch (error) {
 					console.error('Error tracking impression:', error)
@@ -35,7 +35,7 @@ export const ButtonNoGradient = ({ ItemMain, actressInfo }: ButtonNoGradientProp
 	const handleButtonClick = () => {
 		// クリックをトラッキング
 		// console.log('クリックをトラッキングスタート')
-		trackClick('dmmTEST-1004-v2', 'no-g')
+		trackClick('dmmTEST-1006-v1', 'no-g')
 	}
 
 	return (
