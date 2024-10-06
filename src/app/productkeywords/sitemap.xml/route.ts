@@ -15,7 +15,7 @@ export async function GET() {
 
 		// 重複を除去
 		const uniqueKeywords = Array.from(new Set(allKeywords))
-		console.log('uniqueKeywords', uniqueKeywords)
+		// console.log('uniqueKeywords', uniqueKeywords)
 
 		// キーワードを基にURLエントリを生成
 		const keywordUrls = uniqueKeywords
