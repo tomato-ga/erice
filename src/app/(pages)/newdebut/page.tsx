@@ -172,8 +172,8 @@ export default async function NewActressesPage() {
 				</h1>
 
 				<p className='mt-3 text-xl text-gray-500 sm:mt-5 sm:text-2xl max-w-prose mx-auto text-center'>
-					AVデビューした新人女優、素人女性の作品を紹介しています。
-					デビュー作品やこれから注目の新人セクシー女優と作品がすぐに見つかるよう随時更新しています。
+					AVデビューした新人セクシー女優、素人女性の作品を紹介しています。
+					これから注目の新人セクシー女優とデビュー作品がすぐに見つかるよう随時更新しています。
 				</p>
 
 				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
