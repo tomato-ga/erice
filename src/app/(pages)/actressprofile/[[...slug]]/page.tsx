@@ -110,7 +110,7 @@ const ActressProfileSection = ({
 					<div className='flex flex-col lg:flex-row lg:space-x-8'>
 						<div className='lg:w-1/3 mb-6 lg:mb-0'>
 							<img
-								src={actress.image_url_large || '/placeholder-image.jpg'}
+								src={actress.image_url_large || ''}
 								alt={actress.name}
 								className='w-full object-contain aspect-[3/4]  transition-transform'
 							/>
@@ -184,7 +184,7 @@ const ActressProfileSection = ({
 
 const ActressWorksList = ({ works }: { works: DMMActressProfilePageItem[] }) => {
 	return (
-		<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
+		<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6'>
 			{works.map(work => (
 				<div key={work.id} className='bg-white dark:bg-gray-800 shadow-md overflow-hidden'>
 					<Link href={`/item/${work.id}`} className='block'>
