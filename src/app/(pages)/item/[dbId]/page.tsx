@@ -7,6 +7,7 @@ import ItemDetails from '@/app/components/dmmcomponents/ItemDetails'
 import RelatedItemsScroll from '@/app/components/dmmcomponents/Related/RelatedItemsScroll'
 import { UmamiTracking } from '@/app/components/dmmcomponents/UmamiTracking'
 import {
+	fetchCampaignNames,
 	fetchItemDetailByContentId,
 	fetchItemMainByContentId,
 	fetchItemMainByContentIdToActressInfo,
@@ -241,6 +242,8 @@ export default async function DMMKobetuItemPage({
 	// デバッグ用にコンソールに出力（必要に応じて削除）
 	// console.log('JSON-LD:', jsonLdString)
 
+	const campaignNames = await fetchCampaignNames()
+
 	return (
 		<>
 			{/* 通常の <script> タグを使用し、JSON.stringify で文字列化 */}
@@ -335,6 +338,22 @@ export default async function DMMKobetuItemPage({
 						</Suspense>
 
 						<FanzaADBannerFanzaKobetu />
+
+						{/* テキストバナー */}
+						{campaignNames && campaignNames.length > 0 && (
+							<div className='text-center text-sm text-gray-500'>
+								{campaignNames.map((campaignName, index) => (
+									<span key={index}>
+										<Link
+											href={`/campaign/${campaignName}`}
+											className='text-blue-600 underline hover:no-underline'>
+											{campaignName}
+										</Link>
+										<br />
+									</span>
+								))}
+							</div>
+						)}
 
 						<div className='w-full text-sm text-center my-4'>このページに広告を設置しています</div>
 
