@@ -7,7 +7,6 @@ import {
 import { DMMActressProfile, DMMActressProfilePageItem } from '@/types/APItypes'
 import { formatDate } from '@/utils/dmmUtils'
 import { Metadata } from 'next'
-import Head from 'next/head' // Headコンポーネントをインポート
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'

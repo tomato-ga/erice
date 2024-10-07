@@ -1,4 +1,4 @@
-// /src/utils/jsonld.ts
+// src/utils/jsonld.ts
 
 import { DoujinKobetuItem } from '@/_types_doujin/doujintypes'
 import { DMMActressProfile } from '@/types/APItypes'
@@ -110,7 +110,16 @@ export const generateArticleStructuredData = (
 	// 女優情報
 	let actressData: WithContext<Person>[] | null = null
 	if (actressProfiles && actressProfiles.length > 0) {
-		actressData = actressProfiles.map(profile => generatePersonStructuredData(profile, description))
+		// 不完全なプロフィールを除外
+		const validActressProfiles = actressProfiles
+			.map(profile => generatePersonStructuredData(profile, description))
+			.filter(profile => profile !== null) as WithContext<Person>[]
+
+		if (validActressProfiles.length > 0) {
+			actressData = validActressProfiles
+		} else {
+			console.warn('All actress profiles are incomplete or missing.')
+		}
 	}
 
 	// directorデータの生成
@@ -151,15 +160,15 @@ export const generateArticleStructuredData = (
 }
 
 // 女優のPerson構造化データを生成する関数
-// 女優のPerson構造化データを生成する関数
 export const generatePersonStructuredData = (
 	actressProfile: DMMActressProfile,
 	description: string,
-): WithContext<Person> => {
+): WithContext<Person> | null => {
 	// actressProfile 内の actress オブジェクトを取得し、存在チェック
 	const actress = actressProfile.actress
 	if (!actress) {
-		throw new Error('Actress data is missing')
+		console.warn('Actress data is missing in actressProfile:', actressProfile)
+		return null
 	}
 
 	// 女優の画像URLを取得（なければnull）
@@ -214,7 +223,7 @@ export const generateActressArticleStructuredData = (
 		datePublished: new Date().toISOString(), // 記事の公開日時
 		dateModified: new Date().toISOString(), // 記事の最終更新日時
 		mainEntityOfPage: `https://erice.cloud/actressprofile/${profile.actress.name}`,
-		about: actressPersonData, // 女優のPerson構造化データを追加
+		...(actressPersonData && { about: actressPersonData }), // 女優のPerson構造化データを追加
 	}
 }
 
