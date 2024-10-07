@@ -84,7 +84,7 @@ const ActressRelatedItemsTimeLine = async ({ actressName }: { actressName: strin
 			</h2>
 			<div className='relative'>
 				<div className='absolute left-0 sm:left-1/4 top-0 bottom-0 w-px bg-gradient-to-b from-purple-500 to-pink-500' />
-				{ActressItems.slice(0, 1).map(item => (
+				{ActressItems.slice(0, 20).map(item => (
 					<ActressRelatedItemTimelineCard key={item.db_id} item={item} />
 				))}
 			</div>

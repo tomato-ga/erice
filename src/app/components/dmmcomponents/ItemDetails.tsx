@@ -18,11 +18,14 @@ interface ItemDetailsProps {
 }
 
 const parseActresses = (actressString: string | null | undefined): string[] => {
+	// actressString が空や null の場合は空の配列を返す
 	if (!actressString) return []
+
+	// カンマ区切りで分割し、前後の空白をトリムした配列を返す
 	return actressString
 		.split(',')
 		.map(name => name.trim())
-		.filter(name => name.length > 0)
+		.filter(name => name.length > 0) // 空の名前を除去
 }
 
 const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActressProfile }) => {
@@ -71,7 +74,7 @@ const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActress
 							<table className='w-full text-left text-sm sm:text-base'>
 								<tbody>
 									{renderProfileRow('生年月日', actress.birthday, 'birthday')}
-									{renderProfileRow('血��型', actress.blood_type, 'blood_type')}
+									{renderProfileRow('血液型', actress.blood_type, 'blood_type')}
 									{renderProfileRow('出身地', actress.prefectures, 'prefectures')}
 									{renderProfileRow('趣味', actress.hobby, 'hobby')}
 									{renderProfileRow(

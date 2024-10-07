@@ -74,7 +74,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		const itemDetail = await fetchItemDetailByContentId(dbId)
 
 		if (itemMain && itemDetail) {
-			title = `${itemMain.content_id} ${itemMain.title} | エロコメスト`
+			title = `${itemMain.title} | エロコメスト`
 			description = `${itemMain.title} ${itemMain.content_id}の詳細情報と、サンプル画像・サンプル動画を見ることができるページです。${
 				itemDetail.actress && itemDetail.date
 					? `女優は${itemDetail.actress}さんで、このアダルト動画の発売日は${formatDate(itemDetail.date)}です。`

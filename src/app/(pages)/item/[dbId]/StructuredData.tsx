@@ -26,6 +26,9 @@ const StructuredDataScript = async ({
 		// 女優情報のフェッチ
 		const actressProfile = itemDetail.actress ? await fetchActressProfile(itemDetail.actress) : null
 
+		if (!actressProfile || !actressProfile.actress) {
+			console.warn('Actress profile is missing or incomplete')
+		}
 		// JSON-LD の生成（並列実行）
 		const [articleData, breadcrumbData] = await Promise.all([
 			generateArticleStructuredData(itemMain, itemDetail, description, dbId, actressProfile),

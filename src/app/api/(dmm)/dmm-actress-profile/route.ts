@@ -1,19 +1,14 @@
 import { DMMActressProfile, DMMActressProfileSchema } from '@/types/APItypes'
 import { NextRequest, NextResponse } from 'next/server'
-// import { z } from 'zod'
 
 // 型ガード関数
 function isValidApiResponse(data: unknown): data is DMMActressProfile {
-	// data が object かつ null でないことを確認
 	if (typeof data !== 'object' || data === null) {
 		return false
 	}
-	// actress プロパティが存在し、object 型であることを確認
 	if (!('actress' in data) || typeof data.actress !== 'object') {
 		return false
 	}
-	// さらに、actress プロパティが object 型で、必要なプロパティを持っていることを確認
-	// ... (DMMActressProfile のプロパティに応じて追加)
 	return true
 }
 
@@ -31,47 +26,69 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
 	if (!API_KEY) {
 		console.error('CLOUDFLARE_DMM_API_TOKENが設定されていません')
-		return NextResponse.json({ error: 'CLOUDFLARE_DMM_API_TOKENが環境変数に設定されていません' }, { status: 500 })
+		return NextResponse.json(
+			{ error: 'CLOUDFLARE_DMM_API_TOKENが環境変数に設定されていません' },
+			{ status: 500 },
+		)
 	}
 
 	if (!WORKER_URL) {
-		console.error('DMM_ACTRESS_DETAIL_WORKER_URLが設定されていません')
-		return NextResponse.json({ error: 'DMM_ACTRESS_DETAIL_WORKER_URLが環境変数に設定されていません' }, { status: 500 })
+		console.error('DMM_ACTRESS_PROFILE_WORKER_URLが設定されていません')
+		return NextResponse.json(
+			{ error: 'DMM_ACTRESS_PROFILE_WORKER_URLが環境変数に設定されていません' },
+			{ status: 500 },
+		)
 	}
 
-	const encodedActressName = encodeURIComponent(actressname)
+	// カンマ区切りの女優名を分割して個別にリクエスト
+	const actressNames = actressname
+		.split(',')
+		.map(name => name.trim())
+		.filter(name => name.length > 0)
+	const profileFetchPromises = actressNames.map(async name => {
+		const encodedName = encodeURIComponent(name)
+		try {
+			const response = await fetch(`${WORKER_URL}/${encodedName}`, {
+				headers: {
+					'Content-Type': 'application/json',
+					'X-API-Key': API_KEY,
+				},
+				cache: 'force-cache',
+			})
 
-	try {
-		const response = await fetch(`${WORKER_URL}/${encodedActressName}`, {
-			headers: {
-				'Content-Type': 'application/json',
-				'X-API-Key': API_KEY
-			},
-			cache: 'force-cache'
-		})
+			if (!response.ok) {
+				console.error(`Failed to fetch profile for ${name}. Status: ${response.status}`)
+				return null
+			}
 
-		if (!response.ok) {
-			const errorMessage = `女優情報の取得に失敗しました。ステータスコード: ${response.status} ${response.statusText}`
-			console.error(errorMessage)
-			return NextResponse.json({ error: errorMessage }, { status: response.status })
+			const data = await response.json()
+
+			const validationResult = DMMActressProfileSchema.safeParse(data)
+			if (!validationResult.success) {
+				console.warn(`Validation failed for profile data of ${name}:`, validationResult.error)
+				return null
+			}
+
+			return validationResult.data
+		} catch (error) {
+			console.error(`Error fetching profile for ${name}:`, error)
+			return null
 		}
+	})
 
-		const data = await response.json()
+	// 全てのリクエストを並列で実行し、結果を取得
+	const profiles = await Promise.all(profileFetchPromises)
 
-		// Zodスキーマを用いてレスポンスデータの検証
-		const validationResult = DMMActressProfileSchema.safeParse(data)
+	// 有効なプロフィールのみをフィルタリング
+	const validProfiles = profiles.filter((profile): profile is DMMActressProfile => profile !== null)
 
-		if (!validationResult.success) {
-			// 検証エラー時の処理
-			console.warn('女優情報のデータ形式が予期しないものでした:', JSON.stringify(validationResult.error, null, 2))
-			// エラーではなく、空のデータを返す
-			return NextResponse.json({ actress: null })
-		}
-
-		// 検証に成功した場合は、データを返す
-		return NextResponse.json(validationResult.data)
-	} catch (error) {
-		console.error('APIルートでエラーが発生しました:', error)
-		return NextResponse.json({ error: 'サーバー内部エラー', details: (error as Error).message }, { status: 500 })
+	if (validProfiles.length === 0) {
+		return NextResponse.json(
+			{ error: '有効な女優プロフィールが見つかりませんでした' },
+			{ status: 404 },
+		)
 	}
+
+	// 有効なプロフィールを返す
+	return NextResponse.json({ actresses: validProfiles })
 }

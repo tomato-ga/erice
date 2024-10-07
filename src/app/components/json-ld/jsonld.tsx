@@ -129,7 +129,7 @@ export const generateArticleStructuredData = (
 	return {
 		'@context': 'https://schema.org',
 		'@type': 'Article',
-		headline: `${itemMain.content_id} ${itemMain.title}`,
+		headline: `${itemMain.title} ${itemMain.content_id} `,
 		image: allImages, // ImageObject の配列
 		datePublished: itemDetail.date
 			? (() => {
@@ -151,25 +151,37 @@ export const generateArticleStructuredData = (
 }
 
 // 女優のPerson構造化データを生成する関数
+// 女優のPerson構造化データを生成する関数
 export const generatePersonStructuredData = (
 	actressProfile: DMMActressProfile,
 	description: string,
 ): WithContext<Person> => {
+	// actressProfile 内の actress オブジェクトを取得し、存在チェック
 	const actress = actressProfile.actress
+	if (!actress) {
+		throw new Error('Actress data is missing')
+	}
 
-	// 女優の画像URL
-	const actressImage = actress.image_url_large || actress.image_url_small || ''
+	// 女優の画像URLを取得（なければnull）
+	const actressImage = actress.image_url_large || actress.image_url_small || null
 
-	return {
+	// 構造化データオブジェクトを作成
+	const structuredData: WithContext<Person> = {
 		'@context': 'https://schema.org',
 		'@type': 'Person',
 		name: actress.name,
 		birthDate: actress.birthday || undefined, // 誕生日がある場合のみ追加
 		height: actress.height ? `${actress.height}` : undefined, // 身長がある場合のみ追加
-		image: actressImage,
 		description: description,
 		sameAs: actress.list_url || undefined, // 外部の関連URLがあれば設定
 	}
+
+	// actressImageが存在する場合のみ image フィールドを追加
+	if (actressImage) {
+		structuredData.image = actressImage
+	}
+
+	return structuredData
 }
 
 // 女優ページの構造化データを生成する関数
