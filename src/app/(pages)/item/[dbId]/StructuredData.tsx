@@ -24,14 +24,17 @@ const StructuredDataScript = async ({
 }: StructuredDataScriptProps) => {
 	try {
 		// 女優情報のフェッチ
-		const actressProfile = itemDetail.actress ? await fetchActressProfile(itemDetail.actress) : null
+		const actressProfiles = itemDetail.actress
+			? await fetchActressProfile(itemDetail.actress)
+			: null
 
-		if (!actressProfile || !actressProfile.actress) {
-			console.warn('Actress profile is missing or incomplete')
+		if (!actressProfiles || actressProfiles.length === 0) {
+			console.warn('Actress profiles are missing or incomplete')
 		}
+
 		// JSON-LD の生成（並列実行）
 		const [articleData, breadcrumbData] = await Promise.all([
-			generateArticleStructuredData(itemMain, itemDetail, description, dbId, actressProfile),
+			generateArticleStructuredData(itemMain, itemDetail, description, dbId, actressProfiles),
 			generateBreadcrumbList(dbId, itemDetail),
 		])
 

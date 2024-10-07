@@ -58,7 +58,7 @@ export const generateArticleStructuredData = (
 	itemDetail: DMMItemDetailResponse,
 	description: string,
 	dbId: number,
-	actressProfile: DMMActressProfile | null,
+	actressProfiles: DMMActressProfile[] | null,
 ): WithContext<Article> => {
 	// itemMain.imageURLをImageObjectとして定義
 	const mainImage: ImageObject = {
@@ -108,9 +108,9 @@ export const generateArticleStructuredData = (
 	}
 
 	// 女優情報
-	let personData: WithContext<Person> | null = null
-	if (actressProfile) {
-		personData = generatePersonStructuredData(actressProfile, description)
+	let actressData: WithContext<Person>[] | null = null
+	if (actressProfiles && actressProfiles.length > 0) {
+		actressData = actressProfiles.map(profile => generatePersonStructuredData(profile, description))
 	}
 
 	// directorデータの生成
@@ -146,7 +146,7 @@ export const generateArticleStructuredData = (
 		...(videoObject && { video: videoObject }), // VideoObjectが存在する場合のみ追加
 		// ...(articleSection && { articleSection: articleSection }),
 		...(keywords && { keywords: keywords }),
-		...(personData && { about: personData }),
+		...(actressData && { about: actressData }),
 	}
 }
 

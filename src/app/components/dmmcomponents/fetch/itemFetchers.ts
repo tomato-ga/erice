@@ -255,15 +255,18 @@ export async function fetchActressRelatedItem(
 	}
 }
 
-export async function fetchActressProfile(actressName: string): Promise<DMMActressProfile | null> {
+export async function fetchActressProfile(
+	actressName: string,
+): Promise<DMMActressProfile[] | null> {
 	try {
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-profile?actressname=${encodeURIComponent(actressName)}`,
 		)
-		const data: DMMActressProfile = await response.json()
-		// console.log('actressProfile:', data)
+		const data = (await response.json()) as { actresses: DMMActressProfile[] }
+		console.log('actressProfile:', data)
+		console.dir(data, { depth: 3 })
 
-		return data
+		return data.actresses
 	} catch (error) {
 		console.error('Failed to fetch actress profile:', error)
 		return null
