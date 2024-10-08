@@ -150,7 +150,7 @@ function generateCareerAndSNSInfo(careerLength: number, details: ActressDetails 
 	}
 
 	return generateNaturalSentence([
-		details?.デビュー ? `${details.デビュー}にデビューし、` : '',
+		details?.デビュー ? `${details.デビュー}にデビュー。` : '',
 		careerLength > 0 ? `${careerLength}年のキャリアを積んできました` : '',
 		details?.['X (Twitter)']
 			? `SNSでも${details['X (Twitter)']}として活動しており、ファンとの交流を大切にしています。`
