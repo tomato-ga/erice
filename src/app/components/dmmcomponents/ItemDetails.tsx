@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import LoadingSpinner from '../Article/ArticleContent/loadingspinner'
 import ActressRelatedItemsTimeLine from './DMMActressItemRelated'
+import RelatedGenre from './RelatedGenre'
 import { fetchActressProfile, fetchItemDetailByContentId } from './fetch/itemFetchers'
 
 interface ItemDetailsProps {
@@ -287,6 +288,9 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 						),
 				)}
 			</div>
+
+			{/* 関連ジャンル */}
+			{itemDetail.genre && <RelatedGenre genreName={itemDetail.genre[0]} />}
 		</>
 	)
 }

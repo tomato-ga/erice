@@ -26,6 +26,7 @@ import { ItemType } from '@/types/dmmtypes'
 
 import {
 	DMMCampaignItem,
+	DMMRelatedGenreItem,
 	GetKVCampaignItemsResponse,
 	GetKVCampaignItemsResponseSchema,
 	GetKVCampaignNamesResponseSchema,
@@ -580,4 +581,15 @@ export const fetchCampaignBatch = async (
 	// console.log('fetchCampaignBatch: パース後のデータ:', JSON.stringify(parsedData.data, null, 2))
 
 	return parsedData.data.items
+}
+
+export const fetchRelatedGenre = async (genreName: string) => {
+	const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-genre-related?genre=${encodeURIComponent(genreName)}`
+	const response = await fetch(apiUrl)
+	if (!response.ok) {
+		console.error('Failed to fetch related genre data:', response.statusText)
+		return null
+	}
+	const data: DMMRelatedGenreItem = await response.json()
+	return data
 }

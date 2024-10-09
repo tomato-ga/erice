@@ -162,3 +162,17 @@ export type DMMCampaignItem = z.infer<typeof DMMItemSchema>
 export type GetKVCampaignNamesResponse = z.infer<typeof GetKVCampaignNamesResponseSchema>
 export type GetKVCampaignItemsResponse = z.infer<typeof GetKVCampaignItemsResponseSchema>
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>
+
+const DMMRelatedGenreItemSchema = z.object({
+	items: z.array(
+		z.object({
+			id: z.string(),
+			content_id: z.string(),
+			imageURL: z.string().optional(),
+			title: z.string(),
+			release_date: z.string(),
+		}),
+	),
+})
+
+export type DMMRelatedGenreItem = z.infer<typeof DMMRelatedGenreItemSchema>
