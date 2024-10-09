@@ -379,7 +379,7 @@ export const generateGenreArticleStructuredData = (
 	return {
 		'@context': 'https://schema.org',
 		'@type': 'Article',
-		headline: `【${currentYear}年最新】${genreName} の人気エロ動画を厳選して${items.length}件集めました${
+		headline: `【${currentYear}年最新】${genreName} の人気エロ動画を紹介しています。${
 			currentPage > 1 ? ` - ページ ${currentPage}` : ''
 		}`,
 		description: description,
