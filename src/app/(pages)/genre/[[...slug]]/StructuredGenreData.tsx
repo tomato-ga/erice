@@ -25,6 +25,7 @@ const StructuredDataScript = ({ genreName, currentPage, items, description }: St
 			<>
 				{/* Article 構造化データ */}
 				<script
+					id={`structured-data-article-${genreName}`}
 					type="application/ld+json"
 					dangerouslySetInnerHTML={{
 						__html: articleJsonLdString
@@ -33,6 +34,7 @@ const StructuredDataScript = ({ genreName, currentPage, items, description }: St
 
 				{/* BreadcrumbList 構造化データ */}
 				<script
+					id={`structured-data-article-breadcrumblist-${genreName}`}
 					type="application/ld+json"
 					dangerouslySetInnerHTML={{
 						__html: breadcrumbJsonLdString
