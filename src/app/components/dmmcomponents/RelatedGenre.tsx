@@ -24,7 +24,7 @@ const RelatedGenre = async ({ genreName }: { genreName: string }) => {
 										{item.imageURL ? (
 											<img
 												src={item.imageURL}
-												alt={item.title}
+												alt={`${item.title}の画像`}
 												className='w-full h-full object-contain transition-transform duration-300'
 											/>
 										) : (
@@ -35,9 +35,9 @@ const RelatedGenre = async ({ genreName }: { genreName: string }) => {
 									</div>
 								</Link>
 								<div className='p-4'>
-									<h3 className='text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-2 hover:underline'>
-										<Link href={`/item/${item.content_id}`}>{item.title}</Link>
-									</h3>
+									<h4 className='text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-2 hover:underline'>
+										<Link href={`/item/${item.id}`}>{item.title}</Link>
+									</h4>
 									<p className='mt-1 text-xs text-gray-500 dark:text-gray-400'>
 										発売日:{formatDate(item.release_date)}
 									</p>
