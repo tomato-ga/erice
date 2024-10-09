@@ -169,6 +169,7 @@ export interface DMMItemProps {
 	title: string
 	imageURL: string
 	db_id: string
+	priorityImageURL?: string
 }
 
 export interface ImageURLs {
@@ -218,15 +219,7 @@ export interface DMMBaseItem {
 	date?: string
 }
 
-export type ItemType =
-	| 'todaynew'
-	| 'debut'
-	| 'feature'
-	| 'sale'
-	| 'actress'
-	| 'genre'
-	| 'last7days'
-	| 'top100'
+export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale' | 'actress' | 'genre' | 'last7days' | 'top100'
 export type CategoryType = 'style' | 'type'
 
 export interface DMMFeaturedItemProps extends DMMItemProps {

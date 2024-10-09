@@ -75,3 +75,5 @@ const StructuredDataScript = async ({
 }
 
 export default StructuredDataScript
+
+

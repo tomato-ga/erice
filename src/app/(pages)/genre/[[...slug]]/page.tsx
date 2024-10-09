@@ -3,6 +3,7 @@ import { DMMItemProps, ImageURLs } from '@/types/dmmtypes'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
+import StructuredDataScript from './StructuredGenreData'
 
 interface PageProps {
 	params: { slug?: string[] }
@@ -27,7 +28,7 @@ export function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	if (!encodedGenreName) {
 		return Promise.resolve({
 			title: 'ページが見つかりません | ' + SITE_NAME,
-			description: '指定されたページは存在しません。',
+			description: '指定されたページは存在しません。'
 		})
 	}
 
@@ -42,19 +43,19 @@ export function generateMetadata({ params }: PageProps): Promise<Metadata> {
 			description: description,
 			openGraph: {
 				title: pageTitle,
-				description: description,
+				description: description
 			},
 			twitter: {
 				card: 'summary',
 				title: pageTitle,
-				description: description,
-			},
+				description: description
+			}
 		})
 	} catch (error) {
 		console.error('[Server] Failed to fetch metadata:', error)
 		return Promise.resolve({
 			title: `${genrename} | ${SITE_NAME}`,
-			description: `${genrename} の動画一覧です。`,
+			description: `${genrename} の動画一覧です。`
 		})
 	}
 }
@@ -84,7 +85,7 @@ export default async function GenrePaginationPage({ params }: PageProps) {
 	try {
 		// APIリクエストのURLを出力
 		const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-genre-pagination?genre=${encodeURIComponent(
-			genrename,
+			genrename
 		)}&page=${currentPage}`
 		console.log('APIリクエストURL:', apiUrl) // リクエストURLを出力
 
@@ -105,7 +106,7 @@ export default async function GenrePaginationPage({ params }: PageProps) {
 		}
 
 		// 画像URLの優先順位を考慮して新しいプロパティを追加
-		const itemsWithPriorityImage = data.items.map(item => {
+		const itemsWithPriorityImage = data.items.map((item) => {
 			let priorityImageURL = ''
 			try {
 				const imageURLs = JSON.parse(item.imageURL) as ImageURLs
@@ -119,8 +120,10 @@ export default async function GenrePaginationPage({ params }: PageProps) {
 		// レスポンスデータを出力
 		console.log('APIレスポンスデータ:', data) // レスポンスデータを出力
 
+		const description = `${genrename} の動画一覧です。${currentPage}ページ目を表示しています。`
+
 		return (
-			<section className='max-w-7xl mx-auto'>
+			<section className="max-w-7xl mx-auto">
 				<Suspense fallback={<LoadingSpinner />}>
 					{/* DMMItemContainerPagination に props を渡す */}
 					<DMMItemContainerPagination
@@ -128,28 +131,36 @@ export default async function GenrePaginationPage({ params }: PageProps) {
 						currentPage={data.currentPage}
 						totalPages={data.totalPages}
 						category={genrename}
-						categoryType='genre'
+						categoryType="genre"
 					/>
 				</Suspense>
+
+				{/* 構造化データのスクリプトを挿入 */}
+				<StructuredDataScript
+					genreName={genrename}
+					currentPage={currentPage}
+					items={itemsWithPriorityImage}
+					description={description}
+				/>
 			</section>
 		)
 	} catch (error) {
 		console.error('[Server] Failed to fetch data:', error)
-		return <ErrorDisplay message='データの取得に失敗しました。後でもう一度お試しください。' />
+		return <ErrorDisplay message="データの取得に失敗しました。後でもう一度お試しください。" />
 	}
 }
 
 function LoadingSpinner() {
 	return (
-		<div className='flex justify-center items-center h-64' aria-label='読み込み中'>
-			<div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900' />
+		<div className="flex justify-center items-center h-64" aria-label="読み込み中">
+			<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900" />
 		</div>
 	)
 }
 
 function ErrorDisplay({ message }: { message: string }) {
 	return (
-		<div className='text-center text-red-600 py-8'>
+		<div className="text-center text-red-600 py-8">
 			<p>{message}</p>
 		</div>
 	)
