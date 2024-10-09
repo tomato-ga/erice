@@ -5,7 +5,11 @@ import React from 'react'
 import { fetchRelatedGenre } from './fetch/itemFetchers'
 
 const RelatedGenre = async ({ genreName }: { genreName: string }) => {
-	const relatedGenreData: DMMRelatedGenreItem | null = await fetchRelatedGenre(genreName)
+	console.log('genreName:', genreName)
+	const encodedGenreName = encodeURIComponent(genreName)
+	const relatedGenreData: DMMRelatedGenreItem | null = await fetchRelatedGenre(encodedGenreName)
+
+	console.log('relatedGenreData:', relatedGenreData)
 
 	return (
 		<>
