@@ -417,7 +417,7 @@ export const generateGenreBreadcrumbList = (
 			'@type': 'ListItem',
 			position: 2,
 			name: 'エロ動画ジャンル一覧',
-			item: 'https://erice.cloud/genre',
+			item: 'https://erice.cloud/genre-name',
 		},
 		{
 			'@type': 'ListItem',
