@@ -2,12 +2,12 @@
 
 import React from 'react'
 import { generateGenreArticleStructuredData, generateGenreBreadcrumbList } from '@/app/components/json-ld/jsonld'
-import { DMMItemProps } from '@/types/dmmtypes'
+import { DMMItemJsonLDProps } from '@/types/dmmtypes'
 
 interface StructuredDataScriptProps {
 	genreName: string
 	currentPage: number
-	items: DMMItemProps[]
+	items: DMMItemJsonLDProps[]
 	description: string
 }
 

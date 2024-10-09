@@ -4,7 +4,7 @@ import { DoujinKobetuItem } from '@/_types_doujin/doujintypes'
 import { DMMActressProfile } from '@/types/APItypes'
 import { GetKVTop100Response } from '@/types/dmm-keywordpage-types'
 import { DMMItemDetailResponse, DMMItemMainResponse } from '@/types/dmmitemzodschema'
-import { DMMItemProps } from '@/types/dmmtypes'
+import { DMMItemJsonLDProps, DMMItemProps } from '@/types/dmmtypes'
 import {
 	Article,
 	BreadcrumbList,
@@ -371,7 +371,7 @@ export const generateKeywordBreadcrumbList = (keyword: string): WithContext<Brea
 export const generateGenreArticleStructuredData = (
 	genreName: string,
 	currentPage: number,
-	items: DMMItemProps[],
+	items: DMMItemJsonLDProps[],
 	description: string
 ): WithContext<Article> => {
 	const currentYear = new Date().getFullYear()

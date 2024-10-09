@@ -169,7 +169,11 @@ export interface DMMItemProps {
 	title: string
 	imageURL: string
 	db_id: string
-	priorityImageURL?: string
+}
+
+export interface DMMItemJsonLDProps extends DMMItemProps {
+	priorityImageURL: string
+	
 }
 
 export interface ImageURLs {
