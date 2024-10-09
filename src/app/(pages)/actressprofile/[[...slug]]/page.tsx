@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 	const { actress } = data.profile
 	const { name, birthday, prefectures } = actress
-	const title = ` セクシー女優「${name}」のアダルト動画が${data.works.length}作品あります`
+	const title = ` セクシー女優「${name}」のエロ動画が${data.works.length}作品あります`
 	const description = `${actress.name}さんのセクシー女優プロフィールと作品一覧を見ることができるページです。${actress.name}さんの${data.works.length ? `出演作品数は ${data.works.length}件です。` : ''}${birthday ? `生年月日は${birthday}、` : ''}${prefectures ? `出身地は${prefectures}です。` : ''}${actress.bust && actress.waist && actress.hip ? `スリーサイズはB${actress.bust} W${actress.waist} H${actress.hip}です。` : ''}${actress.height ? `身長は${actress.height}cm。` : ''}${actress.cup ? `カップ数は${actress.cup}です。` : ''}${actress.hobby ? `趣味は${actress.hobby}です。` : ''}${actress.hobby ? `趣味は${actress.hobby}です。` : ''}`
 
 	return {
@@ -231,7 +231,7 @@ export default async function ActressProfilePage({ params }: PageProps) {
 	const { profile, works } = data
 
 	// タイトルと概要を再計算
-	const pageTitle = `セクシー女優「${profile.actress.name}」さんのアダルト動画が${works.length}作品あります`
+	const pageTitle = `セクシー女優「${profile.actress.name}」さんのエロ動画が${works.length}作品あります`
 
 	const { birthday, prefectures, bust, waist, hip, height, cup } = profile.actress
 

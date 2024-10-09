@@ -151,7 +151,7 @@ export const ProductDetails = async ({ title, contentId, dbId }: ProductDetailsP
 	return (
 		<div className='bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 shadow-lg'>
 			<h2 className='text-center font-bold mb-6 py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text'>
-				<span className='text-2xl'>アダルト動画詳細</span>
+				<span className='text-2xl'>エロ動画詳細</span>
 			</h2>
 			<ItemDetailsTable item={item} />
 		</div>

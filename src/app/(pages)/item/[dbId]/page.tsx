@@ -77,7 +77,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			title = `${itemMain.title} | エロコメスト`
 			description = `${itemMain.title} ${itemMain.content_id}の詳細情報と、サンプル画像・サンプル動画を見ることができるページです。${
 				itemDetail.actress && itemDetail.date
-					? `女優は${itemDetail.actress}さんで、このアダルト動画の発売日は${formatDate(itemDetail.date)}です。`
+					? `女優は${itemDetail.actress}さんで、このエロ動画の発売日は${formatDate(itemDetail.date)}です。`
 					: ''
 			}`
 		}
@@ -216,7 +216,7 @@ export default async function DMMKobetuItemPage({
 		}
 
 		if (itemDetail.date) {
-			parts.push(`このアダルト動画の発売日は${formatDate(itemDetail.date)}。`)
+			parts.push(`このエロ動画の発売日は${formatDate(itemDetail.date)}。`)
 		}
 
 		if (itemDetail.director && itemDetail.director.length > 0) {

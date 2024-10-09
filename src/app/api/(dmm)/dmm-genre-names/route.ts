@@ -3,16 +3,6 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const WORKER_URL = process.env.DMM_GENRE_PAGINATION_WORKER_URL
 
-// APIResponseインターフェースを更新
-interface APIResponse {
-	items: { id: string; title: string; imageURL: string; content_id: string }[]
-}
-
-// 変換後のデータ構造を定義
-interface TransformedAPIResponse {
-	items: { db_id: string; title: string; imageURL: string; content_id: string }[]
-}
-
 export async function GET(request: NextRequest) {
 	// APIキーをヘッダーに追加 (必要に応じて)
 	const headers = new Headers()
