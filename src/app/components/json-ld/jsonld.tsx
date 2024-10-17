@@ -1,6 +1,7 @@
 // src/utils/jsonld.ts
 
 import { DoujinKobetuItem } from '@/_types_doujin/doujintypes'
+import { FbooksKobetuItem } from '@/_types_fbooks/fbookstype'
 import { DMMActressProfile } from '@/types/APItypes'
 import { GetKVTop100Response } from '@/types/dmm-keywordpage-types'
 import { DMMItemDetailResponse, DMMItemMainResponse } from '@/types/dmmitemzodschema'
@@ -435,6 +436,94 @@ export const generateGenreBreadcrumbList = (
 			item: `https://erice.cloud/genre/${encodeURIComponent(genreName)}/page/${currentPage}`,
 		})
 	}
+
+	return {
+		'@context': 'https://schema.org',
+		'@type': 'BreadcrumbList',
+		itemListElement,
+	}
+}
+
+export const generateFbooksKobetuItemStructuredData = (
+	item: FbooksKobetuItem,
+	description: string,
+): WithContext<Article> => {
+	// メイン画像をImageObjectとして定義
+	const mainImage: ImageObject = {
+		'@type': 'ImageObject',
+		url: item.imageURL?.large || '',
+		description: `${item.title}のパッケージ画像`,
+	}
+
+	// サンプル画像をImageObjectとして定義
+	const sampleImages: ImageObject[] =
+		item.sample_images?.map((url, index) => ({
+			'@type': 'ImageObject',
+			url: url ?? '', // Provide an empty string as fallback
+			description: `${item.title}の画像${index + 1}`,
+		})) ?? []
+
+	// 全ての画像を統合
+	const allImages: ImageObject[] = [mainImage, ...sampleImages]
+
+	// 固定のAuthorデータ
+	const author: Person = {
+		'@type': 'Person',
+		name: 'エロコメスト管理人',
+		url: 'https://erice.cloud',
+	}
+
+	// 日付のフォーマット
+	const formattedDate = item.date ? new Date(item.date).toISOString() : new Date().toISOString()
+
+	// Articleスキーマの生成
+	return {
+		'@context': 'https://schema.org',
+		'@type': 'Article',
+		headline: item.title,
+		image: allImages,
+		datePublished: formattedDate,
+		author: author,
+		description: description,
+		mainEntityOfPage: `https://erice.cloud/doujin/itemd/${item.content_id}`,
+		...(item.genre_names && { keywords: item.genre_names.join(', ') }),
+	}
+}
+
+// 同人誌アイテム用のBreadcrumbListを生成する関数
+export const generateFbooksBreadcrumbList = (
+	item: FbooksKobetuItem,
+): WithContext<BreadcrumbList> => {
+	const itemListElement: ListItem[] = [
+		{
+			'@type': 'ListItem',
+			position: 1,
+			name: 'ホーム',
+			item: 'https://erice.cloud/',
+		},
+		{
+			'@type': 'ListItem',
+			position: 2,
+			name: 'エロ漫画トップページ',
+			item: 'https://erice.cloud/fbooks/',
+		},
+	]
+
+	if (item.manufacture_names && item.manufacture_names.length > 0) {
+		itemListElement.push({
+			'@type': 'ListItem',
+			position: 3,
+			name: item.manufacture_names[0],
+			item: `https://erice.cloud/fbooks/manufacture/${encodeURIComponent(item.manufacture_names[0])}`,
+		})
+	}
+
+	itemListElement.push({
+		'@type': 'ListItem',
+		position: item.manufacture_names && item.manufacture_names.length > 0 ? 4 : 3,
+		name: item.title,
+		item: `https://erice.cloud/fbooks/itemb/${item.content_id}`,
+	})
 
 	return {
 		'@context': 'https://schema.org',
