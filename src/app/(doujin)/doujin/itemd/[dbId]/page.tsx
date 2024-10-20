@@ -145,7 +145,7 @@ const ItemDetailsTable: React.FC<{ item: DoujinKobetuItem }> = ({ item }) => {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	try {
 		const item = await fetchItemData(params.dbId)
-		const title = `${item.title} | エロコメスト`
+		const title = `${item.title} - ${item.content_id}`
 		const description = (() => {
 			const parts = []
 			parts.push(

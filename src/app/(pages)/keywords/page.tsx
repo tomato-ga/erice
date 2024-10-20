@@ -29,15 +29,16 @@ export async function generateMetadata(): Promise<Metadata> {
 	const description = `人気のキーワードを${totalKeywords}件集めました。豊富なキーワードの中から、観たい作品を見つけるのに役立ててください。カテゴリーは${totalCategories}個、サブカテゴリは${totalSubcategories}個、組み合わせキーワードは${totalCombinedKeywords}件あります。レビュー合計数は多数です。最も多く登場する女優はN/Aです。`
 
 	return {
-		title: 'キーワード一覧',
+		title: 'エロ動画キーワード一覧',
 		description,
+		robots: { index: false, follow: false },
 		openGraph: {
-			title: 'キーワード一覧',
+			title: 'エロ動画キーワード一覧',
 			description,
 		},
 		twitter: {
 			card: 'summary_large_image',
-			title: 'キーワード一覧',
+			title: 'エロ動画キーワード一覧',
 			description,
 		},
 	}

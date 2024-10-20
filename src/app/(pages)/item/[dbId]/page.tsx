@@ -74,7 +74,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		const itemDetail = await fetchItemDetailByContentId(dbId)
 
 		if (itemMain && itemDetail) {
-			title = `${itemMain.title} | エロコメスト`
+			title = `${itemMain.title} - ${itemMain.content_id}`
 			description = `${itemMain.title} ${itemMain.content_id}の詳細情報と、サンプル画像・サンプル動画を見ることができるページです。${
 				itemDetail.actress && itemDetail.date
 					? `女優は${itemDetail.actress}さんで、このエロ動画の発売日は${formatDate(itemDetail.date)}です。`
@@ -283,6 +283,11 @@ export default async function DMMKobetuItemPage({
 					<article className='bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 space-y-6 sm:space-y-8'>
 						{/* 2024/10/06 停止 <PostList limit={12} /> */}
 
+						<h1 className='text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 text-center'>
+							{ItemMain.title}
+						</h1>
+						<p className='text-gray-600 dark:text-gray-300 text-base mt-4'>{description}</p>
+
 						<div className='relative overflow-hidden aspect-w-16 aspect-h-9'>
 							<UmamiTracking
 								trackingData={{
@@ -300,11 +305,6 @@ export default async function DMMKobetuItemPage({
 								</Link>
 							</UmamiTracking>
 						</div>
-
-						<h1 className='text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 text-center'>
-							{ItemMain.title}
-						</h1>
-						<p className='text-gray-600 dark:text-gray-300 text-base mt-4'>{description}</p>
 
 						{/* ABテスト 2024/10/02 */}
 						<ButtonTestComponent ItemMain={ItemMain} actressInfo={actressInfo} />
@@ -332,10 +332,6 @@ export default async function DMMKobetuItemPage({
 								</UmamiTracking>
 							</div>
 						</div> */}
-
-						<Suspense fallback={<LoadingSpinner />}>
-							<CommentSection contentId={ItemMain.content_id} />
-						</Suspense>
 
 						<FanzaADBannerFanzaKobetu />
 
@@ -400,6 +396,10 @@ export default async function DMMKobetuItemPage({
 								</div>
 							</div>
 						)}
+
+						<Suspense fallback={<LoadingSpinner />}>
+							<CommentSection contentId={ItemMain.content_id} />
+						</Suspense>
 
 						<div className='flex justify-center'>
 							<div className='relative inline-block group'>
