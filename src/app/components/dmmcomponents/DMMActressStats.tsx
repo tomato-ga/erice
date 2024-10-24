@@ -194,7 +194,7 @@ const MonthlyTrendChart: React.FC<MonthlyTrendChartProps> = ({ monthlyTrends }) 
 
 	return (
 		<div className={graphContainerClass}>
-			<h3 className='text-xl font-bold mb-4'>月間レビュートレンド</h3>
+			<h3 className='text-xl font-bold mb-4'>月間レビュー平均点トレンド</h3>
 			<div className='h-[400px] md:h-[300px]'>
 				<Line data={data} options={commonChartOptions} />
 			</div>
@@ -424,7 +424,7 @@ const BoxPlotChart: React.FC<{ annualBoxPlotData: BoxPlotData }> = ({ annualBoxP
 				<span className='ml-1 cursor-help relative group'>
 					ⓘ
 					<div className='invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity absolute z-10 w-72 p-2 bg-gray-800 text-white text-sm rounded-lg -top-24 left-1/2 transform -translate-x-1/2 shadow-lg'>
-						この箱ひげ図は、各年度のレビュースコアの分布を示しています。中央値、四分位数、最小値および最大値を視覚的に比較できます。
+						この箱ひげ図は、各年度のレビュースコアの分布を示しています。中央値、四分位数、最小値および最大値を視��的に比較できます。
 						<div className='absolute -bottom-2 left-1/2 transform -translate-x-1/2 border-8 border-transparent border-t-gray-800' />
 					</div>
 				</span>
@@ -488,7 +488,7 @@ const SeasonalityChart: React.FC<{ quarterlyTrends: Record<string, number> }> = 
 		plugins: {
 			tooltip: {
 				callbacks: {
-					label: (context: any) => {
+					label: (context: { parsed: { y: number } }) => {
 						return `平均スコア: ${context.parsed.y.toFixed(2)}`
 					},
 				},
@@ -559,12 +559,12 @@ const DMMActressStats: React.FC<{ actress_id: number; actress_name: string }> = 
 			{/* 概要統計 */}
 			<div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-8'>
 				<div className='bg-gray-50 p-4 rounded-lg'>
-					<h4 className='font-bold'>総合レビュー平均</h4>
+					<h4 className='font-bold'>総合レビュー平均点</h4>
 					<p className='text-2xl'>{actressStats.metadata.review_average.toFixed(2)}</p>
 				</div>
 				<div className='bg-gray-50 p-4 rounded-lg relative group'>
 					<h4 className='font-bold flex items-center'>
-						評価バランスを反映した平均
+						評価バランスを反映したレビュー平均点
 						<span className='ml-1 cursor-help'>ⓘ</span>
 					</h4>
 					<p className='text-2xl'>{actressStats.metadata.weighted_average.toFixed(2)}</p>
