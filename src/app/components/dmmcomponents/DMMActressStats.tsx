@@ -116,6 +116,25 @@ type BoxPlotData = Record<
 	} | null
 >
 
+// 共通のグラフコンテナクラス
+const graphContainerClass = 'w-full md:w-1/2 p-2 md:p-4'
+
+// 共通のグラフオプション
+const commonChartOptions = {
+	responsive: true,
+	maintainAspectRatio: false,
+	plugins: {
+		legend: {
+			position: 'bottom' as const,
+			labels: {
+				font: {
+					size: 14,
+				},
+			},
+		},
+	},
+}
+
 // レビュー分布グラフコンポーネント
 const ReviewDistributionChart: React.FC<ReviewDistributionChartProps> = ({ distribution }) => {
 	if (!distribution) return null
@@ -144,9 +163,12 @@ const ReviewDistributionChart: React.FC<ReviewDistributionChartProps> = ({ distr
 	}
 
 	return (
-		<div className='w-full md:w-1/2 p-4'>
+		<div className={graphContainerClass}>
 			<h3 className='text-xl font-bold mb-4'>レビュースコア分布</h3>
-			<Pie data={data} />
+			{/* スマホでは高さを大きく、PCではやや小さめに */}
+			<div className='h-[400px] md:h-[300px]'>
+				<Pie data={data} options={commonChartOptions} />
+			</div>
 		</div>
 	)
 }
@@ -171,9 +193,11 @@ const MonthlyTrendChart: React.FC<MonthlyTrendChartProps> = ({ monthlyTrends }) 
 	}
 
 	return (
-		<div className='w-full md:w-1/2 p-4'>
+		<div className={graphContainerClass}>
 			<h3 className='text-xl font-bold mb-4'>月間レビュートレンド</h3>
-			<Line data={data} />
+			<div className='h-[400px] md:h-[300px]'>
+				<Line data={data} options={commonChartOptions} />
+			</div>
 		</div>
 	)
 }
@@ -208,9 +232,11 @@ const QuarterlyTrendChart: React.FC<QuarterlyTrendChartProps> = ({ quarterlyTren
 	}
 
 	return (
-		<div className='w-full md:w-1/2 p-4'>
+		<div className={graphContainerClass}>
 			<h3 className='text-xl font-bold mb-4'>3ヶ月ごとのレビュー平均点推移</h3>
-			<Line data={data} />
+			<div className='h-[400px] md:h-[300px]'>
+				<Line data={data} options={commonChartOptions} />
+			</div>
 		</div>
 	)
 }
@@ -235,9 +261,11 @@ const CumulativeReviewChart: React.FC<CumulativeReviewChartProps> = ({ cumulativ
 	}
 
 	return (
-		<div className='w-full md:w-1/2 p-4'>
+		<div className={graphContainerClass}>
 			<h3 className='text-xl font-bold mb-4'>累積レビュー数推移</h3>
-			<Line data={data} />
+			<div className='h-[400px] md:h-[300px]'>
+				<Line data={data} options={commonChartOptions} />
+			</div>
 		</div>
 	)
 }
@@ -265,9 +293,12 @@ const PopularItemsChart: React.FC<PopularItemsChartProps> = ({ topItems }) => {
 	}
 
 	return (
-		<div className='w-full p-4'>
+		<div className={graphContainerClass}>
 			<h3 className='text-xl font-bold mb-4'>人気作品のレビュー統計</h3>
-			<Bar data={data} />
+			{/* 高さを他のグラフと同様に制御 */}
+			<div className='h-[400px] md:h-[300px]'>
+				<Bar data={data} options={commonChartOptions} />
+			</div>
 		</div>
 	)
 }
@@ -326,7 +357,7 @@ const AnnualStatsChart: React.FC<AnnualStatsChartProps> = ({ annualStats }) => {
 	}
 
 	return (
-		<div className='w-full md:w-1/2 p-4'>
+		<div className={graphContainerClass}>
 			<h3 className='text-xl font-bold mb-4'>年間レビュー統計</h3>
 			<Bar data={data} options={options} />
 		</div>
@@ -387,7 +418,7 @@ const BoxPlotChart: React.FC<{ annualBoxPlotData: BoxPlotData }> = ({ annualBoxP
 	}
 
 	return (
-		<div className='w-full md:w-1/2 p-4'>
+		<div className={graphContainerClass}>
 			<div className='flex items-center mb-4'>
 				<h3 className='text-xl font-bold'>年間レビュースコアの箱ひげ図</h3>
 				<span className='ml-1 cursor-help relative group'>
@@ -400,6 +431,85 @@ const BoxPlotChart: React.FC<{ annualBoxPlotData: BoxPlotData }> = ({ annualBoxP
 			</div>
 			<div className='relative group'>
 				<Chart type='boxplot' data={data} options={options} />
+			</div>
+		</div>
+	)
+}
+
+// 季節性パターン分析グラフコンポーネント
+const SeasonalityChart: React.FC<{ quarterlyTrends: Record<string, number> }> = ({
+	quarterlyTrends,
+}) => {
+	// 四半期データを季節ごとに集計
+	const seasonalData = Object.entries(quarterlyTrends).reduce(
+		(acc, [quarter, value]) => {
+			const q = quarter.split(' ')[0] // "Q1 2023" → "Q1"
+			if (!acc[q]) {
+				acc[q] = { sum: 0, count: 0 }
+			}
+			acc[q].sum += value
+			acc[q].count += 1
+			return acc
+		},
+		{} as Record<string, { sum: number; count: number }>,
+	)
+
+	// 平均値を計算
+	const averages = Object.entries(seasonalData).map(([quarter, data]) => ({
+		quarter,
+		average: data.sum / data.count,
+	}))
+
+	// グラフデータの準備
+	const data = {
+		labels: ['Q1 (1-3月)', 'Q2 (4-6月)', 'Q3 (7-9月)', 'Q4 (10-12月)'],
+		datasets: [
+			{
+				label: '四半期ごとの平均レビュースコア',
+				data: averages.map(a => a.average),
+				backgroundColor: 'rgba(153, 102, 255, 0.6)',
+				borderColor: 'rgba(153, 102, 255, 1)',
+				borderWidth: 1,
+			},
+		],
+	}
+
+	const options = {
+		...commonChartOptions,
+		scales: {
+			y: {
+				beginAtZero: true,
+				title: {
+					display: true,
+					text: '平均レビュースコア',
+				},
+			},
+		},
+		plugins: {
+			tooltip: {
+				callbacks: {
+					label: (context: any) => {
+						return `平均スコア: ${context.parsed.y.toFixed(2)}`
+					},
+				},
+			},
+		},
+	}
+
+	return (
+		<div className={graphContainerClass}>
+			<h3 className='text-xl font-bold mb-4'>
+				季節性パターン分析
+				<span className='ml-1 cursor-help relative group'>
+					ⓘ
+					<div className='invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity absolute z-10 w-72 p-2 bg-gray-800 text-white text-sm rounded-lg -top-24 left-1/2 transform -translate-x-1/2 shadow-lg'>
+						各四半期のレビュースコア平均を比較し、季節による評価の傾向を分析します。
+						<div className='absolute -bottom-2 left-1/2 transform -translate-x-1/2 border-8 border-transparent border-t-gray-800' />
+					</div>
+				</span>
+			</h3>
+			<div className='h-[400px] md:h-[300px]'>
+				<Bar data={data} options={options} />
 			</div>
 		</div>
 	)
@@ -469,8 +579,8 @@ const DMMActressStats: React.FC<{ actress_id: number; actress_name: string }> = 
 				</div>
 			</div>
 
-			{/* グラフ表示 */}
-			<div className='flex flex-wrap -mx-4'>
+			{/* グラフ表示 - コンテナのネガティブマージンを調整 */}
+			<div className='flex flex-wrap -mx-2 md:-mx-4'>
 				<ReviewDistributionChart distribution={reviewDistribution} />
 				<MonthlyTrendChart
 					monthlyTrends={actressStats.timeSeriesData.time_series_analysis.monthly_trends}
@@ -483,11 +593,14 @@ const DMMActressStats: React.FC<{ actress_id: number; actress_name: string }> = 
 						actressStats.timeSeriesData.time_series_analysis.cumulative_review_count
 					}
 				/>
-				{/* 年間計と箱ひげ図を横並びに配置 */}
-				<div className='w-full flex flex-wrap -mx-4'>
+				{/* 年間計と箱ひげ図のコンテナ */}
+				<div className='w-full flex flex-wrap'>
 					<AnnualStatsChart annualStats={annualStats} />
 					<BoxPlotChart annualBoxPlotData={annualBoxPlotData} />
 				</div>
+				<SeasonalityChart
+					quarterlyTrends={actressStats.timeSeriesData.time_series_analysis.quarterly_trends}
+				/>
 			</div>
 
 			{/* 人気作品のレビュー統計 */}
