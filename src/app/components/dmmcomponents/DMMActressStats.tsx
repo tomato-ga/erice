@@ -181,29 +181,17 @@ const MonthlyTrendChart: React.FC<MonthlyTrendChartProps> = ({ monthlyTrends }) 
 // 四半期トレンドグラフコンポーネント
 const QuarterlyTrendChart: React.FC<QuarterlyTrendChartProps> = ({ quarterlyTrends }) => {
 	const sortedLabels = Object.keys(quarterlyTrends).sort((a, b) => {
-		const getQuarterStart = (quarterStr: string) => {
-			const [q, year] = quarterStr.split(' ')
-			let month = 0
-			switch (q) {
-				case 'Q1':
-					month = 1
-					break
-				case 'Q2':
-					month = 4
-					break
-				case 'Q3':
-					month = 7
-					break
-				case 'Q4':
-					month = 10
-					break
-				default:
-					month = 1
-			}
-			return new Date(`${year}-${month}-01`).getTime()
+		const [qA, yearA] = a.split(' ')
+		const [qB, yearB] = b.split(' ')
+
+		// まず年で比較
+		if (yearA !== yearB) {
+			return Number.parseInt(yearA) - Number.parseInt(yearB) // 昇順のまま
 		}
-		// ここを変更: a - b を b - a に変更
-		return getQuarterStart(b) - getQuarterStart(a) // この行を変更
+
+		// 年が同じ場合は四半期で比較（Q1→Q2→Q3→Q4の順）
+		const quarterMap = { Q1: 1, Q2: 2, Q3: 3, Q4: 4 }
+		return quarterMap[qA as keyof typeof quarterMap] - quarterMap[qB as keyof typeof quarterMap] // 昇順のまま
 	})
 	const sortedData = sortedLabels.map(label => quarterlyTrends[label])
 
