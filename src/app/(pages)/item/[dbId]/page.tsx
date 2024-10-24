@@ -94,7 +94,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 				// 女優名が存在する場合、再度出演作品について追加
 				if (itemDetail.actress) {
-					parts.push(`${itemDetail.actress}さんの出演作品を発売順で紹介しています。`)
+					parts.push(
+						`${itemDetail.actress}さんのレビュー統計データと出演作品を発売順で紹介しています。`,
+					)
 				}
 
 				return parts.join('')
