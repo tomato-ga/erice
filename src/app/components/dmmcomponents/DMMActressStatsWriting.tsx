@@ -72,11 +72,11 @@ const DMMActressStatsWriting: React.FC<Props> = ({ actressName, actressStats }) 
 		if (latestYearStdDev > 1) {
 			analysis = `${actressName}さんの最新の作品に対する評価は、標準偏差が${latestYearStdDev.toFixed(
 				2,
-			)}となっており、評価にばらつきが見られます。これは、ファンの間で作品ごとに好みが分かれている可能性が高いことを示しています。彼女が多様な役柄に挑戦している結果とも言えるでしょう。`
+			)}となっており、評価にばらつきが見られます。これは、視聴者の間で作品ごとに好みが分かれている可能性が高いことを示しています。彼女が多様な役柄に挑戦している結果とも言えるでしょう。`
 		} else if (latestYearStdDev < 1) {
 			analysis = `${actressName}さんの最新の作品は、標準偏差が${latestYearStdDev.toFixed(
 				2,
-			)}と非常に低く、ファンからの評価が一貫して高いことが伺えます。これは、彼女の演技や作品が幅広い視聴者に安定して受け入れられていることを示しています。`
+			)}と非常に低く、作品による評価のバラツキが低いことから、視聴者からの評価が一貫して高いことが伺えます。これは、彼女の演技や作品が幅広い視聴者に安定して受け入れられていることを示しています。`
 		} else {
 			analysis = `${actressName}さんの最新の作品は、標準偏差が${latestYearStdDev.toFixed(
 				2,
@@ -132,6 +132,7 @@ const DMMActressStatsWriting: React.FC<Props> = ({ actressName, actressStats }) 
 			{/* 概要情報 */}
 			<p>
 				<strong>総合レビュー平均</strong>：{overallReviewAverage.toFixed(2)} <br />
+				<strong>評価バランスを反映した平均</strong>：{weighted_average.toFixed(2)} <br />
 				<strong>総レビュー数</strong>：{totalReviewCount}件 <br />
 				<strong>最終更新日</strong>：{last_updated}
 			</p>
@@ -139,10 +140,10 @@ const DMMActressStatsWriting: React.FC<Props> = ({ actressName, actressStats }) 
 			<hr className='my-4' />
 
 			{/* はじめに */}
-			<h2 className='text-xl font-bold mb-4'>はじめに</h2>
+			{/* <h2 className='text-xl font-bold mb-4'>はじめに</h2> */}
 			<p>
 				セクシー女優の<strong>{actressName}</strong>
-				さんは、その魅力的な演技で多くのファンを魅了しています。ここでは彼女の作品に寄せられたレビューデータをもとに、人気作品やレビュー傾向を詳しく分析します。
+				さんの作品に寄せられたレビューデータをもとに、最近の人気作品やレビュー評価傾向を詳しく分析します。
 				<strong>{actressName}</strong>さんの作品を視聴する方の参考になれば幸いです。
 			</p>
 
