@@ -202,7 +202,8 @@ const QuarterlyTrendChart: React.FC<QuarterlyTrendChartProps> = ({ quarterlyTren
 			}
 			return new Date(`${year}-${month}-01`).getTime()
 		}
-		return getQuarterStart(a) - getQuarterStart(b)
+		// ここを変更: a - b を b - a に変更
+		return getQuarterStart(b) - getQuarterStart(a) // この行を変更
 	})
 	const sortedData = sortedLabels.map(label => quarterlyTrends[label])
 
