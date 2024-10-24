@@ -9,7 +9,7 @@ import { DMMActressProfile } from '@/types/APItypes'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import LoadingSpinner from '../Article/ArticleContent/loadingspinner'
-import ActressRelatedItemsTimeLine from './DMMActressItemRelated'
+import ActressStatsAndRelatedItemsTimeLine from './DMMActressItemRelated'
 import RelatedGenre from './RelatedGenre'
 import { fetchActressProfile, fetchItemDetailByContentId } from './fetch/itemFetchers'
 
@@ -197,7 +197,7 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 				<Suspense fallback={<LoadingSpinner />}>
 					{/* 女優ごとに関連アイテムのタイムラインを表示 */}
 					{actresses.slice(0, 2).map((actressName: string, index: number) => (
-						<ActressRelatedItemsTimeLine key={index} actressName={actressName} />
+						<ActressStatsAndRelatedItemsTimeLine key={index} actressName={actressName} />
 					))}
 				</Suspense>
 			)}

@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 export const DMMActressRelatedItemSchema = z.object({
 	db_id: z.number(),
+	actress_id: z.number(),
 	content_id: z.string(),
 	title: z.string(),
 	url: z.string(),

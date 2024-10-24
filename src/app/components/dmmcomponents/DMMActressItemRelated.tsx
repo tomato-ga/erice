@@ -1,7 +1,9 @@
 import { formatDate } from '@/utils/dmmUtils'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { z } from 'zod'
 import { fetchActressRelatedItem } from '../dmmcomponents/fetch/itemFetchers'
+import DMMActressStats from './DMMActressStats'
 
 const ItemSchema = z.object({
 	db_id: z.number(),
@@ -14,6 +16,14 @@ const ItemSchema = z.object({
 })
 
 type ActressRelatedItem = z.infer<typeof ItemSchema>
+
+function LoadingSpinner() {
+	return (
+		<div className='flex justify-center items-center h-64' aria-label='読み込み中'>
+			<div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900' />
+		</div>
+	)
+}
 
 const ActressRelatedItemTimelineCard = ({ item }: { item: ActressRelatedItem }) => {
 	return (
@@ -49,7 +59,7 @@ const ActressRelatedItemTimelineCard = ({ item }: { item: ActressRelatedItem }) 
 	)
 }
 
-const ActressRelatedItemsTimeLine = async ({ actressName }: { actressName: string }) => {
+const ActressStatsAndRelatedItemsTimeLine = async ({ actressName }: { actressName: string }) => {
 	if (!actressName) {
 		return
 	}
@@ -77,6 +87,10 @@ const ActressRelatedItemsTimeLine = async ({ actressName }: { actressName: strin
 
 	return (
 		<div className='bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg p-4 sm:p-8 md:p-12'>
+			<Suspense fallback={<LoadingSpinner />}>
+				<DMMActressStats actress_id={ActressItemsResult[0].actress_id} actress_name={actressName} />
+			</Suspense>
+
 			<h2 className='text-3xl font-bold mb-12 text-center'>
 				<span className='bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500'>
 					{actressName}さん出演作品の発売日タイムライン
@@ -92,4 +106,4 @@ const ActressRelatedItemsTimeLine = async ({ actressName }: { actressName: strin
 	)
 }
 
-export default ActressRelatedItemsTimeLine
+export default ActressStatsAndRelatedItemsTimeLine

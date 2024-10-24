@@ -63,6 +63,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
 		const data = await response.json()
 
+		console.log('dmm-actress-relateditems data: ', data)
+
 		if (!isValidApiResponse(data)) {
 			throw new Error('不正なレスポンス形式')
 		}
