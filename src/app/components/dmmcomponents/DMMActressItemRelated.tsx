@@ -36,11 +36,11 @@ const ActressRelatedItemTimelineCard = ({ item }: { item: ActressRelatedItem }) 
 							/>
 						</div>
 						<div className='p-4'>
-							<h2
+							<h3
 								className='text-sm sm:text-base md:text-lg font-semibold mb-2 line-clamp-2'
 								title={item.title}>
 								{item.title}
-							</h2>
+							</h3>
 						</div>
 					</div>
 				</Link>
@@ -79,7 +79,7 @@ const ActressRelatedItemsTimeLine = async ({ actressName }: { actressName: strin
 		<div className='bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg p-4 sm:p-8 md:p-12'>
 			<h2 className='text-3xl font-bold mb-12 text-center'>
 				<span className='bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500'>
-					{actressName}の出演作品タイムライン
+					{actressName}さん出演作品の発売日タイムライン
 				</span>
 			</h2>
 			<div className='relative'>

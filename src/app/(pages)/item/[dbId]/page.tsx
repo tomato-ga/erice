@@ -74,12 +74,38 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		const itemDetail = await fetchItemDetailByContentId(dbId)
 
 		if (itemMain && itemDetail) {
+			const newdescription = (() => {
+				const parts = []
+
+				// 配信開始日が存在する場合、追加
+				if (itemDetail.date) {
+					parts.push(`${formatDate(itemDetail.date)}配信開始の、`)
+				}
+
+				// 女優名が存在する場合、追加
+				if (itemDetail.actress) {
+					parts.push(`${itemDetail.actress}が出演するエロ動画作品`)
+				}
+
+				// 作品名と品番を追加
+				parts.push(
+					`「${itemMain.title} - (${itemMain.content_id})」のキャプチャ画面とダウンロード情報、無料サンプル動画。`,
+				)
+
+				// 女優名が存在する場合、再度出演作品について追加
+				if (itemDetail.actress) {
+					parts.push(`${itemDetail.actress}さんの出演作品を発売順で紹介しています。`)
+				}
+
+				return parts.join('')
+			})()
+
 			title = `${itemMain.title} - ${itemMain.content_id}`
-			description = `${itemMain.title} ${itemMain.content_id}の詳細情報と、サンプル画像・サンプル動画を見ることができるページです。${
-				itemDetail.actress && itemDetail.date
-					? `女優は${itemDetail.actress}さんで、このエロ動画の発売日は${formatDate(itemDetail.date)}です。`
-					: ''
-			}`
+			description = newdescription
+				? newdescription
+				: `${itemMain.title} ${itemMain.content_id}の詳細情報と、キャプチャ画面・サンプル動画を見ることができるページです。${
+						itemDetail.actress && itemDetail.date
+					}`
 		}
 	} catch (error) {
 		console.error('メタデータの取得中にエラーが発生しました:', error)
@@ -88,29 +114,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	return {
 		title,
 		description,
-		// TODO opengraph修正する
-		openGraph: {
-			title,
-			description,
-			type: 'website',
-			url: `https://erice.cloud/item/${dbId}`,
-			images: [
-				{
-					url: 'https://erice.cloud/ogp.jpg',
-					width: 1200,
-					height: 630,
-					alt: 'エロコメスト OGP画像',
-				},
-			],
-		},
-		twitter: {
-			card: 'summary_large_image',
-			title,
-			description,
-			images: ['https://erice.cloud/ogp.jpg'],
-		},
 	}
 }
+
+// // TODO opengraph修正する
+// openGraph: {
+// 	title,
+// 	description,
+// 	type: 'website',
+// 	url: `https://erice.cloud/item/${dbId}`,
+// 	images: [
+// 		{
+// 			url: 'https://erice.cloud/ogp.jpg',
+// 			width: 1200,
+// 			height: 630,
+// 			alt: 'エロコメスト OGP画像',
+// 		},
+// 	],
+// },
+// twitter: {
+// 	card: 'summary_large_image',
+// 	title,
+// 	description,
+// 	images: ['https://erice.cloud/ogp.jpg'],
+// },
 
 const VideoPlayer = ({ src }: { src: string | null | undefined }) => {
 	if (!src) return null
@@ -288,6 +315,8 @@ export default async function DMMKobetuItemPage({
 						</h1>
 						<p className='text-gray-600 dark:text-gray-300 text-base mt-4'>{description}</p>
 
+						{/* <p className='text-gray-600 dark:text-gray-300 text-base mt-4'>{newdescription}</p> */}
+
 						<div className='relative overflow-hidden aspect-w-16 aspect-h-9'>
 							<UmamiTracking
 								trackingData={{
@@ -305,6 +334,15 @@ export default async function DMMKobetuItemPage({
 								</Link>
 							</UmamiTracking>
 						</div>
+
+						{/* 2024/10/20 商品詳細テーブルの場所を変更 */}
+						<Suspense fallback={<LoadingSpinner />}>
+							<ProductDetails
+								title={ItemMain.title}
+								contentId={ItemMain.content_id}
+								dbId={params.dbId}
+							/>
+						</Suspense>
 
 						{/* ABテスト 2024/10/02 */}
 						<ButtonTestComponent ItemMain={ItemMain} actressInfo={actressInfo} />
@@ -353,19 +391,11 @@ export default async function DMMKobetuItemPage({
 
 						<div className='w-full text-sm text-center my-4'>このページに広告を設置しています</div>
 
-						<Suspense fallback={<LoadingSpinner />}>
-							<ProductDetails
-								title={ItemMain.title}
-								contentId={ItemMain.content_id}
-								dbId={params.dbId}
-							/>
-						</Suspense>
-
 						{ItemMain.sampleImageURL && ItemMain.sampleImageURL.length > 0 && (
 							<div className='mt-8'>
 								<h2 className='text-center font-bold mb-6'>
 									<span className='text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text'>
-										サンプル画像
+										動画の見所シーンキャプチャ画像
 									</span>
 								</h2>
 								<div className='grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4'>
@@ -388,7 +418,7 @@ export default async function DMMKobetuItemPage({
 							<div className='mt-8'>
 								<h2 className='text-center font-bold mb-6'>
 									<span className='text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text'>
-										サンプル動画
+										無料のサンプル動画
 									</span>
 								</h2>
 								<div className='flex justify-center'>
