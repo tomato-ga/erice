@@ -426,7 +426,7 @@ const DMMActressStats: React.FC<{ actress_id: number; actress_name: string }> = 
 	useEffect(() => {
 		const fetchStats = async () => {
 			const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-stats?actress_id=${actress_id}`
-			const response = await fetch(apiUrl, { next: { revalidate: 10080 } })
+			const response = await fetch(apiUrl, { next: { revalidate: 2419200 } })
 			const data = (await response.json()) as ActressStats
 			setActressStats(data)
 		}
