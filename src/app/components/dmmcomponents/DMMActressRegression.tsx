@@ -326,16 +326,22 @@ const DMMActressRegression: React.FC<{ actressStats: ActressStats }> = ({ actres
 
 	return (
 		<div className='bg-white rounded-lg p-1 mb-8 max-w-4xl mx-auto'>
-			<h3 className='text-2xl font-bold mb-4 text-gray-800 border-b pb-2'>
-				次回作の予測レビュー平均点
-			</h3>
+			<div className='relative group'>
+				<h3 className='text-2xl font-bold mb-4 text-gray-800 border-b pb-2'>
+					次回作の予測レビュー平均点
+					<span className='ml-1 cursor-help'>ⓘ</span>
+				</h3>
+				<div className='invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity absolute z-10 w-80 p-3 bg-gray-800 text-white text-sm rounded-lg -top-16 left-1/2 transform -translate-x-1/2 shadow-lg'>
+					この予測は過去の月次データから、評価バランス、標準偏差、レビュー数、過去作品のスコアなどの要因がレビュー平均点にどのように影響するかを学習し、次回作の予測を行っています。そのため、予測が外れる可能性もあります。
+					<div className='absolute -bottom-2 left-1/2 transform -translate-x-1/2 border-8 border-transparent border-t-gray-800' />
+				</div>
+			</div>
 			<div className='space-y-4 text-gray-700 leading-relaxed'>
 				<p className='text-lg'>
 					次回作のレビュー平均点は{' '}
 					<strong className='text-gray-800'>{predictedReview.toFixed(2)}</strong> 点と予測されます。
 					この予測は、過去の作品に基づいて以下の要因を考慮した分析によって算出しました。
 				</p>
-
 				<section>
 					<h4 className='text-xl font-semibold mb-2 text-gray-800'>分析要素</h4>
 					<ul className='list-disc list-inside ml-4 bg-gray-50 p-4 rounded-lg'>
