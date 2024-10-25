@@ -124,115 +124,130 @@ const DMMActressStatsWriting: React.FC<Props> = ({ actressName, actressStats }) 
 	}
 
 	return (
-		<div className='bg-white rounded-lg p-6 mb-8'>
-			<h1 className='text-2xl font-bold mb-6'>
-				{actressName}さんのレビュー統計分析と人気作品の傾向
-			</h1>
+		<div className='bg-white rounded-lg p-1 mb-8 max-w-4xl mx-auto'>
+			<h2 className='text-3xl font-bold mb-6 text-gray-800 border-b pb-2'>
+				{actressName}さんのレビュー統計データ
+			</h2>
 
-			{/* 概要情報 */}
-			<p>
-				<strong>総合レビュー平均</strong>：{overallReviewAverage.toFixed(2)} <br />
-				<strong>評価バランス平均</strong>：{weighted_average.toFixed(2)} <br />
-				<strong>総レビュー数</strong>：{totalReviewCount}件 <br />
-				<strong>最終更新日</strong>：{last_updated}
-			</p>
+			<div className='space-y-6 text-gray-700 leading-relaxed'>
+				<section className='bg-gray-50 p-4 rounded-lg'>
+					<h3 className='text-xl font-semibold mb-2 text-gray-800'>概要情報</h3>
+					<p className='grid grid-cols-2 gap-2'>
+						<span>
+							<strong>総合レビュー平均</strong>：{overallReviewAverage.toFixed(2)}
+						</span>
+						<span>
+							<strong>評価バランス平均</strong>：{weighted_average.toFixed(2)}
+						</span>
+						<span>
+							<strong>総レビュー数</strong>：{totalReviewCount}件
+						</span>
+						<span>
+							<strong>最終更新日</strong>：{last_updated}
+						</span>
+					</p>
+				</section>
 
-			<hr className='my-4' />
-
-			{/* はじめに */}
-			{/* <h2 className='text-xl font-bold mb-4'>はじめに</h2> */}
-			<p>
-				セクシー女優の<strong>{actressName}</strong>
-				さんの作品に寄せられたレビューデータをもとに、最近の人気作品やレビュー評価傾向を詳しく分析します。
-				<strong>{actressName}</strong>さんの作品を視聴する方の参考になれば幸いです。
-			</p>
-
-			{/* レビュースコア分布と人気作品の傾向 */}
-			<h2 className='text-xl font-bold mt-6 mb-4'>レビュースコア分布と人気作品の傾向</h2>
-
-			{/* 人気作品トップ3 */}
-			<h3 className='text-lg font-bold mb-2'>人気作品トップ3</h3>
-			{topItems.map((item, index) => (
-				<div key={item.id} className='mb-4'>
-					<h4 className='font-bold'>
-						{index + 1}. 「{item.title}」
-					</h4>
-					<ul className='list-disc list-inside ml-4'>
-						<li>
-							<strong>レビュー数</strong>：{item.review_count}件
-						</li>
-						<li>
-							<strong>平均スコア</strong>：{item.review_average}
-						</li>
-						<li>
-							<strong>リリース日</strong>：{item.release_date}
-						</li>
-						{item.description && (
-							<li>
-								<strong>作品概要</strong>：{item.description}
-							</li>
-						)}
-					</ul>
-				</div>
-			))}
-
-			{/* 時期ごとの評価トレンド */}
-			<h2 className='text-xl font-bold mt-6 mb-4'>時期ごとの評価トレンド</h2>
-			<p>年間のレビュー平均を分析すると、以下のような傾向が見られます。</p>
-			{sortedYears.map(year => (
-				<p key={year}>
-					<strong>{year}年</strong>：平均スコア{' '}
-					<strong>{annualStats[year].average.toFixed(2)}</strong>
+				<p className='text-lg'>
+					セクシー女優の<strong className='text-gray-800'>{actressName}</strong>
+					さんの作品に寄せられたレビューデータをもとに、最近の人気作品やレビュー評価傾向を詳しく分析します。
+					<strong className='text-gray-800'>{actressName}</strong>
+					さんの作品を視聴する方の参考になれば幸いです。
 				</p>
-			))}
-			{/* 評価トレンドの分析を追加 */}
-			<p className='mt-2'>{evaluateTrend()}</p>
 
-			{/* 累積レビュー数の成長 */}
-			<h2 className='text-xl font-bold mt-6 mb-4'>累積レビュー数の成長</h2>
-			{(() => {
-				const dates = Object.keys(cumulative_review_count).sort()
-				const initialDate = dates[0]
-				const latestDate = dates[dates.length - 1]
-				const initialCount = cumulative_review_count[initialDate]
-				const latestCount = cumulative_review_count[latestDate]
-				return (
-					<>
-						<p>累積レビュー数は以下のように推移しています。</p>
-						<p>
-							<strong>{initialDate}</strong>：{initialCount}件
-						</p>
-						<p>
-							<strong>{latestDate}</strong>：{latestCount}件
-						</p>
-						<p className='mt-2'>{reviewGrowthAnalysis()}</p>
-					</>
-				)
-			})()}
+				<section>
+					<h3 className='text-2xl font-bold mt-8 mb-4 text-gray-800 border-b pb-2'>
+						レビュースコア分布と人気作品の傾向
+					</h3>
+					<h3 className='text-xl font-semibold mb-2 text-gray-700'>人気作品トップ3</h3>
+					{topItems.map((item, index) => (
+						<div key={item.id} className='mb-4 bg-gray-50 p-4 rounded-lg'>
+							<h4 className='font-bold text-gray-800'>
+								{index + 1}. 「{item.title}」
+							</h4>
+							<ul className='list-disc list-inside ml-4 mt-2'>
+								<li>
+									<strong>レビュー数</strong>：{item.review_count}件
+								</li>
+								<li>
+									<strong>平均スコア</strong>：{item.review_average}
+								</li>
+								<li>
+									<strong>リリース日</strong>：{item.release_date}
+								</li>
+								{item.description && (
+									<li>
+										<strong>作品概要</strong>：{item.description}
+									</li>
+								)}
+							</ul>
+						</div>
+					))}
+				</section>
 
-			{/* 年間統計データと評価のばらつき */}
-			<h2 className='text-xl font-bold mt-6 mb-4'>年間統計データと評価のばらつき</h2>
-			<p>年間のレビュー中央値や評価の分布から、以下のことが分かります。</p>
-			<ul className='list-disc list-inside ml-4'>
-				<li>
-					<strong>{latestYear}年</strong>： 平均スコア {latestYearStats.average.toFixed(2)}、中央値{' '}
-					{latestYearStats.median.toFixed(2)}、標準偏差 {latestYearStats.std_dev.toFixed(2)}
-				</li>
-			</ul>
-			<p className='mt-2'>{standardDeviationAnalysis()}</p>
+				<section>
+					<h3 className='text-2xl font-bold mt-8 mb-4 text-gray-800 border-b pb-2'>
+						時期ごとの評価トレンド
+					</h3>
+					<p className='mb-2'>年間のレビュー平均を分析すると、以下のような傾向が見られます。</p>
+					<div className='grid grid-cols-2 gap-2 bg-gray-50 p-4 rounded-lg'>
+						{sortedYears.map(year => (
+							<p key={year}>
+								<strong className='text-gray-800'>{year}年</strong>：平均スコア{' '}
+								<strong className='text-gray-800'>{annualStats[year].average.toFixed(2)}</strong>
+							</p>
+						))}
+					</div>
+					<p className='mt-4'>{evaluateTrend()}</p>
+				</section>
 
-			{/* 回帰分析 */}
-			<DMMActressRegression actressStats={actressStats} />
+				<section>
+					<h3 className='text-2xl font-bold mt-8 mb-4 text-gray-800 border-b pb-2'>
+						累積レビュー数の成長
+					</h3>
+					{(() => {
+						const dates = Object.keys(cumulative_review_count).sort()
+						const initialDate = dates[0]
+						const latestDate = dates[dates.length - 1]
+						const initialCount = cumulative_review_count[initialDate]
+						const latestCount = cumulative_review_count[latestDate]
+						return (
+							<>
+								<p className='mb-2'>累積レビュー数は以下のように推移しています。</p>
+								<div className='bg-gray-50 p-4 rounded-lg'>
+									<p>
+										<strong className='text-gray-800'>{initialDate}</strong>：{initialCount}件
+									</p>
+									<p>
+										<strong className='text-gray-800'>{latestDate}</strong>：{latestCount}件
+									</p>
+								</div>
+								<p className='mt-4'>{reviewGrowthAnalysis()}</p>
+							</>
+						)
+					})()}
+				</section>
 
-			{/* まとめ */}
-			<h2 className='text-xl font-bold mt-6 mb-4'>まとめ</h2>
-			<p>{generateConclusion()}</p>
+				<section>
+					<h3 className='text-2xl font-bold mt-8 mb-4 text-gray-800 border-b pb-2'>
+						年間統計データと評価のばらつき
+					</h3>
+					<p className='mb-2'>年間のレビュー中央値や評価の分布から、以下のことが分かります。</p>
+					<ul className='list-disc list-inside ml-4 bg-gray-50 p-4 rounded-lg'>
+						<strong className='text-gray-800'>{latestYear}年</strong>： 平均スコア{' '}
+						{latestYearStats.average.toFixed(2)}、中央値 {latestYearStats.median.toFixed(2)}
+						、標準偏差 {latestYearStats.std_dev.toFixed(2)}
+					</ul>
+					<p className='mt-4'>{standardDeviationAnalysis()}</p>
+				</section>
 
-			<hr className='my-4' />
+				<DMMActressRegression actressStats={actressStats} />
 
-			{/* <p className='text-sm font-bold'>
-				※アダルト動画のレビュー情報を元に、独自の統計処理を施したデータに基づいて作成されています。
-			</p> */}
+				<section>
+					<h3 className='text-2xl font-bold mt-8 mb-4 text-gray-800 border-b pb-2'>まとめ</h3>
+					<p className='bg-gray-50 p-4 rounded-lg'>{generateConclusion()}</p>
+				</section>
+			</div>
 		</div>
 	)
 }

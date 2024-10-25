@@ -69,23 +69,20 @@ const performRegressionAnalysis = (
 	data: ReviewData[],
 	scaler: React.MutableRefObject<StandardScaler | null>,
 ): MultivariateLinearRegression => {
-	// X を二次元配列として明示的に型付け
 	const X: number[][] = data.map(item => [
 		item.weightedAverage,
 		item.stdDev,
-		Math.log(1 + item.reviewCount), // 対数変換
+		Math.log(1 + item.reviewCount),
 		item.previousItemScores.length > 0
 			? item.previousItemScores.reduce((a, b) => a + b, 0) / item.previousItemScores.length
 			: 0,
 	])
 
-	// y を二次元配列として型付け
 	const y: number[][] = data.map(item => [item.reviewAverage])
 
-	console.log('X:', X)
-	console.log('y:', y)
+	// console.log('X:', X)
+	// console.log('y:', y)
 
-	// 標準化
 	const means = calculateMeans(X)
 	const stds = calculateStds(X, means)
 	const scalerData: StandardScaler = { means, stds }
@@ -93,29 +90,26 @@ const performRegressionAnalysis = (
 
 	const X_normalized = standardizeData(X, scalerData)
 
-	console.log('Normalized X:', X_normalized)
-	console.log('Scaler Means:', means)
-	console.log('Scaler Stds:', stds)
+	// console.log('Normalized X:', X_normalized)
+	// console.log('Scaler Means:', means)
+	// console.log('Scaler Stds:', stds)
 
-	// 回帰モデルの訓練
 	const mlr = new MultivariateLinearRegression(X_normalized, y, { intercept: true })
 
-	console.log('mlr.weights:', mlr.weights)
+	// console.log('mlr.weights:', mlr.weights)
 
 	return mlr
 }
 
-// 予測を行う関数
 const predictNextReview = (
 	mlr: MultivariateLinearRegression,
 	nextMovie: ReviewData,
 	scaler: StandardScaler,
 ): number => {
-	// 新しいデータを標準化
 	const nextMovieFeatures: number[] = [
 		nextMovie.weightedAverage,
 		nextMovie.stdDev,
-		Math.log(1 + nextMovie.reviewCount), // 対数変換
+		Math.log(1 + nextMovie.reviewCount),
 		nextMovie.previousItemScores.length > 0
 			? nextMovie.previousItemScores.reduce((a, b) => a + b, 0) /
 				nextMovie.previousItemScores.length
@@ -129,16 +123,14 @@ const predictNextReview = (
 		}),
 	]
 
-	console.log('Normalized nextMovieData:', nextMovieNormalized)
+	// console.log('Normalized nextMovieData:', nextMovieNormalized)
 
-	// モデルの predict メソッドを使用
-	const predictions: number[][] = mlr.predict(nextMovieNormalized) // predictions: number[][]
+	const predictions: number[][] = mlr.predict(nextMovieNormalized)
 	const rawPrediction: number = predictions[0][0]
-	console.log('Raw prediction:', rawPrediction)
+	// console.log('Raw prediction:', rawPrediction)
 
-	// バリデーション: 予測値が0から5の範囲内に収まるように調整
 	const prediction: number = Math.max(0, Math.min(rawPrediction, 5))
-	console.log('Validated prediction:', prediction)
+	// console.log('Validated prediction:', prediction)
 
 	return prediction
 }
@@ -236,7 +228,7 @@ const DMMActressRegression: React.FC<{ actressStats: ActressStats }> = ({ actres
 			previousItemScores,
 		}))
 
-		console.log('reviewData:', reviewData)
+		// console.log('reviewData:', reviewData)
 
 		// **重要**: reviewCountが0のデータポイントを除外するのではなく、全てのデータポイントを使用
 		// データポイントが十分でない場合でも回帰分析を実行
@@ -245,7 +237,7 @@ const DMMActressRegression: React.FC<{ actressStats: ActressStats }> = ({ actres
 		let mlr: MultivariateLinearRegression
 		try {
 			mlr = performRegressionAnalysis(reviewData, scalerRef)
-			console.log('回帰分析結果: model', mlr)
+			// console.log('回帰分析結果: model', mlr)
 
 			// 回帰係数の取得
 			const weights = mlr.weights // number[][]
@@ -301,7 +293,7 @@ const DMMActressRegression: React.FC<{ actressStats: ActressStats }> = ({ actres
 			previousItemScores: latestTop3Scores,
 		}
 
-		console.log('nextMovieData:', nextMovieData)
+		// console.log('nextMovieData:', nextMovieData)
 
 		if (!scalerRef.current) {
 			setErrorMessage('スケーラーの初期化に失敗しました。')
@@ -310,7 +302,7 @@ const DMMActressRegression: React.FC<{ actressStats: ActressStats }> = ({ actres
 
 		// 予測値の計算
 		const prediction = predictNextReview(mlr, nextMovieData, scalerRef.current)
-		console.log('予測値:', prediction)
+		// console.log('予測値:', prediction)
 
 		setPredictedReview(prediction)
 		setNextMovie(nextMovieData)
@@ -333,38 +325,43 @@ const DMMActressRegression: React.FC<{ actressStats: ActressStats }> = ({ actres
 			: 'データなし'
 
 	return (
-		<div className='bg-white rounded-lg'>
-			<h2 className='text-xl font-bold mt-6 mb-4'>次作の予測レビュー平均点</h2>
-			<p>
-				次作のレビュー平均点は <strong>{predictedReview.toFixed(2)}</strong> 点と予測されます。
-				この予測は、過去の作品に基づいて以下の要因を考慮した分析によって算出しました。
-			</p>
+		<div className='bg-white rounded-lg p-1 mb-8 max-w-4xl mx-auto'>
+			<h3 className='text-2xl font-bold mb-4 text-gray-800 border-b pb-2'>
+				次回作の予測レビュー平均点
+			</h3>
+			<div className='space-y-4 text-gray-700 leading-relaxed'>
+				<p className='text-lg'>
+					次回作のレビュー平均点は{' '}
+					<strong className='text-gray-800'>{predictedReview.toFixed(2)}</strong> 点と予測されます。
+					この予測は、過去の作品に基づいて以下の要因を考慮した分析によって算出しました。
+				</p>
 
-			{/* 回帰直線の式 */}
-			{/* <h3 className='text-lg font-bold mt-4 mb-2'>回帰直線の式</h3>
-			<p className='italic mb-4'>{regressionEquation}</p> */}
+				<section>
+					<h4 className='text-xl font-semibold mb-2 text-gray-800'>分析要素</h4>
+					<ul className='list-disc list-inside ml-4 bg-gray-50 p-4 rounded-lg'>
+						<li>
+							<strong className='text-gray-800'>評価バランス平均：</strong>{' '}
+							{nextMovie.weightedAverage.toFixed(2)}
+						</li>
+						<li>
+							<strong className='text-gray-800'>標準偏差：</strong> {nextMovie.stdDev.toFixed(2)}
+						</li>
+						<li>
+							<strong className='text-gray-800'>レビュー数：</strong> {nextMovie.reviewCount} 件
+						</li>
+						<li>
+							<strong className='text-gray-800'>過去作品の平均スコア：</strong>{' '}
+							{avgPreviousItemScores}
+						</li>
+					</ul>
+				</section>
 
-			{/* 詳細情報 */}
-			<h3 className='text-lg font-bold mt-4 mb-2'>詳細情報</h3>
-			<ul className='list-disc list-inside ml-4 mb-4'>
-				<li>
-					<strong>評価バランス平均：</strong> {nextMovie.weightedAverage.toFixed(2)}
-				</li>
-				<li>
-					<strong>標準偏差：</strong> {nextMovie.stdDev.toFixed(2)}
-				</li>
-				<li>
-					<strong>レビュー数：</strong> {nextMovie.reviewCount} 件
-				</li>
-				<li>
-					<strong>過去作品の平均スコア：</strong> {avgPreviousItemScores}
-				</li>
-			</ul>
-
-			<p>
-				これらの要因に基づいて次作のレビュー平均は <strong>{predictedReview.toFixed(2)}</strong>{' '}
-				点と予測されています。
-			</p>
+				<p className='text-lg bg-gray-50 p-4 rounded-lg'>
+					これらの要因に基づいて次回作のレビュー平均は{' '}
+					<strong className='text-gray-800'>{predictedReview.toFixed(2)}</strong>{' '}
+					点と予測されています。
+				</p>
+			</div>
 		</div>
 	)
 }
