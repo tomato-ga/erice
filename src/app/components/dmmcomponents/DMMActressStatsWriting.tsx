@@ -72,11 +72,10 @@ const DMMActressStatsWriting: React.FC<Props> = ({ actressName, actressStats }) 
 		if (latestYearStdDev > 1) {
 			analysis = `${actressName}さんの最新の作品に対する評価は、標準偏差が${latestYearStdDev.toFixed(
 				2,
-			)}となっており、評価にばらつきが見られます。これは、視聴者の間で作品ごとに好みが分かれている可能性が高いことを示しています。彼女が多様な役柄に挑戦している結果とも言えるでしょう。`
+			)}となっており、評価にばらつきが見られます。\nこれは、視聴者の間で作品ごとに好みが分かれている可能性が高いことを示しています。彼女が多様な役柄に挑戦している結果とも言えるでしょう。`
 		} else if (latestYearStdDev < 1) {
-			analysis = `${actressName}さんの最新の作品は、標準偏差が${latestYearStdDev.toFixed(
-				2,
-			)}と非常に低く、作品による評価のバラツキが低いことから、視聴者からの評価が一貫して高いことが伺えます。これは、彼女の演技や作品が幅広い視聴者に安定して受け入れられていることを示しています。`
+			analysis = `${actressName}さんの最新の作品は、標準偏差が${latestYearStdDev.toFixed(2)}と非常に低く、作品による評価のバラツキが低いことから、視聴者からの評価が一貫して高いことが伺えます。
+			これは、彼女の演技や作品が幅広い視聴者に安定して受け入れられていることを示しています。`
 		} else {
 			analysis = `${actressName}さんの最新の作品は、標準偏差が${latestYearStdDev.toFixed(
 				2,
@@ -131,7 +130,7 @@ const DMMActressStatsWriting: React.FC<Props> = ({ actressName, actressStats }) 
 
 			<div className='space-y-6 text-gray-700 leading-relaxed'>
 				<section className='bg-gray-50 p-4 rounded-lg'>
-					<h3 className='text-xl font-semibold mb-2 text-gray-800'>概要情報</h3>
+					<h3 className='text-xl font-semibold mb-2 text-gray-800'>分析情報</h3>
 					<p className='grid grid-cols-2 gap-2'>
 						<span>
 							<strong>総合レビュー平均</strong>：{overallReviewAverage.toFixed(2)}
@@ -157,7 +156,7 @@ const DMMActressStatsWriting: React.FC<Props> = ({ actressName, actressStats }) 
 
 				<section>
 					<h3 className='text-2xl font-bold mt-8 mb-4 text-gray-800 border-b pb-2'>
-						レビュースコア分布と人気作品の傾向
+						人気作品の統計データ
 					</h3>
 					<h3 className='text-xl font-semibold mb-2 text-gray-700'>人気作品トップ3</h3>
 					{topItems.map((item, index) => (
