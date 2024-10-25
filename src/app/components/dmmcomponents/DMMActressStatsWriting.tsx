@@ -1,9 +1,9 @@
 // src/app/components/dmmcomponents/DMMActressStatsWriting.tsx
 
-'use client'
-
 import { ActressStats } from '@/_types_dmm/statstype'
 import React from 'react'
+// import DMMActressRegression from './DMMActressRegression'
+import DMMActressRegression from './DMMActressRegression'
 
 type Props = {
 	actressName: string
@@ -132,7 +132,7 @@ const DMMActressStatsWriting: React.FC<Props> = ({ actressName, actressStats }) 
 			{/* 概要情報 */}
 			<p>
 				<strong>総合レビュー平均</strong>：{overallReviewAverage.toFixed(2)} <br />
-				<strong>評価バランスを反映した平均</strong>：{weighted_average.toFixed(2)} <br />
+				<strong>評価バランス平均</strong>：{weighted_average.toFixed(2)} <br />
 				<strong>総レビュー数</strong>：{totalReviewCount}件 <br />
 				<strong>最終更新日</strong>：{last_updated}
 			</p>
@@ -220,6 +220,9 @@ const DMMActressStatsWriting: React.FC<Props> = ({ actressName, actressStats }) 
 				</li>
 			</ul>
 			<p className='mt-2'>{standardDeviationAnalysis()}</p>
+
+			{/* 回帰分析 */}
+			<DMMActressRegression actressStats={actressStats} />
 
 			{/* まとめ */}
 			<h2 className='text-xl font-bold mt-6 mb-4'>まとめ</h2>
