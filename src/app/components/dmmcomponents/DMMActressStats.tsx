@@ -557,8 +557,7 @@ const DMMActressStats: React.FC<{ actress_id: number; actress_name: string }> = 
 
 	return (
 		<div className='bg-white rounded-lg p-6 mb-8'>
-			{/* 構造化データ */}
-			<ActressStatsStructuredData actressName={actress_name} actressStats={actressStats} />
+			{/* 構造化データは/itemにマージして統合 */}
 
 			{/* <h2 className='text-2xl font-bold mb-6'>セクシー女優「{actress_name}」さんの統計データ</h2> */}
 			<DMMActressStatsWriting actressName={actress_name} actressStats={actressStats} />

@@ -90,13 +90,13 @@ export const generateBreadcrumbList = (
 }
 
 // Articleを生成する関数
-export const generateArticleStructuredData = (
+export const generateArticleStructuredData = async (
 	itemMain: DMMItemMainResponse,
 	itemDetail: DMMItemDetailResponse,
 	description: string,
 	dbId: number,
 	actressProfiles: DMMActressProfile[] | null,
-): WithContext<Article> => {
+): Promise<WithContext<Article>> => {
 	// itemMain.imageURLをImageObjectとして定義
 	const mainImage: ImageObject = {
 		'@type': 'ImageObject',
@@ -147,13 +147,22 @@ export const generateArticleStructuredData = (
 	// 女優情報
 	let actressData: WithContext<Person>[] | null = null
 	if (actressProfiles && actressProfiles.length > 0) {
-		// 不完全なプロフィールを除外
-		const validActressProfiles = actressProfiles
-			.map(profile => generatePersonStructuredData(profile, description))
-			.filter(profile => profile !== null) as WithContext<Person>[]
+		// 各女優プロフィールに対してActressStatsをフェッチし、構造化データを生成
+		const actressPersonDataPromises = actressProfiles.map(async profile => {
+			const actressStats = await fetchActressStats(profile.actress.id)
+			return generatePersonStructuredData(profile, description, actressStats)
+		})
 
-		if (validActressProfiles.length > 0) {
-			actressData = validActressProfiles
+		// 全てのPromiseを解決
+		const actressPersonDataResults = await Promise.all(actressPersonDataPromises)
+
+		// 有効なデータのみをフィルタリング
+		const validActressPersonData = actressPersonDataResults.filter(
+			data => data !== null,
+		) as WithContext<Person>[]
+
+		if (validActressPersonData.length > 0) {
+			actressData = validActressPersonData
 		} else {
 			console.warn('All actress profiles are incomplete or missing.')
 		}
@@ -172,7 +181,7 @@ export const generateArticleStructuredData = (
 	const keywords: string | undefined = itemDetail.genre?.join(', ')
 
 	// Articleスキーマの生成
-	return {
+	const articleStructuredData: WithContext<Article> = {
 		'@context': 'https://schema.org',
 		'@type': 'Article',
 		headline: `${itemMain.title} ${itemMain.content_id} `,
@@ -190,52 +199,112 @@ export const generateArticleStructuredData = (
 		description: description,
 		mainEntityOfPage: `https://erice.cloud/item/${dbId}`,
 		...(videoObject && { video: videoObject }), // VideoObjectが存在する場合のみ追加
-		// ...(articleSection && { articleSection: articleSection }),
+		// ...(articleSection && { articleSection: articleSection }), // コメントアウトされている場合は不要
 		...(keywords && { keywords: keywords }),
-		...(actressData && { about: actressData }),
+		...(actressData && { about: actressData }), // 女優のPerson構造化データを追加
 	}
+
+	return articleStructuredData
 }
 
-// 女優のPerson構造化データを生成する関数
+// 女優のPerson構造化データを生成し、統計データを追加する関数
 export const generatePersonStructuredData = (
 	actressProfile: DMMActressProfile,
 	description: string,
+	data?: ActressStats | null, // オプショナルに変更
 ): WithContext<Person> | null => {
-	// actressProfile 内の actress オブジェクトを取得し、存在チェック
 	const actress = actressProfile.actress
 	if (!actress) {
 		console.warn('Actress data is missing in actressProfile:', actressProfile)
 		return null
 	}
 
-	// 女優の画像URLを取得（なければnull）
 	const actressImage = actress.image_url_large || actress.image_url_small || null
 
-	// 構造化データオブジェクトを作成
 	const structuredData: WithContext<Person> = {
 		'@context': 'https://schema.org',
 		'@type': 'Person',
 		name: actress.name,
-		birthDate: actress.birthday || undefined, // 誕生日がある場合のみ追加
-		height: actress.height ? `${actress.height}` : undefined, // 身長がある場合のみ追加
+		birthDate: actress.birthday || undefined,
+		height: actress.height ? `${actress.height}` : undefined,
 		description: description,
-		sameAs: actress.list_url || undefined, // 外部の関連URLがあれば設定
+		sameAs: actress.list_url || undefined,
 	}
 
-	// actressImageが存在する場合のみ image フィールドを追加
 	if (actressImage) {
 		structuredData.image = actressImage
+	}
+
+	if (data?.metadata) {
+		const histogramDescription = data.metadata.review_score_distribution
+			? `レビューの分布は次の通りです: ${JSON.stringify(data.metadata.review_score_distribution.histogram)}`
+			: ''
+
+		const annualDataDescription = data.annualData
+			? Object.keys(data.annualData.annual_review_average)
+					.map(year => {
+						const average = data.annualData?.annual_review_average[year].toFixed(2)
+						const median = data.annualData?.annual_review_median[year].toFixed(2)
+						const stdDev = data.annualData?.annual_review_std_dev[year].toFixed(2)
+						return `${year}年のレビュー: 平均評価 ${average}, 中央値 ${median}, 標準偏差 ${stdDev}`
+					})
+					.join('、')
+			: ''
+
+		const cumulativeReviewCountDescription = data.timeSeriesData?.time_series_analysis
+			.cumulative_review_count
+			? `累積レビュー数: ${JSON.stringify(data.timeSeriesData.time_series_analysis.cumulative_review_count)}`
+			: ''
+
+		const topItemsDescription =
+			data.metadata.top_3_popular_items
+				?.filter(item => item)
+				.map(
+					item =>
+						`${item?.title}（評価: ${item?.review_average.toFixed(2)}、レビュー数: ${item?.review_count}）`,
+				)
+				.join('、') || 'トップ3作品に関する情報はありません。'
+
+		const statsDescription = `
+            ${actress.name}さんは、平均評価${data.metadata.review_average.toFixed(2)}、中央値${data.metadata.review_median.toFixed(2)}、標準偏差${data.metadata.review_std_dev.toFixed(2)}です。
+            全レビュー数は${data.metadata.total_review_count}件で、総合平均評価は${data.metadata.overall_review_average.toFixed(2)}です。
+            ${histogramDescription}
+            ${annualDataDescription}
+            ${cumulativeReviewCountDescription}
+            特に人気の高い作品は次の通りです: ${topItemsDescription}
+            データ最終更新日: ${data.metadata.last_updated}
+        `
+			.replace(/\s+/g, ' ')
+			.trim()
+
+		structuredData.description = `${description} ${statsDescription}`
 	}
 
 	return structuredData
 }
 
+// fetchActressStats 関数
+export const fetchActressStats = async (actressId: number): Promise<ActressStats | null> => {
+	try {
+		const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-stats?actress_id=${actressId}`
+		const response = await fetch(apiUrl)
+		if (!response.ok) {
+			console.warn('Failed to fetch actress stats:', response.status)
+			return null
+		}
+		return (await response.json()) as ActressStats
+	} catch (error) {
+		console.error('Error fetching actress stats:', error)
+		return null
+	}
+}
+
 // 女優ページの構造化データを生成する関数
-export const generateActressArticleStructuredData = (
+export const generateActressArticleStructuredData = async (
 	h1: string,
 	description: string,
 	profile: DMMActressProfile,
-): WithContext<Article> => {
+): Promise<WithContext<Article>> => {
 	// 固定のAuthorデータ
 	const author: Person = {
 		'@type': 'Person',
@@ -243,25 +312,32 @@ export const generateActressArticleStructuredData = (
 		url: 'https://erice.cloud',
 	}
 
-	// 女優のPerson構造化データを生成
-	const actressPersonData = generatePersonStructuredData(profile, description)
+	// ActressStats データをフェッチ
+	const actressStats = await fetchActressStats(profile.actress.id)
+
+	// ActressStats データが存在するか確認
+	if (!actressStats) {
+		console.warn('ActressStats data is not available.')
+	}
+
+	// 女優のPerson構造化データを生成（data を渡す）
+	const actressPersonData = generatePersonStructuredData(profile, description, actressStats)
 
 	// Articleスキーマの生成
-	return {
+	const articleStructuredData: WithContext<Article> = {
 		'@context': 'https://schema.org',
 		'@type': 'Article',
 		headline: h1,
-		image: [
-			profile.actress.image_url_large || profile.actress.image_url_small || '',
-			// 複数の画像サイズがある場合は追加することをお勧めします
-		],
+		image: [profile.actress.image_url_large || profile.actress.image_url_small || ''],
 		author: author,
 		description: description,
-		datePublished: new Date().toISOString(), // 記事の公開日時
-		dateModified: new Date().toISOString(), // 記事の最終更新日時
-		mainEntityOfPage: `https://erice.cloud/actressprofile/${profile.actress.name}`,
-		...(actressPersonData && { about: actressPersonData }), // 女優のPerson構造化データを追加
+		datePublished: new Date().toISOString(),
+		dateModified: new Date().toISOString(),
+		mainEntityOfPage: `https://erice.cloud/actressprofile/${encodeURIComponent(profile.actress.name)}`,
+		...(actressPersonData && { about: actressPersonData }),
 	}
+
+	return articleStructuredData
 }
 
 export const generateDoujinKobetuItemStructuredData = (

@@ -31,7 +31,6 @@ const StructuredDataScript: React.FC<StructuredDataScriptProps> = async ({
 	itemDetail,
 	description,
 	dbId,
-	actressStats, // 追加
 }) => {
 	try {
 		// 女優情報のフェッチ
