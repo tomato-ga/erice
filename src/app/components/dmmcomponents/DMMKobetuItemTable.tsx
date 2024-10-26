@@ -87,7 +87,7 @@ const ItemDetailsTable = ({ item }: { item: ExtendedDMMItemDetailResponse }) => 
 												<Link
 													href={`/${label === '女優名' ? 'actressprofile' : 'genre'}/${encodeURIComponent(itemValue)}`}
 													className={getLinkClassName(label)}
-													prefetch={true}>
+													prefetch={false}>
 													{itemValue}
 												</Link>
 											</UmamiTracking>
@@ -102,7 +102,7 @@ const ItemDetailsTable = ({ item }: { item: ExtendedDMMItemDetailResponse }) => 
 														itemValue.trim(),
 													)}`}
 													className={getLinkClassName(label)}
-													prefetch={true}>
+													prefetch={false}>
 													{itemValue.trim()}
 												</Link>
 											</UmamiTracking>
