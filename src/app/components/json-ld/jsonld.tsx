@@ -23,45 +23,32 @@ import {
 export const generateIndependentStatsStructuredData = (
 	actressName: string,
 	actressStats: ActressStats,
-): WithContext<AggregateRating> => {
+): WithContext<Article> => {
 	if (!actressStats || !actressStats.metadata) {
 		console.warn('No actress stats available.')
-		return {} as WithContext<AggregateRating>
+		return {} as WithContext<Article>
 	}
 
 	// 正しいプロパティを使用
 	const { review_average, total_review_count, top_3_popular_items } = actressStats.metadata
 
-	// 人気作品データをAggregateRatingに含める
-	const topItems = top_3_popular_items
-		?.map(item => {
-			if (!item) return null // nullチェック
-			return {
-				'@type': 'CreativeWork',
-				name: item.title,
-				aggregateRating: {
-					'@type': 'AggregateRating',
-					ratingValue: item.review_average.toFixed(2),
-					ratingCount: item.review_count,
-					bestRating: 5,
-					worstRating: 1,
-				},
-			}
-		})
-		.filter(Boolean) // nullのエントリをフィルタリング
-
 	return {
 		'@context': 'https://schema.org',
-		'@type': 'AggregateRating',
-		itemReviewed: {
+		'@type': 'Article', // Articleとして定義
+		headline: `${actressName}さんのレビュー統計`,
+		author: {
 			'@type': 'Person',
 			name: actressName,
 		},
-		ratingValue: review_average.toFixed(2),
-		ratingCount: total_review_count,
-		bestRating: '5',
-		worstRating: '1',
-		...(topItems.length > 0 && { review: topItems }),
+		description: `${actressName}さんの作品に基づく統計データ`,
+		aggregateRating: {
+			'@type': 'AggregateRating',
+			ratingValue: review_average.toFixed(2),
+			ratingCount: total_review_count,
+			bestRating: '5',
+			worstRating: '1',
+		},
+		// 'review'プロパティは削除、または適切な'IdReference | Review | Role'を使用する
 	}
 }
 
