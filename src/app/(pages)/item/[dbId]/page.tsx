@@ -237,7 +237,7 @@ export default async function DMMKobetuItemPage({
 	const description = (() => {
 		const parts = []
 		parts.push(
-			`${ItemMain.title} ${ItemMain.content_id}の詳細情報と、サンプル画像・サンプル動画を見ることができるページです。`,
+			`${ItemMain.title} ${ItemMain.content_id}の詳細情報と、サンプル画像・動画やレビュー統計データを見ることができるページです。`,
 		)
 
 		if (itemDetail.actress) {

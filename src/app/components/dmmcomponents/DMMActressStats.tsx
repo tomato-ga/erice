@@ -330,6 +330,7 @@ const AnnualStatsChart: React.FC<AnnualStatsChartProps> = ({ annualStats }) => {
 
 	const options: ChartOptions<'bar'> = {
 		responsive: true,
+		maintainAspectRatio: false,
 		plugins: {
 			legend: {
 				position: 'top',
@@ -359,7 +360,9 @@ const AnnualStatsChart: React.FC<AnnualStatsChartProps> = ({ annualStats }) => {
 	return (
 		<div className={graphContainerClass}>
 			<h3 className='text-xl font-bold mb-4'>年間レビュー統計</h3>
-			<Bar data={data} options={options} />
+			<div className='h-[400px] md:h-[300px]'>
+				<Bar data={data} options={options} />
+			</div>
 		</div>
 	)
 }
@@ -391,6 +394,7 @@ const BoxPlotChart: React.FC<{ annualBoxPlotData: BoxPlotData }> = ({ annualBoxP
 
 	const options: ChartOptions<'boxplot'> = {
 		responsive: true,
+		maintainAspectRatio: false, // この設定を追加
 		plugins: {
 			legend: {
 				position: 'top',
@@ -424,12 +428,12 @@ const BoxPlotChart: React.FC<{ annualBoxPlotData: BoxPlotData }> = ({ annualBoxP
 				<span className='ml-1 cursor-help relative group'>
 					ⓘ
 					<div className='invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity absolute z-10 w-72 p-2 bg-gray-800 text-white text-sm rounded-lg -top-24 left-1/2 transform -translate-x-1/2 shadow-lg'>
-						この箱ひげ図は、各年度のレビュースコアの分布を示しています。中央値、四分位数、最小値および最大値を視��的に比較できます。
+						この箱ひげ図は、各年度のレビュースコアの分布を示しています。中央値、四分位数、最小値および最大値を視覚的に比較できます。
 						<div className='absolute -bottom-2 left-1/2 transform -translate-x-1/2 border-8 border-transparent border-t-gray-800' />
 					</div>
 				</span>
 			</div>
-			<div className='relative group'>
+			<div className='relative group h-[400px] md:h-[300px]'>
 				<Chart type='boxplot' data={data} options={options} />
 			</div>
 		</div>

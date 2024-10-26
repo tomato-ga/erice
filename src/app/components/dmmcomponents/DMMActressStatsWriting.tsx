@@ -1,6 +1,7 @@
 // src/app/components/dmmcomponents/DMMActressStatsWriting.tsx
 
 import { ActressStats } from '@/_types_dmm/statstype'
+import Link from 'next/link'
 import React from 'react'
 // import DMMActressRegression from './DMMActressRegression'
 import DMMActressRegression from './DMMActressRegression'
@@ -125,7 +126,12 @@ const DMMActressStatsWriting: React.FC<Props> = ({ actressName, actressStats }) 
 	return (
 		<div className='bg-white rounded-lg p-1 mb-8 max-w-4xl mx-auto'>
 			<h2 className='text-3xl font-bold mb-6 text-gray-800 border-b pb-2'>
-				{actressName}さんのレビュー統計データ
+				{
+					<Link href={`/actressprofile/${actressName}`} className='text-blue-500'>
+						{actressName}
+					</Link>
+				}
+				さんのレビュー統計データ
 			</h2>
 
 			<div className='space-y-6 text-gray-700 leading-relaxed'>
@@ -148,9 +154,14 @@ const DMMActressStatsWriting: React.FC<Props> = ({ actressName, actressStats }) 
 				</section>
 
 				<p className='text-lg'>
-					セクシー女優の<strong className='text-gray-800'>{actressName}</strong>
+					セクシー女優の
+					<strong className='text-gray-800'>
+						<Link href={`/actressprofile/${actressName}`} className='text-blue-500'>
+							{actressName}
+						</Link>
+					</strong>
 					さんの作品に寄せられたレビューデータをもとに、最近の人気作品やレビュー評価傾向を詳しく分析します。
-					<strong className='text-gray-800'>{actressName}</strong>
+					{actressName}
 					さんの作品を視聴する方の参考になれば幸いです。
 				</p>
 
@@ -159,10 +170,25 @@ const DMMActressStatsWriting: React.FC<Props> = ({ actressName, actressStats }) 
 						人気作品の統計データ
 					</h3>
 					<h3 className='text-xl font-semibold mb-2 text-gray-700'>人気作品トップ3</h3>
+					<p className='text-lg mb-2'>
+						これらの作品は、
+						<Link href={`/actressprofile/${actressName}`} className='text-blue-500'>
+							{actressName}
+						</Link>
+						さんの作品の中で最も人気があり、多くの視聴者から高い評価を得ています。
+					</p>
+					<p className='text-sm mb-2'>
+						レビュー数が少なく、レビュー平均点が5の作品の重みが強くなりすぎないよう、評価バランス平均を用いて算出しています。
+					</p>
+
 					{topItems.map((item, index) => (
 						<div key={item.id} className='mb-4 bg-gray-50 p-4 rounded-lg'>
 							<h4 className='font-bold text-gray-800'>
-								{index + 1}. 「{item.title}」
+								{index + 1}. 「
+								<Link href={`/item/${item.id}`} className='text-blue-500'>
+									{item.title}
+								</Link>
+								」
 							</h4>
 							<ul className='list-disc list-inside ml-4 mt-2'>
 								<li>
@@ -192,7 +218,7 @@ const DMMActressStatsWriting: React.FC<Props> = ({ actressName, actressStats }) 
 					<div className='grid grid-cols-2 gap-2 bg-gray-50 p-4 rounded-lg'>
 						{sortedYears.map(year => (
 							<p key={year}>
-								<strong className='text-gray-800'>{year}年</strong>：平均スコア{' '}
+								<strong className='text-gray-800'>{year}年</strong>：{' '}
 								<strong className='text-gray-800'>{annualStats[year].average.toFixed(2)}</strong>
 							</p>
 						))}
@@ -243,7 +269,12 @@ const DMMActressStatsWriting: React.FC<Props> = ({ actressName, actressStats }) 
 				<DMMActressRegression actressStats={actressStats} />
 
 				<section>
-					<h3 className='text-2xl font-bold mt-8 mb-4 text-gray-800 border-b pb-2'>まとめ</h3>
+					<h3 className='text-2xl font-bold mt-8 mb-4 text-gray-800 border-b pb-2'>
+						<Link href={`/actressprofile/${actressName}`} className='text-blue-500'>
+							{actressName}
+						</Link>
+						さんのレビュー統計データまとめ
+					</h3>
 					<p className='bg-gray-50 p-4 rounded-lg'>{generateConclusion()}</p>
 				</section>
 			</div>
