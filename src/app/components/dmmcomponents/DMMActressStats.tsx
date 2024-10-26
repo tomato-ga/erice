@@ -17,6 +17,7 @@ import {
 import { useEffect, useState } from 'react'
 import { Bar, Chart, Line, Pie } from 'react-chartjs-2'
 
+import ActressStatsStructuredData from '@/app/(pages)/item/[dbId]/ActressStatsStructredData'
 // BoxPlotControllerをインポートして登録
 import { BoxAndWiskers, BoxPlotController } from '@sgratzl/chartjs-chart-boxplot'
 import DMMActressStatsWriting from './DMMActressStatsWriting'
@@ -556,8 +557,10 @@ const DMMActressStats: React.FC<{ actress_id: number; actress_name: string }> = 
 
 	return (
 		<div className='bg-white rounded-lg p-6 mb-8'>
-			{/* <h2 className='text-2xl font-bold mb-6'>セクシー女優「{actress_name}」さんの統計データ</h2> */}
+			{/* 構造化データ */}
+			<ActressStatsStructuredData actressName={actress_name} actressStats={actressStats} />
 
+			{/* <h2 className='text-2xl font-bold mb-6'>セクシー女優「{actress_name}」さんの統計データ</h2> */}
 			<DMMActressStatsWriting actressName={actress_name} actressStats={actressStats} />
 
 			{/* 概要統計 */}

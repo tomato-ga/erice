@@ -1,9 +1,11 @@
 // components/StructuredDataScript.tsx
 
+import { ActressStats } from '@/_types_dmm/statstype'
 import { fetchActressProfile } from '@/app/components/dmmcomponents/fetch/itemFetchers'
 import {
 	generateArticleStructuredData,
 	generateBreadcrumbList,
+	generateIndependentStatsStructuredData,
 } from '@/app/components/json-ld/jsonld'
 import { DMMItemDetailResponse, DMMItemMainResponse } from '@/types/dmmitemzodschema'
 
@@ -16,12 +18,21 @@ interface StructuredDataScriptProps {
 	dbId: number
 }
 
-const StructuredDataScript = async ({
+interface StructuredDataScriptProps {
+	itemMain: DMMItemMainResponse
+	itemDetail: DMMItemDetailResponse
+	description: string
+	dbId: number
+	actressStats?: ActressStats // 統計データを追加
+}
+
+const StructuredDataScript: React.FC<StructuredDataScriptProps> = async ({
 	itemMain,
 	itemDetail,
 	description,
 	dbId,
-}: StructuredDataScriptProps) => {
+	actressStats, // 追加
+}) => {
 	try {
 		// 女優情報のフェッチ
 		const actressProfiles = itemDetail.actress
@@ -75,5 +86,3 @@ const StructuredDataScript = async ({
 }
 
 export default StructuredDataScript
-
-

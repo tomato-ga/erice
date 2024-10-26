@@ -1,5 +1,6 @@
 // src/utils/jsonld.ts
 
+import { ActressStats } from '@/_types_dmm/statstype'
 import { DoujinKobetuItem } from '@/_types_doujin/doujintypes'
 import { FbooksKobetuItem } from '@/_types_fbooks/fbookstype'
 import { DMMActressProfile } from '@/types/APItypes'
@@ -7,8 +8,10 @@ import { GetKVTop100Response } from '@/types/dmm-keywordpage-types'
 import { DMMItemDetailResponse, DMMItemMainResponse } from '@/types/dmmitemzodschema'
 import { DMMItemJsonLDProps, DMMItemProps } from '@/types/dmmtypes'
 import {
+	AggregateRating,
 	Article,
 	BreadcrumbList,
+	CreativeWork,
 	ImageObject,
 	ListItem,
 	Organization,
@@ -16,6 +19,51 @@ import {
 	VideoObject,
 	WithContext,
 } from 'schema-dts'
+
+export const generateIndependentStatsStructuredData = (
+	actressName: string,
+	actressStats: ActressStats,
+): WithContext<AggregateRating> => {
+	if (!actressStats || !actressStats.metadata) {
+		console.warn('No actress stats available.')
+		return {} as WithContext<AggregateRating>
+	}
+
+	// 正しいプロパティを使用
+	const { review_average, total_review_count, top_3_popular_items } = actressStats.metadata
+
+	// 人気作品データをAggregateRatingに含める
+	const topItems = top_3_popular_items
+		?.map(item => {
+			if (!item) return null // nullチェック
+			return {
+				'@type': 'CreativeWork',
+				name: item.title,
+				aggregateRating: {
+					'@type': 'AggregateRating',
+					ratingValue: item.review_average.toFixed(2),
+					ratingCount: item.review_count,
+					bestRating: 5,
+					worstRating: 1,
+				},
+			}
+		})
+		.filter(Boolean) // nullのエントリをフィルタリング
+
+	return {
+		'@context': 'https://schema.org',
+		'@type': 'AggregateRating',
+		itemReviewed: {
+			'@type': 'Person',
+			name: actressName,
+		},
+		ratingValue: review_average.toFixed(2),
+		ratingCount: total_review_count,
+		bestRating: '5',
+		worstRating: '1',
+		...(topItems.length > 0 && { review: topItems }),
+	}
+}
 
 // BreadcrumbListを生成する関数
 export const generateBreadcrumbList = (
