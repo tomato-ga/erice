@@ -1,6 +1,7 @@
 import { ActressStatsSchema } from '@/_types_dmm/statstype'
+import { unstable_cache } from 'next/cache'
+import { revalidateTag } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
-import { z } from 'zod'
 
 // GETリクエストを処理するAPIハンドラー
 export async function GET(request: NextRequest) {
@@ -27,39 +28,47 @@ export async function GET(request: NextRequest) {
 	}
 
 	try {
-		// Cloudflare WorkersのAPIにリクエストを送信
-		const response = await fetch(`${WORKER_URL}?actress_id=${actress_id}`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				'x-api-key': API_KEY || '', // APIキーをヘッダーに追加
+		// Define a fetch callback for caching
+		const fetchCallback = async () => {
+			const response = await fetch(`${WORKER_URL}?actress_id=${actress_id}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'x-api-key': API_KEY || '',
+				},
+				next: {
+					tags: [`actress-stats-${actress_id}`], // キャッシュのタグを設定
+				},
+			})
+
+			if (!response.ok) {
+				throw new Error('Failed to fetch data from Cloudflare Workers')
+			}
+
+			const data = await response.json()
+			const result = ActressStatsSchema.safeParse(data)
+
+			if (!result.success) {
+				throw new Error('Invalid data format from Cloudflare Workers')
+			}
+
+			return result.data
+		}
+
+		// Use unstable_cache with the fetch callback
+		const cachedFetch = unstable_cache(
+			fetchCallback,
+			[`actress-stats-${actress_id}`], // キャッシュキー
+			{
+				tags: [`actress-stats-${actress_id}`], // revalidation tags
+				revalidate: 3600, // 1時間でキャッシュを自動更新
 			},
-		})
+		)
 
-		// エラーがある場合はエラーレスポンスを返す
-		if (!response.ok) {
-			return NextResponse.json(
-				{ error: 'Failed to fetch data from Cloudflare Workers' },
-				{ status: response.status },
-			)
-		}
+		const data = await cachedFetch()
+		revalidateTag(`actress-stats-${actress_id}`) // 必要に応じてタグを無効化
 
-		// Cloudflare WorkersからのレスポンスデータをJSONとして取得
-		const data = await response.json()
-
-		// スキーマでバリデーション
-		const result = ActressStatsSchema.safeParse(data)
-
-		if (!result.success) {
-			// バリデーションエラーがあった場合
-			return NextResponse.json(
-				{ error: 'Invalid data format from Cloudflare Workers' },
-				{ status: 400 },
-			)
-		}
-
-		// 正しいデータを返す
-		return NextResponse.json(result.data)
+		return NextResponse.json(data)
 	} catch (error) {
 		// 例外発生時のエラーレスポンス
 		return NextResponse.json({ error: 'An error occurred while fetching data' }, { status: 500 })
