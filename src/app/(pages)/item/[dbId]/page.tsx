@@ -226,8 +226,8 @@ export default async function DMMKobetuItemPage({
 		...(itemDetail.actress
 			? [
 					{
-						name: itemDetail.actress,
-						href: `https://erice.cloud/actressprofile/${encodeURIComponent(itemDetail.actress)}`,
+						name: itemDetail.actress.split(',')[0], // カンマで分割して最初の要素のみを使用
+						href: `https://erice.cloud/actressprofile/${encodeURIComponent(itemDetail.actress.split(',')[0])}`,
 					},
 				]
 			: []),

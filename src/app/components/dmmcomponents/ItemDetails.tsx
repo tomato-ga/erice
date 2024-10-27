@@ -132,30 +132,22 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 		return null
 	}
 
-	// 女優名を解析（単一またはカンマ区切り）
-	const actresses = parseActresses(itemDetail.actress)
+	// カンマ区切りの女優名を配列に変換し、最初の1名だけを取得
+	const actresses = parseActresses(itemDetail.actress).slice(0, 1) // 最初の1名だけに制限
 
 	if (actresses.length === 0) {
 		return null
 	}
 
-	console.log('actresses:', actresses)
+	// 1名の女優のプロフィールをフェッチ
+	const actressName = actresses[0]
+	console.log('actressName:', actressName)
+	const actressProfileData = await fetchActressProfile(actressName)
 
-	// 各女優のプロフィールをフェッチ
-	// 女優プロフィールをフェッチ
-	const actressProfileDataPromises = actresses.map((actressName: string) => {
-		console.log('actressName:', actressName)
-		return fetchActressProfile(actressName)
-	})
-	const actressProfilesData = await Promise.all(actressProfileDataPromises)
+	// 有効なプロフィールの抽出
+	const validActressProfiles = actressProfileData ? [actressProfileData].flat() : []
 
-	// nullを除去し、配列を平坦化
-	const validActressProfilesArrays = actressProfilesData.filter(
-		(profileArray): profileArray is DMMActressProfile[] => profileArray !== null,
-	)
-	const validActressProfiles = validActressProfilesArrays.flat()
-
-	// 重要なデータを持つプロファイルのみフィルタリング
+	// 重要なデータを持つプロファイルのフィルタリング
 	const hasEssentialData = (data: DMMActressProfile) => {
 		const { actress } = data
 		const { birthday, name } = actress
@@ -195,14 +187,12 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 			{/* JSON-LD構造化データのコードはここに記述します */}
 			{itemDetail.actress && (
 				<Suspense fallback={<LoadingSpinner />}>
-					{/* 女優ごとに関連アイテムのタイムラインを表示 */}
-					{actresses.slice(0, 2).map((actressName: string, index: number) => (
-						<ActressStatsAndRelatedItemsTimeLine key={index} actressName={actressName} />
-					))}
+					{/* 1名の女優の関連アイテムのタイムラインを表示 */}
+					<ActressStatsAndRelatedItemsTimeLine actressName={actresses[0]} />
 				</Suspense>
 			)}
 
-			{/* 各女優のプロフィールを表示 */}
+			{/* 1名の女優のプロフィールを表示 */}
 			<div className='grid grid-cols-1 gap-8 mt-8'>
 				{essentialActressProfiles.map(
 					(profile: DMMActressProfile) =>
