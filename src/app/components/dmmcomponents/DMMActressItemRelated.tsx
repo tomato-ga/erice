@@ -86,7 +86,7 @@ const ActressStatsAndRelatedItemsTimeLine = async ({ actressName }: { actressNam
 	const ActressItems = parseResult.data
 
 	return (
-		<div className='bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg p-4 sm:p-8 md:p-12'>
+		<div className='bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg p-4 sm:p-4 md:p-10'>
 			<Suspense fallback={<LoadingSpinner />}>
 				<DMMActressStats actress_id={ActressItemsResult[0].actress_id} actress_name={actressName} />
 			</Suspense>
