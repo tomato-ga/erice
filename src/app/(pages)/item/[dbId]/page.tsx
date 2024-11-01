@@ -63,7 +63,7 @@ function LoadingSpinner() {
 }
 
 // 1. データ取得関数の定義
-export async function getPageData(dbId: number) {
+async function getPageData(dbId: number) {
 	try {
 		const [itemMain, itemDetail, actressInfo] = await Promise.all([
 			fetchItemMainByContentId(dbId),
