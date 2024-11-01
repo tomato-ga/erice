@@ -16,6 +16,7 @@ const nextConfig = {
 	},
 	experimental: {
 		scrollRestoration: true,
+		nextScriptWorkers: true,
 	},
 	// その他の設定
 }

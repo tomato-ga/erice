@@ -102,6 +102,9 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.1
         version: 1.9.1
+      '@builder.io/partytown':
+        specifier: ^0.10.2
+        version: 0.10.2
       '@types/crypto-js':
         specifier: 4.2.2
         version: 4.2.2
@@ -204,6 +207,11 @@ packages:
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
+
+  '@builder.io/partytown@0.10.2':
+    resolution: {integrity: sha512-A9U+4PREWcS+CCYzKGIPovtGB/PBgnH/8oQyCE6Nr9drDJk6cMPpLQIEajpGPmG9tYF7N3FkRvhXm/AS9+0iKg==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
 
   '@cloudflare/d1@1.4.1':
     resolution: {integrity: sha512-czIBkVoZG7csWK0GVpWXqvnfM2Uv91AqdhwXeTPd1zpdQ+x/or492tD1ybVe679868bGMsHRqtHxp+5rwHXRaA==}
@@ -2374,6 +2382,8 @@ snapshots:
 
   '@biomejs/cli-win32-x64@1.9.1':
     optional: true
+
+  '@builder.io/partytown@0.10.2': {}
 
   '@cloudflare/d1@1.4.1': {}
 

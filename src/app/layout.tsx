@@ -28,9 +28,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 					data-website-id={process.env.UMAMI_WEBSITE_ID}
 					data-do-not-track='true'
 					data-auto-track='true'
-					strategy='afterInteractive'
+					strategy='worker'
+					// strategy='afterInteractive'
 				/>
-				<Script id='microsoft-clarity' strategy='afterInteractive'>
+				<Script
+					id='microsoft-clarity'
+					// strategy='afterInteractive'
+					strategy='worker'
+				>
 					{`
             (function(c,l,a,r,i,t,y){
               c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
