@@ -265,6 +265,9 @@ export default async function DMMKobetuItemPage({
 										src={itemMain.imageURL}
 										alt={`${itemMain.title}のパッケージ画像`}
 										className='w-full h-full object-contain transition-transform duration-300'
+										decoding='async'
+										loading='eager'
+										fetchPriority='high'
 									/>
 								</Link>
 							</UmamiTracking>
@@ -315,7 +318,9 @@ export default async function DMMKobetuItemPage({
 												src={imageUrl}
 												alt={`${itemMain.title} ${itemMain.content_id}のサンプル画像${index + 1}`}
 												className='w-full h-full object-contain transition-transform duration-300'
+												decoding='async'
 												loading='lazy'
+												fetchPriority='low'
 											/>
 										</div>
 									))}

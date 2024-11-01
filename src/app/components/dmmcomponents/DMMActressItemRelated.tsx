@@ -43,6 +43,9 @@ const ActressRelatedItemTimelineCard = ({ item }: { item: ActressRelatedItem }) 
 								src={item.imageURL}
 								alt={`${item.title} ${item.content_id}の画像です。`}
 								className='absolute top-0 left-0 w-full h-full object-contain'
+								decoding='async'
+								loading='lazy'
+								fetchPriority='low'
 							/>
 						</div>
 						<div className='p-4'>

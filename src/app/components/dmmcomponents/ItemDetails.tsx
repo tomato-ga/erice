@@ -208,7 +208,7 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 			</div>
 
 			{/* 関連ジャンル（ランダムに選択） */}
-			{randomGenre && <RelatedGenre genreName={randomGenre} />}
+			{/* {randomGenre && <RelatedGenre genreName={randomGenre} />} */}
 		</>
 	)
 }

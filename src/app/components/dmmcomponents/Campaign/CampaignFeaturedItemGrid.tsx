@@ -40,7 +40,7 @@ const CampaignFeaturedItemGrid: React.FC<CampaignFeaturedItemGridProps> = ({
 							className='bg-white shadow-md overflow-hidden flex flex-col'>
 							{validItem.imageURL?.large && (
 								<Link href={`/item/${validItem.db_id}`}>
-									<Image
+									<img
 										src={validItem.imageURL.large}
 										alt={validItem.title}
 										width={400}
