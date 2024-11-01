@@ -374,7 +374,7 @@ export default async function DMMKobetuItemPage({
 							dbId={params.dbId}
 						/>
 
-						{relatedItemsData.map(({ type, items }) => (
+						{/* {relatedItemsData.map(({ type, items }) => (
 							<RelatedItemsScroll
 								key={type}
 								items={items}
@@ -389,7 +389,7 @@ export default async function DMMKobetuItemPage({
 												: '限定セール'
 								}
 							/>
-						))}
+						))} */}
 					</article>
 				</div>
 			</div>
