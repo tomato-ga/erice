@@ -20,6 +20,7 @@ import { Bar, Chart, Line, Pie } from 'react-chartjs-2'
 import ActressStatsStructuredData from '@/app/(pages)/item/[dbId]/ActressStatsStructredData'
 // BoxPlotControllerをインポートして登録
 import { BoxAndWiskers, BoxPlotController } from '@sgratzl/chartjs-chart-boxplot'
+import { useInView } from 'react-intersection-observer'
 import DMMActressStatsWriting from './DMMActressStatsWriting'
 
 // 必要なChart.jsプラグインの登録
@@ -527,6 +528,11 @@ const DMMActressStats: React.FC<{ actress_id: number; actress_name: string }> = 
 }) => {
 	const [actressStats, setActressStats] = useState<ActressStats | null>(null)
 
+	const { ref, inView } = useInView({
+		threshold: 0.3,
+		triggerOnce: true,
+	})
+
 	useEffect(() => {
 		const fetchStats = async () => {
 			const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-stats?actress_id=${actress_id}`
@@ -560,7 +566,12 @@ const DMMActressStats: React.FC<{ actress_id: number; actress_name: string }> = 
 			{/* 構造化データは/itemにマージして統合 */}
 
 			{/* <h2 className='text-2xl font-bold mb-6'>セクシー女優「{actress_name}」さんの統計データ</h2> */}
-			<DMMActressStatsWriting actressName={actress_name} actressStats={actressStats} />
+
+			<div ref={ref}>
+				{inView && (
+					<DMMActressStatsWriting actressName={actress_name} actressStats={actressStats} />
+				)}
+			</div>
 
 			{/* 概要統計 */}
 			<div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-8'>

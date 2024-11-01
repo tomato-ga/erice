@@ -1,6 +1,5 @@
 // /app/(pages)/item/[dbId]/page.tsx
 
-import { PostList } from '@/app/components/antennacomponents/PostList'
 import { CommentSection } from '@/app/components/dmmcomponents/Comment/CommentSection'
 import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
 import ItemDetails from '@/app/components/dmmcomponents/ItemDetails'
@@ -14,7 +13,6 @@ import {
 	fetchRelatedItems,
 } from '@/app/components/dmmcomponents/fetch/itemFetchers'
 
-import { DMMItemMainResponse } from '@/types/dmmitemzodschema'
 import { ExtendedDMMItem, ItemType } from '@/types/dmmtypes'
 import { formatDate } from '@/utils/dmmUtils'
 import { ExternalLink } from 'lucide-react'
@@ -26,10 +24,6 @@ import '@/app/_css/styles.css'
 import ButtonTestComponent from '@/app/components/dmmcomponents/ABtest/GradientButton/ButtonTestCompo'
 
 import {
-	generateArticleStructuredData,
-	generateBreadcrumbList,
-} from '@/app/components/json-ld/jsonld'
-import {
 	Breadcrumb,
 	BreadcrumbItem,
 	BreadcrumbLink,
@@ -40,9 +34,6 @@ import { HomeIcon } from 'lucide-react'
 import StructuredDataScript from './StructuredData'
 
 import FanzaADBannerFanzaKobetu from '@/app/components/dmmcomponents/fanzaADBannerKobetu'
-
-// 1. dynamic をインポート
-import dynamic from 'next/dynamic'
 
 // // 2. SaleFloatingBanner を動的にインポート（SSR 無効化）
 // const SaleFloatingBanner = dynamic(

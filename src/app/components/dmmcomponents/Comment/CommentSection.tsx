@@ -5,7 +5,14 @@ import React, { Suspense, useCallback, useState } from 'react'
 import { CommentForm } from './CommentForm'
 import { CommentList } from './CommentList'
 
+import { useInView } from 'react-intersection-observer'
+
 export function CommentSection({ contentId }: { contentId: string }) {
+	const { ref, inView } = useInView({
+		triggerOnce: true,
+		threshold: 0.3,
+	})
+
 	const [comments, setComments] = useState<Comment[]>([])
 	const [latestComment, setLatestComment] = useState<Comment | null>(null)
 
@@ -23,20 +30,17 @@ export function CommentSection({ contentId }: { contentId: string }) {
 				動画のどんなシーンが印象的だったか、どんなシーンが抜きポイントだったか、ぜひ教えてください
 			</p>
 			<div className='space-y-6 animate-fade-in-up'>
-				<CommentForm contentId={contentId} onCommentAdded={handleCommentAdded} />
-				<Suspense
-					fallback={
-						<div className='flex justify-center items-center h-24'>
-							<div className='animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-500' />
-							<span className='ml-2 text-gray-600 dark:text-gray-300'>コメントを読み込み中...</span>
-						</div>
-					}>
-					<CommentList
-						contentId={contentId}
-						onCommentAdded={handleCommentAdded}
-						newComment={latestComment}
-					/>
-				</Suspense>
+				<div ref={ref}>
+					{inView && <CommentForm contentId={contentId} onCommentAdded={handleCommentAdded} />}
+
+					{inView && (
+						<CommentList
+							contentId={contentId}
+							onCommentAdded={handleCommentAdded}
+							newComment={latestComment}
+						/>
+					)}
+				</div>
 			</div>
 		</section>
 	)
