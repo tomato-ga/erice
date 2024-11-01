@@ -35,11 +35,19 @@ import StructuredDataScript from './StructuredData'
 
 import FanzaADBannerFanzaKobetu from '@/app/components/dmmcomponents/fanzaADBannerKobetu'
 
+import VideoPlayer from '@/app/components/dmmcomponents/DMMVideoPlayer'
+
 // // 2. SaleFloatingBanner を動的にインポート（SSR 無効化）
 // const SaleFloatingBanner = dynamic(
 // 	() => import('@/app/components/dmmcomponents/FloatingBanner/FloatingBanner'),
 // 	{ ssr: false },
 // )
+
+import dynamic from 'next/dynamic'
+
+const DynamicVideoPlayer = dynamic(() => import('@/app/components/dmmcomponents/DMMVideoPlayer'), {
+	loading: () => <LoadingSpinner />,
+})
 
 interface Props {
 	params: { dbId: number }
@@ -94,42 +102,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	}
 
 	return { title, description }
-}
-
-const VideoPlayer = ({ src }: { src: string | null | undefined }) => {
-	if (!src) return null
-
-	const sizePriority = ['size_720_480', 'size_644_414', 'size_560_360', 'size_476_306']
-
-	const extractSize = (url: string): { width: number; height: number } | null => {
-		for (const size of sizePriority) {
-			const match = url.match(new RegExp(`/${size}/`))
-			if (match) {
-				const [width, height] = size.split('_').slice(1).map(Number)
-				return { width, height }
-			}
-		}
-		return null
-	}
-
-	const size = extractSize(src)
-	const width = size?.width || 720 // デフォルト値
-	const height = size?.height || 480 // デフォルト値
-
-	return (
-		<div className='video-player-container flex justify-center items-center my-8'>
-			<div className='max-w-full'>
-				<iframe
-					src={src}
-					width={width}
-					height={height}
-					allow='autoplay'
-					title='動画プレイヤー'
-					className='border-0 overflow-hidden max-w-full'
-				/>
-			</div>
-		</div>
-	)
 }
 
 // BreadcrumbSeparatorコンポーネントを新たに定義
@@ -327,7 +299,7 @@ export default async function DMMKobetuItemPage({
 									</span>
 								</h2>
 								<div className='flex justify-center'>
-									<VideoPlayer src={itemMain.sampleMovieURL[0]} />
+									<DynamicVideoPlayer src={itemMain.sampleMovieURL[0]} />
 								</div>
 							</div>
 						)}
