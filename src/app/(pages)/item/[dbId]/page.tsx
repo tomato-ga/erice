@@ -44,11 +44,11 @@ import FanzaADBannerFanzaKobetu from '@/app/components/dmmcomponents/fanzaADBann
 // 1. dynamic をインポート
 import dynamic from 'next/dynamic'
 
-// 2. SaleFloatingBanner を動的にインポート（SSR 無効化）
-const SaleFloatingBanner = dynamic(
-	() => import('@/app/components/dmmcomponents/FloatingBanner/FloatingBanner'),
-	{ ssr: false },
-)
+// // 2. SaleFloatingBanner を動的にインポート（SSR 無効化）
+// const SaleFloatingBanner = dynamic(
+// 	() => import('@/app/components/dmmcomponents/FloatingBanner/FloatingBanner'),
+// 	{ ssr: false },
+// )
 
 interface Props {
 	params: { dbId: number }
@@ -62,84 +62,48 @@ function LoadingSpinner() {
 	)
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-	// console.log('params:', params)
-
-	const dbId = params.dbId
-	let title = 'エロコメスト'
-	let description = '詳細ページ'
-
+// 1. データ取得関数の定義
+export async function getPageData(dbId: number) {
 	try {
-		const itemMain = await fetchItemMainByContentId(dbId)
-		const itemDetail = await fetchItemDetailByContentId(dbId)
-
-		if (itemMain && itemDetail) {
-			const newdescription = (() => {
-				const parts = []
-
-				// 配信開始日が存在する場合、追加
-				if (itemDetail.date) {
-					parts.push(`${formatDate(itemDetail.date)}配信開始の、`)
-				}
-
-				// 女優名が存在する場合、追加
-				if (itemDetail.actress) {
-					parts.push(`${itemDetail.actress}が出演するエロ動画作品`)
-				}
-
-				// 作品名と品番を追加
-				parts.push(
-					`「${itemMain.title} - (${itemMain.content_id})」のキャプチャ画面とダウンロード情報、無料サンプル動画。`,
-				)
-
-				// 女優名が存在する場合、再度出演作品について追加
-				if (itemDetail.actress) {
-					parts.push(
-						`${itemDetail.actress}さんのレビュー統計データと出演作品を発売順で紹介しています。`,
-					)
-				}
-
-				return parts.join('')
-			})()
-
-			title = `${itemMain.title} - ${itemMain.content_id}`
-			description = newdescription
-				? newdescription
-				: `${itemMain.title} ${itemMain.content_id}の詳細情報と、キャプチャ画面・サンプル動画を見ることができるページです。${
-						itemDetail.actress && itemDetail.date
-					}`
-		}
+		const [itemMain, itemDetail, actressInfo] = await Promise.all([
+			fetchItemMainByContentId(dbId),
+			fetchItemDetailByContentId(dbId),
+			fetchItemMainByContentIdToActressInfo(dbId),
+		])
+		return { itemMain, itemDetail, actressInfo }
 	} catch (error) {
-		console.error('メタデータの取得中にエラーが発生しました:', error)
-	}
-
-	return {
-		title,
-		description,
+		console.error('データ取得中にエラーが発生しました:', error)
+		return { itemMain: null, itemDetail: null, actressInfo: null }
 	}
 }
 
-// // TODO opengraph修正する
-// openGraph: {
-// 	title,
-// 	description,
-// 	type: 'website',
-// 	url: `https://erice.cloud/item/${dbId}`,
-// 	images: [
-// 		{
-// 			url: 'https://erice.cloud/ogp.jpg',
-// 			width: 1200,
-// 			height: 630,
-// 			alt: 'エロコメスト OGP画像',
-// 		},
-// 	],
-// },
-// twitter: {
-// 	card: 'summary_large_image',
-// 	title,
-// 	description,
-// 	images: ['https://erice.cloud/ogp.jpg'],
-// },
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+	const { dbId } = params
+	const { itemMain, itemDetail } = await getPageData(dbId) // getPageDataで取得済みのデータを使用
+
+	let title = 'エロコメスト'
+	let description = '詳細ページ'
+
+	if (itemMain && itemDetail) {
+		const newDescription = (() => {
+			const parts = []
+			if (itemDetail.date) parts.push(`${formatDate(itemDetail.date)}配信開始の、`)
+			if (itemDetail.actress) parts.push(`${itemDetail.actress}が出演するエロ動画作品`)
+			parts.push(
+				`「${itemMain.title} - (${itemMain.content_id})」のキャプチャ画面とダウンロード情報、無料サンプル動画。`,
+			)
+			if (itemDetail.actress)
+				parts.push(
+					`${itemDetail.actress}さんのレビュー統計データと出演作品を発売順で紹介しています。`,
+				)
+			return parts.join('')
+		})()
+		title = `${itemMain.title} - ${itemMain.content_id}`
+		description = newDescription
+	}
+
+	return { title, description }
+}
 
 const VideoPlayer = ({ src }: { src: string | null | undefined }) => {
 	if (!src) return null
@@ -184,24 +148,19 @@ export default async function DMMKobetuItemPage({
 	params,
 	searchParams,
 }: Props & { searchParams: { itemType?: ItemType } }) {
-	let ItemMain: DMMItemMainResponse | null = null
-	try {
-		ItemMain = await fetchItemMainByContentId(params.dbId)
-	} catch (error) {
-		console.error('Error fetching item:', error)
-	}
+	console.time('component timelog')
+	console.timeLog('component timelog') // 修正：ラベルを一致させる
 
-	const actressInfo = await fetchItemMainByContentIdToActressInfo(params.dbId)
-	// console.log('Found actressInfo:', actressInfo)
-
-	if (!ItemMain) {
+	// getPageDataでデータを取得
+	const { itemMain, itemDetail, actressInfo } = await getPageData(params.dbId)
+	if (!itemMain) {
 		return (
 			<div className='container mx-auto px-2 py-6'>
 				<h1 className='text-2xl font-bold text-red-600'>
 					{searchParams.itemType ? searchParams.itemType : '指定された'}
 					のアイテムが見つかりませんでした
 				</h1>
-				<p>アイテムが存在しないか、取得中にエラーが発生しした。</p>
+				<p>アイテムが存在しないか、取得中にエラーが発生しました。</p>
 			</div>
 		)
 	}
@@ -213,8 +172,7 @@ export default async function DMMKobetuItemPage({
 			items: (await fetchRelatedItems(type)) as ExtendedDMMItem[],
 		})),
 	)
-
-	const itemDetail = await fetchItemDetailByContentId(params.dbId)
+	console.timeLog('component timelog')
 
 	if (!itemDetail) {
 		return <div>ItemDetailが見つかりません</div>
@@ -231,13 +189,13 @@ export default async function DMMKobetuItemPage({
 					},
 				]
 			: []),
-		{ name: ItemMain.title, href: `https://erice.cloud/item/${params.dbId}` },
+		{ name: itemMain.title, href: `https://erice.cloud/item/${params.dbId}` },
 	]
 
 	const description = (() => {
 		const parts = []
 		parts.push(
-			`${ItemMain.title} ${ItemMain.content_id}の詳細情報と、サンプル画像・動画やレビュー統計データを見ることができるページです。`,
+			`${itemMain.title} ${itemMain.content_id}の詳細情報と、サンプル画像・動画やレビュー統計データを見ることができるページです。`,
 		)
 
 		if (itemDetail.actress) {
@@ -260,32 +218,11 @@ export default async function DMMKobetuItemPage({
 	})()
 
 	// JSON-LDを生成
-	// const jsonLdData = await Promise.all([
-	// 	generateArticleStructuredData(ItemMain, itemDetail, description, params.dbId),
-	// 	generateBreadcrumbList(params.dbId, itemDetail), // itemDetailを渡す
-	// ])
-
-	// // JSON-LDを文字列に変換
-	// const jsonLdString = JSON.stringify(jsonLdData)
-
-	// デバッグ用にコンソールに出力（必要に応じて削除）
-	// console.log('JSON-LD:', jsonLdString)
-
 	const campaignNames = await fetchCampaignNames()
+	console.timeEnd('component timelog')
 
 	return (
 		<>
-			{/* 通常の <script> タグを使用し、JSON.stringify で文字列化 */}
-			{/* <script
-				id={`structured-data-${ItemMain.content_id}`}
-				type='application/ld+json'
-				dangerouslySetInnerHTML={{
-					__html: jsonLdString,
-				}}
-			/> */}
-
-			{/* <SaleFloatingBanner /> */}
-
 			<div className='bg-gray-50 dark:bg-gray-900 min-h-screen'>
 				<div className='container mx-auto px-2 sm:px-4 py-6 sm:py-8'>
 					{/* Breadcrumb */}
@@ -310,72 +247,41 @@ export default async function DMMKobetuItemPage({
 					</Breadcrumb>
 
 					<article className='bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 space-y-6 sm:space-y-8'>
-						{/* 2024/10/06 停止 <PostList limit={12} /> */}
-
 						<h1 className='text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 text-center'>
-							{ItemMain.title}
+							{itemMain.title}
 						</h1>
 						<p className='text-gray-600 dark:text-gray-300 text-base mt-4'>{description}</p>
-
-						{/* <p className='text-gray-600 dark:text-gray-300 text-base mt-4'>{newdescription}</p> */}
 
 						<div className='relative overflow-hidden aspect-w-16 aspect-h-9'>
 							<UmamiTracking
 								trackingData={{
 									dataType: 'combined',
 									from: 'kobetu-img-top',
-									item: ItemMain,
+									item: itemMain,
 									actressInfo: actressInfo,
 								}}>
-								<Link href={ItemMain.affiliateURL} target='_blank' rel='noopener noreferrer'>
+								<Link href={itemMain.affiliateURL} target='_blank' rel='noopener noreferrer'>
 									<img
-										src={ItemMain.imageURL}
-										alt={`${ItemMain.title}のパッケージ画像`}
+										src={itemMain.imageURL}
+										alt={`${itemMain.title}のパッケージ画像`}
 										className='w-full h-full object-contain transition-transform duration-300'
 									/>
 								</Link>
 							</UmamiTracking>
 						</div>
 
-						{/* 2024/10/20 商品詳細テーブルの場所を変更 */}
 						<Suspense fallback={<LoadingSpinner />}>
 							<ProductDetails
-								title={ItemMain.title}
-								contentId={ItemMain.content_id}
+								title={itemMain.title}
+								contentId={itemMain.content_id}
 								dbId={params.dbId}
 							/>
 						</Suspense>
 
-						{/* ABテスト 2024/10/02 */}
-						<ButtonTestComponent ItemMain={ItemMain} actressInfo={actressInfo} />
-
-						{/* グラデーションボタンへ変更 */}
-						{/* <div className='flex justify-center'>
-							<div className='relative inline-block group'>
-								<div className='absolute inset-2 rounded-full opacity-70 blur-xl group-hover:opacity-100 transition-opacity duration-500 ease-in-out bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm z-0 pointer-events-none' />
-
-								<UmamiTracking
-									trackingData={{
-										dataType: 'combined',
-										from: 'kobetu-exlink-top',
-										item: ItemMain,
-										actressInfo: actressInfo,
-									}}>
-									<Link
-										href={ItemMain.affiliateURL}
-										target='_blank'
-										rel='noopener noreferrer'
-										className='relative z-10 inline-flex items-center justify-center text-xl font-semibold text-white rounded-full shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 px-6 sm:px-8 py-3 sm:py-4 hover:bg-gray-700 transform hover:-translate-y-0.5 bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm'>
-										<span className='mr-2'>高画質動画を見る</span>
-										<ExternalLink className='w-5 h-5 sm:w-6 sm:h-6 animate-pulse' />
-									</Link>
-								</UmamiTracking>
-							</div>
-						</div> */}
+						<ButtonTestComponent ItemMain={itemMain} actressInfo={actressInfo} />
 
 						<FanzaADBannerFanzaKobetu />
 
-						{/* テキストバナー */}
 						{campaignNames && campaignNames.length > 0 && (
 							<div className='text-center text-sm text-gray-500'>
 								{campaignNames.map((campaignName, index) => (
@@ -393,7 +299,7 @@ export default async function DMMKobetuItemPage({
 
 						<div className='w-full text-sm text-center my-4'>このページに広告を設置しています</div>
 
-						{ItemMain.sampleImageURL && ItemMain.sampleImageURL.length > 0 && (
+						{itemMain.sampleImageURL && itemMain.sampleImageURL.length > 0 && (
 							<div className='mt-8'>
 								<h2 className='text-center font-bold mb-6'>
 									<span className='text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text'>
@@ -401,14 +307,15 @@ export default async function DMMKobetuItemPage({
 									</span>
 								</h2>
 								<div className='grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4'>
-									{ItemMain.sampleImageURL.map((imageUrl, index) => (
+									{itemMain.sampleImageURL.map((imageUrl, index) => (
 										<div
 											key={index}
 											className='aspect-w-16 aspect-h-9 relative overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300'>
 											<img
 												src={imageUrl}
-												alt={`${ItemMain.title} ${ItemMain.content_id}のサンプル画像${index + 1}`}
+												alt={`${itemMain.title} ${itemMain.content_id}のサンプル画像${index + 1}`}
 												className='w-full h-full object-contain transition-transform duration-300'
+												loading='lazy'
 											/>
 										</div>
 									))}
@@ -416,7 +323,7 @@ export default async function DMMKobetuItemPage({
 							</div>
 						)}
 
-						{ItemMain.sampleMovieURL && ItemMain.sampleMovieURL.length > 0 && (
+						{itemMain.sampleMovieURL && itemMain.sampleMovieURL.length > 0 && (
 							<div className='mt-8'>
 								<h2 className='text-center font-bold mb-6'>
 									<span className='text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text'>
@@ -424,13 +331,13 @@ export default async function DMMKobetuItemPage({
 									</span>
 								</h2>
 								<div className='flex justify-center'>
-									<VideoPlayer src={ItemMain.sampleMovieURL[0]} />
+									<VideoPlayer src={itemMain.sampleMovieURL[0]} />
 								</div>
 							</div>
 						)}
 
 						<Suspense fallback={<LoadingSpinner />}>
-							<CommentSection contentId={ItemMain.content_id} />
+							<CommentSection contentId={itemMain.content_id} />
 						</Suspense>
 
 						<div className='flex justify-center'>
@@ -441,15 +348,15 @@ export default async function DMMKobetuItemPage({
 									trackingData={{
 										dataType: 'combined',
 										from: 'kobetu-exlink-bottom',
-										item: ItemMain,
+										item: itemMain,
 										actressInfo: actressInfo,
 									}}>
 									<Link
-										href={ItemMain.affiliateURL}
+										href={itemMain.affiliateURL}
 										target='_blank'
 										rel='noopener noreferrer'
 										className='relative z-10 inline-flex items-center justify-center text-xl font-semibold text-white rounded-sm shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 px-6 sm:px-8 py-3 sm:py-4 transform bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm will-change-background-position'>
-										<span className='mr-2'>{ItemMain.title}の高画質動画を見る</span>
+										<span className='mr-2'>{itemMain.title}の高画質動画を見る</span>
 										<ExternalLink className='w-5 h-5 sm:w-6 sm:h-6 animate-pulse' />
 									</Link>
 								</UmamiTracking>
@@ -457,12 +364,11 @@ export default async function DMMKobetuItemPage({
 						</div>
 
 						<Suspense fallback={<LoadingSpinner />}>
-							<ItemDetails contentId={ItemMain.content_id} dbId={params.dbId} />
+							<ItemDetails contentId={itemMain.content_id} dbId={params.dbId} />
 						</Suspense>
 
-						{/* StructuredDataScript コンポーネントをHead内で使用 */}
 						<StructuredDataScript
-							itemMain={ItemMain}
+							itemMain={itemMain}
 							itemDetail={itemDetail}
 							description={description}
 							dbId={params.dbId}
