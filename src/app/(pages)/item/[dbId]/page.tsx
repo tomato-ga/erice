@@ -54,7 +54,7 @@ const DynamicCommentSection = dynamic(
 )
 
 const DynamicItemDetails = dynamic(() => import('@/app/components/dmmcomponents/ItemDetails'), {
-	ssr: false,
+	ssr: true,
 })
 
 const DynamicSampleImageGallery = dynamic(
