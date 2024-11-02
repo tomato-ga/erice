@@ -127,12 +127,12 @@ export default async function DMMKobetuItemPage({
 	}
 
 	const relatedItemTypes: ItemType[] = ['todaynew', 'debut', 'feature', 'sale']
-	const relatedItemsData = await Promise.all(
-		relatedItemTypes.map(async type => ({
-			type,
-			items: (await fetchRelatedItems(type)) as ExtendedDMMItem[],
-		})),
-	)
+	// const relatedItemsData = await Promise.all(
+	// 	relatedItemTypes.map(async type => ({
+	// 		type,
+	// 		items: (await fetchRelatedItems(type)) as ExtendedDMMItem[],
+	// 	})),
+	// )
 	console.timeLog('component timelog')
 
 	if (!itemDetail) {
@@ -235,11 +235,7 @@ export default async function DMMKobetuItemPage({
 						</div>
 
 						<Suspense fallback={<LoadingSpinner />}>
-							<ProductDetails
-								title={itemMain.title}
-								contentId={itemMain.content_id}
-								dbId={params.dbId}
-							/>
+							<ProductDetails title={itemMain.title} content_id={itemMain.content_id} itemDetail={itemDetail} />
 						</Suspense>
 
 						<ButtonTestComponent ItemMain={itemMain} actressInfo={actressInfo} />

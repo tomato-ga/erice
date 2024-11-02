@@ -14,7 +14,7 @@ import {
 	Title,
 	Tooltip,
 } from 'chart.js'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Bar, Chart, Line, Pie } from 'react-chartjs-2'
 
 import ActressStatsStructuredData from '@/app/(pages)/item/[dbId]/ActressStatsStructredData'
@@ -527,22 +527,40 @@ const DMMActressStats: React.FC<{ actress_id: number; actress_name: string }> = 
 	actress_name,
 }) => {
 	const [actressStats, setActressStats] = useState<ActressStats | null>(null)
+	const { ref, inView } = useInView({ threshold: 0.3, triggerOnce: true })
 
-	const { ref, inView } = useInView({
-		threshold: 0.3,
-		triggerOnce: true,
-	})
+	// キャッシュ用のrefを使用して再レンダリングを防ぐ
+	const fetchedActressIds = useRef<Set<number>>(new Set())
 
 	useEffect(() => {
+		// actress_idがキャッシュされていればフェッチをスキップ
+		if (fetchedActressIds.current.has(actress_id)) return
+
 		const fetchStats = async () => {
 			const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-stats?actress_id=${actress_id}`
 			const response = await fetch(apiUrl, { next: { revalidate: 2419200 } })
 			const data = (await response.json()) as ActressStats
 			setActressStats(data)
+			fetchedActressIds.current.add(actress_id) // キャッシュに追加
 		}
 
 		fetchStats()
 	}, [actress_id])
+
+	if (!actressStats) {
+		return null
+	}
+
+	// useEffect(() => {
+	// 	const fetchStats = async () => {
+	// 		const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-stats?actress_id=${actress_id}`
+	// 		const response = await fetch(apiUrl, { next: { revalidate: 2419200 } })
+	// 		const data = (await response.json()) as ActressStats
+	// 		setActressStats(data)
+	// 	}
+
+	// 	fetchStats()
+	// }, [actress_id])
 
 	if (!actressStats?.metadata || !actressStats?.timeSeriesData || !actressStats?.annualData) {
 		return null

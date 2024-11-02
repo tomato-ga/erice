@@ -2,7 +2,7 @@ import { DMMItemDetailResponse } from '@/types/dmmitemzodschema'
 import { UmamiTrackingData, UmamiTrackingDataType, UmamiTrackingFromType } from '@/types/umamiTypes'
 import Link from 'next/link'
 import React from 'react'
-import { fetchItemDetailByContentId } from '../dmmcomponents/fetch/itemFetchers'
+// import { fetchItemDetailByContentId } from '../dmmcomponents/fetch/itemFetchers'
 import { UmamiTracking } from './UmamiTracking'
 
 // shadcnのテーブルコンポーネントをインポート
@@ -128,24 +128,25 @@ const ItemDetailsTable = ({ item }: { item: ExtendedDMMItemDetailResponse }) => 
 
 interface ProductDetailsProps {
 	title: string
-	contentId: string
-	dbId: number
+	content_id: string
+	itemDetail: {
+		date?: string | null
+		price?: string | null
+		actress?: string | null
+		genre?: string[] | null
+		director?: string[] | null
+		label?: string[] | null
+		series?: string[] | null
+		maker?: string[] | null
+	}
 }
 
-export const ProductDetails = async ({ title, contentId, dbId }: ProductDetailsProps) => {
-	let item: ExtendedDMMItemDetailResponse = {
+export const ProductDetails = async ({ title, content_id, itemDetail }: ProductDetailsProps) => {
+	// itemMainとitemDetailからExtendedDMMItemDetailResponseを生成
+	const extendedItemDetail: ExtendedDMMItemDetailResponse = {
 		title,
-		content_id: contentId,
-	}
-
-	try {
-		const detailData = await fetchItemDetailByContentId(dbId)
-		if (detailData) {
-			item = { ...item, ...detailData }
-		}
-	} catch (error) {
-		console.error('Error fetching item details:', error)
-		return
+		content_id,
+		...itemDetail,
 	}
 
 	return (
@@ -153,7 +154,8 @@ export const ProductDetails = async ({ title, contentId, dbId }: ProductDetailsP
 			<h2 className='text-center font-bold mb-6 py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text'>
 				<span className='text-2xl'>エロ動画 {title}の詳細情報</span>
 			</h2>
-			<ItemDetailsTable item={item} />
+			{/* extendedItemDetailを渡す */}
+			<ItemDetailsTable item={extendedItemDetail} />
 		</div>
 	)
 }
