@@ -16,21 +16,18 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 async function fetchData(): Promise<ProcessedDMMItem[]> {
-	const fetchOptions = { next: { revalidate: 86400 } }
-
 	try {
-		const response = await fetch(
-			`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-newdebut-getkv`,
-			fetchOptions,
-		)
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-newdebut-getkv`, {
+			next: { revalidate: 43200 },
+		})
 		if (!response.ok) {
 			console.error(`API response not ok: ${response.status} ${response.statusText}`)
 			return []
 		}
-		const data: unknown = await response.json()
+		const data: ProcessedDMMItem[] = await response.json()
 
 		// デバッグ用ログ
-		console.log('NewActressesPage Received data:', JSON.stringify(data, null, 2))
+		console.log('NewActressesPage Received data:', data.length)
 
 		// データ構造のチェックと処理
 		if (Array.isArray(data) && data.every(isValidProcessedDMMItem)) {
