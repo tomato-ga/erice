@@ -80,6 +80,13 @@ const DynamicCampaignLinks = dynamic<CampaignLinksProps>(
 	},
 )
 
+const DynamicButtonTest = dynamic(
+	() => import('@/app/components/dmmcomponents/ABtest/GradientButton/ButtonTestCompo'),
+	{
+		ssr: false,
+	},
+)
+
 interface Props {
 	params: { dbId: number }
 }
@@ -254,7 +261,7 @@ export default async function DMMKobetuItemPage({
 							/>
 						</Suspense>
 
-						<ButtonTestComponent ItemMain={itemMain} actressInfo={actressInfo} />
+						<DynamicButtonTest ItemMain={itemMain} actressInfo={actressInfo} />
 
 						<FanzaADBannerFanzaKobetu />
 
