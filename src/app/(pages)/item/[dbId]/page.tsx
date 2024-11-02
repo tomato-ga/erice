@@ -1,6 +1,6 @@
 // /app/(pages)/item/[dbId]/page.tsx
 
-import { CommentSection } from '@/app/components/dmmcomponents/Comment/CommentSection'
+// import { CommentSection } from '@/app/components/dmmcomponents/Comment/CommentSection'
 import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
 import ItemDetails from '@/app/components/dmmcomponents/ItemDetails'
 import RelatedItemsScroll from '@/app/components/dmmcomponents/Related/RelatedItemsScroll'
@@ -23,14 +23,14 @@ import { Suspense } from 'react'
 import '@/app/_css/styles.css'
 import ButtonTestComponent from '@/app/components/dmmcomponents/ABtest/GradientButton/ButtonTestCompo'
 
-import {
-	Breadcrumb,
-	BreadcrumbItem,
-	BreadcrumbLink,
-	BreadcrumbList,
-	BreadcrumbPage,
-} from '@/components/ui/breadcrumb'
-import { HomeIcon } from 'lucide-react'
+// import {
+// 	Breadcrumb,
+// 	BreadcrumbItem,
+// 	BreadcrumbLink,
+// 	BreadcrumbList,
+// 	BreadcrumbPage,
+// } from '@/components/ui/breadcrumb'
+// import { HomeIcon } from 'lucide-react'
 import StructuredDataScript from './StructuredData'
 
 import FanzaADBannerFanzaKobetu from '@/app/components/dmmcomponents/fanzaADBannerKobetu'
@@ -45,7 +45,40 @@ import dynamic from 'next/dynamic'
 
 const DynamicVideoPlayer = dynamic(() => import('@/app/components/dmmcomponents/DMMVideoPlayer'), {
 	loading: () => <LoadingSpinner />,
+	ssr: false,
 })
+
+const DynamicCommentSection = dynamic(
+	() => import('@/app/components/dmmcomponents/Comment/CommentSection'),
+	{ ssr: false },
+)
+
+const DynamicItemDetails = dynamic(() => import('@/app/components/dmmcomponents/ItemDetails'), {
+	ssr: false,
+})
+
+const DynamicSampleImageGallery = dynamic(
+	() => import('@/app/components/dmmcomponents/DMMSampleImage'),
+	{
+		ssr: false, // Disables SSR for this component to load it only on the client side
+		loading: () => <p>Loading images...</p>, // Placeholder while the component is loading
+	},
+)
+
+const DynamicBreadcrumb = dynamic(() => import('@/app/components/dmmcomponents/DMMBreadcrumb'), {
+	ssr: false,
+})
+
+import { CampaignLinksProps } from '@/app/components/dmmcomponents/DMMCampaignNames'
+
+// Dynamic import for CampaignLinks with explicit type
+const DynamicCampaignLinks = dynamic<CampaignLinksProps>(
+	() => import('@/app/components/dmmcomponents/DMMCampaignNames'),
+	{
+		ssr: false, // クライアントサイドでのみレンダリング
+		loading: () => <p>Loading campaigns...</p>, // プレースホルダー
+	},
+)
 
 interface Props {
 	params: { dbId: number }
@@ -101,9 +134,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 	return { title, description }
 }
-
-// BreadcrumbSeparatorコンポーネントを新たに定義
-const BreadcrumbSeparator = () => <span className='mx-2'>/</span>
 
 export default async function DMMKobetuItemPage({
 	params,
@@ -187,25 +217,7 @@ export default async function DMMKobetuItemPage({
 			<div className='bg-gray-50 dark:bg-gray-900 min-h-screen'>
 				<div className='container mx-auto px-2 sm:px-4 py-6 sm:py-8'>
 					{/* Breadcrumb */}
-					<Breadcrumb className='mb-4'>
-						<BreadcrumbList>
-							{breadcrumbItems.map((item, index) => (
-								<BreadcrumbItem key={index}>
-									{index === 0 ? (
-										<BreadcrumbLink href={item.href}>
-											<HomeIcon className='h-4 w-4' />
-											<span className='sr-only'>{item.name}</span>
-										</BreadcrumbLink>
-									) : index === breadcrumbItems.length - 1 ? (
-										<BreadcrumbPage>{item.name}</BreadcrumbPage>
-									) : (
-										<BreadcrumbLink href={item.href}>{item.name}</BreadcrumbLink>
-									)}
-									{index < breadcrumbItems.length - 1 && <BreadcrumbSeparator />}
-								</BreadcrumbItem>
-							))}
-						</BreadcrumbList>
-					</Breadcrumb>
+					<DynamicBreadcrumb items={breadcrumbItems} />
 
 					<article className='bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 space-y-6 sm:space-y-8'>
 						<h1 className='text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 text-center'>
@@ -235,54 +247,30 @@ export default async function DMMKobetuItemPage({
 						</div>
 
 						<Suspense fallback={<LoadingSpinner />}>
-							<ProductDetails title={itemMain.title} content_id={itemMain.content_id} itemDetail={itemDetail} />
+							<ProductDetails
+								title={itemMain.title}
+								content_id={itemMain.content_id}
+								itemDetail={itemDetail}
+							/>
 						</Suspense>
 
 						<ButtonTestComponent ItemMain={itemMain} actressInfo={actressInfo} />
 
 						<FanzaADBannerFanzaKobetu />
 
+						{/* DynamicCampaignLinksコンポーネントの呼び出し */}
 						{campaignNames && campaignNames.length > 0 && (
-							<div className='text-center text-sm text-gray-500'>
-								{campaignNames.map((campaignName, index) => (
-									<span key={index}>
-										<Link
-											href={`/campaign/${campaignName}`}
-											className='text-blue-600 underline hover:no-underline'>
-											{campaignName}
-										</Link>
-										<br />
-									</span>
-								))}
-							</div>
+							<DynamicCampaignLinks campaignNames={campaignNames} />
 						)}
 
 						<div className='w-full text-sm text-center my-4'>このページに広告を設置しています</div>
 
 						{itemMain.sampleImageURL && itemMain.sampleImageURL.length > 0 && (
-							<div className='mt-8'>
-								<h2 className='text-center font-bold mb-6'>
-									<span className='text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text'>
-										動画の見所シーンキャプチャ画像
-									</span>
-								</h2>
-								<div className='grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4'>
-									{itemMain.sampleImageURL.map((imageUrl, index) => (
-										<div
-											key={index}
-											className='aspect-w-16 aspect-h-9 relative overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300'>
-											<img
-												src={imageUrl}
-												alt={`${itemMain.title} ${itemMain.content_id}のサンプル画像${index + 1}`}
-												className='w-full h-full object-contain transition-transform duration-300'
-												decoding='async'
-												loading='lazy'
-												fetchPriority='low'
-											/>
-										</div>
-									))}
-								</div>
-							</div>
+							<DynamicSampleImageGallery
+								title={itemMain.title}
+								contentId={itemMain.content_id}
+								sampleImageURLs={itemMain.sampleImageURL}
+							/>
 						)}
 
 						{itemMain.sampleMovieURL && itemMain.sampleMovieURL.length > 0 && (
@@ -299,7 +287,7 @@ export default async function DMMKobetuItemPage({
 						)}
 
 						<Suspense fallback={<LoadingSpinner />}>
-							<CommentSection contentId={itemMain.content_id} />
+							<DynamicCommentSection contentId={itemMain.content_id} />
 						</Suspense>
 
 						<div className='flex justify-center'>
@@ -326,7 +314,7 @@ export default async function DMMKobetuItemPage({
 						</div>
 
 						<Suspense fallback={<LoadingSpinner />}>
-							<ItemDetails contentId={itemMain.content_id} dbId={params.dbId} />
+							<DynamicItemDetails contentId={itemMain.content_id} dbId={params.dbId} />
 						</Suspense>
 
 						<StructuredDataScript

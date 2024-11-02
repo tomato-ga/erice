@@ -527,7 +527,6 @@ const DMMActressStats: React.FC<{ actress_id: number; actress_name: string }> = 
 	actress_name,
 }) => {
 	const [actressStats, setActressStats] = useState<ActressStats | null>(null)
-	const { ref, inView } = useInView({ threshold: 0.3, triggerOnce: true })
 
 	// キャッシュ用のrefを使用して再レンダリングを防ぐ
 	const fetchedActressIds = useRef<Set<number>>(new Set())

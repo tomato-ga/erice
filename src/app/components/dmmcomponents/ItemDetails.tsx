@@ -188,12 +188,7 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 		<>
 			{/* JSON-LDを構造化データとして埋め込む */}
 			{/* JSON-LD構造化データのコードはここに記述します */}
-			{itemDetail.actress && (
-				<Suspense fallback={<LoadingSpinner />}>
-					{/* 1名の女優の関連アイテムのタイムラインを表示 */}
-					<ActressStatsAndRelatedItemsTimeLine actressName={actresses[0]} />
-				</Suspense>
-			)}
+			{itemDetail.actress && <ActressStatsAndRelatedItemsTimeLine actressName={actresses[0]} />}
 
 			{/* 1名の女優のプロフィールを表示 */}
 			<div className='grid grid-cols-1 gap-8 mt-8'>
