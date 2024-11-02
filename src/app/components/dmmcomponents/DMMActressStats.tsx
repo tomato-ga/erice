@@ -585,11 +585,7 @@ const DMMActressStats: React.FC<{ actress_id: number; actress_name: string }> = 
 
 			{/* <h2 className='text-2xl font-bold mb-6'>セクシー女優「{actress_name}」さんの統計データ</h2> */}
 
-			<div ref={ref}>
-				{inView && (
-					<DMMActressStatsWriting actressName={actress_name} actressStats={actressStats} />
-				)}
-			</div>
+			<DMMActressStatsWriting actressName={actress_name} actressStats={actressStats} />
 
 			{/* 概要統計 */}
 			<div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-8'>
