@@ -35,8 +35,6 @@ import StructuredDataScript from './StructuredData'
 
 import FanzaADBannerFanzaKobetu from '@/app/components/dmmcomponents/fanzaADBannerKobetu'
 
-import VideoPlayer from '@/app/components/dmmcomponents/DMMVideoPlayer'
-
 // // 2. SaleFloatingBanner を動的にインポート（SSR 無効化）
 // const SaleFloatingBanner = dynamic(
 // 	() => import('@/app/components/dmmcomponents/FloatingBanner/FloatingBanner'),
