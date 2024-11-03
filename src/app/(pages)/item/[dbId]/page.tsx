@@ -252,7 +252,7 @@ export default async function DMMKobetuItemPage({
 							</Suspense>
 						</div>
 
-						<Suspense fallback={<LoadingSpinner />}>
+						
 							<ProductDetails
 								title={itemMain.title}
 								content_id={itemMain.content_id}
@@ -319,7 +319,7 @@ export default async function DMMKobetuItemPage({
 							</div>
 
 							<DynamicItemDetails contentId={itemMain.content_id} dbId={params.dbId} />
-						</Suspense>
+						
 
 						<StructuredDataScript
 							itemMain={itemMain}
