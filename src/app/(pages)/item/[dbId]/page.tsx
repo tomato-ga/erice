@@ -359,3 +359,6 @@ export default async function DMMKobetuItemPage({
 		</>
 	)
 }
+
+// 1ヶ月キャッシュ
+export const revalidate = 2592000
