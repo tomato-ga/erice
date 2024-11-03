@@ -143,9 +143,6 @@ export default async function DMMKobetuItemPage({
 	params,
 	searchParams,
 }: Props & { searchParams: { itemType?: ItemType } }) {
-	console.time('component timelog')
-	console.timeLog('component timelog') // 修正：ラベルを一致させる
-
 	// getPageDataでデータを取得
 	const { itemMain, itemDetail, actressInfo } = await getPageData(params.dbId)
 	if (!itemMain) {
@@ -167,7 +164,6 @@ export default async function DMMKobetuItemPage({
 	// 		items: (await fetchRelatedItems(type)) as ExtendedDMMItem[],
 	// 	})),
 	// )
-	console.timeLog('component timelog')
 
 	if (!itemDetail) {
 		return <div>ItemDetailが見つかりません</div>
@@ -214,7 +210,6 @@ export default async function DMMKobetuItemPage({
 
 	// JSON-LDを生成
 	const campaignNames = await fetchCampaignNames()
-	console.timeEnd('component timelog')
 
 	return (
 		<>
@@ -364,6 +359,3 @@ export default async function DMMKobetuItemPage({
 		</>
 	)
 }
-
-// 24時間キャッシュ
-export const revalidate = 86400
