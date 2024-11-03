@@ -253,13 +253,13 @@ export default async function DMMKobetuItemPage({
 							</UmamiTracking>
 						</div>
 
-						<Suspense fallback={<LoadingSpinner />}>
+						
 							<ProductDetails
 								title={itemMain.title}
 								content_id={itemMain.content_id}
 								itemDetail={itemDetail}
 							/>
-						</Suspense>
+						
 
 						<DynamicButtonTest ItemMain={itemMain} actressInfo={actressInfo} />
 
@@ -293,9 +293,9 @@ export default async function DMMKobetuItemPage({
 							</div>
 						)}
 
-						<Suspense fallback={<LoadingSpinner />}>
+						
 							<DynamicCommentSection contentId={itemMain.content_id} />
-						</Suspense>
+						
 
 						<div className='flex justify-center'>
 							<div className='relative inline-block group'>
@@ -320,9 +320,9 @@ export default async function DMMKobetuItemPage({
 							</div>
 						</div>
 
-						<Suspense fallback={<LoadingSpinner />}>
+						
 							<DynamicItemDetails contentId={itemMain.content_id} dbId={params.dbId} />
-						</Suspense>
+						
 
 						<StructuredDataScript
 							itemMain={itemMain}
