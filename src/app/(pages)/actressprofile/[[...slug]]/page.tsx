@@ -245,13 +245,11 @@ export default async function ActressProfilePage({ params }: PageProps) {
 			</h1>
 
 			{profile.actress && (
-				<Suspense fallback={<LoadingSpinner />}>
-					<ActressProfileSection
-						profile={profile}
-						pageTitle={pageTitle} // pageTitleを渡す
-						descriptionFromMetadata={pageDescription}
-					/>
-				</Suspense>
+				<ActressProfileSection
+					profile={profile}
+					pageTitle={pageTitle} // pageTitleを渡す
+					descriptionFromMetadata={pageDescription}
+				/>
 			)}
 
 			<h2 className='text-2xl font-semibold mt-12 mb-6'>{profile.actress.name}の作品一覧</h2>
