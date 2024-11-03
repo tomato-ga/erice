@@ -148,8 +148,8 @@ export async function fetchItemMainByContentId(dbId: number): Promise<DMMItemMai
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-one-item-main?db_id=${dbId}`,
 			{
-				cache: 'force-cache',
 				next: {
+					revalidate: 2592000, // 1ヶ月（30日）
 					tags: [`item-main-${dbId}`],
 				},
 			},
@@ -189,6 +189,7 @@ export async function fetchItemDetailByContentId(
 			`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-one-item-detail?db_id=${dbId}`,
 			{
 				next: {
+					revalidate: 2592000, // 1ヶ月（30日）
 					tags: [`item-detail-${dbId}`],
 				},
 			},
@@ -224,7 +225,8 @@ export async function fetchItemDetailByContentId(
 export async function fetchRelatedItems(itemType: ItemType): Promise<DMMItemProps[]> {
 	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-${itemType}-getkv`, {
 		next: {
-			revalidate: 43200, // 12時間（秒単位）
+			revalidate: 2592000, // 1ヶ月（30日）
+			tags: [`item-relateditem-${itemType}`],
 		},
 	})
 	const data: DMMItemProps[] = await response.json()
@@ -324,9 +326,9 @@ export const fetchItemMainByContentIdToActressInfo = unstable_cache(
 			const response = await fetch(
 				`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-actressonly-info?db_id=${dbId}`,
 				{
-					cache: 'force-cache',
 					next: {
-						tags: [`item-actressInfo-${dbId}`],
+						revalidate: 2592000, // 1ヶ月（30日）
+						tags: [`item-detail-${dbId}`],
 					},
 				},
 			)

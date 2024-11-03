@@ -221,7 +221,9 @@ export default async function DMMKobetuItemPage({
 			<div className='bg-gray-50 dark:bg-gray-900 min-h-screen'>
 				<div className='container mx-auto px-2 sm:px-4 py-6 sm:py-8'>
 					{/* Breadcrumb */}
-					<DynamicBreadcrumb items={breadcrumbItems} />
+					<Suspense fallback={<LoadingSpinner />}>
+						<DynamicBreadcrumb items={breadcrumbItems} />
+					</Suspense>
 
 					<article className='bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 space-y-6 sm:space-y-8'>
 						<h1 className='text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 text-center'>
@@ -258,47 +260,57 @@ export default async function DMMKobetuItemPage({
 								content_id={itemMain.content_id}
 								itemDetail={itemDetail}
 							/>
+						</Suspense>
 
+						<Suspense fallback={<LoadingSpinner />}>
 							<DynamicButtonTest ItemMain={itemMain} actressInfo={actressInfo} />
+						</Suspense>
 
+						<Suspense fallback={<LoadingSpinner />}>
 							<FanzaADBannerFanzaKobetu />
+						</Suspense>
 
-							{/* DynamicCampaignLinksコンポーネントの呼び出し */}
-							{campaignNames && campaignNames.length > 0 && (
-								<DynamicCampaignLinks campaignNames={campaignNames} />
-							)}
+						{/* DynamicCampaignLinksコンポーネントの呼び出し */}
+						{campaignNames && campaignNames.length > 0 && (
+							<DynamicCampaignLinks campaignNames={campaignNames} />
+						)}
 
-							<div className='w-full text-sm text-center my-4'>
-								このページに広告を設置しています
-							</div>
+						<div className='w-full text-sm text-center my-4'>このページに広告を設置しています</div>
 
-							{itemMain.sampleImageURL && itemMain.sampleImageURL.length > 0 && (
+						{itemMain.sampleImageURL && itemMain.sampleImageURL.length > 0 && (
+							<Suspense fallback={<LoadingSpinner />}>
 								<DynamicSampleImageGallery
 									title={itemMain.title}
 									contentId={itemMain.content_id}
 									sampleImageURLs={itemMain.sampleImageURL}
 								/>
-							)}
+							</Suspense>
+						)}
 
-							{itemMain.sampleMovieURL && itemMain.sampleMovieURL.length > 0 && (
-								<div className='mt-8'>
-									<h2 className='text-center font-bold mb-6'>
-										<span className='text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text'>
-											無料のサンプル動画
-										</span>
-									</h2>
-									<div className='flex justify-center'>
+						{itemMain.sampleMovieURL && itemMain.sampleMovieURL.length > 0 && (
+							<div className='mt-8'>
+								<h2 className='text-center font-bold mb-6'>
+									<span className='text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text'>
+										無料のサンプル動画
+									</span>
+								</h2>
+								<div className='flex justify-center'>
+									<Suspense fallback={<LoadingSpinner />}>
 										<DynamicVideoPlayer src={itemMain.sampleMovieURL[0]} />
-									</div>
+									</Suspense>
 								</div>
-							)}
+							</div>
+						)}
 
+						<Suspense fallback={<LoadingSpinner />}>
 							<DynamicCommentSection contentId={itemMain.content_id} />
+						</Suspense>
 
-							<div className='flex justify-center'>
-								<div className='relative inline-block group'>
-									<div className='absolute inset-3 rounded-full bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm z-0 pointer-events-none transform group-hover:scale-100  duration-500 ease-in-out blur-lg' />
+						<div className='flex justify-center'>
+							<div className='relative inline-block group'>
+								<div className='absolute inset-3 rounded-full bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm z-0 pointer-events-none transform group-hover:scale-100  duration-500 ease-in-out blur-lg' />
 
+								<Suspense fallback={<LoadingSpinner />}>
 									<UmamiTracking
 										trackingData={{
 											dataType: 'combined',
@@ -315,9 +327,11 @@ export default async function DMMKobetuItemPage({
 											<ExternalLink className='w-5 h-5 sm:w-6 sm:h-6 animate-pulse' />
 										</Link>
 									</UmamiTracking>
-								</div>
+								</Suspense>
 							</div>
+						</div>
 
+						<Suspense fallback={<LoadingSpinner />}>
 							<DynamicItemDetails contentId={itemMain.content_id} dbId={params.dbId} />
 						</Suspense>
 

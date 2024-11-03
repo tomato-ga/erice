@@ -75,9 +75,12 @@ const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActress
 					<div className='lg:w-1/3 mb-6 lg:mb-0'>
 						<Link href={`/actressprofile/${encodeURIComponent(actress.name)}`}>
 							<img
-								src={actress.image_url_large || '/placeholder-image.jpg'}
+								src={actress.image_url_large || ''}
 								alt={actress.name}
 								className='w-full object-contain aspect-[3/4] transition-transform'
+								decoding='async'
+								loading='lazy'
+								fetchPriority='low'
 							/>
 						</Link>
 					</div>
