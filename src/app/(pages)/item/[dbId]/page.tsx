@@ -68,6 +68,7 @@ const DynamicBreadcrumb = dynamic(() => import('@/app/components/dmmcomponents/D
 })
 
 import { CampaignLinksProps } from '@/app/components/dmmcomponents/DMMCampaignNames'
+import { getItemData, preload } from '@/app/components/dmmcomponents/fetch/item-fetch-pre'
 
 // Dynamic import for CampaignLinks with explicit type
 const DynamicCampaignLinks = dynamic<CampaignLinksProps>(
@@ -97,23 +98,27 @@ function LoadingSpinner() {
 }
 
 // 1. データ取得関数の定義
-async function getPageData(dbId: number) {
-	try {
-		const [itemMain, itemDetail, actressInfo] = await Promise.all([
-			fetchItemMainByContentId(dbId),
-			fetchItemDetailByContentId(dbId),
-			fetchItemMainByContentIdToActressInfo(dbId),
-		])
-		return { itemMain, itemDetail, actressInfo }
-	} catch (error) {
-		console.error('データ取得中にエラーが発生しました:', error)
-		return { itemMain: null, itemDetail: null, actressInfo: null }
-	}
-}
+
+// async function getPageData(dbId: number) {
+// 	try {
+// 		const [itemMain, itemDetail, actressInfo] = await Promise.all([
+// 			fetchItemMainByContentId(dbId),
+// 			fetchItemDetailByContentId(dbId),
+// 			fetchItemMainByContentIdToActressInfo(dbId),
+// 		])
+// 		return { itemMain, itemDetail, actressInfo }
+// 	} catch (error) {
+// 		console.error('データ取得中にエラーが発生しました:', error)
+// 		return { itemMain: null, itemDetail: null, actressInfo: null }
+// 	}
+// }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const { dbId } = params
-	const { itemMain, itemDetail } = await getPageData(dbId) // getPageDataで取得済みのデータを使用
+
+	preload(dbId)
+	const { itemMain, itemDetail } = await getItemData(dbId)
+	// const { itemMain, itemDetail } = await getPageData(dbId) // getPageDataで取得済みのデータを使用
 
 	let title = 'エロコメスト'
 	let description = '詳細ページ'
@@ -144,7 +149,8 @@ export default async function DMMKobetuItemPage({
 	searchParams,
 }: Props & { searchParams: { itemType?: ItemType } }) {
 	// getPageDataでデータを取得
-	const { itemMain, itemDetail, actressInfo } = await getPageData(params.dbId)
+	// const { itemMain, itemDetail, actressInfo } = await getPageData(params.dbId)
+	const { itemMain, itemDetail, actressInfo } = await getItemData(params.dbId)
 	if (!itemMain) {
 		return (
 			<div className='container mx-auto px-2 py-6'>
