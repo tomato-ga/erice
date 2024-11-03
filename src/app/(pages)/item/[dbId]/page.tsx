@@ -44,7 +44,6 @@ import FanzaADBannerFanzaKobetu from '@/app/components/dmmcomponents/fanzaADBann
 import dynamic from 'next/dynamic'
 
 const DynamicVideoPlayer = dynamic(() => import('@/app/components/dmmcomponents/DMMVideoPlayer'), {
-	loading: () => <LoadingSpinner />,
 	ssr: false,
 })
 
@@ -61,7 +60,6 @@ const DynamicSampleImageGallery = dynamic(
 	() => import('@/app/components/dmmcomponents/DMMSampleImage'),
 	{
 		ssr: false, // Disables SSR for this component to load it only on the client side
-		loading: () => <p>Loading images...</p>, // Placeholder while the component is loading
 	},
 )
 
@@ -76,7 +74,6 @@ const DynamicCampaignLinks = dynamic<CampaignLinksProps>(
 	() => import('@/app/components/dmmcomponents/DMMCampaignNames'),
 	{
 		ssr: false, // クライアントサイドでのみレンダリング
-		loading: () => <p>Loading campaigns...</p>, // プレースホルダー
 	},
 )
 
@@ -233,24 +230,26 @@ export default async function DMMKobetuItemPage({
 						<p className='text-gray-600 dark:text-gray-300 text-base mt-4'>{description}</p>
 
 						<div className='relative overflow-hidden aspect-w-16 aspect-h-9'>
-							<UmamiTracking
-								trackingData={{
-									dataType: 'combined',
-									from: 'kobetu-img-top',
-									item: itemMain,
-									actressInfo: actressInfo,
-								}}>
-								<Link href={itemMain.affiliateURL} target='_blank' rel='noopener noreferrer'>
-									<img
-										src={itemMain.imageURL}
-										alt={`${itemMain.title}のパッケージ画像`}
-										className='w-full h-full object-contain transition-transform duration-300'
-										decoding='async'
-										loading='eager'
-										fetchPriority='high'
-									/>
-								</Link>
-							</UmamiTracking>
+							<Suspense fallback={<LoadingSpinner />}>
+								<UmamiTracking
+									trackingData={{
+										dataType: 'combined',
+										from: 'kobetu-img-top',
+										item: itemMain,
+										actressInfo: actressInfo,
+									}}>
+									<Link href={itemMain.affiliateURL} target='_blank' rel='noopener noreferrer'>
+										<img
+											src={itemMain.imageURL}
+											alt={`${itemMain.title}のパッケージ画像`}
+											className='w-full h-full object-contain transition-transform duration-300'
+											decoding='async'
+											loading='eager'
+											fetchPriority='high'
+										/>
+									</Link>
+								</UmamiTracking>
+							</Suspense>
 						</div>
 
 						<Suspense fallback={<LoadingSpinner />}>
@@ -259,68 +258,66 @@ export default async function DMMKobetuItemPage({
 								content_id={itemMain.content_id}
 								itemDetail={itemDetail}
 							/>
-						</Suspense>
 
-						<DynamicButtonTest ItemMain={itemMain} actressInfo={actressInfo} />
+							<DynamicButtonTest ItemMain={itemMain} actressInfo={actressInfo} />
 
-						<FanzaADBannerFanzaKobetu />
+							<FanzaADBannerFanzaKobetu />
 
-						{/* DynamicCampaignLinksコンポーネントの呼び出し */}
-						{campaignNames && campaignNames.length > 0 && (
-							<DynamicCampaignLinks campaignNames={campaignNames} />
-						)}
+							{/* DynamicCampaignLinksコンポーネントの呼び出し */}
+							{campaignNames && campaignNames.length > 0 && (
+								<DynamicCampaignLinks campaignNames={campaignNames} />
+							)}
 
-						<div className='w-full text-sm text-center my-4'>このページに広告を設置しています</div>
+							<div className='w-full text-sm text-center my-4'>
+								このページに広告を設置しています
+							</div>
 
-						{itemMain.sampleImageURL && itemMain.sampleImageURL.length > 0 && (
-							<DynamicSampleImageGallery
-								title={itemMain.title}
-								contentId={itemMain.content_id}
-								sampleImageURLs={itemMain.sampleImageURL}
-							/>
-						)}
+							{itemMain.sampleImageURL && itemMain.sampleImageURL.length > 0 && (
+								<DynamicSampleImageGallery
+									title={itemMain.title}
+									contentId={itemMain.content_id}
+									sampleImageURLs={itemMain.sampleImageURL}
+								/>
+							)}
 
-						{itemMain.sampleMovieURL && itemMain.sampleMovieURL.length > 0 && (
-							<div className='mt-8'>
-								<h2 className='text-center font-bold mb-6'>
-									<span className='text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text'>
-										無料のサンプル動画
-									</span>
-								</h2>
-								<div className='flex justify-center'>
-									<DynamicVideoPlayer src={itemMain.sampleMovieURL[0]} />
+							{itemMain.sampleMovieURL && itemMain.sampleMovieURL.length > 0 && (
+								<div className='mt-8'>
+									<h2 className='text-center font-bold mb-6'>
+										<span className='text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text'>
+											無料のサンプル動画
+										</span>
+									</h2>
+									<div className='flex justify-center'>
+										<DynamicVideoPlayer src={itemMain.sampleMovieURL[0]} />
+									</div>
+								</div>
+							)}
+
+							<DynamicCommentSection contentId={itemMain.content_id} />
+
+							<div className='flex justify-center'>
+								<div className='relative inline-block group'>
+									<div className='absolute inset-3 rounded-full bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm z-0 pointer-events-none transform group-hover:scale-100  duration-500 ease-in-out blur-lg' />
+
+									<UmamiTracking
+										trackingData={{
+											dataType: 'combined',
+											from: 'kobetu-exlink-bottom',
+											item: itemMain,
+											actressInfo: actressInfo,
+										}}>
+										<Link
+											href={itemMain.affiliateURL}
+											target='_blank'
+											rel='noopener noreferrer'
+											className='relative z-10 inline-flex items-center justify-center text-xl font-semibold text-white rounded-sm shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 px-6 sm:px-8 py-3 sm:py-4 transform bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm will-change-background-position'>
+											<span className='mr-2'>{itemMain.title}の高画質動画を見る</span>
+											<ExternalLink className='w-5 h-5 sm:w-6 sm:h-6 animate-pulse' />
+										</Link>
+									</UmamiTracking>
 								</div>
 							</div>
-						)}
 
-						<Suspense fallback={<LoadingSpinner />}>
-							<DynamicCommentSection contentId={itemMain.content_id} />
-						</Suspense>
-
-						<div className='flex justify-center'>
-							<div className='relative inline-block group'>
-								<div className='absolute inset-3 rounded-full bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm z-0 pointer-events-none transform group-hover:scale-100  duration-500 ease-in-out blur-lg' />
-
-								<UmamiTracking
-									trackingData={{
-										dataType: 'combined',
-										from: 'kobetu-exlink-bottom',
-										item: itemMain,
-										actressInfo: actressInfo,
-									}}>
-									<Link
-										href={itemMain.affiliateURL}
-										target='_blank'
-										rel='noopener noreferrer'
-										className='relative z-10 inline-flex items-center justify-center text-xl font-semibold text-white rounded-sm shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 px-6 sm:px-8 py-3 sm:py-4 transform bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm will-change-background-position'>
-										<span className='mr-2'>{itemMain.title}の高画質動画を見る</span>
-										<ExternalLink className='w-5 h-5 sm:w-6 sm:h-6 animate-pulse' />
-									</Link>
-								</UmamiTracking>
-							</div>
-						</div>
-
-						<Suspense fallback={<LoadingSpinner />}>
 							<DynamicItemDetails contentId={itemMain.content_id} dbId={params.dbId} />
 						</Suspense>
 

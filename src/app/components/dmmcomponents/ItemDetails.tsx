@@ -195,9 +195,7 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 				{essentialActressProfiles.map(
 					(profile: DMMActressProfile) =>
 						!isPlaceholderImage(profile.actress.image_url_large) && (
-							<Suspense key={profile.actress.name} fallback={<LoadingSpinner />}>
-								<ActressProfile actressProfileData={profile} />
-							</Suspense>
+							<ActressProfile actressProfileData={profile} key={profile.actress.id} />
 						),
 				)}
 			</div>
