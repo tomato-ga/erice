@@ -17,14 +17,15 @@ const Footer = () => {
 						<h3 className='text-cyan-400 text-xl font-semibold mb-4'>リンク</h3>
 						<ul className='text-gray-400 space-y-2'>
 							<li>
-								<Link href='/about' className='hover:text-cyan-400'>
+								<Link href='/about' className='hover:text-cyan-400' prefetch={false}>
 									このサイトについて・お問い合わせ
 								</Link>
 							</li>
 							<li>
 								<Link
 									href='/request_for_disclosure_of_sender_information'
-									className='hover:text-cyan-400'>
+									className='hover:text-cyan-400'
+									prefetch={false}>
 									発信者情報開示請求を受けたときの話
 								</Link>
 							</li>

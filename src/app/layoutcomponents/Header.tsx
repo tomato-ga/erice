@@ -35,7 +35,7 @@ const Header: React.FC = () => {
 		<header className='relative bg-white text-black w-full border-b border-gray-300'>
 			<div className='flex items-center justify-between w-full h-12 px-3'>
 				<div className='ml-4 h-full'>
-					<Link href='/'>
+					<Link href='/' prefetch={false}>
 						<img src='/site.webp' className='h-full w-auto' alt='エロコメスト' />
 					</Link>
 				</div>
