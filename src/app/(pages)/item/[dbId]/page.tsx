@@ -85,37 +85,6 @@ const DynamicButtonTest = dynamic(
 	},
 )
 
-const API_ENDPOINT = process.env.DMM_SITEMAP_API_ENDPOINT
-const API_KEY = process.env.CLOUDFLARE_DMM_API_TOKEN
-
-async function fetchTotalCount(): Promise<number> {
-	if (!API_ENDPOINT || !API_KEY) {
-		throw new Error('API_ENDPOINT or API_KEY is not set')
-	}
-
-	const response = await fetch(API_ENDPOINT, {
-		headers: {
-			'Content-Type': 'application/json',
-			'X-API-Key': API_KEY,
-		},
-	})
-
-	if (!response.ok) {
-		throw new Error(`HTTP error! status: ${response.status}`)
-	}
-
-	const data: { totalCount: number } = await response.json()
-	return data.totalCount
-}
-
-export async function generateStaticParams() {
-	const totalCount = await fetchTotalCount()
-	const range = Array.from({ length: totalCount }, (_, index) => index + 1)
-
-	// 全ページ生成する場合
-	return range.map(dbId => ({ dbId: dbId.toString() }))
-}
-
 interface Props {
 	params: { dbId: number }
 }
@@ -397,4 +366,4 @@ export default async function DMMKobetuItemPage({
 }
 
 // 1ヶ月キャッシュ
-// export const revalidate = 2592000
+export const revalidate = 2592000
