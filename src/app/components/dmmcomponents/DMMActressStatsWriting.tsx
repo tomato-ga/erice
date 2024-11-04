@@ -123,13 +123,13 @@ const DMMActressStatsWriting: React.FC<Props> = ({
 		return `${actressName}さんの作品は${dates[0]}から${dates[dates.length - 1]}までの期間で、レビュー数が${initialCount}件から${latestCount}件まで増加しました。これは着実なファン層の拡大を示しています。`
 	}
 
-	// 要約版の文章生成
+	// 要約版の文章
 	const generateSummary = () => {
 		return `${actressName}さんの総合レビュー平均点は${review_average.toFixed(
 			2,
 		)}、評価バランス平均は${weighted_average.toFixed(
 			2,
-		)}です。総レビュー数は${total_review_count}件に達しており、最新の評価データは${last_updated}に更新されました。彼女の作品は一貫して高評価を受けており、ファンからの支持が強いことが伺えます。詳しくは、${actressName}さんのプロフィールページをご覧ください。`
+		)}です。総レビュー数は${total_review_count}件に達し、最新の評価データは${last_updated}に更新されました。${actressName}さんは数多くのエロ動画作品で一貫して高評価を受けており、その優れた演技力と魅力的なパフォーマンスにより、幅広いファン層からの支持を得ています。彼女の多様な役柄や最新作についての詳細な分析や統計データは、${actressName}さんのプロフィールページでご確認いただけます。`
 	}
 
 	// 構造化データの生成
