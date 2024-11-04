@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
 		}
 
 		const data = (await response.json()) as unknown
-		console.log('data genre limit:', data)
+		// console.log('data genre limit:', data)
 
 		// レスポンスデータのバリデーション
 

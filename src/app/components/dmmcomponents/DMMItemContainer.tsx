@@ -66,7 +66,7 @@ async function fetchData(itemType: ItemType): Promise<DMMItemProps[]> {
 			return []
 		}
 
-		console.log(`Successfully fetched ${data.length} items for ${itemType}`)
+		// console.log(`Successfully fetched ${data.length} items for ${itemType}`)
 		return data
 	} catch (error) {
 		console.error(`Error fetching data for ${itemType}:`, error)
@@ -82,7 +82,7 @@ export default async function DMMItemContainer({
 	textGradient,
 	umamifrom,
 }: DMMItemContainerProps) {
-	console.log('DMMItemContainer itemType: ', itemType)
+	// console.log('DMMItemContainer itemType: ', itemType)
 
 	const items = await fetchData(itemType)
 

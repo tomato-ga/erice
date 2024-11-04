@@ -52,7 +52,7 @@ const DMMFeaturedItemCard = <T extends DMMFeaturedItemProps>({
 	<div className='bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-md flex flex-col h-full'>
 		<UmamiTracking
 			trackingData={{ dataType: 'item', from: umamifrom, featureType: type, item: item }}>
-			<Link href={`/item/${item.db_id}`}>
+			<Link href={`/item/${item.db_id}`} prefetch={true}>
 				<div className='relative overflow-hidden bg-gray-100 p-4'>
 					<img
 						src={item.imageURL?.toString() || ''}
@@ -211,7 +211,7 @@ export default async function DMMFeaturedItemContainer<T extends DMMFeaturedItem
 		}
 	}
 
-	console.log('DMMFeaturedItemContainer items:', items)
+	// console.log('DMMFeaturedItemContainer items:', items)
 
 	return (
 		<div
@@ -224,6 +224,7 @@ export default async function DMMFeaturedItemContainer<T extends DMMFeaturedItem
 				</h2>
 				<Link
 					href={linkHref}
+					prefetch={true}
 					className={`inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r ${textGradient} shadow-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50`}>
 					{linkText}
 					<ArrowRight className='ml-2 h-5 w-5 animate-bounce' />

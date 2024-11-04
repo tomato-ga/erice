@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
 		}
 
 		const data = (await response.json()) as unknown
-		console.log('api/items-by-actress:', data)
+		// console.log('api/items-by-actress:', data)
 
 		// レスポンスデータのバリデーション
 		if (

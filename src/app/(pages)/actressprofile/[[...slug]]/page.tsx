@@ -1,4 +1,5 @@
 import LoadingSpinner from '@/app/components/Article/ArticleContent/loadingspinner'
+import DMMActressStats from '@/app/components/dmmcomponents/DMMActressStats'
 import { fetchActressProfileAndWorks } from '@/app/components/dmmcomponents/fetch/itemFetchers'
 import {
 	generateActressArticleStructuredData,
@@ -101,7 +102,7 @@ const ActressProfileSection = ({
 				}}
 			/> */}
 
-			<div className='bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 shadow-2xl rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl'>
+			<div className='bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 shadow-xl rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl'>
 				<div className='p-8'>
 					<h2 className='text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400'>
 						{actress.name}のプロフィール
@@ -245,13 +246,21 @@ export default async function ActressProfilePage({ params }: PageProps) {
 				{pageTitle} {/* 再計算したpageTitleを使用 */}
 			</h1>
 
-			{profile.actress && (
-				<ActressProfileSection
-					profile={profile}
-					pageTitle={pageTitle} // pageTitleを渡す
-					descriptionFromMetadata={pageDescription}
-				/>
-			)}
+			<div className='mb-10'>
+				<Suspense fallback={<LoadingSpinner />}>
+					{profile.actress && (
+						<ActressProfileSection
+							profile={profile}
+							pageTitle={pageTitle} // pageTitleを渡す
+							descriptionFromMetadata={pageDescription}
+						/>
+					)}
+				</Suspense>
+			</div>
+
+			<Suspense fallback={<LoadingSpinner />}>
+				<DMMActressStats actress_id={profile.actress.id} actress_name={profile.actress.name} />
+			</Suspense>
 
 			<h2 className='text-2xl font-semibold mt-12 mb-6'>{profile.actress.name}の作品一覧</h2>
 

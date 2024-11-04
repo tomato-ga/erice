@@ -105,7 +105,7 @@ export default async function GenrePaginationPage({ params }: PageProps) {
 		}
 
 		// レスポンスデータを出力
-		console.log('APIレスポンスデータ:', data) // レスポンスデータを出力
+		// console.log('APIレスポンスデータ:', data) // レスポンスデータを出力
 
 		return (
 			<section className='max-w-7xl mx-auto'>

@@ -1,6 +1,7 @@
 import { cache } from 'react'
 import 'server-only'
 import {
+	fetchCampaignNames,
 	fetchItemDetailByContentId,
 	fetchItemMainByContentId,
 	fetchItemMainByContentIdToActressInfo,
@@ -8,12 +9,13 @@ import {
 
 // fetch関数をキャッシュしつつ定義
 export const getItemData = cache(async (dbId: number) => {
-	const [itemMain, itemDetail, actressInfo] = await Promise.all([
+	const [itemMain, itemDetail, actressInfo, campaignNames] = await Promise.all([
 		fetchItemMainByContentId(dbId),
 		fetchItemDetailByContentId(dbId),
 		fetchItemMainByContentIdToActressInfo(dbId),
+		fetchCampaignNames(),
 	])
-	return { itemMain, itemDetail, actressInfo }
+	return { itemMain, itemDetail, actressInfo, campaignNames }
 })
 
 // preload関数で事前にデータフェッチを開始

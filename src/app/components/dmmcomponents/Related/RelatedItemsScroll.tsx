@@ -41,7 +41,7 @@ const RelatedItemsScroll: React.FC<RelatedItemsScrollProps> = ({ items, itemType
 					style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
 					{items.map(item => (
 						<div key={item.db_id} className='flex-none w-64'>
-							<Link href={`/item/${item.db_id}`}>
+							<Link href={`/item/${item.db_id}`} prefetch={true}>
 								<div className='bg-white overflow-hidden'>
 									<img
 										src={getImageUrl(item)}
@@ -69,4 +69,4 @@ const RelatedItemsScroll: React.FC<RelatedItemsScrollProps> = ({ items, itemType
 	)
 }
 
-export default React.memo(RelatedItemsScroll)
+export default RelatedItemsScroll

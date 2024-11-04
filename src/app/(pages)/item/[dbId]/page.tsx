@@ -1,6 +1,5 @@
 // /app/(pages)/item/[dbId]/page.tsx
 
-// import { CommentSection } from '@/app/components/dmmcomponents/Comment/CommentSection'
 import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
 import ItemDetails from '@/app/components/dmmcomponents/ItemDetails'
 import RelatedItemsScroll from '@/app/components/dmmcomponents/Related/RelatedItemsScroll'
@@ -22,15 +21,6 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import '@/app/_css/styles.css'
 import ButtonTestComponent from '@/app/components/dmmcomponents/ABtest/GradientButton/ButtonTestCompo'
-
-// import {
-// 	Breadcrumb,
-// 	BreadcrumbItem,
-// 	BreadcrumbLink,
-// 	BreadcrumbList,
-// 	BreadcrumbPage,
-// } from '@/components/ui/breadcrumb'
-// import { HomeIcon } from 'lucide-react'
 import StructuredDataScript from './StructuredData'
 
 import FanzaADBannerFanzaKobetu from '@/app/components/dmmcomponents/fanzaADBannerKobetu'
@@ -150,7 +140,7 @@ export default async function DMMKobetuItemPage({
 }: Props & { searchParams: { itemType?: ItemType } }) {
 	// getPageDataでデータを取得
 	// const { itemMain, itemDetail, actressInfo } = await getPageData(params.dbId)
-	const { itemMain, itemDetail, actressInfo } = await getItemData(params.dbId)
+	const { itemMain, itemDetail, actressInfo, campaignNames } = await getItemData(params.dbId)
 	if (!itemMain) {
 		return (
 			<div className='container mx-auto px-2 py-6'>
@@ -164,12 +154,12 @@ export default async function DMMKobetuItemPage({
 	}
 
 	const relatedItemTypes: ItemType[] = ['todaynew', 'debut', 'feature', 'sale']
-	// const relatedItemsData = await Promise.all(
-	// 	relatedItemTypes.map(async type => ({
-	// 		type,
-	// 		items: (await fetchRelatedItems(type)) as ExtendedDMMItem[],
-	// 	})),
-	// )
+	const relatedItemsData = await Promise.all(
+		relatedItemTypes.map(async type => ({
+			type,
+			items: (await fetchRelatedItems(type)) as ExtendedDMMItem[],
+		})),
+	)
 
 	if (!itemDetail) {
 		return <div>ItemDetailが見つかりません</div>
@@ -214,16 +204,15 @@ export default async function DMMKobetuItemPage({
 		return parts.join(' ')
 	})()
 
-	const campaignNames = await fetchCampaignNames()
+	// const campaignNames = await fetchCampaignNames()
 
 	return (
 		<>
 			<div className='bg-gray-50 dark:bg-gray-900 min-h-screen'>
 				<div className='container mx-auto px-2 sm:px-4 py-6 sm:py-8'>
 					{/* Breadcrumb */}
-					<Suspense fallback={<LoadingSpinner />}>
-						<DynamicBreadcrumb items={breadcrumbItems} />
-					</Suspense>
+
+					<DynamicBreadcrumb items={breadcrumbItems} />
 
 					<article className='bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 space-y-6 sm:space-y-8'>
 						<h1 className='text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 text-center'>
@@ -342,22 +331,24 @@ export default async function DMMKobetuItemPage({
 							dbId={params.dbId}
 						/>
 
-						{/* {relatedItemsData.map(({ type, items }) => (
-							<RelatedItemsScroll
-								key={type}
-								items={items}
-								itemType={type}
-								title={
-									type === 'todaynew'
-										? '今日配信の新作'
-										: type === 'debut'
-											? 'デビュー作品'
-											: type === 'feature'
-												? '注目作品'
-												: '限定セール'
-								}
-							/>
-						))} */}
+						<Suspense fallback={<LoadingSpinner />}>
+							{relatedItemsData.map(({ type, items }) => (
+								<RelatedItemsScroll
+									key={type}
+									items={items}
+									itemType={type}
+									title={
+										type === 'todaynew'
+											? '今日配信の新作'
+											: type === 'debut'
+												? 'デビュー作品'
+												: type === 'feature'
+													? '注目作品'
+													: '限定セール'
+									}
+								/>
+							))}
+						</Suspense>
 					</article>
 				</div>
 			</div>

@@ -4,7 +4,7 @@ import { PaginationArticleResponse } from '@/types/types'
 
 export async function fetchPaginationArticles(
 	keyword: string | null,
-	page: number
+	page: number,
 ): Promise<PaginationArticleResponse> {
 	const params = new URLSearchParams({ page: page.toString() })
 	if (keyword) {
@@ -14,8 +14,8 @@ export async function fetchPaginationArticles(
 	try {
 		const response = await fetch(`/api/pagination?${params}`, {
 			headers: {
-				Accept: 'application/json'
-			}
+				Accept: 'application/json',
+			},
 			// next: { revalidate: 60 }
 		})
 
@@ -31,7 +31,7 @@ export async function fetchPaginationArticles(
 			totalPages?: number
 			total?: number
 		}
-		console.log('Fetched data:', data) // デバッグログ
+		// console.log('Fetched data:', data) // デバッグログ
 
 		// レスポンスの型チェックと整形
 		if (!Array.isArray(data.articles)) {
@@ -43,7 +43,7 @@ export async function fetchPaginationArticles(
 			articles: data.articles,
 			currentPage: data.currentPage || 1,
 			totalPages: data.totalPages || 1,
-			total: data.total || 0
+			total: data.total || 0,
 		}
 	} catch (error) {
 		console.error('Fetch error:', error)
