@@ -185,7 +185,7 @@ const DMMActressStatsWriting: React.FC<Props> = ({ actressName, actressStats }) 
 						<div key={item.id} className='mb-4 bg-gray-50 p-4 rounded-lg'>
 							<h4 className='font-bold text-gray-800'>
 								{index + 1}. 「
-								<Link href={`/item/${item.id}`} className='text-blue-500'>
+								<Link href={`/item/${item.id}`} prefetch={true} className='text-blue-500'>
 									{item.title}
 								</Link>
 								」
