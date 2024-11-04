@@ -200,15 +200,16 @@ const ActressWorksList = ({ works }: { works: DMMActressProfilePageItem[] }) => 
 								</div>
 							)}
 						</div>
+
+						<div className='p-4'>
+							<h3 className='text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-2 hover:underline'>
+								{work.title}
+							</h3>
+							<p className='mt-1 text-xs text-gray-500 dark:text-gray-400'>
+								発売日:{formatDate(work.release_date)}
+							</p>
+						</div>
 					</Link>
-					<div className='p-4'>
-						<h3 className='text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-2 hover:underline'>
-							<Link href={`/item/${work.id}`}>{work.title}</Link>
-						</h3>
-						<p className='mt-1 text-xs text-gray-500 dark:text-gray-400'>
-							発売日:{formatDate(work.release_date)}
-						</p>
-					</div>
 				</div>
 			))}
 		</div>

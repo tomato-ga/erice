@@ -14,7 +14,7 @@ const CampaignLinks: React.FC<PropsWithChildren<CampaignLinksProps>> = ({ campai
 			{campaignNames.map((campaignName, index) => (
 				<span key={index}>
 					<Link
-						prefetch={true}
+						prefetch={false}
 						href={`/campaign/${campaignName}`}
 						className='text-blue-600 underline hover:no-underline'>
 						{campaignName}
