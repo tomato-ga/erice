@@ -38,7 +38,7 @@ const ActressRelatedItemTimelineCard = ({ item }: { item: ActressRelatedItem }) 
 				</div>
 			</div>
 			<div className='w-full sm:w-3/4 sm:pl-4 relative'>
-				<Link href={`/item/${item.db_id}`} prefetch={false}>
+				<Link href={`/item/${item.db_id}`} prefetch={true}>
 					<div className='bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-lg hover:shadow-xl ml-6 sm:ml-0'>
 						<div className='relative pt-[56.25%] overflow-hidden bg-gray-100'>
 							<img

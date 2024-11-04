@@ -68,7 +68,7 @@ const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActress
 				</h2>
 				<div className='flex flex-col lg:flex-row lg:space-x-8'>
 					<div className='lg:w-1/3 mb-6 lg:mb-0'>
-						<Link href={`/actressprofile/${encodeURIComponent(actress.name)}`} prefetch={false}>
+						<Link href={`/actressprofile/${encodeURIComponent(actress.name)}`}>
 							<img
 								src={actress.image_url_large || ''}
 								alt={actress.name}
