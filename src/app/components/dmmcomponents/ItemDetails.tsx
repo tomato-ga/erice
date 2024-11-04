@@ -7,7 +7,7 @@ import {
 import { generatePersonStructuredData } from '@/app/components/json-ld/jsonld' // 先ほど作成した関数をインポート
 import { DMMActressProfile } from '@/types/APItypes'
 import Link from 'next/link'
-import { Suspense } from 'react'
+import React, { Suspense } from 'react'
 import LoadingSpinner from '../Article/ArticleContent/loadingspinner'
 import ActressStatsAndRelatedItemsTimeLine from './DMMActressItemRelated'
 import RelatedGenre from './RelatedGenre'
@@ -209,4 +209,4 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 	)
 }
 
-export default ItemDetails
+export default React.memo(ItemDetails)

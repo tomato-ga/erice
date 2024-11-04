@@ -45,4 +45,4 @@ const CampaignNames = async () => {
 	)
 }
 
-export default React.memo(CampaignNames)
+export default CampaignNames

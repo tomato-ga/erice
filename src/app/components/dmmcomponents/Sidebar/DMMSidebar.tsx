@@ -152,4 +152,4 @@ const DMMSidebar = () => {
 	)
 }
 
-export default React.memo(DMMSidebar)
+export default DMMSidebar

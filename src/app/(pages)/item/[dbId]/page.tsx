@@ -214,7 +214,6 @@ export default async function DMMKobetuItemPage({
 		return parts.join(' ')
 	})()
 
-	// JSON-LDを生成
 	const campaignNames = await fetchCampaignNames()
 
 	return (

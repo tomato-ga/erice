@@ -1,6 +1,6 @@
 // CampaignLinks.tsx
 import Link from 'next/link'
-import { PropsWithChildren } from 'react'
+import React, { PropsWithChildren } from 'react'
 
 export interface CampaignLinksProps {
 	campaignNames: string[]
@@ -26,4 +26,4 @@ const CampaignLinks: React.FC<PropsWithChildren<CampaignLinksProps>> = ({ campai
 	)
 }
 
-export default CampaignLinks
+export default React.memo(CampaignLinks)

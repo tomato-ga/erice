@@ -440,7 +440,10 @@ export async function fetchTOP100KeywordData(keyword: string): Promise<GetKVTop1
 }
 
 // キャンペーン名を取得する関数
-export const fetchCampaignNames = async (): Promise<string[] | null> => {
+import { cache } from 'react'
+
+// キャッシュされたキャンペーン名を取得する関数
+export const fetchCampaignNames = cache(async (): Promise<string[] | null> => {
 	try {
 		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/campaign/names`)
 		if (!response.ok) {
@@ -458,7 +461,7 @@ export const fetchCampaignNames = async (): Promise<string[] | null> => {
 		console.error('Error fetching campaign names:', error)
 		return null
 	}
-}
+})
 
 // キャンペーンデータを取得する関数
 export const fetchCampaignData = async (

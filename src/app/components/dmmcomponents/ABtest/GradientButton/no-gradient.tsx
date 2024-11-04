@@ -6,7 +6,7 @@ import { DMMActressInfo } from '@/types/APItypes'
 import { DMMItemMainResponse } from '@/types/dmmitemzodschema'
 import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
-import { useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { UmamiTracking } from '../../UmamiTracking'
 
 interface ButtonNoGradientProps {
@@ -14,7 +14,7 @@ interface ButtonNoGradientProps {
 	actressInfo: DMMActressInfo | null
 }
 
-export const ButtonNoGradient = ({ ItemMain, actressInfo }: ButtonNoGradientProps) => {
+export const ButtonNoGradient = React.memo(({ ItemMain, actressInfo }: ButtonNoGradientProps) => {
 	const hasTrackedImpression = useRef(false)
 
 	useEffect(() => {
@@ -51,4 +51,6 @@ export const ButtonNoGradient = ({ ItemMain, actressInfo }: ButtonNoGradientProp
 			</Link>
 		</div>
 	)
-}
+})
+
+ButtonNoGradient.displayName = 'ButtonNoGradient'
