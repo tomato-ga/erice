@@ -150,7 +150,8 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 	const actressProfileData = await fetchActressProfile(actressName)
 
 	// 有効なプロフィールの抽出
-	const validActressProfiles = actressProfileData ? [actressProfileData].flat() : []
+	// const validActressProfiles = actressProfileData ? [actressProfileData].flat() : []
+	const validActressProfiles = actressProfileData ? [actressProfileData[0]] : []
 
 	// 重要なデータを持つプロファイルのフィルタリング
 	const hasEssentialData = (data: DMMActressProfile) => {

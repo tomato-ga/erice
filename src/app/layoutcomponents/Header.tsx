@@ -1,35 +1,32 @@
 'use client'
 import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
-import useMenubarStore from '../stores/useMenubar'
-
-import Image from 'next/image'
-import sitePic from './site.webp'
+// import useMenubarStore from '../stores/useMenubar'
 
 const Header: React.FC = () => {
-	const { toggleMenubar, menubarOpen, closeMenubar } = useMenubarStore()
-	const menubarRef = useRef<HTMLDivElement>(null)
-	const [screenName, setScreenName] = useState<string | null>(null)
+	// const { toggleMenubar, menubarOpen, closeMenubar } = useMenubarStore()
+	// const menubarRef = useRef<HTMLDivElement>(null)
+	// const [screenName, setScreenName] = useState<string | null>(null)
 
-	useEffect(() => {
-		const handleOutsideClick = (event: MouseEvent | TouchEvent) => {
-			if (!menubarRef.current?.contains(event.target as Node) && menubarOpen) {
-				closeMenubar()
-			}
-		}
-		document.addEventListener('mousedown', handleOutsideClick)
-		document.addEventListener('touchstart', handleOutsideClick)
-		return () => {
-			document.removeEventListener('mousedown', handleOutsideClick)
-			document.removeEventListener('touchstart', handleOutsideClick)
-		}
-	}, [menubarOpen, closeMenubar])
+	// useEffect(() => {
+	// 	const handleOutsideClick = (event: MouseEvent | TouchEvent) => {
+	// 		if (!menubarRef.current?.contains(event.target as Node) && menubarOpen) {
+	// 			closeMenubar()
+	// 		}
+	// 	}
+	// 	document.addEventListener('mousedown', handleOutsideClick)
+	// 	document.addEventListener('touchstart', handleOutsideClick)
+	// 	return () => {
+	// 		document.removeEventListener('mousedown', handleOutsideClick)
+	// 		document.removeEventListener('touchstart', handleOutsideClick)
+	// 	}
+	// }, [menubarOpen, closeMenubar])
 
-	const handleLinkClick = () => {
-		if (menubarOpen) {
-			closeMenubar()
-		}
-	}
+	// const handleLinkClick = () => {
+	// 	if (menubarOpen) {
+	// 		closeMenubar()
+	// 	}
+	// }
 
 	return (
 		<header className='relative bg-white text-black w-full border-b border-gray-300'>
@@ -39,12 +36,14 @@ const Header: React.FC = () => {
 						<img src='/site.webp' className='h-full w-auto' alt='エロコメスト' />
 					</Link>
 				</div>
-				<div className='flex items-center justify-end flex-grow'>
+
+				{/* <div className='flex items-center justify-end flex-grow'>
 					<button type='button' onClick={toggleMenubar} className='text-black lg:hidden ml-auto'>
 						🍔
 					</button>
-				</div>
-				<div
+				</div> */}
+
+				{/* <div
 					ref={menubarRef}
 					className={`${
 						menubarOpen
@@ -57,8 +56,8 @@ const Header: React.FC = () => {
 						className='self-end text-xl font-bold lg:hidden'>
 						×
 					</button>
-
-					{/* <Link href="/popular" onClick={handleLinkClick} className="block">
+				</div> */}
+				{/* <Link href="/popular" onClick={handleLinkClick} className="block">
 						<span className="px-2 py-1 text-slate-700 rounded-md cursor-pointer font-semibold ">
 							人気動画ランキング
 						</span>
@@ -66,13 +65,12 @@ const Header: React.FC = () => {
 					<Link href="/rireki" onClick={handleLinkClick}>
 						<span className="px-2 py-1 text-slate-700 rounded-md cursor-pointer font-semibold">最近見た動画</span>
 					</Link> */}
-					{/*<Link href="/" onClick={handleLinkClick}>
+				{/*<Link href="/" onClick={handleLinkClick}>
 						<span className="px-2 py-1 rounded-md cursor-pointer font-semibold hover:bg-gray-200">お気に入り</span>
 					</Link>
 					<Link href="/" onClick={handleLinkClick}>
 						<span className="px-2 py-1 rounded-md cursor-pointer font-semibold hover:bg-gray-200">閲覧履歴</span>
 					</Link> */}
-				</div>
 			</div>
 		</header>
 	)
