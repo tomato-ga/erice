@@ -98,7 +98,7 @@ const ActressStatsAndRelatedItemsTimeLine = async ({ actressName, actressId }: P
 	return (
 		<div className='bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg p-4 sm:p-4 md:p-10'>
 			<Suspense fallback={<LoadingSpinner />}>
-				<DMMActressStats actress_id={actressId} actress_name={actressName} />
+				<DMMActressStats actress_id={actressId} actress_name={actressName} isSummary={true} />
 			</Suspense>
 
 			<h2 className='text-3xl font-bold mb-12 text-center'>

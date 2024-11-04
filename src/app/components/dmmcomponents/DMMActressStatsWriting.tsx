@@ -9,9 +9,14 @@ import DMMActressRegression from './DMMActressRegression'
 type Props = {
 	actressName: string
 	actressStats: ActressStats | null
+	isSummary: boolean
 }
 
-const DMMActressStatsWriting: React.FC<Props> = ({ actressName, actressStats }) => {
+const DMMActressStatsWriting: React.FC<Props> = ({
+	actressName,
+	actressStats,
+	isSummary = false,
+}) => {
 	if (
 		!actressStats ||
 		!actressStats.metadata ||
@@ -21,13 +26,8 @@ const DMMActressStatsWriting: React.FC<Props> = ({ actressName, actressStats }) 
 		return null
 	}
 
-	const {
-		review_average,
-		total_review_count,
-		last_updated,
-		top_3_popular_items,
-		weighted_average,
-	} = actressStats.metadata
+	const { review_average, total_review_count, last_updated, top_3_popular_items, weighted_average } =
+		actressStats.metadata
 
 	const { annual_review_average, annual_review_median, annual_review_std_dev, annual_box_plot } =
 		actressStats.annualData
@@ -121,6 +121,64 @@ const DMMActressStatsWriting: React.FC<Props> = ({ actressName, actressStats }) 
 		const latestCount = cumulative_review_count[dates[dates.length - 1]]
 
 		return `${actressName}さんの作品は${dates[0]}から${dates[dates.length - 1]}までの期間で、レビュー数が${initialCount}件から${latestCount}件まで増加しました。これは着実なファン層の拡大を示しています。`
+	}
+
+	// 要約版の文章生成
+	const generateSummary = () => {
+		return `${actressName}さんの総合レビュー平均点は${review_average.toFixed(
+			2,
+		)}、評価バランス平均は${weighted_average.toFixed(
+			2,
+		)}です。総レビュー数は${total_review_count}件に達しており、最新の評価データは${last_updated}に更新されました。彼女の作品は一貫して高評価を受けており、ファンからの支持が強いことが伺えます。詳しくは、${actressName}さんのプロフィールページをご覧ください。`
+	}
+
+	// 構造化データの生成
+	const structuredData = {
+		'@context': 'https://schema.org',
+		'@type': 'Person',
+		name: actressName,
+		aggregateRating: {
+			'@type': 'AggregateRating',
+			ratingValue: review_average.toFixed(2),
+			reviewCount: total_review_count,
+			bestRating: '5',
+			worstRating: '1',
+		},
+		description: `女優の${actressName}さんのレビュー統計データ。総合レビュー平均点: ${review_average.toFixed(
+			2,
+		)}、評価バランス平均: ${weighted_average.toFixed(
+			2,
+		)}、総レビュー数: ${total_review_count}件。最新のデータは${last_updated}に更新。`,
+		sameAs: [
+			// 女優の公式サイトやSNSリンクなどを追加
+			`https://erice.cloud/actressprofile/${encodeURIComponent(actressName)}`,
+			// 他のリンクがあれば追加
+		],
+	}
+
+	if (isSummary) {
+		// 要約版を返す
+		return (
+			<div className='bg-white rounded-lg p-4 mb-8 max-w-3xl mx-auto'>
+				{/* 構造化データの埋め込み */}
+				<script type='application/ld+json'>{JSON.stringify(structuredData)}</script>
+
+				<h2 className='text-2xl font-bold mb-4 text-gray-800'>
+					{actressName}さんのレビュー統計データ（要約）
+				</h2>
+
+				<p className='text-gray-700 leading-relaxed'>{generateSummary()}</p>
+
+				<div className='mt-4'>
+					<Link
+						href={`/actressprofile/${encodeURIComponent(actressName)}`}
+						className='text-blue-500 hover:underline'
+						prefetch={true}>
+						{actressName}さんのプロフィールですべてのレビュー統計データを見る
+					</Link>
+				</div>
+			</div>
+		)
 	}
 
 	return (

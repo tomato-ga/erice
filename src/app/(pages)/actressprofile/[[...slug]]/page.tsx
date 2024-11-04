@@ -130,11 +130,7 @@ const ActressProfileSection = ({
 												: null,
 											'three_sizes',
 										)}
-										{renderProfileRow(
-											'身長',
-											actress.height ? `${actress.height}cm` : null,
-											'height',
-										)}
+										{renderProfileRow('身長', actress.height ? `${actress.height}cm` : null, 'height')}
 										{renderProfileRow('カップ', actress.cup, 'cup')}
 										{details &&
 											Object.entries(details).map(([key, value], index) => {
@@ -148,9 +144,7 @@ const ActressProfileSection = ({
 					</div>
 					<div className='mt-8 text-lg text-gray-700 dark:text-gray-300 space-y-4'>
 						{description.split('\n').map((paragraph, index) => (
-							<p
-								key={index}
-								className='transition-opacity duration-300 ease-in-out hover:opacity-80'>
+							<p key={index} className='transition-opacity duration-300 ease-in-out hover:opacity-80'>
 								{paragraph}
 							</p>
 						))}
@@ -259,7 +253,11 @@ export default async function ActressProfilePage({ params }: PageProps) {
 			</div>
 
 			<Suspense fallback={<LoadingSpinner />}>
-				<DMMActressStats actress_id={profile.actress.id} actress_name={profile.actress.name} />
+				<DMMActressStats
+					actress_id={profile.actress.id}
+					actress_name={profile.actress.name}
+					isSummary={false}
+				/>
 			</Suspense>
 
 			<h2 className='text-2xl font-semibold mt-12 mb-6'>{profile.actress.name}の作品一覧</h2>

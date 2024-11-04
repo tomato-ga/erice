@@ -11,9 +11,10 @@ const DMMActressStatsCharts = dynamic(() => import('./DMMActressStatsCharts'), {
 type Props = {
 	actress_id: number
 	actress_name: string
+	isSummary: boolean
 }
 
-const DMMActressStats = async ({ actress_id, actress_name }: Props) => {
+const DMMActressStats = async ({ actress_id, actress_name, isSummary = false }: Props) => {
 	const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-stats?actress_id=${actress_id}`
 	const response = await fetch(apiUrl, { next: { revalidate: 2419200 } })
 	const actressStats = (await response.json()) as ActressStats
@@ -29,7 +30,11 @@ const DMMActressStats = async ({ actress_id, actress_name }: Props) => {
 
 	return (
 		<div className='bg-white rounded-lg p-6 mb-8'>
-			<DMMActressStatsWriting actressName={actress_name} actressStats={actressStats} />
+			<DMMActressStatsWriting
+				actressName={actress_name}
+				actressStats={actressStats}
+				isSummary={isSummary}
+			/>
 
 			{/* グラフコンポーネントの表示 */}
 			<DMMActressStatsCharts actressStats={actressStats} actressName={actress_name} />
