@@ -1,13 +1,14 @@
 // components/ItemDetails.tsx
+
 import {
 	generateRefinedProfileDescription,
 	parseDetails,
 	renderDetailValue,
 } from '@/app/(pages)/actressprofile/[[...slug]]/profileAnalysis'
-import { generatePersonStructuredData } from '@/app/components/json-ld/jsonld' // 先ほど作成した関数をインポート
+import { generatePersonStructuredData } from '@/app/components/json-ld/jsonld'
 import { DMMActressProfile } from '@/types/APItypes'
 import Link from 'next/link'
-import React, { Suspense } from 'react'
+import React from 'react'
 import LoadingSpinner from '../Article/ArticleContent/loadingspinner'
 import ActressStatsAndRelatedItemsTimeLine from './DMMActressItemRelated'
 import RelatedGenre from './RelatedGenre'
@@ -19,14 +20,11 @@ interface ItemDetailsProps {
 }
 
 const parseActresses = (actressString: string | null | undefined): string[] => {
-	// actressString が空や null の場合は空の配列を返す
 	if (!actressString) return []
-
-	// カンマ区切りで分割し、前後の空白をトリムした配列を返す
 	return actressString
 		.split(',')
 		.map(name => name.trim())
-		.filter(name => name.length > 0) // 空の名前を除去
+		.filter(name => name.length > 0)
 }
 
 const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActressProfile }) => {
@@ -36,7 +34,6 @@ const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActress
 		return null
 	}
 
-	// プレースホルダー画像かどうかをチェックする関数
 	const isPlaceholderImage = (imageUrl: string | null | undefined) => {
 		if (!imageUrl) return true
 		return imageUrl.includes('printing.jpg')
@@ -64,16 +61,14 @@ const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActress
 	return (
 		<div className='bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 shadow-2xl rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl mt-8'>
 			<div className='p-8'>
-				{/* 女優名をリンクにする */}
 				<h2 className='text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400'>
 					<Link href={`/actressprofile/${encodeURIComponent(actress.name)}`}>
 						この動画の出演者「{actress.name}」のプロフィール
 					</Link>
 				</h2>
 				<div className='flex flex-col lg:flex-row lg:space-x-8'>
-					{/* 画像をリンクにする */}
 					<div className='lg:w-1/3 mb-6 lg:mb-0'>
-						<Link href={`/actressprofile/${encodeURIComponent(actress.name)}`}>
+						<Link href={`/actressprofile/${encodeURIComponent(actress.name)}`} prefetch={false}>
 							<img
 								src={actress.image_url_large || ''}
 								alt={actress.name}
@@ -115,7 +110,6 @@ const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActress
 						</div>
 					</div>
 				</div>
-				{/* プロフィールページへ遷移する文言を追加 */}
 				<div className='mt-4 text-center'>
 					<Link
 						href={`/actressprofile/${encodeURIComponent(actress.name)}`}
@@ -137,7 +131,7 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 	}
 
 	// カンマ区切りの女優名を配列に変換し、最初の1名だけを取得
-	const actresses = parseActresses(itemDetail.actress).slice(0, 1) // 最初の1名だけに制限
+	const actresses = parseActresses(itemDetail.actress).slice(0, 1)
 
 	if (actresses.length === 0) {
 		return null
@@ -147,19 +141,24 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 	const actressName = actresses[0]
 	console.log('actressName:', actressName)
 	console.timeLog('itemdetail timelog')
-	const actressProfileData = await fetchActressProfile(actressName)
+	const actressProfiles = await fetchActressProfile(actressName)
 
 	// 有効なプロフィールの抽出
-	// const validActressProfiles = actressProfileData ? [actressProfileData].flat() : []
-	const validActressProfiles = actressProfileData ? [actressProfileData[0]] : []
+	const actressProfileData = actressProfiles ? actressProfiles[0] : null
 
-	// 重要なデータを持つプロファイルのフィルタリング
+	// 重要なデータを持つか確認
 	const hasEssentialData = (data: DMMActressProfile) => {
 		const { actress } = data
 		const { birthday, name } = actress
 		return !!(birthday || name)
 	}
-	const essentialActressProfiles = validActressProfiles.filter(hasEssentialData)
+
+	if (!actressProfileData || !hasEssentialData(actressProfileData)) {
+		return null
+	}
+
+	// actress_id を取得
+	const actressId = actressProfileData.actress.id
 
 	// プレースホルダー画像かどうかをチェックする関数
 	const isPlaceholderImage = (imageUrl: string | null | undefined) => {
@@ -172,7 +171,7 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 	}
 
 	// 構造化データの生成
-	// const personStructuredData = generatePersonStructuredData(essentialActressProfiles[0])
+	// const personStructuredData = generatePersonStructuredData(actressProfileData)
 
 	// JSON-LDを文字列に変換
 	// const jsonLdString = JSON.stringify(personStructuredData)
@@ -192,17 +191,17 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 		<>
 			{/* JSON-LDを構造化データとして埋め込む */}
 			{/* JSON-LD構造化データのコードはここに記述します */}
-			{itemDetail.actress && <ActressStatsAndRelatedItemsTimeLine actressName={actresses[0]} />}
+			{itemDetail.actress && actressId && (
+				<ActressStatsAndRelatedItemsTimeLine actressName={actressName} actressId={actressId} />
+			)}
 
-			{/* 1名の女優のプロフィールを表示 */}
-			<div className='grid grid-cols-1 gap-8 mt-8'>
-				{essentialActressProfiles.map(
-					(profile: DMMActressProfile) =>
-						!isPlaceholderImage(profile.actress.image_url_large) && (
-							<ActressProfile actressProfileData={profile} key={profile.actress.id} />
-						),
-				)}
-			</div>
+			{/* 女優のプロフィールを表示 */}
+			{!isPlaceholderImage(actressProfileData.actress.image_url_large) && (
+				<ActressProfile
+					actressProfileData={actressProfileData}
+					key={actressProfileData.actress.id}
+				/>
+			)}
 
 			{/* 関連ジャンル（ランダムに選択） */}
 			{/* {randomGenre && <RelatedGenre genreName={randomGenre} />} */}

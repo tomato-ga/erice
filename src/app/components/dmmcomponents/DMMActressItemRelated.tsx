@@ -1,9 +1,11 @@
+// components/DMMActressItemRelated.tsx
+
 import { formatDate } from '@/utils/dmmUtils'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { z } from 'zod'
-import { fetchActressRelatedItem } from '../dmmcomponents/fetch/itemFetchers'
 import DMMActressStats from './DMMActressStats'
+import { fetchActressRelatedItem } from './fetch/itemFetchers'
 
 const ItemSchema = z.object({
 	db_id: z.number(),
@@ -36,7 +38,7 @@ const ActressRelatedItemTimelineCard = ({ item }: { item: ActressRelatedItem }) 
 				</div>
 			</div>
 			<div className='w-full sm:w-3/4 sm:pl-4 relative'>
-				<Link href={`/item/${item.db_id}`}>
+				<Link href={`/item/${item.db_id}`} prefetch={false}>
 					<div className='bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-lg hover:shadow-xl ml-6 sm:ml-0'>
 						<div className='relative pt-[56.25%] overflow-hidden bg-gray-100'>
 							<img
@@ -62,9 +64,14 @@ const ActressRelatedItemTimelineCard = ({ item }: { item: ActressRelatedItem }) 
 	)
 }
 
-const ActressStatsAndRelatedItemsTimeLine = async ({ actressName }: { actressName: string }) => {
-	if (!actressName) {
-		return
+interface Props {
+	actressName: string
+	actressId: number
+}
+
+const ActressStatsAndRelatedItemsTimeLine = async ({ actressName, actressId }: Props) => {
+	if (!actressName || !actressId) {
+		return null
 	}
 
 	const ActressItemsResult = await fetchActressRelatedItem(actressName)
@@ -91,7 +98,7 @@ const ActressStatsAndRelatedItemsTimeLine = async ({ actressName }: { actressNam
 	return (
 		<div className='bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg p-4 sm:p-4 md:p-10'>
 			<Suspense fallback={<LoadingSpinner />}>
-				<DMMActressStats actress_id={ActressItemsResult[0].actress_id} actress_name={actressName} />
+				<DMMActressStats actress_id={actressId} actress_name={actressName} />
 			</Suspense>
 
 			<h2 className='text-3xl font-bold mb-12 text-center'>
