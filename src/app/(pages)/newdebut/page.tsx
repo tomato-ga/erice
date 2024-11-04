@@ -76,7 +76,7 @@ function NewActressCard({ item }: { item: ProcessedDMMItem }) {
 								actressId: item.actress_id,
 							},
 						}}>
-						<Link href={`/item/${item.db_id}`} className='relative overflow-hidden'>
+						<Link href={`/item/${item.db_id}`} className='relative overflow-hidden' prefetch={true}>
 							<img
 								src={item.imageURL || ''}
 								alt={`新人AV・セクシー女優${item.actress}のデビュー作品${item.title} / ${item.content_id}`}
@@ -109,7 +109,8 @@ function NewActressCard({ item }: { item: ProcessedDMMItem }) {
 							<TableCell>
 								<Link
 									href={`/item/${item.db_id}`}
-									className='text-indigo-600 hover:text-indigo-800 transition-colors duration-300'>
+									className='text-indigo-600 hover:text-indigo-800 transition-colors duration-300'
+									prefetch={true}>
 									{item.title} / {item.content_id}
 								</Link>
 							</TableCell>
@@ -144,7 +145,8 @@ function NewActressCard({ item }: { item: ProcessedDMMItem }) {
 				<div className='text-center'>
 					<Link
 						href={`/item/${item.db_id}`}
-						className='inline-block bg-indigo-600 text-white font-bold py-2 px-4 rounded-full hover:bg-indigo-700 transition-colors duration-300'>
+						className='inline-block bg-indigo-600 text-white font-bold py-2 px-4 rounded-full hover:bg-indigo-700 transition-colors duration-300'
+						prefetch={true}>
 						詳細を見る
 					</Link>
 				</div>
