@@ -130,7 +130,11 @@ const ActressProfileSection = ({
 												: null,
 											'three_sizes',
 										)}
-										{renderProfileRow('身長', actress.height ? `${actress.height}cm` : null, 'height')}
+										{renderProfileRow(
+											'身長',
+											actress.height ? `${actress.height}cm` : null,
+											'height',
+										)}
 										{renderProfileRow('カップ', actress.cup, 'cup')}
 										{details &&
 											Object.entries(details).map(([key, value], index) => {
@@ -144,7 +148,9 @@ const ActressProfileSection = ({
 					</div>
 					<div className='mt-8 text-lg text-gray-700 dark:text-gray-300 space-y-4'>
 						{description.split('\n').map((paragraph, index) => (
-							<p key={index} className='transition-opacity duration-300 ease-in-out hover:opacity-80'>
+							<p
+								key={index}
+								className='transition-opacity duration-300 ease-in-out hover:opacity-80'>
 								{paragraph}
 							</p>
 						))}
@@ -181,7 +187,7 @@ const ActressWorksList = ({ works }: { works: DMMActressProfilePageItem[] }) => 
 		<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6'>
 			{works.map(work => (
 				<div key={work.id} className='bg-white dark:bg-gray-800 shadow-md overflow-hidden'>
-					<Link href={`/item/${work.id}`} className='block'>
+					<Link href={`/item/${work.id}`} className='block' prefetch={true}>
 						<div className='relative aspect-[3/2] w-full'>
 							{work.imageURL ? (
 								<img
