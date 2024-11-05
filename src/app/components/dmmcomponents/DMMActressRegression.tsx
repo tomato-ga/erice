@@ -284,13 +284,15 @@ const DMMActressRegression: React.FC<{
 		setPredictedReview(prediction)
 		setNextMovie(nextMovieData)
 
+		if (!profile) {
+		}
 		// 構造化データの生成
 		const generateStructuredData = async () => {
 			try {
 				// Article構造化データの生成
 				const generatedArticleJsonLd = await generateActressArticleStructuredData(
-					`セクシー女優「${profile.actress.name}」のエロ動画が${metadata.total_review_count}作品あります`,
-					`セクシー女優${profile.actress.name}さんのプロフィールと作品一覧、レビュー統計データを見ることができるページです。`,
+					`セクシー女優「${profile?.actress.name}」のエロ動画が${metadata.total_review_count}作品あります`,
+					`セクシー女優${profile?.actress.name}さんのプロフィールと作品一覧、レビュー統計データを見ることができるページです。`,
 					profile,
 				)
 
@@ -391,7 +393,7 @@ const DMMActressRegression: React.FC<{
 			{/* 構造化データの統合スクリプトタグ */}
 			{combinedJsonLd && (
 				<script
-					id={`structured-data-${actressName}-person-predict`}
+					id={`structured-data-${actressName}-person`}
 					type='application/ld+json'
 					dangerouslySetInnerHTML={{
 						__html: JSON.stringify(combinedJsonLd),
