@@ -8,6 +8,7 @@ import {
 import { DMMActressProfile, DMMActressProfilePageItem } from '@/types/APItypes'
 import { formatDate } from '@/utils/dmmUtils'
 import { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
@@ -16,6 +17,10 @@ import {
 	parseDetails,
 	renderDetailValue,
 } from './profileAnalysis'
+
+const DynamicDMMActressStats = dynamic(
+	() => import('@/app/components/dmmcomponents/DMMActressStats'),
+)
 
 interface PageProps {
 	params: { slug: string }
@@ -84,7 +89,6 @@ const ActressProfileSection = async ({
 		descriptionFromMetadata || '',
 		profile,
 	)
-	console.log('actressprofile + articleJsonLd', articleJsonLd)
 
 	return (
 		<>
@@ -260,7 +264,7 @@ export default async function ActressProfilePage({ params }: PageProps) {
 			</div>
 
 			<Suspense fallback={<LoadingSpinner />}>
-				<DMMActressStats
+				<DynamicDMMActressStats
 					actress_id={profile.actress.id}
 					actress_name={profile.actress.name}
 					isSummary={false}
