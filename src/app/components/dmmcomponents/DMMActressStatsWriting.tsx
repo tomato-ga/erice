@@ -3,8 +3,11 @@
 import { ActressStats } from '@/_types_dmm/statstype'
 import Link from 'next/link'
 import React from 'react'
-// import DMMActressRegression from './DMMActressRegression'
 import DMMActressRegression from './DMMActressRegression'
+import { ReviewData } from './DMMActressRegression' // ReviewData 型のインポート
+
+import { DMMActressProfile } from '@/types/APItypes'
+import { Person, WithContext } from 'schema-dts'
 
 type Props = {
 	actressName: string
@@ -26,8 +29,13 @@ const DMMActressStatsWriting: React.FC<Props> = ({
 		return null
 	}
 
-	const { review_average, total_review_count, last_updated, top_3_popular_items, weighted_average } =
-		actressStats.metadata
+	const {
+		review_average,
+		total_review_count,
+		last_updated,
+		top_3_popular_items,
+		weighted_average,
+	} = actressStats.metadata
 
 	const { annual_review_average, annual_review_median, annual_review_std_dev, annual_box_plot } =
 		actressStats.annualData
@@ -132,36 +140,12 @@ const DMMActressStatsWriting: React.FC<Props> = ({
 		)}です。総レビュー数は${total_review_count}件に達し、最新の評価データは${last_updated}に更新されました。${actressName}さんは数多くのエロ動画作品で一貫して高評価を受けており、その優れた演技力と魅力的なパフォーマンスにより、幅広いファン層からの支持を得ています。彼女の多様な役柄や最新作についての詳細な分析や統計データは、${actressName}さんのプロフィールページでご確認いただけます。`
 	}
 
-	// 構造化データの生成
-	const structuredData = {
-		'@context': 'https://schema.org',
-		'@type': 'Person',
-		name: actressName,
-		aggregateRating: {
-			'@type': 'AggregateRating',
-			ratingValue: review_average.toFixed(2),
-			reviewCount: total_review_count,
-			bestRating: '5',
-			worstRating: '1',
-		},
-		description: `女優の${actressName}さんのレビュー統計データ。総合レビュー平均点: ${review_average.toFixed(
-			2,
-		)}、評価バランス平均: ${weighted_average.toFixed(
-			2,
-		)}、総レビュー数: ${total_review_count}件。最新のデータは${last_updated}に更新。`,
-		sameAs: [
-			// 女優の公式サイトやSNSリンクなどを追加
-			`https://erice.cloud/actressprofile/${encodeURIComponent(actressName)}`,
-			// 他のリンクがあれば追加
-		],
-	}
-
 	if (isSummary) {
 		// 要約版を返す
 		return (
 			<div className='bg-white rounded-lg p-4 mb-8 max-w-3xl mx-auto'>
 				{/* 構造化データの埋め込み */}
-				<script type='application/ld+json'>{JSON.stringify(structuredData)}</script>
+				{/* <script type='application/ld+json'>{JSON.stringify(structuredData)}</script> */}
 
 				<h2 className='text-2xl font-bold mb-4 text-gray-800'>
 					{actressName}さんのレビュー統計データ（要約）
@@ -324,7 +308,7 @@ const DMMActressStatsWriting: React.FC<Props> = ({
 					<p className='mt-4'>{standardDeviationAnalysis()}</p>
 				</section>
 
-				<DMMActressRegression actressStats={actressStats} />
+				<DMMActressRegression actressStats={actressStats} actressName={actressName} />
 
 				<section>
 					<h3 className='text-2xl font-bold mt-8 mb-4 text-gray-800 border-b pb-2'>

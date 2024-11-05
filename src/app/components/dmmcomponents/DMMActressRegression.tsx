@@ -4,8 +4,11 @@ import { ActressStats } from '@/_types_dmm/statstype' // ActressStatsの型を�
 import MultivariateLinearRegression from 'ml-regression-multivariate-linear'
 import React, { useEffect, useState, useRef } from 'react'
 
+import { DMMActressProfile } from '@/types/APItypes'
+import { Person, WithContext } from 'schema-dts'
+
 // 型定義
-type ReviewData = {
+export type ReviewData = {
 	weightedAverage: number
 	reviewAverage: number
 	reviewCount: number
@@ -17,6 +20,33 @@ type ReviewData = {
 type StandardScaler = {
 	means: number[]
 	stds: number[]
+}
+
+const generateReviewPredictionStructuredData = (
+	actressName: string,
+	predictedReview: number,
+	nextMovieData: ReviewData,
+): WithContext<Person> | null => {
+	const structuredData: WithContext<Person> = {
+		'@context': 'https://schema.org',
+		'@type': 'Person',
+		name: actressName,
+		description: `${actressName}さんの次回作の予測レビュー平均点は ${predictedReview.toFixed(2)} 点です。`,
+	}
+
+	// レビュー予測に関連する追加情報
+	structuredData.description += `
+		レビュー予測は以下の要素を考慮しています。評価バランス平均: ${nextMovieData.weightedAverage.toFixed(2)},標準偏差: ${nextMovieData.stdDev.toFixed(2)},レビュー数: ${nextMovieData.reviewCount} 件,過去作品の平均スコア: ${
+			nextMovieData.previousItemScores.length > 0
+				? (
+						nextMovieData.previousItemScores.reduce((a, b) => a + b, 0) /
+						nextMovieData.previousItemScores.length
+					).toFixed(2)
+				: 'データなし'
+		}
+	`.trim()
+
+	return structuredData
 }
 
 // 標準化のためのヘルパー関数
@@ -136,7 +166,10 @@ const predictNextReview = (
 }
 
 // DMMActressRegressionコンポーネント
-const DMMActressRegression: React.FC<{ actressStats: ActressStats }> = ({ actressStats }) => {
+const DMMActressRegression: React.FC<{ actressStats: ActressStats; actressName: string }> = ({
+	actressStats,
+	actressName,
+}) => {
 	const [predictedReview, setPredictedReview] = useState<number | null>(null)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
 	const [nextMovie, setNextMovie] = useState<ReviewData | null>(null)
@@ -324,6 +357,12 @@ const DMMActressRegression: React.FC<{ actressStats: ActressStats }> = ({ actres
 				).toFixed(2)
 			: 'データなし'
 
+	// 構造化データを生成
+	const articleJsonLd =
+		nextMovie && predictedReview !== null
+			? generateReviewPredictionStructuredData(actressName, predictedReview, nextMovie)
+			: null
+
 	return (
 		<div className='bg-white rounded-lg p-1 mb-8 max-w-4xl mx-auto'>
 			<div className='relative group'>
@@ -368,6 +407,15 @@ const DMMActressRegression: React.FC<{ actressStats: ActressStats }> = ({ actres
 					点と予測されています。
 				</p>
 			</div>
+			{articleJsonLd && (
+				<script
+					id={`structured-data-${actressName}-person-predict`}
+					type='application/ld+json'
+					dangerouslySetInnerHTML={{
+						__html: JSON.stringify(articleJsonLd),
+					}}
+				/>
+			)}
 		</div>
 	)
 }

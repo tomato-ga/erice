@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	}
 }
 
-const ActressProfileSection = ({
+const ActressProfileSection = async ({
 	profile,
 	pageTitle, // pageTitleを受け取る
 	descriptionFromMetadata,
@@ -79,21 +79,15 @@ const ActressProfileSection = ({
 		)
 	}
 
-	const articleJsonLd = generateActressArticleStructuredData(
+	const articleJsonLd = await generateActressArticleStructuredData(
 		pageTitle,
 		descriptionFromMetadata || '',
 		profile,
 	)
+	console.log('actressprofile + articleJsonLd', articleJsonLd)
 
 	return (
 		<>
-			<script
-				id={`structured-data-${actress.name}-person`}
-				type='application/ld+json'
-				dangerouslySetInnerHTML={{
-					__html: JSON.stringify(articleJsonLd),
-				}}
-			/>
 			{/* <script
 				id={`structured-data-${actress.name}-article`}
 				type='application/ld+json'
@@ -177,6 +171,13 @@ const ActressProfileSection = ({
 						</div>
 					</div>
 				</div>
+				<script
+					id={`structured-data-${actress.name}-person`}
+					type='application/ld+json'
+					dangerouslySetInnerHTML={{
+						__html: JSON.stringify(articleJsonLd),
+					}}
+				/>
 			</div>
 		</>
 	)
@@ -237,7 +238,7 @@ export default async function ActressProfilePage({ params }: PageProps) {
 
 	const { birthday, prefectures, bust, waist, hip, height, cup } = profile.actress
 
-	const pageDescription = `${profile.actress.name}さんのセクシー女優プロフィールと作品一覧を見ることができるページです。${profile.actress.name}さんの${works.length ? `出演作品数は ${works.length}件です。` : ''}${birthday ? `生年月日は${birthday}、` : ''}${prefectures ? `出身地は${prefectures}です。` : ''}${bust && waist && hip ? `スリーサイズはB${bust} W${waist} H${hip}です。` : ''}${height ? `身長は${height}cm。` : ''}${cup ? `カップ数は${cup}です。` : ''}
+	const pageDescription = `セクシー女優${profile.actress.name}さんのプロフィールと作品一覧、レビュー統計データを見ることができるページです。${profile.actress.name}さんの${works.length ? `出演作品数は ${works.length}件です。` : ''}${birthday ? `生年月日は${birthday}、` : ''}${prefectures ? `出身地は${prefectures}です。` : ''}${bust && waist && hip ? `スリーサイズはB${bust} W${waist} H${hip}です。` : ''}${height ? `身長は${height}cm。` : ''}${cup ? `カップ数は${cup}です。` : ''}
 	${profile.actress.hobby ? `趣味は${profile.actress.hobby}です。` : ''}`
 
 	return (

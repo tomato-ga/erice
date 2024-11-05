@@ -270,12 +270,13 @@ export const generatePersonStructuredData = (
             全レビュー数は${data.metadata.total_review_count}件で、総合平均評価は${data.metadata.overall_review_average.toFixed(2)}です。
             ${histogramDescription}
             ${annualDataDescription}
-            ${cumulativeReviewCountDescription}
             特に人気の高い作品は次の通りです: ${topItemsDescription}
             データ最終更新日: ${data.metadata.last_updated}
         `
 			.replace(/\s+/g, ' ')
 			.trim()
+
+		// ${cumulativeReviewCountDescription}
 
 		structuredData.description = `${description} ${statsDescription}`
 	}
