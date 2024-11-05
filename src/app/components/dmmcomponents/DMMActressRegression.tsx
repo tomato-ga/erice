@@ -3,18 +3,11 @@
 'use client'
 
 import { ActressStats } from '@/_types_dmm/statstype'
-import MultivariateLinearRegression from 'ml-regression-multivariate-linear'
-import Link from 'next/link'
-import React, { useEffect, useState, useRef } from 'react'
-import { Article, Person, WithContext } from 'schema-dts'
-
-import {
-	generateActressArticleStructuredData,
-	generatePersonStructuredData,
-	generateReviewPredictionStructuredData,
-} from '@/app/components/json-ld/jsonld'
-// 既存のインポート
+import { generateActressArticleStructuredData } from '@/app/components/json-ld/jsonld'
 import { DMMActressProfile } from '@/types/APItypes'
+import MultivariateLinearRegression from 'ml-regression-multivariate-linear'
+import React, { useEffect, useState, useRef } from 'react'
+import { Article, WithContext } from 'schema-dts'
 
 // 型定義
 export type ReviewData = {
@@ -140,10 +133,7 @@ const DMMActressRegression: React.FC<{
 	const [predictedReview, setPredictedReview] = useState<number | null>(null)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
 	const [nextMovie, setNextMovie] = useState<ReviewData | null>(null)
-	const [regressionEquation, setRegressionEquation] = useState<string>('')
-	const [combinedJsonLd, setCombinedJsonLd] = useState<Array<
-		WithContext<Article> | WithContext<Person>
-	> | null>(null)
+	const [combinedJsonLd, setCombinedJsonLd] = useState<WithContext<Article> | null>(null)
 
 	const scalerRef = useRef<StandardScaler | null>(null)
 
@@ -159,6 +149,8 @@ const DMMActressRegression: React.FC<{
 			setErrorMessage('アクターの統計データが不足しています。')
 			return
 		}
+
+		const { actress } = profile || {} // ネストされた依存関係を避けるために分割代入
 
 		const metadata = actressStats.metadata
 
@@ -232,25 +224,6 @@ const DMMActressRegression: React.FC<{
 		let mlr: MultivariateLinearRegression
 		try {
 			mlr = performRegressionAnalysis(reviewData, scalerRef)
-			const weights = mlr.weights.flat()
-
-			if (weights.length < 5) {
-				throw new Error('回帰係数の数が不足しています。')
-			}
-
-			const intercept = weights[0]
-			const coefWeightedAverage = weights[1]
-			const coefStdDev = weights[2]
-			const coefLogReviewCount = weights[3]
-			const coefAvgPrevScores = weights[4]
-
-			setRegressionEquation(
-				`y = ${intercept.toFixed(4)} + (${coefWeightedAverage.toFixed(
-					4,
-				)}) * weightedAverage + (${coefStdDev.toFixed(4)}) * stdDev + (${coefLogReviewCount.toFixed(
-					4,
-				)}) * log(1 + reviewCount) + (${coefAvgPrevScores.toFixed(4)}) * avgPreviousItemScores`,
-			)
 		} catch (error) {
 			console.error(error)
 			setErrorMessage('回帰分析中にエラーが発生しました。')
@@ -284,8 +257,6 @@ const DMMActressRegression: React.FC<{
 		setPredictedReview(prediction)
 		setNextMovie(nextMovieData)
 
-		if (!profile) {
-		}
 		// 構造化データの生成
 		const generateStructuredData = async () => {
 			try {
@@ -294,41 +265,23 @@ const DMMActressRegression: React.FC<{
 					`セクシー女優「${profile?.actress.name}」のエロ動画が${metadata.total_review_count}作品あります`,
 					`セクシー女優${profile?.actress.name}さんのプロフィールと作品一覧、レビュー統計データを見ることができるページです。`,
 					profile,
-				)
-
-				// Person構造化データの生成
-				const generatedPersonJsonLd = generatePersonStructuredData(
-					profile,
-					'女優のプロフィール',
 					actressStats,
-				)
-
-				// Predict構造化データの生成
-				const generatedPredictJsonLd = generateReviewPredictionStructuredData(
-					actressName,
 					prediction,
 					nextMovieData,
 				)
 
-				if (!generatedPredictJsonLd) {
-					throw new Error('Predict構造化データの生成に失敗しました。')
+				if (!generatedArticleJsonLd) {
+					throw new Error('構造化データの生成に失敗しました。')
 				}
 
-				// 両方のデータを配列にまとめる（nullを除外）
-				const combinedStructuredData: Array<WithContext<Article> | WithContext<Person>> = [
-					generatedArticleJsonLd,
-					generatedPersonJsonLd,
-					generatedPredictJsonLd,
-				].filter((item): item is WithContext<Article> | WithContext<Person> => item !== null)
-
-				setCombinedJsonLd(combinedStructuredData)
+				setCombinedJsonLd(generatedArticleJsonLd)
 			} catch (error) {
 				console.error('構造化データ生成エラー:', error)
 			}
 		}
 
 		generateStructuredData()
-	}, [actressStats, actressName, profile])
+	}, [actressStats, profile])
 
 	if (errorMessage) {
 		return <div>{errorMessage}</div>

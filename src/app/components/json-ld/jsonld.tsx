@@ -16,6 +16,8 @@ import {
 	ListItem,
 	Organization,
 	Person,
+	Review,
+	Thing,
 	VideoObject,
 	WithContext,
 } from 'schema-dts'
@@ -208,11 +210,12 @@ export const generateArticleStructuredData = async (
 	return articleStructuredData
 }
 
-// 女優のPerson構造化データを生成し、統計データを追加する関数
 export const generatePersonStructuredData = (
 	actressProfile: DMMActressProfile,
 	description: string,
-	data?: ActressStats | null, // オプショナルに変更
+	data?: ActressStats | null,
+	predictedReview?: number,
+	nextMovieData?: ReviewData,
 ): WithContext<Person> | null => {
 	const actress = actressProfile.actress
 	if (!actress) {
@@ -230,57 +233,58 @@ export const generatePersonStructuredData = (
 		height: actress.height ? `${actress.height}` : undefined,
 		description: description,
 		sameAs: actress.list_url || undefined,
+		image: actressImage || undefined,
 	}
 
-	if (actressImage) {
-		structuredData.image = actressImage
-	}
+	let statsDescription = ''
 
 	if (data?.metadata) {
-		const histogramDescription = data.metadata.review_score_distribution
-			? `レビューの分布は次の通りです: ${JSON.stringify(data.metadata.review_score_distribution.histogram)}`
-			: ''
+		const { metadata } = data
 
-		const annualDataDescription = data.annualData
-			? Object.keys(data.annualData.annual_review_average)
-					.map(year => {
-						const average = data.annualData?.annual_review_average[year].toFixed(2)
-						const median = data.annualData?.annual_review_median[year].toFixed(2)
-						const stdDev = data.annualData?.annual_review_std_dev[year].toFixed(2)
-						return `${year}年のレビュー: 平均評価 ${average}, 中央値 ${median}, 標準偏差 ${stdDev}`
-					})
-					.join('、')
-			: ''
+		statsDescription += ` ${actress.name}さんは、平均評価${metadata.review_average.toFixed(
+			2,
+		)}、中央値${metadata.review_median.toFixed(2)}、標準偏差${metadata.review_std_dev.toFixed(
+			2,
+		)}です。全レビュー数は${metadata.total_review_count}件で、総合平均評価は${metadata.overall_review_average.toFixed(
+			2,
+		)}です。`
 
-		const cumulativeReviewCountDescription = data.timeSeriesData?.time_series_analysis
-			.cumulative_review_count
-			? `累積レビュー数: ${JSON.stringify(data.timeSeriesData.time_series_analysis.cumulative_review_count)}`
-			: ''
-
-		const topItemsDescription =
-			data.metadata.top_3_popular_items
-				?.filter(item => item)
+		// トップ3作品の情報を追加
+		if (metadata.top_3_popular_items && metadata.top_3_popular_items.length > 0) {
+			const topItemsDescription = metadata.top_3_popular_items
+				.filter(item => item)
 				.map(
 					item =>
-						`${item?.title}（評価: ${item?.review_average.toFixed(2)}、レビュー数: ${item?.review_count}）`,
+						`${item?.title}（評価: ${item?.review_average.toFixed(
+							2,
+						)}、レビュー数: ${item?.review_count}）`,
 				)
-				.join('、') || 'トップ3作品に関する情報はありません。'
-
-		const statsDescription = `
-            ${actress.name}さんは、平均評価${data.metadata.review_average.toFixed(2)}、中央値${data.metadata.review_median.toFixed(2)}、標準偏差${data.metadata.review_std_dev.toFixed(2)}です。
-            全レビュー数は${data.metadata.total_review_count}件で、総合平均評価は${data.metadata.overall_review_average.toFixed(2)}です。
-            ${histogramDescription}
-            ${annualDataDescription}
-            特に人気の高い作品は次の通りです: ${topItemsDescription}
-            データ最終更新日: ${data.metadata.last_updated}
-        `
-			.replace(/\s+/g, ' ')
-			.trim()
-
-		// ${cumulativeReviewCountDescription}
-
-		structuredData.description = `${description} ${statsDescription}`
+				.join('、')
+			statsDescription += ` 特に人気の高い作品は次の通りです: ${topItemsDescription}。`
+		}
 	}
+
+	// レビュー予測データを追加
+	if (predictedReview !== undefined && nextMovieData) {
+		statsDescription += ` 次回作の予測レビュー平均点は ${predictedReview.toFixed(2)} 点です。`
+
+		// 詳細な要因を記述
+		statsDescription += ` 評価バランス平均: ${nextMovieData.weightedAverage.toFixed(
+			2,
+		)}、標準偏差: ${nextMovieData.stdDev.toFixed(2)}、レビュー数: ${
+			nextMovieData.reviewCount
+		} 件、過去作品の平均スコア: ${
+			nextMovieData.previousItemScores.length > 0
+				? (
+						nextMovieData.previousItemScores.reduce((a, b) => a + b, 0) /
+						nextMovieData.previousItemScores.length
+					).toFixed(2)
+				: 'データなし'
+		}。`
+	}
+
+	// description に統計データとレビュー予測を含める
+	structuredData.description += statsDescription
 
 	return structuredData
 }
@@ -306,6 +310,9 @@ export const generateActressArticleStructuredData = async (
 	h1: string,
 	description: string,
 	profile: DMMActressProfile,
+	actressStats: ActressStats,
+	predictedReview: number,
+	nextMovieData: ReviewData,
 ): Promise<WithContext<Article>> => {
 	// 固定のAuthorデータ
 	const author: Person = {
@@ -314,16 +321,28 @@ export const generateActressArticleStructuredData = async (
 		url: 'https://erice.cloud',
 	}
 
-	// ActressStats データをフェッチ
-	const actressStats = await fetchActressStats(profile.actress.id)
-
-	// ActressStats データが存在するか確認
-	if (!actressStats) {
-		console.warn('ActressStats data is not available.')
-	}
-
 	// 女優のPerson構造化データを生成（data を渡す）
-	const actressPersonData = generatePersonStructuredData(profile, description, actressStats)
+	const actressPersonData = generatePersonStructuredData(
+		profile,
+		description,
+		actressStats,
+		predictedReview,
+		nextMovieData,
+	)
+
+	// actressPersonData が null でないことを確認
+	const mainEntity = actressPersonData ?? undefined
+
+	// aggregateRating を Article に追加
+	const aggregateRatingData: AggregateRating = {
+		'@type': 'AggregateRating',
+		ratingValue: actressStats.metadata
+			? actressStats.metadata?.overall_review_average?.toFixed(2)
+			: '',
+		reviewCount: actressStats.metadata ? actressStats.metadata?.total_review_count : 0,
+		bestRating: '5',
+		worstRating: '1',
+	}
 
 	// Articleスキーマの生成
 	const articleStructuredData: WithContext<Article> = {
@@ -336,7 +355,8 @@ export const generateActressArticleStructuredData = async (
 		datePublished: new Date().toISOString(),
 		dateModified: new Date().toISOString(),
 		mainEntityOfPage: `https://erice.cloud/actressprofile/${encodeURIComponent(profile.actress.name)}`,
-		...(actressPersonData && { about: actressPersonData }),
+		mainEntity: mainEntity,
+		aggregateRating: aggregateRatingData,
 	}
 
 	return articleStructuredData
@@ -366,6 +386,133 @@ export const generateReviewPredictionStructuredData = (
 						: 'データなし'
 				}
     `.trim()
+
+	return structuredData
+}
+
+/**
+ * アクターのプロフィールページ専用の構造化データを生成する関数
+ * @param actressName 女優の名前
+ * @param actressStats 女優の統計データ
+ * @param profile 女優のプロフィールデータ
+ * @param predictedReview 次回作の予測レビュー
+ * @returns 複数のスキーマオブジェクトを含む配列
+ */
+
+export const generateActressProfileStructuredData = (
+	actressName: string,
+	actressStats: ActressStats,
+	profile: DMMActressProfile,
+	predictedReview: number,
+): WithContext<Thing>[] => {
+	const actress = profile.actress
+	if (!actress || !actressStats.metadata) {
+		console.warn('Actress data or metadata is missing in profile:', profile, actressStats)
+		return []
+	}
+
+	const { metadata } = actressStats
+
+	const structuredData: WithContext<Thing>[] = []
+
+	// 1. Personオブジェクト
+	const person: WithContext<Person> = {
+		'@context': 'https://schema.org',
+		'@type': 'Person',
+		name: actress.name,
+		birthDate: actress.birthday || undefined,
+		height: actress.height ? `${actress.height}` : undefined,
+		description: `セクシー女優${actress.name}さんのプロフィールと作品一覧、レビュー統計データを見ることができるページです。`,
+		sameAs: actress.list_url || undefined,
+		image: actress.image_url_large || actress.image_url_small || undefined,
+	}
+	structuredData.push(person)
+
+	// 2. AggregateRatingオブジェクト
+	const aggregateRating: AggregateRating = {
+		'@type': 'AggregateRating',
+		itemReviewed: {
+			'@type': 'Person',
+			name: actress.name,
+			sameAs: actress.list_url || undefined,
+		},
+		ratingValue: Number.parseFloat(metadata.overall_review_average.toFixed(2)),
+		reviewCount: metadata.total_review_count,
+		bestRating: 5,
+		worstRating: 0,
+		description: `中央値: ${Number.parseFloat(metadata.review_median.toFixed(2))}, 標準偏差: ${Number.parseFloat(metadata.review_std_dev.toFixed(2))}`,
+	}
+	const aggregateRatingWithContext: WithContext<AggregateRating> = {
+		'@context': 'https://schema.org',
+		...aggregateRating,
+	}
+	structuredData.push(aggregateRatingWithContext)
+
+	// 3. Reviewオブジェクト（予測レビュー）
+	const avgPreviousItemScore =
+		metadata.top_3_popular_items.length > 0
+			? Number.parseFloat(
+					(
+						metadata.top_3_popular_items.reduce((sum, item) => {
+							return item ? sum + (item.review_average || 0) : sum
+						}, 0) / metadata.top_3_popular_items.length
+					).toFixed(2),
+				)
+			: 0
+
+	const review: Review = {
+		'@type': 'Review',
+		author: {
+			'@type': 'Person',
+			name: 'エロコメスト管理人',
+		},
+		reviewBody: `${actress.name}さんの次回作の予測レビュー平均点は ${predictedReview.toFixed(2)} 点です。 評価バランス平均: ${metadata.weighted_average.toFixed(2)}, 標準偏差: ${metadata.review_std_dev.toFixed(2)}, レビュー数: ${metadata.total_review_count} 件, 過去作品の平均スコア: ${avgPreviousItemScore > 0 ? avgPreviousItemScore.toFixed(2) : 'データなし'}`,
+		reviewRating: {
+			'@type': 'Rating',
+			ratingValue: Number.parseFloat(predictedReview.toFixed(2)),
+			bestRating: 5,
+			worstRating: 0,
+		},
+		itemReviewed: {
+			'@type': 'Person',
+			name: actress.name,
+			sameAs: actress.list_url || undefined,
+		},
+	}
+
+	const reviewWithContext: WithContext<Review> = {
+		'@context': 'https://schema.org',
+		...review,
+	}
+	structuredData.push(reviewWithContext)
+
+	// 4. CreativeWorkオブジェクト（トップ3作品）
+	const top3Items = metadata.top_3_popular_items.filter(item => item != null)
+	for (const item of top3Items) {
+		// 追加の null チェック（念のため）
+		if (!item) {
+			console.warn('Top popular item is null or undefined:', item)
+			continue
+		}
+
+		const creativeWork: CreativeWork = {
+			'@type': 'CreativeWork',
+			name: item.title,
+			aggregateRating: {
+				'@type': 'AggregateRating',
+				ratingValue: Number.parseFloat(item.review_average.toFixed(2)),
+				reviewCount: item.review_count,
+				bestRating: 5,
+				worstRating: 0,
+			},
+		}
+
+		const creativeWorkWithContext: WithContext<CreativeWork> = {
+			'@context': 'https://schema.org',
+			...creativeWork,
+		}
+		structuredData.push(creativeWorkWithContext)
+	}
 
 	return structuredData
 }
