@@ -1,11 +1,20 @@
+// src/app/components/dmmcomponents/DMMActressRegression.tsx
+
 'use client'
 
-import { ActressStats } from '@/_types_dmm/statstype' // ActressStatsの型をインポート
+import { ActressStats } from '@/_types_dmm/statstype'
 import MultivariateLinearRegression from 'ml-regression-multivariate-linear'
+import Link from 'next/link'
 import React, { useEffect, useState, useRef } from 'react'
+import { Article, Person, WithContext } from 'schema-dts'
 
+import {
+	generateActressArticleStructuredData,
+	generatePersonStructuredData,
+	generateReviewPredictionStructuredData,
+} from '@/app/components/json-ld/jsonld'
+// 既存のインポート
 import { DMMActressProfile } from '@/types/APItypes'
-import { Person, WithContext } from 'schema-dts'
 
 // 型定義
 export type ReviewData = {
@@ -16,40 +25,12 @@ export type ReviewData = {
 	previousItemScores: number[]
 }
 
-// スタンダードスケーラーの型
 type StandardScaler = {
 	means: number[]
 	stds: number[]
 }
 
-const generateReviewPredictionStructuredData = (
-	actressName: string,
-	predictedReview: number,
-	nextMovieData: ReviewData,
-): WithContext<Person> | null => {
-	const structuredData: WithContext<Person> = {
-		'@context': 'https://schema.org',
-		'@type': 'Person',
-		name: actressName,
-		description: `${actressName}さんの次回作の予測レビュー平均点は ${predictedReview.toFixed(2)} 点です。`,
-	}
-
-	// レビュー予測に関連する追加情報
-	structuredData.description += `
-		レビュー予測は以下の要素を考慮しています。評価バランス平均: ${nextMovieData.weightedAverage.toFixed(2)},標準偏差: ${nextMovieData.stdDev.toFixed(2)},レビュー数: ${nextMovieData.reviewCount} 件,過去作品の平均スコア: ${
-			nextMovieData.previousItemScores.length > 0
-				? (
-						nextMovieData.previousItemScores.reduce((a, b) => a + b, 0) /
-						nextMovieData.previousItemScores.length
-					).toFixed(2)
-				: 'データなし'
-		}
-	`.trim()
-
-	return structuredData
-}
-
-// 標準化のためのヘルパー関数
+// スタンダードスケーラーのヘルパー関数
 const calculateMeans = (data: number[][]): number[] => {
 	const numColumns = data[0].length
 	const means: number[] = Array(numColumns).fill(0)
@@ -110,9 +91,6 @@ const performRegressionAnalysis = (
 
 	const y: number[][] = data.map(item => [item.reviewAverage])
 
-	// console.log('X:', X)
-	// console.log('y:', y)
-
 	const means = calculateMeans(X)
 	const stds = calculateStds(X, means)
 	const scalerData: StandardScaler = { means, stds }
@@ -120,13 +98,7 @@ const performRegressionAnalysis = (
 
 	const X_normalized = standardizeData(X, scalerData)
 
-	// console.log('Normalized X:', X_normalized)
-	// console.log('Scaler Means:', means)
-	// console.log('Scaler Stds:', stds)
-
 	const mlr = new MultivariateLinearRegression(X_normalized, y, { intercept: true })
-
-	// console.log('mlr.weights:', mlr.weights)
 
 	return mlr
 }
@@ -153,36 +125,32 @@ const predictNextReview = (
 		}),
 	]
 
-	// console.log('Normalized nextMovieData:', nextMovieNormalized)
-
 	const predictions: number[][] = mlr.predict(nextMovieNormalized)
 	const rawPrediction: number = predictions[0][0]
-	// console.log('Raw prediction:', rawPrediction)
-
 	const prediction: number = Math.max(0, Math.min(rawPrediction, 5))
-	// console.log('Validated prediction:', prediction)
 
 	return prediction
 }
 
-// DMMActressRegressionコンポーネント
-const DMMActressRegression: React.FC<{ actressStats: ActressStats; actressName: string }> = ({
-	actressStats,
-	actressName,
-}) => {
+const DMMActressRegression: React.FC<{
+	actressStats: ActressStats
+	actressName: string
+	profile: DMMActressProfile
+}> = ({ actressStats, actressName, profile }) => {
 	const [predictedReview, setPredictedReview] = useState<number | null>(null)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
 	const [nextMovie, setNextMovie] = useState<ReviewData | null>(null)
 	const [regressionEquation, setRegressionEquation] = useState<string>('')
+	const [combinedJsonLd, setCombinedJsonLd] = useState<Array<
+		WithContext<Article> | WithContext<Person>
+	> | null>(null)
 
-	// スタンダードスケーラーのためのuseRef
 	const scalerRef = useRef<StandardScaler | null>(null)
 
 	useEffect(() => {
 		if (
 			!actressStats ||
 			!actressStats.metadata ||
-			!actressStats.annualData ||
 			!actressStats.timeSeriesData ||
 			!actressStats.timeSeriesData.time_series_analysis ||
 			!actressStats.timeSeriesData.time_series_analysis.monthly_trends ||
@@ -192,7 +160,6 @@ const DMMActressRegression: React.FC<{ actressStats: ActressStats; actressName: 
 			return
 		}
 
-		// TypeScript に metadata が null ではないことを認識させるために変数に割り当て
 		const metadata = actressStats.metadata
 
 		// 月次データの収集
@@ -261,39 +228,21 @@ const DMMActressRegression: React.FC<{ actressStats: ActressStats; actressName: 
 			previousItemScores,
 		}))
 
-		// console.log('reviewData:', reviewData)
-
-		// **重要**: reviewCountが0のデータポイントを除外するのではなく、全てのデータポイントを使用
-		// データポイントが十分でない場合でも回帰分析を実行
-
 		// 回帰分析の実行
 		let mlr: MultivariateLinearRegression
 		try {
 			mlr = performRegressionAnalysis(reviewData, scalerRef)
-			// console.log('回帰分析結果: model', mlr)
+			const weights = mlr.weights.flat()
 
-			// 回帰係数の取得
-			const weights = mlr.weights // number[][]
-
-			// 回帰係数が存在するか確認
-			if (!weights || weights.length === 0) {
-				throw new Error('回帰係数が取得できませんでした。')
-			}
-
-			// 各出力変数ごとに係数を取得（ここでは1つの出力変数）
-			// weights = [[intercept, coef1, coef2, coef3, coef4]]
-			// しかしユーザーのログでは weights が5つの配列になっているため、正しくフラット化する
-			const modelWeights = weights.flat()
-
-			if (modelWeights.length < 5) {
+			if (weights.length < 5) {
 				throw new Error('回帰係数の数が不足しています。')
 			}
 
-			const intercept = modelWeights[0]
-			const coefWeightedAverage = modelWeights[1]
-			const coefStdDev = modelWeights[2]
-			const coefLogReviewCount = modelWeights[3]
-			const coefAvgPrevScores = modelWeights[4]
+			const intercept = weights[0]
+			const coefWeightedAverage = weights[1]
+			const coefStdDev = weights[2]
+			const coefLogReviewCount = weights[3]
+			const coefAvgPrevScores = weights[4]
 
 			setRegressionEquation(
 				`y = ${intercept.toFixed(4)} + (${coefWeightedAverage.toFixed(
@@ -309,15 +258,13 @@ const DMMActressRegression: React.FC<{ actressStats: ActressStats; actressName: 
 		}
 
 		// 次作の予測データを構築
-		const { weighted_average, review_average, total_review_count, top_3_popular_items } = metadata
+		const { weighted_average, total_review_count, top_3_popular_items } = metadata
 
-		// previousItemScoresの設定
 		const latestTop3Scores =
 			top_3_popular_items && top_3_popular_items.length > 0
 				? top_3_popular_items.map(item => item?.review_average || 0)
 				: []
 
-		// 次作のデータポイントを作成
 		const nextMovieData: ReviewData = {
 			weightedAverage: weighted_average || 0,
 			reviewAverage: 0, // 予測値を設定するため未使用
@@ -326,8 +273,6 @@ const DMMActressRegression: React.FC<{ actressStats: ActressStats; actressName: 
 			previousItemScores: latestTop3Scores,
 		}
 
-		// console.log('nextMovieData:', nextMovieData)
-
 		if (!scalerRef.current) {
 			setErrorMessage('スケーラーの初期化に失敗しました。')
 			return
@@ -335,11 +280,53 @@ const DMMActressRegression: React.FC<{ actressStats: ActressStats; actressName: 
 
 		// 予測値の計算
 		const prediction = predictNextReview(mlr, nextMovieData, scalerRef.current)
-		// console.log('予測値:', prediction)
 
 		setPredictedReview(prediction)
 		setNextMovie(nextMovieData)
-	}, [actressStats])
+
+		// 構造化データの生成
+		const generateStructuredData = async () => {
+			try {
+				// Article構造化データの生成
+				const generatedArticleJsonLd = await generateActressArticleStructuredData(
+					`セクシー女優「${profile.actress.name}」のエロ動画が${metadata.total_review_count}作品あります`,
+					`セクシー女優${profile.actress.name}さんのプロフィールと作品一覧、レビュー統計データを見ることができるページです。`,
+					profile,
+				)
+
+				// Person構造化データの生成
+				const generatedPersonJsonLd = generatePersonStructuredData(
+					profile,
+					'女優のプロフィール',
+					actressStats,
+				)
+
+				// Predict構造化データの生成
+				const generatedPredictJsonLd = generateReviewPredictionStructuredData(
+					actressName,
+					prediction,
+					nextMovieData,
+				)
+
+				if (!generatedPredictJsonLd) {
+					throw new Error('Predict構造化データの生成に失敗しました。')
+				}
+
+				// 両方のデータを配列にまとめる（nullを除外）
+				const combinedStructuredData: Array<WithContext<Article> | WithContext<Person>> = [
+					generatedArticleJsonLd,
+					generatedPersonJsonLd,
+					generatedPredictJsonLd,
+				].filter((item): item is WithContext<Article> | WithContext<Person> => item !== null)
+
+				setCombinedJsonLd(combinedStructuredData)
+			} catch (error) {
+				console.error('構造化データ生成エラー:', error)
+			}
+		}
+
+		generateStructuredData()
+	}, [actressStats, actressName, profile])
 
 	if (errorMessage) {
 		return <div>{errorMessage}</div>
@@ -356,12 +343,6 @@ const DMMActressRegression: React.FC<{ actressStats: ActressStats; actressName: 
 					nextMovie.previousItemScores.length
 				).toFixed(2)
 			: 'データなし'
-
-	// 構造化データを生成
-	const articleJsonLd =
-		nextMovie && predictedReview !== null
-			? generateReviewPredictionStructuredData(actressName, predictedReview, nextMovie)
-			: null
 
 	return (
 		<div className='bg-white rounded-lg p-1 mb-8 max-w-4xl mx-auto'>
@@ -407,12 +388,13 @@ const DMMActressRegression: React.FC<{ actressStats: ActressStats; actressName: 
 					点と予測されています。
 				</p>
 			</div>
-			{articleJsonLd && (
+			{/* 構造化データの統合スクリプトタグ */}
+			{combinedJsonLd && (
 				<script
 					id={`structured-data-${actressName}-person-predict`}
 					type='application/ld+json'
 					dangerouslySetInnerHTML={{
-						__html: JSON.stringify(articleJsonLd),
+						__html: JSON.stringify(combinedJsonLd),
 					}}
 				/>
 			)}

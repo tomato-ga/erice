@@ -1,24 +1,23 @@
 // src/app/components/dmmcomponents/DMMActressStatsWriting.tsx
 
 import { ActressStats } from '@/_types_dmm/statstype'
+import { DMMActressProfile } from '@/types/APItypes'
 import Link from 'next/link'
 import React from 'react'
 import DMMActressRegression from './DMMActressRegression'
-import { ReviewData } from './DMMActressRegression' // ReviewData 型のインポート
-
-import { DMMActressProfile } from '@/types/APItypes'
-import { Person, WithContext } from 'schema-dts'
 
 type Props = {
 	actressName: string
 	actressStats: ActressStats | null
 	isSummary: boolean
+	profile: DMMActressProfile // 追加
 }
 
 const DMMActressStatsWriting: React.FC<Props> = ({
 	actressName,
 	actressStats,
 	isSummary = false,
+	profile, // 追加
 }) => {
 	if (
 		!actressStats ||
@@ -84,7 +83,7 @@ const DMMActressStatsWriting: React.FC<Props> = ({
 			)}となっており、評価にばらつきが見られます。\nこれは、視聴者の間で作品ごとに好みが分かれている可能性が高いことを示しています。彼女が多様な役柄に挑戦している結果とも言えるでしょう。`
 		} else if (latestYearStdDev < 1) {
 			analysis = `${actressName}さんの最新の作品は、標準偏差が${latestYearStdDev.toFixed(2)}と非常に低く、作品による評価のバラツキが低いことから、視聴者からの評価が一貫して高いことが伺えます。
-			これは、彼女の演技や作品が幅広い視聴者に安定して受け入れられていることを示しています。`
+            これは、彼女の演技や作品が幅広い視聴者に安定して受け入れられていることを示しています。`
 		} else {
 			analysis = `${actressName}さんの最新の作品は、標準偏差が${latestYearStdDev.toFixed(
 				2,
@@ -110,7 +109,7 @@ const DMMActressStatsWriting: React.FC<Props> = ({
 		)}と一定の評価を得ており、今後の活躍が期待されます。様々なジャンルへの挑戦により、さらにファンを増やしていくことでしょう。`
 	}
 
-	// Add this function before the return statement
+	// トレンド評価の関数
 	const evaluateTrend = () => {
 		const trendAnalysis =
 			sortedYears.length >= 2
@@ -122,7 +121,7 @@ const DMMActressStatsWriting: React.FC<Props> = ({
 		return trendAnalysis
 	}
 
-	// Add this function before the return statement
+	// レビュー数の成長分析
 	const reviewGrowthAnalysis = () => {
 		const dates = Object.keys(cumulative_review_count).sort()
 		const initialCount = cumulative_review_count[dates[0]]
@@ -131,7 +130,7 @@ const DMMActressStatsWriting: React.FC<Props> = ({
 		return `${actressName}さんの作品は${dates[0]}から${dates[dates.length - 1]}までの期間で、レビュー数が${initialCount}件から${latestCount}件まで増加しました。これは着実なファン層の拡大を示しています。`
 	}
 
-	// 要約版の文章
+	// 要約版の文章生成
 	const generateSummary = () => {
 		return `${actressName}さんの総合レビュー平均点は${review_average.toFixed(
 			2,
@@ -144,9 +143,6 @@ const DMMActressStatsWriting: React.FC<Props> = ({
 		// 要約版を返す
 		return (
 			<div className='bg-white rounded-lg p-4 mb-8 max-w-3xl mx-auto'>
-				{/* 構造化データの埋め込み */}
-				{/* <script type='application/ld+json'>{JSON.stringify(structuredData)}</script> */}
-
 				<h2 className='text-2xl font-bold mb-4 text-gray-800'>
 					{actressName}さんのレビュー統計データ（要約）
 				</h2>
@@ -168,11 +164,9 @@ const DMMActressStatsWriting: React.FC<Props> = ({
 	return (
 		<div className='bg-white rounded-lg p-1 mb-8 max-w-4xl mx-auto'>
 			<h2 className='text-3xl font-bold mb-6 text-gray-800 border-b pb-2'>
-				{
-					<Link href={`/actressprofile/${actressName}`} className='text-blue-500'>
-						{actressName}
-					</Link>
-				}
+				<Link href={`/actressprofile/${actressName}`} className='text-blue-500'>
+					{actressName}
+				</Link>
 				さんのレビュー統計データ
 			</h2>
 
@@ -308,7 +302,12 @@ const DMMActressStatsWriting: React.FC<Props> = ({
 					<p className='mt-4'>{standardDeviationAnalysis()}</p>
 				</section>
 
-				<DMMActressRegression actressStats={actressStats} actressName={actressName} />
+				{/* DMMActressRegressionコンポーネントにprofileを渡す */}
+				<DMMActressRegression
+					actressStats={actressStats}
+					actressName={actressName}
+					profile={profile}
+				/>
 
 				<section>
 					<h3 className='text-2xl font-bold mt-8 mb-4 text-gray-800 border-b pb-2'>

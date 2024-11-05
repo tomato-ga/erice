@@ -19,6 +19,7 @@ import {
 	VideoObject,
 	WithContext,
 } from 'schema-dts'
+import { ReviewData } from '../dmmcomponents/DMMActressRegression'
 
 export const generateIndependentStatsStructuredData = (
 	actressName: string,
@@ -339,6 +340,34 @@ export const generateActressArticleStructuredData = async (
 	}
 
 	return articleStructuredData
+}
+
+// 女優のレビュー予測専用のPerson構造化データを生成する関数
+export const generateReviewPredictionStructuredData = (
+	actressName: string,
+	predictedReview: number,
+	nextMovieData: ReviewData,
+): WithContext<Person> | null => {
+	const structuredData: WithContext<Person> = {
+		'@context': 'https://schema.org',
+		'@type': 'Person',
+		name: actressName,
+		description: `${actressName}さんの次回作の予測レビュー平均点は ${predictedReview.toFixed(2)} 点です。`,
+	}
+
+	// レビュー予測に関連する追加情報
+	structuredData.description += `
+        レビュー予測は以下の要素を考慮しています。評価バランス平均: ${nextMovieData.weightedAverage.toFixed(2)},標準偏差: ${nextMovieData.stdDev.toFixed(2)},レビュー数: ${nextMovieData.reviewCount} 件,過去作品の平均スコア: ${
+					nextMovieData.previousItemScores.length > 0
+						? (
+								nextMovieData.previousItemScores.reduce((a, b) => a + b, 0) /
+								nextMovieData.previousItemScores.length
+							).toFixed(2)
+						: 'データなし'
+				}
+    `.trim()
+
+	return structuredData
 }
 
 export const generateDoujinKobetuItemStructuredData = (

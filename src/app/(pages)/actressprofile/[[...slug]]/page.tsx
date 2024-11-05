@@ -84,12 +84,6 @@ const ActressProfileSection = async ({
 		)
 	}
 
-	const articleJsonLd = await generateActressArticleStructuredData(
-		pageTitle,
-		descriptionFromMetadata || '',
-		profile,
-	)
-
 	return (
 		<>
 			{/* <script
@@ -175,13 +169,13 @@ const ActressProfileSection = async ({
 						</div>
 					</div>
 				</div>
-				<script
+				{/* <script
 					id={`structured-data-${actress.name}-person`}
 					type='application/ld+json'
 					dangerouslySetInnerHTML={{
 						__html: JSON.stringify(articleJsonLd),
 					}}
-				/>
+				/> */}
 			</div>
 		</>
 	)
@@ -268,6 +262,7 @@ export default async function ActressProfilePage({ params }: PageProps) {
 					actress_id={profile.actress.id}
 					actress_name={profile.actress.name}
 					isSummary={false}
+					profile={profile} // 追加
 				/>
 			</Suspense>
 
