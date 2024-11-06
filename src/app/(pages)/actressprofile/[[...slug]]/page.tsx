@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 	if (!data) {
 		return {
-			title: 'ページが見つかりません | ' + SITE_NAME,
+			title: 'ページが見つかりません',
 			description: '指定された女優は存在しません。',
 		}
 	}

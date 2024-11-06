@@ -133,7 +133,7 @@ const DMMActressRegression: React.FC<{
 	const [predictedReview, setPredictedReview] = useState<number | null>(null)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
 	const [nextMovie, setNextMovie] = useState<ReviewData | null>(null)
-	const [combinedJsonLd, setCombinedJsonLd] = useState<WithContext<Article> | null>(null)
+	const [combinedJsonLd, setCombinedJsonLd] = useState<WithContext<Article> | string | null>(null)
 
 	const scalerRef = useRef<StandardScaler | null>(null)
 
@@ -274,7 +274,7 @@ const DMMActressRegression: React.FC<{
 					throw new Error('構造化データの生成に失敗しました。')
 				}
 
-				setCombinedJsonLd(generatedArticleJsonLd)
+				setCombinedJsonLd(JSON.stringify(generatedArticleJsonLd))
 			} catch (error) {
 				console.error('構造化データ生成エラー:', error)
 			}
@@ -349,7 +349,7 @@ const DMMActressRegression: React.FC<{
 					id={`structured-data-${actressName}-person`}
 					type='application/ld+json'
 					dangerouslySetInnerHTML={{
-						__html: JSON.stringify(combinedJsonLd),
+						__html: combinedJsonLd,
 					}}
 				/>
 			)}
