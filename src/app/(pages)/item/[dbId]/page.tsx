@@ -25,11 +25,6 @@ import StructuredDataScript from './StructuredData'
 
 import FanzaADBannerFanzaKobetu from '@/app/components/dmmcomponents/fanzaADBannerKobetu'
 
-// // 2. SaleFloatingBanner を動的にインポート（SSR 無効化）
-// const SaleFloatingBanner = dynamic(
-// 	() => import('@/app/components/dmmcomponents/FloatingBanner/FloatingBanner'),
-// 	{ ssr: false },
-// )
 
 import dynamic from 'next/dynamic'
 
@@ -88,7 +83,6 @@ function LoadingSpinner() {
 }
 
 // 1. データ取得関数の定義
-
 // async function getPageData(dbId: number) {
 // 	try {
 // 		const [itemMain, itemDetail, actressInfo] = await Promise.all([

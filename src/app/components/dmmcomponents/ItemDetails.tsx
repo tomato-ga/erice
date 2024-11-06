@@ -166,10 +166,6 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 		return imageUrl.includes('printing.jpg')
 	}
 
-	if (itemDetail.genre) {
-		console.log('itemDetail:', itemDetail.genre[0])
-	}
-
 	// 構造化データの生成
 	// const personStructuredData = generatePersonStructuredData(actressProfileData)
 
@@ -185,12 +181,9 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 
 	// ジャンルが存在する場合、ランダムに1つ選択
 	const randomGenre = itemDetail.genre ? getRandomGenre(itemDetail.genre) : null
-	console.timeEnd('itemdetail timelog')
 
 	return (
 		<>
-			{/* JSON-LDを構造化データとして埋め込む */}
-			{/* JSON-LD構造化データのコードはここに記述します */}
 			{itemDetail.actress && actressId && (
 				<ActressStatsAndRelatedItemsTimeLine
 					actressName={actressName}
