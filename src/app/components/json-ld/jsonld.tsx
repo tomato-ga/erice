@@ -306,6 +306,7 @@ export const fetchActressStats = async (actressId: number): Promise<ActressStats
 }
 
 // 女優ページの構造化データを生成する関数
+
 export const generateActressArticleStructuredData = async (
 	h1: string,
 	description: string,
@@ -314,14 +315,12 @@ export const generateActressArticleStructuredData = async (
 	predictedReview: number,
 	nextMovieData: ReviewData,
 ): Promise<WithContext<Article>> => {
-	// 固定のAuthorデータ
 	const author: Person = {
 		'@type': 'Person',
 		name: 'エロコメスト管理人',
 		url: 'https://erice.cloud',
 	}
 
-	// 女優のPerson構造化データを生成（data を渡す）
 	const actressPersonData = generatePersonStructuredData(
 		profile,
 		description,
@@ -330,21 +329,18 @@ export const generateActressArticleStructuredData = async (
 		nextMovieData,
 	)
 
-	// actressPersonData が null でないことを確認
 	const mainEntity = actressPersonData ?? undefined
 
-	// aggregateRating を Article に追加
 	const aggregateRatingData: AggregateRating = {
 		'@type': 'AggregateRating',
 		ratingValue: actressStats.metadata
 			? actressStats.metadata?.overall_review_average?.toFixed(2)
-			: '',
+			: '0',
 		reviewCount: actressStats.metadata ? actressStats.metadata?.total_review_count : 0,
 		bestRating: '5',
 		worstRating: '1',
 	}
 
-	// Articleスキーマの生成
 	const articleStructuredData: WithContext<Article> = {
 		'@context': 'https://schema.org',
 		'@type': 'Article',
@@ -352,8 +348,6 @@ export const generateActressArticleStructuredData = async (
 		image: [profile.actress.image_url_large || profile.actress.image_url_small || ''],
 		author: author,
 		description: description,
-		datePublished: new Date().toISOString(),
-		dateModified: new Date().toISOString(),
 		mainEntityOfPage: `https://erice.cloud/actressprofile/${encodeURIComponent(profile.actress.name)}`,
 		mainEntity: mainEntity,
 		aggregateRating: aggregateRatingData,
