@@ -21,11 +21,13 @@ type Props = {
 const DMMSeriesStats: React.FC<Props> = async ({ seriesStatsData, seriesName, isSummary }) => {
 	return (
 		<div className='bg-white rounded-lg p-6 mb-8'>
-			<DMMSeriesStatsWriting
-				seriesName={seriesName}
-				seriesStats={seriesStatsData}
-				isSummary={isSummary}
-			/>
+			<Suspense fallback={<LoadingSpinner />}>
+				<DMMSeriesStatsWriting
+					seriesName={seriesName}
+					seriesStats={seriesStatsData}
+					isSummary={isSummary}
+				/>
+			</Suspense>
 			{/* グラフコンポーネントの表示 */}
 			<Suspense fallback={<LoadingSpinner />}>
 				<DMMActressStatsCharts stats={seriesStatsData} name={seriesName} />
