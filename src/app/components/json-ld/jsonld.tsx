@@ -364,12 +364,10 @@ export const generateActressPageStructuredData = async (
 
 	const actressImage = profile.actress.image_url_large || profile.actress.image_url_small || null
 
-	const actressPersonData: WithContext<Person> = {
+	const actressPersonData: WithContext<CreativeWork> = {
 		'@context': 'https://schema.org',
-		'@type': 'Person',
+		'@type': 'CreativeWorkSeries',
 		name: profile.actress.name,
-		birthDate: profile.actress.birthday || undefined,
-		height: profile.actress.height ? `${profile.actress.height} cm` : undefined,
 		description: `${description} ${profile.actress.name}さんの次回作の予測レビュー平均点は ${predictedReview.toFixed(2)} 点です。`,
 		sameAs: profile.actress.list_url || undefined,
 		image: actressImage || undefined,
@@ -397,8 +395,8 @@ export const generateActressPageStructuredData = async (
 		bestRating: 5,
 		worstRating: 1,
 		itemReviewed: {
-			// itemReviewedを明示的に設定
-			'@type': 'Person',
+			// itemReviewedにCreativeWorkSeriesを設定
+			'@type': 'CreativeWorkSeries',
 			name: profile.actress.name,
 		},
 	}
@@ -411,7 +409,7 @@ export const generateActressPageStructuredData = async (
 		author: author,
 		description: description,
 		mainEntityOfPage: `https://erice.cloud/actressprofile/${encodeURIComponent(profile.actress.name)}`,
-		mainEntity: actressPersonData, // 女優のPersonデータをmainEntityとして配置
+		mainEntity: actressPersonData, // 女優のCreativeWorkSeriesデータをmainEntityとして配置
 		aggregateRating: aggregateRatingData, // Articleに直接aggregateRatingを配置
 	}
 
