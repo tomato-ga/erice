@@ -380,11 +380,6 @@ export const generateActressArticleStructuredData = async (
 		reviewCount: actressStats.metadata ? actressStats.metadata?.total_review_count : 0,
 		bestRating: '5',
 		worstRating: '1',
-		itemReviewed: {
-			// itemReviewedを追加
-			'@type': 'Person',
-			name: profile.actress.name,
-		},
 	}
 
 	const articleStructuredData: WithContext<Article> = {
@@ -395,8 +390,8 @@ export const generateActressArticleStructuredData = async (
 		author: author,
 		description: description,
 		mainEntityOfPage: `https://erice.cloud/actressprofile/${encodeURIComponent(profile.actress.name)}`,
-		mainEntity: mainEntity,
-		aggregateRating: aggregateRatingData,
+		mainEntity: mainEntity, // PersonをmainEntityとして関連付ける
+		aggregateRating: aggregateRatingData, // Articleに直接aggregateRatingを配置
 	}
 
 	return articleStructuredData
