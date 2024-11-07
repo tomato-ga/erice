@@ -393,7 +393,7 @@ export const generateActressPageStructuredData = async (
 	const aggregateRatingData: AggregateRating = {
 		'@type': 'AggregateRating',
 		ratingValue: Number(actressStats.metadata?.overall_review_average?.toFixed(2)) || 0,
-		reviewCount: actressStats.metadata?.total_review_count || 0,
+		reviewCount: Number(actressStats.metadata?.total_review_count) || 0,
 		bestRating: 5,
 		worstRating: 1,
 		itemReviewed: {
