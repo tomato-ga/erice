@@ -601,6 +601,41 @@ export const generateDoujinBreadcrumbList = (
 	}
 }
 
+export const generateSeriesArticleStructuredData = async (
+	h1: string,
+	description: string,
+	seriesName: string,
+	Stats: Stats,
+	nextMovieData: ReviewData,
+	predictedReview?: number,
+): Promise<WithContext<Article>> => {
+	const author: Person = {
+		'@type': 'Person',
+		name: 'エロコメスト管理人',
+		url: 'https://erice.cloud',
+	}
+
+	const aggregateRatingData: AggregateRating = {
+		'@type': 'AggregateRating',
+		ratingValue: Stats.metadata ? Stats.metadata?.overall_review_average?.toFixed(2) : '0',
+		reviewCount: Stats.metadata ? Stats.metadata?.total_review_count : 0,
+		bestRating: '5',
+		worstRating: '1',
+	}
+
+	const articleStructuredData: WithContext<Article> = {
+		'@context': 'https://schema.org',
+		'@type': 'Article',
+		headline: h1,
+		author: author,
+		description: description,
+		mainEntityOfPage: 'https://erice.cloud/item/',
+		aggregateRating: aggregateRatingData,
+	}
+
+	return articleStructuredData
+}
+
 // キーワードページ用の Article 構造化データ生成関数
 export const generateKeywordArticleStructuredData = (
 	keyword: string,

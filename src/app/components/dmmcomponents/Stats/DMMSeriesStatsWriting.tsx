@@ -133,6 +133,8 @@ const DMMSeriesStatsWriting: React.FC<Props> = ({ seriesName, seriesStats, isSum
 		)}です。総レビュー数は${total_review_count}件に達し、最新の評価データは${last_updated}に更新されました。${seriesName}シリーズは数多くのエロ動画作品で一貫して高評価を受けており、その優れた演技力と魅力的なパフォーマンスにより、幅広いファン層からの支持を得ています。彼女の多様な役柄や最新作についての詳細な分析や統計データは、${seriesName}シリーズのプロフィールページでご確認いただけます。`
 	}
 
+	// generateSeriesArticleStructuredData()
+
 	if (isSummary) {
 		// 要約版を返す
 		return (
