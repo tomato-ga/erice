@@ -45,6 +45,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 		.split(',')
 		.map(name => name.trim())
 		.filter(name => name.length > 0)
+		
 	const profileFetchPromises = actressNames.map(async name => {
 		const encodedName = encodeURIComponent(name)
 		try {

@@ -16,7 +16,7 @@ import {
 import React from 'react'
 import { Bar, Chart, Line, Pie } from 'react-chartjs-2'
 
-import { ActressStats } from '@/_types_dmm/statstype'
+import { Stats } from '@/_types_dmm/statstype'
 
 // Chart.jsのプラグインを登録
 ChartJS.register(
@@ -66,7 +66,7 @@ type BoxPlotData = Record<
 
 // コンポーネントのProps型定義
 type DMMActressStatsChartsProps = {
-	actressStats: ActressStats
+	actressStats: Stats
 	actressName: string
 }
 
@@ -89,10 +89,7 @@ const commonChartOptions = {
 	},
 }
 
-const DMMActressStatsCharts: React.FC<DMMActressStatsChartsProps> = ({
-	actressStats,
-	actressName,
-}) => {
+const DMMStatsCharts: React.FC<DMMActressStatsChartsProps> = ({ actressStats, actressName }) => {
 	if (
 		!actressStats ||
 		!actressStats.metadata ||
@@ -575,4 +572,4 @@ const PopularItemsChart: React.FC<{ topItems: (TopItem | null)[] }> = ({ topItem
 	)
 }
 
-export default DMMActressStatsCharts
+export default DMMStatsCharts

@@ -1,6 +1,6 @@
 // components/StructuredDataScript.tsx
 
-import { ActressStats } from '@/_types_dmm/statstype'
+import { Stats } from '@/_types_dmm/statstype'
 import { fetchActressProfile } from '@/app/components/dmmcomponents/fetch/itemFetchers'
 import {
 	generateArticleStructuredData,
@@ -23,7 +23,7 @@ interface StructuredDataScriptProps {
 	itemDetail: DMMItemDetailResponse
 	description: string
 	dbId: number
-	actressStats?: ActressStats // 統計データを追加
+	actressStats?: Stats // 統計データを追加
 }
 
 const StructuredDataScript: React.FC<StructuredDataScriptProps> = async ({

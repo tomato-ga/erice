@@ -179,6 +179,7 @@ export async function fetchItemMainByContentId(dbId: number): Promise<DMMItemMai
 	}
 }
 
+// TODO 似たような関数を用意して、series_idを取得する？分割関数したほうがworkersで処理できる時間を小分けにできるのでそっちのがいい気がする
 export async function fetchItemDetailByContentId(
 	dbId: number,
 ): Promise<DMMItemDetailResponse | null> {

@@ -1,4 +1,4 @@
-import { ActressStatsSchema } from '@/_types_dmm/statstype'
+import { StatsSchema } from '@/_types_dmm/statstype'
 import { unstable_cache } from 'next/cache'
 import { revalidateTag } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
 			}
 
 			const data = await response.json()
-			const result = ActressStatsSchema.safeParse(data)
+			const result = StatsSchema.safeParse(data)
 
 			if (!result.success) {
 				throw new Error('Invalid data format from Cloudflare Workers')

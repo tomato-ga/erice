@@ -1,6 +1,6 @@
 // src/utils/jsonld.ts
 
-import { ActressStats } from '@/_types_dmm/statstype'
+import { Stats } from '@/_types_dmm/statstype'
 import { DoujinKobetuItem } from '@/_types_doujin/doujintypes'
 import { FbooksKobetuItem } from '@/_types_fbooks/fbookstype'
 import { DMMActressProfile } from '@/types/APItypes'
@@ -25,7 +25,7 @@ import { ReviewData } from '../dmmcomponents/DMMActressRegression'
 
 export const generateIndependentStatsStructuredData = (
 	actressName: string,
-	actressStats: ActressStats,
+	actressStats: Stats,
 ): WithContext<Article> => {
 	if (!actressStats || !actressStats.metadata) {
 		console.warn('No actress stats available.')
@@ -213,7 +213,7 @@ export const generateArticleStructuredData = async (
 export const generatePersonStructuredData = (
 	actressProfile: DMMActressProfile,
 	description: string,
-	data?: ActressStats | null,
+	data?: Stats | null,
 	predictedReview?: number,
 	nextMovieData?: ReviewData,
 ): WithContext<Person> | null => {
@@ -290,7 +290,7 @@ export const generatePersonStructuredData = (
 }
 
 // fetchActressStats 関数
-export const fetchActressStats = async (actressId: number): Promise<ActressStats | null> => {
+export const fetchActressStats = async (actressId: number): Promise<Stats | null> => {
 	try {
 		const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-stats?actress_id=${actressId}`
 		const response = await fetch(apiUrl)
@@ -298,7 +298,7 @@ export const fetchActressStats = async (actressId: number): Promise<ActressStats
 			console.warn('Failed to fetch actress stats:', response.status)
 			return null
 		}
-		return (await response.json()) as ActressStats
+		return (await response.json()) as Stats
 	} catch (error) {
 		console.error('Error fetching actress stats:', error)
 		return null
@@ -311,7 +311,7 @@ export const generateActressArticleStructuredData = async (
 	h1: string,
 	description: string,
 	profile: DMMActressProfile,
-	actressStats: ActressStats,
+	actressStats: Stats,
 	predictedReview: number,
 	nextMovieData: ReviewData,
 ): Promise<WithContext<Article>> => {
@@ -395,7 +395,7 @@ export const generateReviewPredictionStructuredData = (
 
 export const generateActressProfileStructuredData = (
 	actressName: string,
-	actressStats: ActressStats,
+	actressStats: Stats,
 	profile: DMMActressProfile,
 	predictedReview: number,
 ): WithContext<Thing>[] => {

@@ -2,7 +2,7 @@
 
 'use client'
 
-import { ActressStats } from '@/_types_dmm/statstype'
+import { Stats } from '@/_types_dmm/statstype'
 import { generateActressArticleStructuredData } from '@/app/components/json-ld/jsonld'
 import { DMMActressProfile } from '@/types/APItypes'
 import MultivariateLinearRegression from 'ml-regression-multivariate-linear'
@@ -126,10 +126,10 @@ const predictNextReview = (
 }
 
 const DMMActressRegression: React.FC<{
-	actressStats: ActressStats
-	actressName: string
-	profile: DMMActressProfile
-}> = ({ actressStats, actressName, profile }) => {
+	stats: Stats
+	name: string
+	profile?: DMMActressProfile
+}> = ({ stats, name, profile }) => {
 	const [predictedReview, setPredictedReview] = useState<number | null>(null)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
 	const [nextMovie, setNextMovie] = useState<ReviewData | null>(null)
@@ -139,12 +139,12 @@ const DMMActressRegression: React.FC<{
 
 	useEffect(() => {
 		if (
-			!actressStats ||
-			!actressStats.metadata ||
-			!actressStats.timeSeriesData ||
-			!actressStats.timeSeriesData.time_series_analysis ||
-			!actressStats.timeSeriesData.time_series_analysis.monthly_trends ||
-			!actressStats.timeSeriesData.time_series_analysis.cumulative_review_count
+			!stats ||
+			!stats.metadata ||
+			!stats.timeSeriesData ||
+			!stats.timeSeriesData.time_series_analysis ||
+			!stats.timeSeriesData.time_series_analysis.monthly_trends ||
+			!stats.timeSeriesData.time_series_analysis.cumulative_review_count
 		) {
 			setErrorMessage('アクターの統計データが不足しています。')
 			return
@@ -152,12 +152,11 @@ const DMMActressRegression: React.FC<{
 
 		const { actress } = profile || {} // ネストされた依存関係を避けるために分割代入
 
-		const metadata = actressStats.metadata
+		const metadata = stats.metadata
 
 		// 月次データの収集
-		const monthlyTrends = actressStats.timeSeriesData.time_series_analysis.monthly_trends
-		const cumulativeReviewCount =
-			actressStats.timeSeriesData.time_series_analysis.cumulative_review_count
+		const monthlyTrends = stats.timeSeriesData.time_series_analysis.monthly_trends
+		const cumulativeReviewCount = stats.timeSeriesData.time_series_analysis.cumulative_review_count
 
 		// 月を昇順にソート
 		const sortedMonths = Object.keys(monthlyTrends).sort(
@@ -258,30 +257,32 @@ const DMMActressRegression: React.FC<{
 		setNextMovie(nextMovieData)
 
 		// 構造化データの生成
-		const generateStructuredData = async () => {
-			try {
-				// Article構造化データの生成
-				const generatedArticleJsonLd = await generateActressArticleStructuredData(
-					`セクシー女優「${profile?.actress.name}」のエロ動画が${metadata.total_review_count}作品あります`,
-					`セクシー女優${profile?.actress.name}さんのプロフィールと作品一覧、レビュー統計データを見ることができるページです。`,
-					profile,
-					actressStats,
-					prediction,
-					nextMovieData,
-				)
 
-				if (!generatedArticleJsonLd) {
-					throw new Error('構造化データの生成に失敗しました。')
+		if (profile) {
+			const generateStructuredData = async () => {
+				try {
+					// Article構造化データの生成
+					const generatedArticleJsonLd = await generateActressArticleStructuredData(
+						`セクシー女優「${profile?.actress.name}」のエロ動画が${metadata.total_review_count}作品あります`,
+						`セクシー女優${profile?.actress.name}さんのプロフィールと作品一覧、レビュー統計データを見ることができるページです。`,
+						profile,
+						stats,
+						prediction,
+						nextMovieData,
+					)
+
+					if (!generatedArticleJsonLd) {
+						throw new Error('構造化データの生成に失敗しました。')
+					}
+
+					setCombinedJsonLd(JSON.stringify(generatedArticleJsonLd))
+				} catch (error) {
+					console.error('構造化データ生成エラー:', error)
 				}
-
-				setCombinedJsonLd(JSON.stringify(generatedArticleJsonLd))
-			} catch (error) {
-				console.error('構造化データ生成エラー:', error)
 			}
+			generateStructuredData()
 		}
-
-		generateStructuredData()
-	}, [actressStats, profile])
+	}, [stats, profile])
 
 	if (errorMessage) {
 		return <div>{errorMessage}</div>
@@ -346,7 +347,7 @@ const DMMActressRegression: React.FC<{
 			{/* 構造化データの統合スクリプトタグ */}
 			{combinedJsonLd && (
 				<script
-					id={`structured-data-${actressName}-person`}
+					id={`structured-data-${name}-person`}
 					type='application/ld+json'
 					dangerouslySetInnerHTML={{
 						__html: combinedJsonLd,

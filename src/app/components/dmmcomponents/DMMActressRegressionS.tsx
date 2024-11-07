@@ -1,4 +1,4 @@
-import { ActressStats } from '@/_types_dmm/statstype'
+import { Stats } from '@/_types_dmm/statstype'
 import MultivariateLinearRegression from 'ml-regression-multivariate-linear'
 import React from 'react'
 import DMMActressRegressionClient from './DMMActressRegressionC'
@@ -157,7 +157,7 @@ const predictNextReview = (
 
 // サーバーコンポーネント
 type DMMActressRegressionProps = {
-	actressStats: ActressStats
+	actressStats: Stats
 }
 
 const getPreviousMonthCumulativeCount = (

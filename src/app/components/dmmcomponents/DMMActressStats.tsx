@@ -1,13 +1,13 @@
 // src/app/components/dmmcomponents/DMMActressStats.tsx
 
-import { ActressStats } from '@/_types_dmm/statstype'
+import { Stats } from '@/_types_dmm/statstype'
 import { DMMActressProfile } from '@/types/APItypes'
 import dynamic from 'next/dynamic'
 import React, { Suspense } from 'react'
 import LoadingSpinner from '../Article/ArticleContent/loadingspinner'
 import DMMActressStatsWriting from './DMMActressStatsWriting'
 
-const DMMActressStatsCharts = dynamic(() => import('./DMMActressStatsCharts'), {
+const DMMActressStatsCharts = dynamic(() => import('./DMMStatsCharts'), {
 	ssr: false,
 })
 
@@ -26,7 +26,7 @@ const DMMActressStats: React.FC<Props> = async ({
 }) => {
 	const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-stats?actress_id=${actress_id}`
 	const response = await fetch(apiUrl, { next: { revalidate: 2419200 } })
-	const actressStats = (await response.json()) as ActressStats
+	const actressStats = (await response.json()) as Stats
 
 	if (
 		!actressStats ||

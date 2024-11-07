@@ -23,7 +23,8 @@ const ReviewScoreDistributionSchema = z
 // メタデータのスキーマ
 const MetadataSchema = z
 	.object({
-		actress_id: z.number(),
+		actress_id: z.number().optional().nullable(),
+		series_id: z.number().optional().nullable(),
 		review_average: z.number(),
 		review_median: z.number(),
 		review_std_dev: z.number(),
@@ -75,11 +76,11 @@ const TimeSeriesDataSchema = z
 	.nullable()
 
 // 全体のレスポンススキーマ
-export const ActressStatsSchema = z.object({
+export const StatsSchema = z.object({
 	metadata: MetadataSchema,
 	annualData: AnnualDataSchema,
 	timeSeriesData: TimeSeriesDataSchema,
 })
 
 // 型の抽出
-export type ActressStats = z.infer<typeof ActressStatsSchema>
+export type Stats = z.infer<typeof StatsSchema>
