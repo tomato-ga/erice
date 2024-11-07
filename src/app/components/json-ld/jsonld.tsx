@@ -665,6 +665,10 @@ export const generateSeriesArticleStructuredData = (
 		reviewCount: metadata.total_review_count || 0,
 		bestRating: 5,
 		worstRating: 1,
+		itemReviewed: {
+			'@type': 'CreativeWorkSeries',
+			name: seriesName,
+		},
 	}
 
 	const popularItemsData =
@@ -715,8 +719,8 @@ export const generateSeriesArticleStructuredData = (
 		mainEntity: {
 			'@type': 'CreativeWorkSeries',
 			name: seriesName,
-			aggregateRating: aggregateRatingData,
 		},
+		aggregateRating: aggregateRatingData, // Article に aggregateRating を移動
 	}
 
 	return articleStructuredData
