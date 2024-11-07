@@ -661,26 +661,24 @@ export const generateSeriesArticleStructuredData = (
 
 	const aggregateRatingData: AggregateRating = {
 		'@type': 'AggregateRating',
-		ratingValue: metadata.overall_review_average?.toFixed(2) || '0',
+		ratingValue: Number.parseFloat(metadata.overall_review_average?.toFixed(2)) || 0,
 		reviewCount: metadata.total_review_count || 0,
-		bestRating: '5',
-		worstRating: '1',
+		bestRating: 5,
+		worstRating: 1,
 	}
 
 	const popularItemsData =
-		metadata.top_3_popular_items
-			?.filter(item => item)
-			.map(item => ({
-				'@type': 'CreativeWork',
-				name: item?.title || 'N/A',
-				aggregateRating: {
-					'@type': 'AggregateRating',
-					ratingValue: item?.review_average?.toFixed(2) || '0',
-					reviewCount: item?.review_count || 0,
-				},
-				datePublished: item?.release_date,
-				description: item?.description,
-			})) || []
+		seriesStats.metadata?.top_3_popular_items?.map(item => ({
+			'@type': 'CreativeWork',
+			name: item?.title || 'N/A',
+			aggregateRating: {
+				'@type': 'AggregateRating',
+				ratingValue: item?.review_average?.toFixed(2) || '0',
+				reviewCount: item?.review_count || 0,
+			},
+			datePublished: item?.release_date,
+			description: item?.description,
+		})) || []
 
 	// 統計データと人気作品情報を seriesDescription に追加
 	let seriesDescription = `${seriesName}シリーズの平均評価は${metadata.review_average.toFixed(
@@ -707,28 +705,18 @@ export const generateSeriesArticleStructuredData = (
 		'@type': 'Article',
 		headline: `${seriesName}シリーズのレビュー統計データ`,
 		description: seriesDescription,
-		aggregateRating: {
-			'@type': 'AggregateRating',
-			ratingValue: metadata.overall_review_average?.toFixed(2) || '0',
-			reviewCount: metadata.total_review_count || 0,
-			bestRating: '5',
-			worstRating: '1',
-			itemReviewed: {
-				'@type': 'Product',
-				name: seriesName,
-			},
-		},
-		about: {
-			'@type': 'Thing', // より汎用的なタイプに変更
-			name: seriesName,
-			description: `${seriesName}シリーズに関する評価`,
-		},
 		author: {
 			'@type': 'Person',
 			name: 'エロコメスト管理人',
 			url: 'https://erice.cloud',
 		},
-		image: actressImage.actress.image_url_large || actressImage.actress.image_url_large || '',
+		image: actressImage.actress.image_url_large || actressImage.actress.image_url_small || '',
+		mainEntityOfPage: `https://erice.cloud/series/${encodeURIComponent(seriesName)}`,
+		mainEntity: {
+			'@type': 'CreativeWorkSeries',
+			name: seriesName,
+			aggregateRating: aggregateRatingData,
+		},
 	}
 
 	return articleStructuredData
