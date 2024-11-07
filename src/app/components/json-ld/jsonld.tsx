@@ -22,6 +22,7 @@ import {
 	WithContext,
 } from 'schema-dts'
 import { ReviewData } from '../dmmcomponents/DMMActressRegression'
+import { fetchSeriesStats } from '../dmmcomponents/fetch/itemFetchers'
 
 export const generateIndependentStatsStructuredData = (
 	actressName: string,
@@ -49,7 +50,7 @@ export const generateIndependentStatsStructuredData = (
 			ratingValue: review_average.toFixed(2),
 			ratingCount: total_review_count,
 			bestRating: '5',
-			worstRating: '1',
+			worstRating: '0',
 		},
 		// 'review'プロパティは削除、または適切な'IdReference | Review | Role'を使用する
 	}
@@ -149,27 +150,54 @@ export const generateArticleStructuredData = async (
 
 	// 女優情報
 	let actressData: WithContext<Person>[] | null = null
+
 	if (actressProfiles && actressProfiles.length > 0) {
-		// 各女優プロフィールに対してActressStatsをフェッチし、構造化データを生成
-		const actressPersonDataPromises = actressProfiles.map(async profile => {
-			const actressStats = await fetchActressStats(profile.actress.id)
-			return generatePersonStructuredData(profile, description, actressStats)
-		})
+		const firstProfile = actressProfiles[0]
+		const actressStats = await fetchActressStats(firstProfile.actress.id)
+		const firstActressData = generatePersonStructuredData(firstProfile, description, actressStats)
 
-		// 全てのPromiseを解決
-		const actressPersonDataResults = await Promise.all(actressPersonDataPromises)
-
-		// 有効なデータのみをフィルタリング
-		const validActressPersonData = actressPersonDataResults.filter(
-			data => data !== null,
-		) as WithContext<Person>[]
-
-		if (validActressPersonData.length > 0) {
-			actressData = validActressPersonData
+		if (firstActressData) {
+			actressData = [firstActressData] // 配列形式で保持
 		} else {
-			console.warn('All actress profiles are incomplete or missing.')
+			console.warn('The first actress profile is incomplete or missing.')
 		}
 	}
+
+	// シリーズ情報
+	let seriesData: Thing | null = null
+
+	if (itemDetail.series && itemDetail.series.length > 0) {
+		const seriesName = itemDetail.series[0]
+		const seriesStats = await fetchSeriesStats(seriesName)
+
+		if (seriesStats?.metadata) {
+			seriesData = generateSeriesArticleStructuredData(seriesStats, seriesName)
+		} else {
+			console.warn('Series stats are incomplete or missing.')
+		}
+	}
+
+	// if (actressProfiles && actressProfiles.length > 0) {
+	// 	// 各女優プロフィールに対してActressStatsをフェッチし、構造化データを生成
+	// 	const actressPersonDataPromises = actressProfiles.map(async profile => {
+	// 		const actressStats = await fetchActressStats(profile.actress.id)
+	// 		return generatePersonStructuredData(profile, description, actressStats)
+	// 	})
+
+	// 	// 全てのPromiseを解決
+	// 	const actressPersonDataResults = await Promise.all(actressPersonDataPromises)
+
+	// 	// 有効なデータのみをフィルタリング
+	// 	const validActressPersonData = actressPersonDataResults.filter(
+	// 		data => data !== null,
+	// 	) as WithContext<Person>[]
+
+	// 	if (validActressPersonData.length > 0) {
+	// 		actressData = validActressPersonData
+	// 	} else {
+	// 		console.warn('All actress profiles are incomplete or missing.')
+	// 	}
+	// }
 
 	// directorデータの生成
 	const directors: Person[] | undefined = itemDetail.director
@@ -180,8 +208,19 @@ export const generateArticleStructuredData = async (
 		: undefined
 
 	// articleSection と keywords を定義（itemDetail.genreが存在する場合）
-	const articleSection: string | undefined = itemDetail.genre?.join(', ')
+	// const articleSection: string | undefined = itemDetail.genre?.join(', ')
 	const keywords: string | undefined = itemDetail.genre?.join(', ')
+
+	// aboutフィールドの生成
+	const aboutData: Thing[] = []
+
+	if (actressData && actressData.length > 0) {
+		aboutData.push(...actressData)
+	}
+
+	if (seriesData) {
+		aboutData.push(seriesData)
+	}
 
 	// Articleスキーマの生成
 	const articleStructuredData: WithContext<Article> = {
@@ -204,7 +243,7 @@ export const generateArticleStructuredData = async (
 		...(videoObject && { video: videoObject }), // VideoObjectが存在する場合のみ追加
 		// ...(articleSection && { articleSection: articleSection }), // コメントアウトされている場合は不要
 		...(keywords && { keywords: keywords }),
-		...(actressData && { about: actressData }), // 女優のPerson構造化データを追加
+		...(aboutData.length > 0 && { about: aboutData }), // 女優とシリーズのデータを追加
 	}
 
 	return articleStructuredData
@@ -601,36 +640,77 @@ export const generateDoujinBreadcrumbList = (
 	}
 }
 
-export const generateSeriesArticleStructuredData = async (
-	h1: string,
-	description: string,
+export const generateSeriesArticleStructuredData = (
+	seriesStats: Stats,
 	seriesName: string,
-	Stats: Stats,
-	nextMovieData: ReviewData,
-	predictedReview?: number,
-): Promise<WithContext<Article>> => {
-	const author: Person = {
-		'@type': 'Person',
-		name: 'エロコメスト管理人',
-		url: 'https://erice.cloud',
+): WithContext<Article> | null => {
+	if (!seriesStats?.metadata) {
+		console.warn('Series metadata is missing')
+		return null
 	}
+
+	const { metadata } = seriesStats
 
 	const aggregateRatingData: AggregateRating = {
 		'@type': 'AggregateRating',
-		ratingValue: Stats.metadata ? Stats.metadata?.overall_review_average?.toFixed(2) : '0',
-		reviewCount: Stats.metadata ? Stats.metadata?.total_review_count : 0,
+		ratingValue: metadata.overall_review_average?.toFixed(2) || '0',
+		reviewCount: metadata.total_review_count || 0,
 		bestRating: '5',
 		worstRating: '1',
+	}
+
+	const popularItemsData =
+		metadata.top_3_popular_items
+			?.filter(item => item)
+			.map(item => ({
+				'@type': 'CreativeWork',
+				name: item?.title || 'N/A',
+				aggregateRating: {
+					'@type': 'AggregateRating',
+					ratingValue: item?.review_average?.toFixed(2) || '0',
+					reviewCount: item?.review_count || 0,
+				},
+				datePublished: item?.release_date,
+				description: item?.description,
+			})) || []
+
+	// 統計データと人気作品情報を seriesDescription に追加
+	let seriesDescription = `${seriesName}シリーズの平均評価は${metadata.review_average.toFixed(
+		2,
+	)}、中央値は${metadata.review_median.toFixed(2)}、標準偏差は${metadata.review_std_dev.toFixed(
+		2,
+	)}です。総レビュー数は${metadata.total_review_count}件で、総合平均評価は${metadata.overall_review_average.toFixed(
+		2,
+	)}です。`
+
+	// トップ3人気作品の情報を追加
+	if (popularItemsData.length > 0) {
+		const topItemsDescription = popularItemsData
+			.map(
+				item =>
+					`${item.name}（評価: ${item.aggregateRating.ratingValue}、レビュー数: ${item.aggregateRating.reviewCount}）`,
+			)
+			.join('、')
+		seriesDescription += ` 特に人気の高い作品は次の通りです: ${topItemsDescription}。`
 	}
 
 	const articleStructuredData: WithContext<Article> = {
 		'@context': 'https://schema.org',
 		'@type': 'Article',
-		headline: h1,
-		author: author,
-		description: description,
-		mainEntityOfPage: 'https://erice.cloud/item/',
-		aggregateRating: aggregateRatingData,
+		headline: `${seriesName}シリーズのレビュー統計データ`,
+		description: seriesDescription,
+		aggregateRating: {
+			'@type': 'AggregateRating',
+			ratingValue: metadata.overall_review_average?.toFixed(2) || '0',
+			reviewCount: metadata.total_review_count || 0,
+			bestRating: '5',
+			worstRating: '1',
+		},
+		about: {
+			'@type': 'Thing', // より汎用的なタイプに変更
+			name: seriesName,
+			description: `${seriesName}シリーズに関する評価`,
+		},
 	}
 
 	return articleStructuredData
