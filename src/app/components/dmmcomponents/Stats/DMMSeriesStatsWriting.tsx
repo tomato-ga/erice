@@ -7,13 +7,18 @@ import React from 'react'
 import DMMActressRegression from '../DMMActressRegression'
 
 type Props = {
-	name: string
-	stats: Stats | null
+	seriesName: string
+	seriesStats: Stats | null
 	isSummary: boolean
 }
 
-const DMMSeriesStatsWriting: React.FC<Props> = ({ name, stats, isSummary = false }) => {
-	if (!stats || !stats.annualData || !stats.metadata || !stats.timeSeriesData) {
+const DMMSeriesStatsWriting: React.FC<Props> = ({ seriesName, seriesStats, isSummary = false }) => {
+	if (
+		!seriesStats ||
+		!seriesStats.metadata ||
+		!seriesStats.annualData ||
+		!seriesStats.timeSeriesData
+	) {
 		return null
 	}
 
@@ -23,12 +28,13 @@ const DMMSeriesStatsWriting: React.FC<Props> = ({ name, stats, isSummary = false
 		last_updated,
 		top_3_popular_items,
 		weighted_average,
-	} = stats.metadata
+	} = seriesStats.metadata
 
 	const { annual_review_average, annual_review_median, annual_review_std_dev, annual_box_plot } =
-		stats.annualData
+		seriesStats.annualData
 
-	const { quarterly_trends, cumulative_review_count } = stats.timeSeriesData.time_series_analysis
+	const { quarterly_trends, cumulative_review_count } =
+		seriesStats.timeSeriesData.time_series_analysis
 
 	// 必要なデータを処理し、変数に格納
 	const overallReviewAverage = review_average
@@ -66,14 +72,14 @@ const DMMSeriesStatsWriting: React.FC<Props> = ({ name, stats, isSummary = false
 		const latestYearStdDev = latestYearStats.std_dev
 
 		if (latestYearStdDev > 1) {
-			analysis = `${name}さんの最新の作品に対する評価は、標準偏差が${latestYearStdDev.toFixed(
+			analysis = `${seriesName}シリーズの最新の作品に対する評価は、標準偏差が${latestYearStdDev.toFixed(
 				2,
 			)}となっており、評価にばらつきが見られます。\nこれは、視聴者の間で作品ごとに好みが分かれている可能性が高いことを示しています。彼女が多様な役柄に挑戦している結果とも言えるでしょう。`
 		} else if (latestYearStdDev < 1) {
-			analysis = `${name}さんの最新の作品は、標準偏差が${latestYearStdDev.toFixed(2)}と非常に低く、作品による評価のバラツキが低いことから、視聴者からの評価が一貫して高いことが伺えます。
+			analysis = `${seriesName}シリーズの最新の作品は、標準偏差が${latestYearStdDev.toFixed(2)}と非常に低く、作品による評価のバラツキが低いことから、視聴者からの評価が一貫して高いことが伺えます。
             これは、彼女の演技や作品が幅広い視聴者に安定して受け入れられていることを示しています。`
 		} else {
-			analysis = `${name}さんの最新の作品は、標準偏差が${latestYearStdDev.toFixed(
+			analysis = `${seriesName}シリーズの最新の作品は、標準偏差が${latestYearStdDev.toFixed(
 				2,
 			)}で、評価が非常に安定していることがわかります。彼女のパフォーマンスは一定の品質を保ち続けているようです。`
 		}
@@ -87,12 +93,12 @@ const DMMSeriesStatsWriting: React.FC<Props> = ({ name, stats, isSummary = false
 	// まとめの文章生成
 	const generateConclusion = () => {
 		if (overallReviewAverage >= 4.0) {
-			return `${name}さんの作品は、レビュー平均が${overallReviewAverage.toFixed(
+			return `${seriesName}シリーズの作品は、レビュー平均が${overallReviewAverage.toFixed(
 				2,
 			)}と高評価を維持しており、特に最近の作品が大きな注目を集めています。評価の安定性が確認されており、初めて彼女の作品を視聴する方にも自信を持っておすすめできます。`
 		}
 
-		return `${name}さんの作品は、レビュー平均が${overallReviewAverage.toFixed(
+		return `${seriesName}シリーズの作品は、レビュー平均が${overallReviewAverage.toFixed(
 			2,
 		)}と一定の評価を得ており、今後の活躍が期待されます。様々なジャンルへの挑戦により、さらにファンを増やしていくことでしょう。`
 	}
@@ -102,8 +108,8 @@ const DMMSeriesStatsWriting: React.FC<Props> = ({ name, stats, isSummary = false
 		const trendAnalysis =
 			sortedYears.length >= 2
 				? annualStats[latestYear].average > annualStats[sortedYears[0]].average
-					? `${name}さんの評価は上昇傾向にあり、特に${latestYear}年は平均${annualStats[latestYear].average.toFixed(2)}と好評を得ています。`
-					: `${name}さんは安定した評価を維持しており、${latestYear}年は平均${annualStats[latestYear].average.toFixed(2)}となっています。`
+					? `${seriesName}シリーズの評価は上昇傾向にあり、特に${latestYear}年は平均${annualStats[latestYear].average.toFixed(2)}と好評を得ています。`
+					: `${seriesName}シリーズは安定した評価を維持しており、${latestYear}年は平均${annualStats[latestYear].average.toFixed(2)}となっています。`
 				: `${latestYear}年の平均評価は${annualStats[latestYear].average.toFixed(2)}となっています。`
 
 		return trendAnalysis
@@ -115,16 +121,16 @@ const DMMSeriesStatsWriting: React.FC<Props> = ({ name, stats, isSummary = false
 		const initialCount = cumulative_review_count[dates[0]]
 		const latestCount = cumulative_review_count[dates[dates.length - 1]]
 
-		return `${name}さんの作品は${dates[0]}から${dates[dates.length - 1]}までの期間で、レビュー数が${initialCount}件から${latestCount}件まで増加しました。これは着実なファン層の拡大を示しています。`
+		return `${seriesName}シリーズの作品は${dates[0]}から${dates[dates.length - 1]}までの期間で、レビュー数が${initialCount}件から${latestCount}件まで増加しました。これは着実なファン層の拡大を示しています。`
 	}
 
 	// 要約版の文章生成
 	const generateSummary = () => {
-		return `${name}さんの総合レビュー平均点は${review_average.toFixed(
+		return `${seriesName}シリーズの総合レビュー平均点は${review_average.toFixed(
 			2,
 		)}、評価バランス平均は${weighted_average.toFixed(
 			2,
-		)}です。総レビュー数は${total_review_count}件に達し、最新の評価データは${last_updated}に更新されました。${name}さんは数多くのエロ動画作品で一貫して高評価を受けており、その優れた演技力と魅力的なパフォーマンスにより、幅広いファン層からの支持を得ています。彼女の多様な役柄や最新作についての詳細な分析や統計データは、${name}さんのプロフィールページでご確認いただけます。`
+		)}です。総レビュー数は${total_review_count}件に達し、最新の評価データは${last_updated}に更新されました。${seriesName}シリーズは数多くのエロ動画作品で一貫して高評価を受けており、その優れた演技力と魅力的なパフォーマンスにより、幅広いファン層からの支持を得ています。彼女の多様な役柄や最新作についての詳細な分析や統計データは、${seriesName}シリーズのプロフィールページでご確認いただけます。`
 	}
 
 	if (isSummary) {
@@ -132,17 +138,17 @@ const DMMSeriesStatsWriting: React.FC<Props> = ({ name, stats, isSummary = false
 		return (
 			<div className='bg-white rounded-lg p-4 mb-8 max-w-3xl mx-auto'>
 				<h2 className='text-2xl font-bold mb-4 text-gray-800'>
-					{name}さんのレビュー統計データ（要約）
+					{seriesName}シリーズのレビュー統計データ（要約）
 				</h2>
 
 				<p className='text-gray-700 leading-relaxed'>{generateSummary()}</p>
 
 				<div className='mt-4'>
 					<Link
-						href={`/actressprofile/${encodeURIComponent(name)}`}
+						href={`/actressprofile/${encodeURIComponent(seriesName)}`}
 						className='text-blue-500 hover:underline'
 						prefetch={true}>
-						{name}さんのプロフィールですべてのレビュー統計データを見る
+						{seriesName}シリーズのプロフィールですべてのレビュー統計データを見る
 					</Link>
 				</div>
 			</div>
@@ -152,10 +158,8 @@ const DMMSeriesStatsWriting: React.FC<Props> = ({ name, stats, isSummary = false
 	return (
 		<div className='bg-white rounded-lg p-1 mb-8 max-w-4xl mx-auto'>
 			<h2 className='text-3xl font-bold mb-6 text-gray-800 border-b pb-2'>
-				<Link href={`/actressprofile/${name}`} className='text-blue-500'>
-					{name}
-				</Link>
-				さんのレビュー統計データ
+				{seriesName}
+				シリーズのレビュー統計データ
 			</h2>
 
 			<div className='space-y-6 text-gray-700 leading-relaxed'>
@@ -179,14 +183,10 @@ const DMMSeriesStatsWriting: React.FC<Props> = ({ name, stats, isSummary = false
 
 				<p className='text-lg'>
 					セクシー女優の
-					<strong className='text-gray-800'>
-						<Link href={`/actressprofile/${name}`} className='text-blue-500'>
-							{name}
-						</Link>
-					</strong>
-					さんの作品に寄せられたレビューデータをもとに、最近の人気作品やレビュー評価傾向を詳しく分析します。
-					{name}
-					さんの作品を視聴する方の参考になれば幸いです。
+					<strong className='text-gray-800'>{seriesName}</strong>
+					シリーズの作品に寄せられたレビューデータをもとに、最近の人気作品やレビュー評価傾向を詳しく分析します。
+					{seriesName}
+					シリーズの作品を視聴する方の参考になれば幸いです。
 				</p>
 
 				<section>
@@ -196,10 +196,8 @@ const DMMSeriesStatsWriting: React.FC<Props> = ({ name, stats, isSummary = false
 					<h3 className='text-xl font-semibold mb-2 text-gray-700'>人気作品トップ3</h3>
 					<p className='text-lg mb-2'>
 						これらの作品は、
-						<Link href={`/actressprofile/${name}`} className='text-blue-500'>
-							{name}
-						</Link>
-						さんの作品の中で最も人気があり、多くの視聴者から高い評価を得ています。
+						{seriesName}
+						シリーズの作品の中で最も人気があり、多くの視聴者から高い評価を得ています。
 					</p>
 					<p className='text-sm mb-2'>
 						レビュー数が少なく、レビュー平均点が5の作品の重みが強くなりすぎないよう、評価バランス平均を用いて算出しています。
@@ -291,14 +289,12 @@ const DMMSeriesStatsWriting: React.FC<Props> = ({ name, stats, isSummary = false
 				</section>
 
 				{/* DMMActressRegressionコンポーネントにprofileを渡す */}
-				<DMMActressRegression stats={stats} name={name} />
+				{/* <DMMActressRegression stats={actressStats} name={seriesName} profile={profile} /> */}
 
 				<section>
 					<h3 className='text-2xl font-bold mt-8 mb-4 text-gray-800 border-b pb-2'>
-						<Link href={`/actressprofile/${name}`} className='text-blue-500'>
-							{name}
-						</Link>
-						さんのレビュー統計データまとめ
+						{seriesName}
+						シリーズのレビュー統計データまとめ
 					</h3>
 					<p className='bg-gray-50 p-4 rounded-lg'>{generateConclusion()}</p>
 				</section>

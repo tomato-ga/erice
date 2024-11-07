@@ -12,6 +12,7 @@ import React from 'react'
 import LoadingSpinner from '../Article/ArticleContent/loadingspinner'
 import ActressStatsAndRelatedItemsTimeLine from './DMMActressItemRelated'
 import RelatedGenre from './RelatedGenre'
+import DMMSeriesStats from './Stats/DMMSeriesStats'
 import {
 	fetchActressProfile,
 	fetchItemDetailByContentId,
@@ -205,7 +206,13 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 			)}
 
 			{/* シリーズの統計データ表示 */}
-			{seriesStatsData && 'test'}
+			{seriesStatsData && (
+				<DMMSeriesStats
+					seriesStatsData={seriesStatsData}
+					seriesName={itemDetail.series[0]}
+					isSummary={false}
+				/>
+			)}
 
 			{/* 女優のプロフィールを表示 */}
 			{!isPlaceholderImage(actressProfileData.actress.image_url_large) && (

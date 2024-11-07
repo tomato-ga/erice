@@ -1,40 +1,37 @@
 // src/app/components/dmmcomponents/DMMActressStats.tsx
 
 import { Stats } from '@/_types_dmm/statstype'
-import { DMMActressProfile } from '@/types/APItypes'
+
 import dynamic from 'next/dynamic'
 import React, { Suspense } from 'react'
 import LoadingSpinner from '../../Article/ArticleContent/loadingspinner'
+
 import DMMSeriesStatsWriting from './DMMSeriesStatsWriting'
 
-const DMMStatsCharts = dynamic(() => import('../DMMStatsCharts'), {
+const DMMActressStatsCharts = dynamic(() => import('../DMMStatsCharts'), {
 	ssr: false,
 })
 
 type Props = {
-	series_id: number
-	series_name: string
+	seriesStatsData: Stats
+	seriesName: string
 	isSummary: boolean
 }
 
-const DMMActressStats: React.FC<Props> = async ({ series_id, series_name, isSummary }) => {
-	const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-series-stats?series_id=${series_id}`
-	const response = await fetch(apiUrl, { next: { revalidate: 2419200 } })
-	const Stats = (await response.json()) as Stats
-
-	if (!Stats || !Stats.metadata || !Stats.timeSeriesData || !Stats.annualData) {
-		return null
-	}
-
+const DMMSeriesStats: React.FC<Props> = async ({ seriesStatsData, seriesName, isSummary }) => {
 	return (
 		<div className='bg-white rounded-lg p-6 mb-8'>
-			<DMMSeriesStatsWriting name={series_name} stats={Stats} isSummary={isSummary} />
+			<DMMSeriesStatsWriting
+				seriesName={seriesName}
+				seriesStats={seriesStatsData}
+				isSummary={isSummary}
+			/>
 			{/* グラフコンポーネントの表示 */}
 			<Suspense fallback={<LoadingSpinner />}>
-				<DMMStatsCharts stats={Stats} name={series_name} />
+				<DMMActressStatsCharts stats={seriesStatsData} name={seriesName} />
 			</Suspense>
 		</div>
 	)
 }
 
-export default DMMActressStats
+export default DMMSeriesStats

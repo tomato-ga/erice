@@ -278,7 +278,6 @@ export async function fetchActressProfile(
 }
 
 // series nameを入れたらstatsが返ってくる関数
-// series nameを入れたらstatsが返ってくる関数
 export async function fetchSeriesStats(seriesName: string): Promise<Stats | null> {
 	try {
 		const response = await fetch(
