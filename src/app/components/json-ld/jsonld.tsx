@@ -150,9 +150,12 @@ export const generateArticleStructuredData = async (
 
 	// 女優情報
 	let actressData: WithContext<Person>[] | null = null
+	let firstProfile: DMMActressProfile | undefined
 
 	if (actressProfiles && actressProfiles.length > 0) {
-		const firstProfile = actressProfiles[0]
+		// 初期化だけ行い、再宣言を避ける
+
+		firstProfile = actressProfiles[0]
 		const actressStats = await fetchActressStats(firstProfile.actress.id)
 		const firstActressData = generatePersonStructuredData(firstProfile, description, actressStats)
 
@@ -170,10 +173,10 @@ export const generateArticleStructuredData = async (
 		const seriesName = itemDetail.series[0]
 		const seriesStats = await fetchSeriesStats(seriesName)
 
-		if (seriesStats?.metadata) {
-			seriesData = generateSeriesArticleStructuredData(seriesStats, seriesName)
+		if (seriesStats?.metadata && firstProfile) {
+			seriesData = generateSeriesArticleStructuredData(seriesStats, seriesName, firstProfile)
 		} else {
-			console.warn('Series stats are incomplete or missing.')
+			console.warn('Series stats are incomplete or missing, or first actress profile is missing.')
 		}
 	}
 
@@ -643,6 +646,7 @@ export const generateDoujinBreadcrumbList = (
 export const generateSeriesArticleStructuredData = (
 	seriesStats: Stats,
 	seriesName: string,
+	actressImage: DMMActressProfile,
 ): WithContext<Article> | null => {
 	if (!seriesStats?.metadata) {
 		console.warn('Series metadata is missing')
@@ -711,6 +715,12 @@ export const generateSeriesArticleStructuredData = (
 			name: seriesName,
 			description: `${seriesName}シリーズに関する評価`,
 		},
+		author: {
+			'@type': 'Person',
+			name: 'エロコメスト管理人',
+			url: 'https://erice.cloud',
+		},
+		image: actressImage.actress.image_url_large || actressImage.actress.image_url_large || '',
 	}
 
 	return articleStructuredData
