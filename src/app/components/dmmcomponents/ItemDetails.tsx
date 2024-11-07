@@ -7,17 +7,20 @@ import {
 } from '@/app/(pages)/actressprofile/[[...slug]]/profileAnalysis'
 import { generatePersonStructuredData } from '@/app/components/json-ld/jsonld'
 import { DMMActressProfile } from '@/types/APItypes'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import React from 'react'
-import LoadingSpinner from '../Article/ArticleContent/loadingspinner'
-import ActressStatsAndRelatedItemsTimeLine from './DMMActressItemRelated'
+
 import RelatedGenre from './RelatedGenre'
-import DMMSeriesStats from './Stats/DMMSeriesStats'
+// import DMMSeriesStats from './Stats/DMMSeriesStats'
 import {
 	fetchActressProfile,
 	fetchItemDetailByContentId,
 	fetchSeriesStats,
 } from './fetch/itemFetchers'
+
+const DynamicActressStatsAndRelatedItemsTimeLine = dynamic(() => import('./DMMActressItemRelated'))
+const DynamicDMMSeriesStats = dynamic(() => import('./Stats/DMMSeriesStats'))
 
 interface ItemDetailsProps {
 	contentId: string
@@ -198,7 +201,7 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 	return (
 		<>
 			{itemDetail.actress && actressId && (
-				<ActressStatsAndRelatedItemsTimeLine
+				<DynamicActressStatsAndRelatedItemsTimeLine
 					actressName={actressName}
 					actressId={actressId}
 					profile={actressProfileData}
@@ -207,7 +210,7 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 
 			{/* シリーズの統計データ表示 */}
 			{seriesStatsData && (
-				<DMMSeriesStats
+				<DynamicDMMSeriesStats
 					seriesStatsData={seriesStatsData}
 					seriesName={itemDetail.series[0]}
 					isSummary={false}

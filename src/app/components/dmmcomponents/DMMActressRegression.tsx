@@ -3,7 +3,7 @@
 'use client'
 
 import { Stats } from '@/_types_dmm/statstype'
-import { generateActressArticleStructuredData } from '@/app/components/json-ld/jsonld'
+import { generateActressPageStructuredData } from '@/app/components/json-ld/jsonld'
 import { DMMActressProfile } from '@/types/APItypes'
 import MultivariateLinearRegression from 'ml-regression-multivariate-linear'
 import React, { useEffect, useState, useRef } from 'react'
@@ -262,7 +262,7 @@ const DMMActressRegression: React.FC<{
 			const generateStructuredData = async () => {
 				try {
 					// Article構造化データの生成
-					const generatedArticleJsonLd = await generateActressArticleStructuredData(
+					const generatedArticleJsonLd = await generateActressPageStructuredData(
 						`セクシー女優「${profile?.actress.name}」のエロ動画が${metadata.total_review_count}作品あります`,
 						`セクシー女優${profile?.actress.name}さんのプロフィールと作品一覧、レビュー統計データを見ることができるページです。`,
 						profile,

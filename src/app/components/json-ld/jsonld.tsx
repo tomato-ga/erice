@@ -348,7 +348,7 @@ export const fetchActressStats = async (actressId: number): Promise<Stats | null
 }
 
 // 女優ページの構造化データを生成する関数
-export const generateActressArticleStructuredData = async (
+export const generateActressPageStructuredData = async (
 	h1: string,
 	description: string,
 	profile: DMMActressProfile,
@@ -362,35 +362,51 @@ export const generateActressArticleStructuredData = async (
 		url: 'https://erice.cloud',
 	}
 
-	const actressPersonData = generatePersonStructuredData(
-		profile,
-		description,
-		actressStats,
-		predictedReview,
-		nextMovieData,
-	)
+	const actressImage = profile.actress.image_url_large || profile.actress.image_url_small || null
 
-	const mainEntity = actressPersonData ?? undefined
+	const actressPersonData: WithContext<Person> = {
+		'@context': 'https://schema.org',
+		'@type': 'Person',
+		name: profile.actress.name,
+		birthDate: profile.actress.birthday || undefined,
+		height: profile.actress.height ? `${profile.actress.height} cm` : undefined,
+		description: `${description} ${profile.actress.name}さんの次回作の予測レビュー平均点は ${predictedReview.toFixed(2)} 点です。`,
+		sameAs: profile.actress.list_url || undefined,
+		image: actressImage || undefined,
+	}
+
+	// レビュー予測の追加情報をdescriptionに含める
+	actressPersonData.description += `
+        評価バランス平均: ${nextMovieData.weightedAverage.toFixed(2)},
+        標準偏差: ${nextMovieData.stdDev.toFixed(2)},
+        レビュー数: ${nextMovieData.reviewCount} 件,
+        過去作品の平均スコア: ${
+					nextMovieData.previousItemScores.length > 0
+						? (
+								nextMovieData.previousItemScores.reduce((a, b) => a + b, 0) /
+								nextMovieData.previousItemScores.length
+							).toFixed(2)
+						: 'データなし'
+				}
+    `.trim()
 
 	const aggregateRatingData: AggregateRating = {
 		'@type': 'AggregateRating',
-		ratingValue: actressStats.metadata
-			? actressStats.metadata?.overall_review_average?.toFixed(2)
-			: '0',
-		reviewCount: actressStats.metadata ? actressStats.metadata?.total_review_count : 0,
-		bestRating: '5',
-		worstRating: '1',
+		ratingValue: Number(actressStats.metadata?.overall_review_average?.toFixed(2)) || 0,
+		reviewCount: actressStats.metadata?.total_review_count || 0,
+		bestRating: 5,
+		worstRating: 1,
 	}
 
 	const articleStructuredData: WithContext<Article> = {
 		'@context': 'https://schema.org',
 		'@type': 'Article',
 		headline: h1,
-		image: [profile.actress.image_url_large || profile.actress.image_url_small || ''],
+		image: [actressImage || ''],
 		author: author,
 		description: description,
 		mainEntityOfPage: `https://erice.cloud/actressprofile/${encodeURIComponent(profile.actress.name)}`,
-		mainEntity: mainEntity, // PersonをmainEntityとして関連付ける
+		mainEntity: actressPersonData, // 女優のPersonデータをmainEntityとして配置
 		aggregateRating: aggregateRatingData, // Articleに直接aggregateRatingを配置
 	}
 

@@ -1,10 +1,6 @@
 import LoadingSpinner from '@/app/components/Article/ArticleContent/loadingspinner'
-import DMMActressStats from '@/app/components/dmmcomponents/DMMActressStats'
 import { fetchActressProfileAndWorks } from '@/app/components/dmmcomponents/fetch/itemFetchers'
-import {
-	generateActressArticleStructuredData,
-	generatePersonStructuredData,
-} from '@/app/components/json-ld/jsonld'
+
 import { DMMActressProfile, DMMActressProfilePageItem } from '@/types/APItypes'
 import { formatDate } from '@/utils/dmmUtils'
 import { Metadata } from 'next'
