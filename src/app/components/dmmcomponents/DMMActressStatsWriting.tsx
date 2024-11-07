@@ -144,7 +144,10 @@ const DMMActressStatsWriting: React.FC<Props> = ({
 		return (
 			<div className='bg-white rounded-lg p-4 mb-8 max-w-3xl mx-auto'>
 				<h2 className='text-2xl font-bold mb-4 text-gray-800'>
-					{actressName}さんのレビュー統計データ（要約）
+					<Link href={`/actressprofile/${actressName}`} className='text-blue-500'>
+						{actressName}
+					</Link>
+					さんのレビュー統計データ（要約）
 				</h2>
 
 				<p className='text-gray-700 leading-relaxed'>{generateSummary()}</p>
