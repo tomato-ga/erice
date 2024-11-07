@@ -398,7 +398,7 @@ export const generateActressPageStructuredData = async (
 			// itemReviewedにCreativeWorkSeriesを設定
 			'@type': 'CreativeWorkSeries',
 			name: profile.actress.name,
-		},
+		}, // MEMO itemReviewedにPersonは設定できない（ドキュメント確認する）
 	}
 
 	const articleStructuredData: WithContext<Article> = {
