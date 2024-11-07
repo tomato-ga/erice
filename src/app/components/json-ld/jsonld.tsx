@@ -348,7 +348,6 @@ export const fetchActressStats = async (actressId: number): Promise<Stats | null
 }
 
 // 女優ページの構造化データを生成する関数
-
 export const generateActressArticleStructuredData = async (
 	h1: string,
 	description: string,
@@ -381,6 +380,11 @@ export const generateActressArticleStructuredData = async (
 		reviewCount: actressStats.metadata ? actressStats.metadata?.total_review_count : 0,
 		bestRating: '5',
 		worstRating: '1',
+		itemReviewed: {
+			// itemReviewedを追加
+			'@type': 'Person',
+			name: profile.actress.name,
+		},
 	}
 
 	const articleStructuredData: WithContext<Article> = {
@@ -709,6 +713,10 @@ export const generateSeriesArticleStructuredData = (
 			reviewCount: metadata.total_review_count || 0,
 			bestRating: '5',
 			worstRating: '1',
+			itemReviewed: {
+				'@type': 'Product',
+				name: seriesName,
+			},
 		},
 		about: {
 			'@type': 'Thing', // より汎用的なタイプに変更
