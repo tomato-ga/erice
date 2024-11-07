@@ -396,6 +396,11 @@ export const generateActressPageStructuredData = async (
 		reviewCount: actressStats.metadata?.total_review_count || 0,
 		bestRating: 5,
 		worstRating: 1,
+		itemReviewed: {
+			// itemReviewedを明示的に設定
+			'@type': 'Person',
+			name: profile.actress.name,
+		},
 	}
 
 	const articleStructuredData: WithContext<Article> = {
