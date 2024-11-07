@@ -182,7 +182,6 @@ const DMMSeriesStatsWriting: React.FC<Props> = ({ seriesName, seriesStats, isSum
 				</section>
 
 				<p className='text-lg'>
-					セクシー女優の
 					<strong className='text-gray-800'>{seriesName}</strong>
 					シリーズの作品に寄せられたレビューデータをもとに、最近の人気作品やレビュー評価傾向を詳しく分析します。
 					{seriesName}
