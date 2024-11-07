@@ -74,8 +74,8 @@ export const generateBreadcrumbList = (
 		itemListElement.push({
 			'@type': 'ListItem',
 			position: 2,
-			name: itemDetail.actress,
-			item: `https://erice.cloud/actressprofile/${encodeURIComponent(itemDetail.actress)}`,
+			name: itemDetail.actress.split(',')[0],
+			item: `https://erice.cloud/actressprofile/${encodeURIComponent(itemDetail.actress.split(',')[0])}`,
 		})
 	}
 
