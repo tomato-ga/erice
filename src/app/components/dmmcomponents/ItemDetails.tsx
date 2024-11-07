@@ -12,7 +12,11 @@ import React from 'react'
 import LoadingSpinner from '../Article/ArticleContent/loadingspinner'
 import ActressStatsAndRelatedItemsTimeLine from './DMMActressItemRelated'
 import RelatedGenre from './RelatedGenre'
-import { fetchActressProfile, fetchItemDetailByContentId } from './fetch/itemFetchers'
+import {
+	fetchActressProfile,
+	fetchItemDetailByContentId,
+	fetchSeriesStats,
+} from './fetch/itemFetchers'
 
 interface ItemDetailsProps {
 	contentId: string
@@ -160,6 +164,14 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 	// actress_id を取得
 	const actressId = actressProfileData.actress.id
 
+	// series_idを取得
+	if (!itemDetail.series) {
+		return null
+	}
+
+	const seriesStatsData = await fetchSeriesStats(itemDetail.series[0])
+	// console.log('Resolved seriesStatsData:', JSON.stringify(seriesStatsData, null, 2))
+
 	// プレースホルダー画像かどうかをチェックする関数
 	const isPlaceholderImage = (imageUrl: string | null | undefined) => {
 		if (!imageUrl) return true
@@ -191,6 +203,9 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 					profile={actressProfileData}
 				/>
 			)}
+
+			{/* シリーズの統計データ表示 */}
+			{seriesStatsData && 'test'}
 
 			{/* 女優のプロフィールを表示 */}
 			{!isPlaceholderImage(actressProfileData.actress.image_url_large) && (

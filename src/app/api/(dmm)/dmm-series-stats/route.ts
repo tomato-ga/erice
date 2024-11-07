@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 // GETリクエストを処理するAPIハンドラー
 export async function GET(request: NextRequest) {
-	const series_id = request.nextUrl.searchParams.get('series_id')
+	const series_name = request.nextUrl.searchParams.get('seriesname')
 
 	// Cloudflare WorkersのAPIエンドポイントとAPIキー
 	const WORKER_URL = process.env.DMM_SERIES_STATS_WORKER_URL // Cloudflare Workers APIのエンドポイントを指定
@@ -30,14 +30,14 @@ export async function GET(request: NextRequest) {
 	try {
 		// Define a fetch callback for caching
 		const fetchCallback = async () => {
-			const response = await fetch(`${WORKER_URL}?series_id=${series_id}`, {
+			const response = await fetch(`${WORKER_URL}${series_name}`, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
 					'x-api-key': API_KEY || '',
 				},
 				next: {
-					tags: [`series-stats-${series_id}`], // キャッシュのタグを設定
+					tags: [`series-stats-${series_name}`], // キャッシュのタグを設定
 				},
 			})
 
@@ -58,15 +58,15 @@ export async function GET(request: NextRequest) {
 		// Use unstable_cache with the fetch callback
 		const cachedFetch = unstable_cache(
 			fetchCallback,
-			[`series-stats-${series_id}`], // キャッシュキー
+			[`series-stats-${series_name}`], // キャッシュキー
 			{
-				tags: [`series-stats-${series_id}`], // revalidation tags
+				tags: [`series-stats-${series_name}`], // revalidation tags
 				revalidate: 3600, // 1時間でキャッシュを自動更新
 			},
 		)
 
 		const data = await cachedFetch()
-		revalidateTag(`series-stats-${series_id}`) // 必要に応じてタグを無効化
+		revalidateTag(`series-stats-${series_name}`) // 必要に応じてタグを無効化
 
 		return NextResponse.json(data)
 	} catch (error) {

@@ -22,12 +22,7 @@ const DMMActressStats: React.FC<Props> = async ({ series_id, series_name, isSumm
 	const response = await fetch(apiUrl, { next: { revalidate: 2419200 } })
 	const Stats = (await response.json()) as Stats
 
-	if (
-		!Stats ||
-		!Stats.metadata ||
-		!Stats.timeSeriesData ||
-		!Stats.annualData
-	) {
+	if (!Stats || !Stats.metadata || !Stats.timeSeriesData || !Stats.annualData) {
 		return null
 	}
 
@@ -36,7 +31,7 @@ const DMMActressStats: React.FC<Props> = async ({ series_id, series_name, isSumm
 			<DMMSeriesStatsWriting name={series_name} stats={Stats} isSummary={isSummary} />
 			{/* グラフコンポーネントの表示 */}
 			<Suspense fallback={<LoadingSpinner />}>
-				<DMMStatsCharts actressStats={Stats} actressName={series_name} />
+				<DMMStatsCharts stats={Stats} name={series_name} />
 			</Suspense>
 		</div>
 	)

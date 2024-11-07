@@ -65,9 +65,9 @@ type BoxPlotData = Record<
 >
 
 // コンポーネントのProps型定義
-type DMMActressStatsChartsProps = {
-	actressStats: Stats
-	actressName: string
+type DMMStatsChartsProps = {
+	stats: Stats
+	name: string
 }
 
 // グラフコンテナのクラス
@@ -89,28 +89,23 @@ const commonChartOptions = {
 	},
 }
 
-const DMMStatsCharts: React.FC<DMMActressStatsChartsProps> = ({ actressStats, actressName }) => {
-	if (
-		!actressStats ||
-		!actressStats.metadata ||
-		!actressStats.timeSeriesData ||
-		!actressStats.annualData
-	) {
+const DMMStatsCharts: React.FC<DMMStatsChartsProps> = ({ stats, name }) => {
+	if (!stats || !stats.metadata || !stats.timeSeriesData || !stats.annualData) {
 		return null
 	}
 
-	const reviewDistribution = actressStats.metadata.review_score_distribution
-	const topItems = actressStats.metadata.top_3_popular_items
+	const reviewDistribution = stats.metadata.review_score_distribution
+	const topItems = stats.metadata.top_3_popular_items
 
 	// 年間統計データの準備
 	const annualStats = {
-		average: actressStats.annualData.annual_review_average,
-		median: actressStats.annualData.annual_review_median,
-		std_dev: actressStats.annualData.annual_review_std_dev,
+		average: stats.annualData.annual_review_average,
+		median: stats.annualData.annual_review_median,
+		std_dev: stats.annualData.annual_review_std_dev,
 	}
 
 	// 年間箱ひげ図データの準備
-	const annualBoxPlotData = actressStats.annualData.annual_box_plot
+	const annualBoxPlotData = stats.annualData.annual_box_plot
 
 	return (
 		<>
@@ -118,14 +113,14 @@ const DMMStatsCharts: React.FC<DMMActressStatsChartsProps> = ({ actressStats, ac
 			<div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-8'>
 				<div className='bg-gray-50 p-4 rounded-lg'>
 					<h4 className='font-bold'>総合レビュー平均点</h4>
-					<p className='text-2xl'>{actressStats.metadata.review_average.toFixed(2)}</p>
+					<p className='text-2xl'>{stats.metadata.review_average.toFixed(2)}</p>
 				</div>
 				<div className='bg-gray-50 p-4 rounded-lg relative group'>
 					<h4 className='font-bold flex items-center'>
 						評価バランスを反映したレビュー平均点
 						<span className='ml-1 cursor-help'>ⓘ</span>
 					</h4>
-					<p className='text-2xl'>{actressStats.metadata.weighted_average.toFixed(2)}</p>
+					<p className='text-2xl'>{stats.metadata.weighted_average.toFixed(2)}</p>
 					<div className='invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity absolute z-10 w-72 p-2 bg-gray-800 text-white text-sm rounded-lg -top-24 left-1/2 transform -translate-x-1/2 shadow-lg'>
 						この平均は、レビュー数が多い商品をより重視して計算しています。レビューが多い商品ほど平均への影響が大きくなるように調整しています。これにより、全体の評価のバランスが取れるようになっています。
 						<div className='absolute -bottom-2 left-1/2 transform -translate-x-1/2 border-8 border-transparent border-t-gray-800' />
@@ -133,7 +128,7 @@ const DMMStatsCharts: React.FC<DMMActressStatsChartsProps> = ({ actressStats, ac
 				</div>
 				<div className='bg-gray-50 p-4 rounded-lg'>
 					<h4 className='font-bold'>総レビュー数</h4>
-					<p className='text-2xl'>{actressStats.metadata.total_review_count}</p>
+					<p className='text-2xl'>{stats.metadata.total_review_count}</p>
 				</div>
 			</div>
 
@@ -143,17 +138,15 @@ const DMMStatsCharts: React.FC<DMMActressStatsChartsProps> = ({ actressStats, ac
 				<ReviewDistributionChart distribution={reviewDistribution} />
 				{/* 月間トレンドグラフ */}
 				<MonthlyTrendChart
-					monthlyTrends={actressStats.timeSeriesData.time_series_analysis.monthly_trends}
+					monthlyTrends={stats.timeSeriesData.time_series_analysis.monthly_trends}
 				/>
 				{/* 四半期トレンドグラフ */}
 				<QuarterlyTrendChart
-					quarterlyTrends={actressStats.timeSeriesData.time_series_analysis.quarterly_trends}
+					quarterlyTrends={stats.timeSeriesData.time_series_analysis.quarterly_trends}
 				/>
 				{/* 累積レビュー数グラフ */}
 				<CumulativeReviewChart
-					cumulativeReviews={
-						actressStats.timeSeriesData.time_series_analysis.cumulative_review_count
-					}
+					cumulativeReviews={stats.timeSeriesData.time_series_analysis.cumulative_review_count}
 				/>
 				{/* 年間統計と箱ひげ図 */}
 				<div className='w-full flex flex-wrap'>
@@ -162,7 +155,7 @@ const DMMStatsCharts: React.FC<DMMActressStatsChartsProps> = ({ actressStats, ac
 				</div>
 				{/* 季節性パターン分析グラフ */}
 				<SeasonalityChart
-					quarterlyTrends={actressStats.timeSeriesData.time_series_analysis.quarterly_trends}
+					quarterlyTrends={stats.timeSeriesData.time_series_analysis.quarterly_trends}
 				/>
 			</div>
 

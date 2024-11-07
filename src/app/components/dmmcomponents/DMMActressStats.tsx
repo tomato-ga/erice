@@ -47,7 +47,7 @@ const DMMActressStats: React.FC<Props> = async ({
 			/>
 			{/* グラフコンポーネントの表示 */}
 			<Suspense fallback={<LoadingSpinner />}>
-				<DMMActressStatsCharts actressStats={actressStats} actressName={actress_name} />
+				<DMMActressStatsCharts stats={actressStats} name={actress_name} />
 			</Suspense>
 		</div>
 	)

@@ -277,6 +277,30 @@ export async function fetchActressProfile(
 	}
 }
 
+// series nameを入れたらstatsが返ってくる関数
+// series nameを入れたらstatsが返ってくる関数
+export async function fetchSeriesStats(seriesName: string): Promise<Stats | null> {
+	try {
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-series-stats?seriesname=${encodeURIComponent(seriesName)}`,
+		)
+
+		// リクエストが成功したかどうかをチェック
+		if (!response.ok) {
+			throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`)
+		}
+
+		// JSONとしてレスポンスを取得
+		const data = (await response.json()) as Stats
+		// console.log('Fetched series stats data in JSON format:', JSON.stringify(data, null, 2))
+
+		return data
+	} catch (error) {
+		console.error('Failed to fetch series stats:', error)
+		return null
+	}
+}
+
 export const fetchActressProfileAndWorks = unstable_cache(
 	async (actressName: string): Promise<ActressProfileAndWorks | null> => {
 		if (!actressName) {
@@ -440,6 +464,7 @@ export async function fetchTOP100KeywordData(keyword: string): Promise<GetKVTop1
 	}
 }
 
+import { Stats } from '@/_types_dmm/statstype'
 // キャンペーン名を取得する関数
 import { cache } from 'react'
 
