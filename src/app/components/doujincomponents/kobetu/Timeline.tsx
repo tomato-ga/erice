@@ -28,7 +28,28 @@ const Timeline = ({ items, title }: TimelineProps) => {
 							</div>
 						</div>
 						<div className='w-full sm:w-3/4 sm:pl-4 relative'>
-							<Link href={`/doujin/itemd/${item.id}`} prefetch={true}>
+							{item.id ? (
+								<Link href={`/doujin/itemd/${item.id}`} prefetch={true}>
+									<div className='bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-lg hover:shadow-xl ml-6 sm:ml-0'>
+										<div className='relative pt-[56.25%] overflow-hidden bg-gray-100'>
+											{item.package_images?.large && (
+												<img
+													src={item.package_images.large}
+													alt={`${item.title}の画像です。`}
+													className='absolute top-0 left-0 w-full h-full object-contain'
+												/>
+											)}
+										</div>
+										<div className='p-4'>
+											<h2
+												className='text-sm sm:text-base md:text-lg font-semibold mb-2 line-clamp-2'
+												title={item.title}>
+												{item.title}
+											</h2>
+										</div>
+									</div>
+								</Link>
+							) : (
 								<div className='bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-lg hover:shadow-xl ml-6 sm:ml-0'>
 									<div className='relative pt-[56.25%] overflow-hidden bg-gray-100'>
 										{item.package_images?.large && (
@@ -47,7 +68,7 @@ const Timeline = ({ items, title }: TimelineProps) => {
 										</h2>
 									</div>
 								</div>
-							</Link>
+							)}
 						</div>
 					</div>
 				))}

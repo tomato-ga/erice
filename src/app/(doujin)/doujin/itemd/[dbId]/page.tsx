@@ -196,19 +196,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		return {
 			title,
 			description,
-			openGraph: {
-				title,
-				description,
-				type: 'article',
-				url,
-				images: [{ url: imageUrl }], // Use imageUrl here
-			},
-			twitter: {
-				card: 'summary_large_image',
-				title,
-				description,
-				images: [imageUrl], // Use imageUrl here
-			},
 		}
 	} catch (error) {
 		console.error('Error generating metadata:', error)
@@ -324,7 +311,7 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 									}}>
 									<Link href={item.affiliate_url} target='_blank' rel='noopener noreferrer'>
 										<img
-											src={item.package_images}
+											src={item.package_images?.large || ''}
 											alt={`${item.title}のパッケージ画像`}
 											className='w-full h-full object-contain transition-transform duration-300'
 										/>
