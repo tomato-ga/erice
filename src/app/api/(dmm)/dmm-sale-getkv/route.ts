@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
 import { DMMSaleApiResponse } from '@/types/dmmtypes'
 import { DMMSaleItem } from '@/types/dmmtypes'
+import { NextRequest, NextResponse } from 'next/server'
 
 /**
  * セール中の動画を取得するAPIエンドポイント
@@ -36,12 +36,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
 	if (!API_KEY) {
 		console.error('CLOUDFLARE_DMM_API_TOKENが設定されていません')
-		return NextResponse.json({ error: 'CLOUDFLARE_DMM_API_TOKENが環境変数に設定されていません' }, { status: 500 })
+		return NextResponse.json(
+			{ error: 'CLOUDFLARE_DMM_API_TOKENが環境変数に設定されていません' },
+			{ status: 500 },
+		)
 	}
 
 	if (!WORKER_URL) {
 		console.error('DMM_TOPPAGE_WORKER_URLが設定されていません')
-		return NextResponse.json({ error: 'DMM_TOPPAGE_WORKER_URLが環境変数に設定されていません' }, { status: 500 })
+		return NextResponse.json(
+			{ error: 'DMM_TOPPAGE_WORKER_URLが環境変数に設定されていません' },
+			{ status: 500 },
+		)
 	}
 
 	try {
@@ -50,8 +56,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				'X-API-Key': API_KEY
-			}
+				'X-API-Key': API_KEY,
+			},
 		})
 
 		if (!response.ok) {
@@ -74,13 +80,16 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 			title: item.title,
 			affiliateURL: item.affiliateURL,
 			imageURL: getImageUrl(item.imageURL),
-			sampleImageURL: item.sampleImageURL?.sample_l?.image ?? item.sampleImageURL?.sample_s?.image ?? null,
+			sampleImageURL:
+				item.sampleImageURL?.sample_l?.image ?? item.sampleImageURL?.sample_s?.image ?? null,
 			salecount: item.salecount,
 			salePrice: item.salePrice,
 			rate: item.rate,
 			actress: item.iteminfo?.actress ? item.iteminfo?.actress?.[0]?.name : null,
 			actress_id: item.iteminfo?.actress?.[0]?.id || null,
-			genre: item.iteminfo?.genre ? item.iteminfo?.genre.map((genre: { name: string }) => genre.name) : null,
+			genre: item.iteminfo?.genre
+				? item.iteminfo?.genre.map((genre: { name: string }) => genre.name)
+				: null,
 			listprice: item.salecount ? item.salecount : null,
 			price: item.salePrice ? item.salePrice : null,
 			date: item.date,
@@ -88,7 +97,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 			label: item.iteminfo?.label ? item.iteminfo?.label[0]?.name : null,
 			series: item.iteminfo?.series ? item.iteminfo?.series[0]?.name : null,
 			director: item.iteminfo?.director ? item.iteminfo?.director[0]?.name : null,
-			db_id: item.db_id
+			db_id: item.db_id,
 		}))
 
 		return NextResponse.json(processedData)
@@ -97,12 +106,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 		if (error instanceof SyntaxError) {
 			return NextResponse.json(
 				{ error: 'JSONのパースに失敗しました', details: (error as Error).message },
-				{ status: 500 }
+				{ status: 500 },
 			)
-		} else if (error instanceof TypeError) {
-			return NextResponse.json({ error: 'データ型が不正です', details: (error as Error).message }, { status: 500 })
-		} else {
-			return NextResponse.json({ error: 'サーバー内部エラー', details: (error as Error).message }, { status: 500 })
 		}
+		if (error instanceof TypeError) {
+			return NextResponse.json(
+				{ error: 'データ型が不正です', details: (error as Error).message },
+				{ status: 500 },
+			)
+		}
+		return NextResponse.json(
+			{ error: 'サーバー内部エラー', details: (error as Error).message },
+			{ status: 500 },
+		)
 	}
 }

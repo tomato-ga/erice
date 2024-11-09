@@ -1,5 +1,7 @@
+import { Stats } from '@/_types_dmm/statstype'
 // /app/series_timeline/page.tsx
 import { TimelineApiResponse } from '@/_types_doujin/doujintypes'
+import DoujinSeriesStats from '../../dmmcomponents/Stats/DoujinSeriesStats'
 import Timeline from './Timeline'
 
 interface SeriesTimelinePageProps {
@@ -22,6 +24,13 @@ const SeriesTimelinePage = async ({ searchParams }: SeriesTimelinePageProps) => 
 			},
 		)
 
+		const statsResponse = await fetch(
+			`${process.env.NEXT_PUBLIC_API_URL}/api/doujin-series-stats?series_id=${seriesId}`,
+			{
+				cache: 'force-cache',
+			},
+		)
+
 		if (!response.ok) {
 			console.error('Failed to fetch data from API:', response.statusText)
 			return (
@@ -33,6 +42,8 @@ const SeriesTimelinePage = async ({ searchParams }: SeriesTimelinePageProps) => 
 
 		const data: TimelineApiResponse = await response.json()
 
+		const statsData: Stats = await statsResponse.json()
+
 		// Handle empty data
 		if (data.length === 0) {
 			return (
@@ -42,7 +53,16 @@ const SeriesTimelinePage = async ({ searchParams }: SeriesTimelinePageProps) => 
 			)
 		}
 
-		return <Timeline items={data} title={`${seriesName}シリーズの発売作品タイムライン`} />
+		return (
+			<>
+				<DoujinSeriesStats
+					seriesStatsData={statsData}
+					seriesName={seriesName || ''}
+					isSummary={false}
+				/>
+				<Timeline items={data} title={`${seriesName}シリーズの発売作品タイムライン`} />
+			</>
+		)
 	} catch (error) {
 		console.error('Error fetching data:', error)
 		return (
