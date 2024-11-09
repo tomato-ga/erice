@@ -74,7 +74,11 @@ export type DoujinTopItem = z.infer<typeof FetchDoujinItemSchema>
 
 // DoujinKobetuItemSchema の修正
 export const DoujinKobetuItemSchema = FetchDoujinItemSchema.extend({
-	package_images: z.string().nullable(),
+	package_images: z
+		.object({
+			large: z.string(),
+		})
+		.nullish(),
 	// 修正: genres を文字列の配列からオブジェクトの配列に変更
 	genres: z.array(z.object({ id: z.number(), name: z.string() })).nullish(),
 	// 修正: makers を文字列の配列からオブジェクトの配列に変更

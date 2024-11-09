@@ -11,7 +11,6 @@ import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table' // shadcnのテーブルコンポーネントをインポート
-
 import '@/app/_css/styles.css'
 
 import SeriesTimelinePage from '@/app/components/doujincomponents/kobetu/SeriesTimeline'
@@ -22,11 +21,6 @@ import {
 
 import { formatDate } from '@/utils/dmmUtils'
 
-// 型定義をそのまま使用
-type Props = {
-	params: { dbId: string }
-}
-
 import ButtonTestDoujinComponent from '@/app/components/dmmcomponents/ABtest/Doujin_GradientButton/ButtonTestCompo'
 import FanzaADBannerKobetu from '@/app/components/doujincomponents/fanzaADBannerKobetu'
 
@@ -34,6 +28,11 @@ import React from 'react'
 
 import MakerTimelinePage from '@/app/components/fbookscomponents/kobetu/MakerTimeline'
 import dynamic from 'next/dynamic'
+
+// 型定義をそのまま使用
+type Props = {
+	params: { dbId: string }
+}
 
 const DynamicSmapleImageGallery = dynamic(
 	() => import('@/app/components/doujincomponents/kobetu/DoujinSampleImage'),
@@ -211,7 +210,6 @@ async function fetchItemData(dbId: string): Promise<DoujinKobetuItem> {
 	if (!res.ok) {
 		throw new Error(`Failed to fetch item data: ${res.status} ${res.statusText}`)
 	}
-
 	return res.json()
 }
 
@@ -309,7 +307,7 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 									}}>
 									<Link href={item.affiliate_url} target='_blank' rel='noopener noreferrer'>
 										<img
-											src={item.package_images || ''}
+											src={item.package_images?.large || ''}
 											alt={`${item.title}のパッケージ画像`}
 											className='w-full h-full object-contain transition-transform duration-300'
 										/>
