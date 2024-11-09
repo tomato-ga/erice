@@ -13,8 +13,7 @@ import { Suspense } from 'react'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table' // shadcnのテーブルコンポーネントをインポート
 
 import '@/app/_css/styles.css'
-import DoujinBreadcrumb from '@/app/components/doujincomponents/kobetu/DoujinBreadcrumb'
-import MakerTimelinePage from '@/app/components/doujincomponents/kobetu/MakerTimeline'
+
 import SeriesTimelinePage from '@/app/components/doujincomponents/kobetu/SeriesTimeline'
 import { generateDoujinKobetuItemStructuredData } from '@/app/components/json-ld/jsonld'
 import { generateDoujinBreadcrumbList } from '@/app/components/json-ld/jsonld'
@@ -31,10 +30,10 @@ type Props = {
 
 import ButtonTestDoujinComponent from '@/app/components/dmmcomponents/ABtest/Doujin_GradientButton/ButtonTestCompo'
 import FanzaADBannerKobetu from '@/app/components/doujincomponents/fanzaADBannerKobetu'
-// ItemDetailsTableコンポーネント
+
 import React from 'react'
 
-import DoujinSampleImageGallery from '@/app/components/doujincomponents/kobetu/DoujinSampleImage'
+import MakerTimelinePage from '@/app/components/fbookscomponents/kobetu/MakerTimeline'
 import dynamic from 'next/dynamic'
 
 const DynamicSmapleImageGallery = dynamic(
@@ -239,9 +238,6 @@ function LoadingSpinner() {
 	)
 }
 
-// BreadcrumbSeparatorコンポーネントを新たに定義
-const BreadcrumbSeparator = () => <span className='mx-2'>/</span>
-
 // メインのコンポーネント
 export default async function DoujinKobetuItemPage({ params }: Props) {
 	try {
@@ -351,15 +347,7 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 										))}
 									</div>
 								</div>
-							)}
-							{/* {item.makers && item.makers.length > 0 && (
-								<MakerTimelinePage
-									searchParams={{
-										maker_id: item.makers[0].id.toString(),
-										maker_name: item.makers[0].name,
-									}}
-								/>
-							)} */}
+							)}*/}
 							{item.series && item.series.length > 0 && (
 								<SeriesTimelinePage
 									searchParams={{
@@ -368,6 +356,16 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 									}}
 								/>
 							)}
+
+							{item.makers && item.makers.length > 0 && (
+								<MakerTimelinePage
+									searchParams={{
+										maker_id: item.makers[0].id.toString(),
+										maker_name: item.makers[0].name,
+									}}
+								/>
+							)}
+							
 							<div className='w-full text-sm text-center my-4'>
 								このページに広告を設置しています
 							</div>

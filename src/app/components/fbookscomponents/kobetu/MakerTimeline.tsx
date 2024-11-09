@@ -1,5 +1,7 @@
+import { Stats } from '@/_types_dmm/statstype'
 // /app/maker_timeline/page.tsx
 import { TimelineApiResponse } from '@/_types_doujin/doujintypes'
+import DoujinMakerStats from '../../dmmcomponents/Stats/DoujinMakerStats'
 import Timeline from './Timeline'
 
 interface MakerTimelinePageProps {
@@ -21,6 +23,13 @@ const MakerTimelinePage = async ({ searchParams }: MakerTimelinePageProps) => {
 			},
 		)
 
+		const statsResponse = await fetch(
+			`${process.env.NEXT_PUBLIC_API_URL}/api/doujin-maker-stats?maker_id=${makerId}`,
+			{
+				cache: 'force-cache',
+			},
+		)
+
 		if (!response.ok) {
 			console.error('Failed to fetch data from API:', response.statusText)
 			return (
@@ -31,6 +40,7 @@ const MakerTimelinePage = async ({ searchParams }: MakerTimelinePageProps) => {
 		}
 
 		const data: TimelineApiResponse = await response.json()
+		const statsData: Stats = await statsResponse.json()
 
 		// Handle empty data
 		if (data.length === 0) {
@@ -41,7 +51,16 @@ const MakerTimelinePage = async ({ searchParams }: MakerTimelinePageProps) => {
 			)
 		}
 
-		return <Timeline items={data} title={`${makerName}の発売作品タイムライン`} />
+		return (
+			<>
+				<DoujinMakerStats
+					makerStatsData={statsData}
+					makerName={makerName || ''}
+					isSummary={false}
+				/>
+				<Timeline items={data} title={`${makerName}の発売作品タイムライン`} />
+			</>
+		)
 	} catch (error) {
 		console.error('Error fetching data:', error)
 		return (

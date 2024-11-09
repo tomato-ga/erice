@@ -25,6 +25,7 @@ const MetadataSchema = z
 	.object({
 		actress_id: z.number().optional().nullable(),
 		series_id: z.number().optional().nullable(),
+		maker_id: z.number().optional().nullable(),
 		review_average: z.number(),
 		review_median: z.number(),
 		review_std_dev: z.number(),

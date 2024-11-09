@@ -41,7 +41,6 @@ const SeriesTimelinePage = async ({ searchParams }: SeriesTimelinePageProps) => 
 		}
 
 		const data: TimelineApiResponse = await response.json()
-
 		const statsData: Stats = await statsResponse.json()
 
 		// Handle empty data
