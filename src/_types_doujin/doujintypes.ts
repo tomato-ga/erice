@@ -58,7 +58,7 @@ export const FetchDoujinItemSchema = z.object({
 			large: z.string(),
 		})
 		.nullish(),
-	sample_images: z.array(z.string().nullish()).nullish().optional(),
+	sample_images: z.array(z.string()).nullish(),
 	release_date: z.string().optional(),
 	review_count: z.number().nullish(),
 	review_average: z.number().nullish(),
