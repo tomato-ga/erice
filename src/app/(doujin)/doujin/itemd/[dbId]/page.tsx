@@ -15,8 +15,11 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table' //
 import '@/app/_css/styles.css'
 
 import SeriesTimelinePage from '@/app/components/doujincomponents/kobetu/SeriesTimeline'
-import { generateDoujinKobetuItemStructuredData } from '@/app/components/json-ld/jsonld'
-import { generateDoujinBreadcrumbList } from '@/app/components/json-ld/jsonld'
+import {
+	generateDoujinBreadcrumbList,
+	generateDoujinKobetuItemStructuredData,
+} from '@/app/components/json-ld/doujinjsonld'
+
 import { formatDate } from '@/utils/dmmUtils'
 import { HomeIcon } from 'lucide-react'
 
@@ -264,18 +267,32 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 			return parts.join(' ')
 		})()
 
-		const jsonLdData = generateDoujinKobetuItemStructuredData(item, description)
+		// 商品情報とパンくずリストの構造化データを別々に生成
+		const jsonLdData = await generateDoujinKobetuItemStructuredData(item, description)
 		const jsonLdString = JSON.stringify(jsonLdData)
 
-		// パンくずリストデータの生成
+		// パンくずリストの構造化データを生成
 		const breadcrumbData = generateDoujinBreadcrumbList(item)
-		const typedBreadcrumbData: SchemaBreadcrumbList & { itemListElement: ListItem[] } = {
-			...breadcrumbData,
-			itemListElement: breadcrumbData.itemListElement as ListItem[],
-		}
+		const breadcrumbJsonLdString = JSON.stringify(breadcrumbData)
+
+		// DynamicBreadcrumb用のitemsを生成
+		const breadcrumbItems = [
+			{ name: 'ホーム', href: 'https://erice.cloud/' },
+			{ name: '同人トップページ', href: 'https://erice.cloud/doujin/' },
+			...(item.makers && item.makers.length > 0
+				? [
+						{
+							name: item.makers[0].name,
+							href: `https://erice.cloud/doujin/maker/${encodeURIComponent(item.makers[0].name)}`,
+						},
+					]
+				: []),
+			{ name: item.title, href: `https://erice.cloud/doujin/itemd/${item.db_id}` },
+		]
 
 		return (
 			<>
+				{/* 商品情報の構造化データ */}
 				<script
 					id={`structured-data-${item.content_id}`}
 					type='application/ld+json'
@@ -283,10 +300,19 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 						__html: jsonLdString,
 					}}
 				/>
+				{/* パンくずリストの構造化データ */}
+				<script
+					id={`structured-data-breadcrumb-${item.content_id}`}
+					type='application/ld+json'
+					dangerouslySetInnerHTML={{
+						__html: breadcrumbJsonLdString,
+					}}
+				/>
+
 				<div className='bg-gray-50 dark:bg-gray-900 min-h-screen'>
 					<div className='container mx-auto px-4 sm:px-6 py-8 sm:py-12'>
 						{/* パンくずリストをコンポーネントとして使用 */}
-						<DynamicBreadcrumb breadcrumbData={typedBreadcrumbData} />
+						<DynamicBreadcrumb items={breadcrumbItems} />
 
 						<article className='bg-white dark:bg-gray-800  shadow-lg p-6 sm:p-8 space-y-8'>
 							<div className='relative aspect-w-16 aspect-h-9 overflow-hidden '>
@@ -356,7 +382,6 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 									}}
 								/>
 							)}
-
 							{item.makers && item.makers.length > 0 && (
 								<MakerTimelinePage
 									searchParams={{
@@ -365,7 +390,6 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 									}}
 								/>
 							)}
-							
 							<div className='w-full text-sm text-center my-4'>
 								このページに広告を設置しています
 							</div>
@@ -373,7 +397,7 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 							<Suspense fallback={<LoadingSpinner />}>
 								<DynamicCommentSection contentId={item.content_id} />
 							</Suspense>
-							{/* 外部リンクボタン（下���） */}
+							{/* 外部リンクボタン（下） */}
 							<div className='flex justify-center items-center mt-8'>
 								<UmamiTracking
 									trackingData={{

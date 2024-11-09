@@ -571,95 +571,9 @@ export const generateActressProfileStructuredData = (
 	return structuredData
 }
 
-export const generateDoujinKobetuItemStructuredData = (
-	item: DoujinKobetuItem,
-	description: string,
-): WithContext<Article> => {
-	// メイン画像をImageObjectとして定義
-	const mainImage: ImageObject = {
-		'@type': 'ImageObject',
-		url: item.package_images,
-		description: `${item.title}のパッケージ画像`,
-	}
 
-	// サンプル画像をImageObjectとして定義
-	const sampleImages: ImageObject[] =
-		item.sample_images?.map((url, index) => ({
-			'@type': 'ImageObject',
-			url: url ?? '', // Provide an empty string as fallback
-			description: `${item.title}の画像${index + 1}`,
-		})) ?? []
 
-	// 全ての画像を統合
-	const allImages: ImageObject[] = [mainImage, ...sampleImages]
 
-	// 固定のAuthorデータ
-	const author: Person = {
-		'@type': 'Person',
-		name: 'エロコメスト管理人',
-		url: 'https://erice.cloud',
-	}
-
-	// 日付のフォーマット
-	const formattedDate = item.release_date
-		? new Date(item.release_date).toISOString()
-		: new Date().toISOString()
-
-	// Articleスキーマの生成
-	return {
-		'@context': 'https://schema.org',
-		'@type': 'Article',
-		headline: item.title,
-		image: allImages,
-		datePublished: formattedDate,
-		author: author,
-		description: description,
-		mainEntityOfPage: `https://erice.cloud/doujin/itemd/${item.db_id}`,
-		...(item.genres && { keywords: item.genres.map(genre => genre.name).join(', ') }),
-	}
-}
-
-// 同人誌アイテム用のBreadcrumbListを生成する関数
-export const generateDoujinBreadcrumbList = (
-	item: DoujinKobetuItem,
-): WithContext<BreadcrumbList> => {
-	const itemListElement: ListItem[] = [
-		{
-			'@type': 'ListItem',
-			position: 1,
-			name: 'ホーム',
-			item: 'https://erice.cloud/',
-		},
-		{
-			'@type': 'ListItem',
-			position: 2,
-			name: '同人トップページ',
-			item: 'https://erice.cloud/doujin/',
-		},
-	]
-
-	if (item.makers && item.makers.length > 0) {
-		itemListElement.push({
-			'@type': 'ListItem',
-			position: 3,
-			name: item.makers[0].name,
-			item: `https://erice.cloud/doujin/maker/${encodeURIComponent(item.makers[0].name)}`,
-		})
-	}
-
-	itemListElement.push({
-		'@type': 'ListItem',
-		position: item.makers && item.makers.length > 0 ? 4 : 3,
-		name: item.title,
-		item: `https://erice.cloud/doujin/itemd/${item.db_id}`,
-	})
-
-	return {
-		'@context': 'https://schema.org',
-		'@type': 'BreadcrumbList',
-		itemListElement,
-	}
-}
 
 export const generateSeriesArticleStructuredData = (
 	seriesStats: Stats,

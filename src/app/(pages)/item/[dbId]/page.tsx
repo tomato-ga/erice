@@ -81,21 +81,6 @@ function LoadingSpinner() {
 	)
 }
 
-// 1. データ取得関数の定義
-// async function getPageData(dbId: number) {
-// 	try {
-// 		const [itemMain, itemDetail, actressInfo] = await Promise.all([
-// 			fetchItemMainByContentId(dbId),
-// 			fetchItemDetailByContentId(dbId),
-// 			fetchItemMainByContentIdToActressInfo(dbId),
-// 		])
-// 		return { itemMain, itemDetail, actressInfo }
-// 	} catch (error) {
-// 		console.error('データ取得中にエラーが発生しました:', error)
-// 		return { itemMain: null, itemDetail: null, actressInfo: null }
-// 	}
-// }
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const { dbId } = params
 
