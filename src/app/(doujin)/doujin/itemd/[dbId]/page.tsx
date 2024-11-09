@@ -1,7 +1,6 @@
 // /Volumes/SSD_1TB/erice2/erice/src/app/(doujin)/doujin/itemd/[dbId]/page.tsx
 
 import { DoujinItemType, DoujinKobetuItem } from '@/_types_doujin/doujintypes'
-import { CommentSection } from '@/app/components/dmmcomponents/Comment/CommentSection'
 
 import { UmamiTracking } from '@/app/components/dmmcomponents/UmamiTracking'
 import { formatPrice } from '@/utils/typeGuards'
@@ -14,17 +13,11 @@ import { Suspense } from 'react'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table' // shadcnのテーブルコンポーネントをインポート
 
 import '@/app/_css/styles.css'
+import DoujinBreadcrumb from '@/app/components/doujincomponents/kobetu/DoujinBreadcrumb'
 import MakerTimelinePage from '@/app/components/doujincomponents/kobetu/MakerTimeline'
 import SeriesTimelinePage from '@/app/components/doujincomponents/kobetu/SeriesTimeline'
 import { generateDoujinKobetuItemStructuredData } from '@/app/components/json-ld/jsonld'
 import { generateDoujinBreadcrumbList } from '@/app/components/json-ld/jsonld'
-import {
-	Breadcrumb,
-	BreadcrumbItem,
-	BreadcrumbLink,
-	BreadcrumbList,
-	BreadcrumbPage,
-} from '@/components/ui/breadcrumb'
 import { formatDate } from '@/utils/dmmUtils'
 import { HomeIcon } from 'lucide-react'
 
@@ -40,6 +33,30 @@ import ButtonTestDoujinComponent from '@/app/components/dmmcomponents/ABtest/Dou
 import FanzaADBannerKobetu from '@/app/components/doujincomponents/fanzaADBannerKobetu'
 // ItemDetailsTableコンポーネント
 import React from 'react'
+
+import DoujinSampleImageGallery from '@/app/components/doujincomponents/kobetu/DoujinSampleImage'
+import dynamic from 'next/dynamic'
+
+const DynamicSmapleImageGallery = dynamic(
+	() => import('@/app/components/doujincomponents/kobetu/DoujinSampleImage'),
+	{
+		ssr: false,
+	},
+)
+
+const DynamicCommentSection = dynamic(
+	() => import('@/app/components/dmmcomponents/Comment/CommentSection'),
+	{
+		ssr: false,
+	},
+)
+
+const DynamicBreadcrumb = dynamic(
+	() => import('@/app/components/doujincomponents/kobetu/DoujinBreadcrumb'),
+	{
+		ssr: false,
+	},
+)
 
 const ItemDetailsTable: React.FC<{ item: DoujinKobetuItem }> = ({ item }) => {
 	const details = [
@@ -256,8 +273,6 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 
 		// パンくずリストデータの生成
 		const breadcrumbData = generateDoujinBreadcrumbList(item)
-
-		// breadcrumbDataの型を明示的に指定し、itemListElementの型も指定
 		const typedBreadcrumbData: SchemaBreadcrumbList & { itemListElement: ListItem[] } = {
 			...breadcrumbData,
 			itemListElement: breadcrumbData.itemListElement as ListItem[],
@@ -274,30 +289,8 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 				/>
 				<div className='bg-gray-50 dark:bg-gray-900 min-h-screen'>
 					<div className='container mx-auto px-4 sm:px-6 py-8 sm:py-12'>
-						{/* パンくずリストの表示 */}
-						<Breadcrumb className='mb-4'>
-							<BreadcrumbList>
-								{typedBreadcrumbData.itemListElement.map((breadcrumbItem, index) => (
-									<BreadcrumbItem key={index}>
-										{index === 0 ? (
-											<BreadcrumbLink href={breadcrumbItem.item as string}>
-												<HomeIcon className='h-4 w-4' />
-												<span className='sr-only'>{breadcrumbItem.name as string}</span>
-											</BreadcrumbLink>
-										) : index === typedBreadcrumbData.itemListElement.length - 1 ? (
-											<BreadcrumbPage>{breadcrumbItem.name as string}</BreadcrumbPage>
-										) : (
-											<BreadcrumbLink href={breadcrumbItem.item as string}>
-												{breadcrumbItem.name as string}
-											</BreadcrumbLink>
-										)}
-										{index < typedBreadcrumbData.itemListElement.length - 1 && (
-											<BreadcrumbSeparator />
-										)}
-									</BreadcrumbItem>
-								))}
-							</BreadcrumbList>
-						</Breadcrumb>
+						{/* パンくずリストをコンポーネントとして使用 */}
+						<DynamicBreadcrumb breadcrumbData={typedBreadcrumbData} />
 
 						<article className='bg-white dark:bg-gray-800  shadow-lg p-6 sm:p-8 space-y-8'>
 							<div className='relative aspect-w-16 aspect-h-9 overflow-hidden '>
@@ -329,6 +322,15 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 							<ButtonTestDoujinComponent item={item} />
 							{/* サンプル画像の表示 */}
 							{item.sample_images && item.sample_images.length > 0 && (
+								<Suspense fallback={<LoadingSpinner />}>
+									<DynamicSmapleImageGallery
+										title={item.title}
+										contentId={item.content_id}
+										sampleImageURLs={item.sample_images}
+									/>
+								</Suspense>
+							)}
+							{/* {item.sample_images && item.sample_images.length > 0 && (
 								<div className='mt-8'>
 									<h2 className='text-center font-bold mb-6'>
 										<span className='text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text'>
@@ -371,9 +373,9 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 							</div>
 							{/* コメントセクションの追加 */}
 							<Suspense fallback={<LoadingSpinner />}>
-								<CommentSection contentId={item.content_id} />
+								<DynamicCommentSection contentId={item.content_id} />
 							</Suspense>
-							{/* 外部リンクボタン（下部） */}
+							{/* 外部リンクボタン（下���） */}
 							<div className='flex justify-center items-center mt-8'>
 								<UmamiTracking
 									trackingData={{
