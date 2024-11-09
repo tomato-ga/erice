@@ -35,7 +35,7 @@ const FanzaADBannerDoujinKobetu: React.FC = () => {
 			}
 
 			newScript.onerror = () => {
-				console.error('Fanzaのバナー用スクリプトの読み込みに失敗しました。')
+				// console.error('Fanzaのバナー用スクリプトの読み込みに失敗しました。')
 			}
 
 			// containerにinsタグとスクリプトを追加

@@ -35,7 +35,7 @@ const FanzaADBannerFanzaKobetu: React.FC = () => {
 			}
 
 			newScript.onerror = () => {
-				console.error('Fanzaのバナー用スクリプトの読み込みに失敗しました。')
+				// console.error('Fanzaのバナー用スクリプトの読み込みに失敗しました。')
 			}
 
 			// containerにinsタグとスクリプトを追加
@@ -46,7 +46,7 @@ const FanzaADBannerFanzaKobetu: React.FC = () => {
 
 	return (
 		<div className='flex justify-center items-center'>
-			<div ref={containerRef}  />
+			<div ref={containerRef} />
 		</div>
 	)
 }
