@@ -72,15 +72,9 @@ export const FetchDoujinItemSchema = z.object({
 export type FetchDoujinItem = z.infer<typeof FetchDoujinItemSchema>
 export type DoujinTopItem = z.infer<typeof FetchDoujinItemSchema>
 
-// PackageImages schema
-export const PackageImagesSchema = z.object({
-	list: z.string().url(),
-	large: z.string().url(),
-})
-
 // DoujinKobetuItemSchema の修正
 export const DoujinKobetuItemSchema = FetchDoujinItemSchema.extend({
-	package_images: PackageImagesSchema.nullable(),
+	package_images: z.string().nullable(),
 	// 修正: genres を文字列の配列からオブジェクトの配列に変更
 	genres: z.array(z.object({ id: z.number(), name: z.string() })).nullish(),
 	// 修正: makers を文字列の配列からオブジェクトの配列に変更
@@ -108,6 +102,12 @@ export interface DoujinGenrePaginationProps {
 }
 
 export type DoujinItemType = 'newrank' | 'newrelease' | 'review' | 'sale'
+
+// PackageImages schema
+export const PackageImagesSchema = z.object({
+	list: z.string().url(),
+	large: z.string().url(),
+})
 
 // Timeline item schema
 export const TimelineItemSchema = z.object({

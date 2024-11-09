@@ -29,7 +29,7 @@ export const generateDoujinKobetuItemStructuredData = async (
 	// メイン画像をImageObjectとして定義
 	const mainImage: ImageObject = {
 		'@type': 'ImageObject',
-		url: item.package_images?.large || '',
+		url: item.package_images || '',
 		description: `${item.title}のパッケージ画像`,
 	}
 
@@ -72,7 +72,7 @@ export const generateDoujinKobetuItemStructuredData = async (
 			stats,
 			item.series[0].name,
 			'series',
-			item.package_images?.large || '',
+			item.package_images || '',
 		)
 		if (seriesStructuredData) {
 			aboutData.push(seriesStructuredData)
@@ -92,7 +92,7 @@ export const generateDoujinKobetuItemStructuredData = async (
 			stats,
 			item.makers[0].name,
 			'maker',
-			item.package_images?.large || '',
+			item.package_images || '',
 		)
 		if (makerStructuredData) {
 			aboutData.push(makerStructuredData)

@@ -21,10 +21,6 @@ import {
 } from '@/app/components/json-ld/doujinjsonld'
 
 import { formatDate } from '@/utils/dmmUtils'
-import { HomeIcon } from 'lucide-react'
-
-// BreadcrumbListの型をインポート
-import { ListItem, BreadcrumbList as SchemaBreadcrumbList } from 'schema-dts'
 
 // 型定義をそのまま使用
 type Props = {
@@ -108,8 +104,8 @@ const ItemDetailsTable: React.FC<{ item: DoujinKobetuItem }> = ({ item }) => {
 				return `/doujin/genre/${encodeURIComponent(item.name)}`
 			case 'メーカー':
 				return `/doujin/maker/${encodeURIComponent(item.name)}`
-			case 'シリーズ':
-				return `/doujin/series/${encodeURIComponent(item.name)}`
+			// case 'シリーズ':
+			// 	return `/doujin/series/${encodeURIComponent(item.name)}`
 			default:
 				return '#'
 		}
@@ -233,6 +229,8 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 	try {
 		const item = await fetchItemData(params.dbId)
 
+		console.log('item', item)
+
 		const description = (() => {
 			const parts = []
 			parts.push(
@@ -311,7 +309,7 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 									}}>
 									<Link href={item.affiliate_url} target='_blank' rel='noopener noreferrer'>
 										<img
-											src={item.package_images?.large || ''}
+											src={item.package_images || ''}
 											alt={`${item.title}のパッケージ画像`}
 											className='w-full h-full object-contain transition-transform duration-300'
 										/>
