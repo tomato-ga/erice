@@ -132,7 +132,7 @@ const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActress
 
 const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 	const itemDetail = await fetchItemDetailByContentId(dbId)
-	console.time('itemdetail timelog')
+	// console.time('itemdetail timelog')
 
 	if (!itemDetail) {
 		return null
@@ -148,7 +148,7 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 	// 1名の女優のプロフィールをフェッチ
 	const actressName = actresses[0]
 	console.log('actressName:', actressName)
-	console.timeLog('itemdetail timelog')
+	// console.timeLog('itemdetail timelog')
 	const actressProfiles = await fetchActressProfile(actressName)
 
 	// 有効なプロフィールの抽出
