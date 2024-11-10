@@ -129,6 +129,7 @@ const ItemDetailsTable: React.FC<{ item: DoujinKobetuItem }> = ({ item }) => {
 										<Link
 											key={index}
 											href={getLink(label, item)}
+											prefetch={false}
 											className={getLinkClassName(label)}>
 											{item.name}
 										</Link>
