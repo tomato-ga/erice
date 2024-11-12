@@ -1,14 +1,49 @@
-
 {
-    "headers": [
-    {
-        "source": "/(.*)", 
-        "headers": [
-        {
-            "key": "Vercel-CDN-Cache-Control",
-            "value": "max-age=0, s-maxage=2592000, stale-while-revalidate=2592000" 
-        }
-        ]
-    }
-    ]
+	"headers": [
+		{
+			"source": "/(.*)",
+			"headers": [
+				{
+					"key": "Vercel-CDN-Cache-Control",
+					"value": "max-age=0, s-maxage=72000, stale-while-revalidate=72000"
+				}
+			]
+		},
+		{
+			"source": "/doujin/(.*)",
+			"headers": [
+				{
+					"key": "Vercel-CDN-Cache-Control",
+					"value": "max-age=0, s-maxage=72000, stale-while-revalidate=72000"
+				}
+			]
+		},
+		{
+			"source": "/item/(.*)",
+			"headers": [
+				{
+					"key": "Vercel-CDN-Cache-Control",
+					"value": "max-age=0, s-maxage=2592000, stale-while-revalidate=2592000"
+				}
+			]
+		},
+		{
+			"source": "/doujin/itemd/(.*)",
+			"headers": [
+				{
+					"key": "Vercel-CDN-Cache-Control",
+					"value": "max-age=0, s-maxage=2592000, stale-while-revalidate=2592000"
+				}
+			]
+		},
+		{
+			"source": "/actressprofile/(.*)",
+			"headers": [
+				{
+					"key": "Vercel-CDN-Cache-Control",
+					"value": "max-age=0, s-maxage=2592000, stale-while-revalidate=2592000"
+				}
+			]
+		}
+	]
 }

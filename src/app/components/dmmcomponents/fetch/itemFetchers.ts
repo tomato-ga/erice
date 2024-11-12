@@ -110,39 +110,6 @@ export async function fetchDataKV(
 	}
 }
 
-// export async function fetchDataKV(
-// 	itemType: FetchableItemType,
-// 	contentId: string,
-// ): Promise<DMMItem | null> {
-// 	const config = itemTypeConfig[itemType]
-
-// 	try {
-// 		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${config.endpoint}`, {
-// 			next: {
-// 				tags: [`item-${contentId}`],
-// 			},
-// 		})
-// 		const data: unknown = await response.json()
-
-// 		const validatedData = config.parseFunction(data)
-// 		const item = validatedData.find(item => item.content_id === contentId)
-
-// 		if (item) {
-// 			revalidateTag(`item-${item.content_id}`)
-// 			return item
-// 		}
-
-// 		return null
-// 	} catch (error) {
-// 		if (error instanceof z.ZodError) {
-// 			console.error(`Validation error for ${itemType} with content_id ${contentId}:`, error.errors)
-// 		} else {
-// 			console.error(`Error fetching data for ${itemType} with content_id ${contentId}:`, error)
-// 		}
-// 		return null
-// 	}
-// }
-
 export async function fetchItemMainByContentId(dbId: number): Promise<DMMItemMainResponse | null> {
 	try {
 		const response = await fetch(
