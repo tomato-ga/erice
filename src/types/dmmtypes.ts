@@ -144,6 +144,11 @@ export interface DMMItem {
 	db_id?: number
 }
 
+export interface DMMItemsKV extends DMMItem {
+	affiliate_url: string
+	
+}
+
 // APIレスポンス全体の型
 export interface ApiResponse {
 	items: DMMItem[]
@@ -173,7 +178,6 @@ export interface DMMItemProps {
 
 export interface DMMItemJsonLDProps extends DMMItemProps {
 	priorityImageURL: string
-	
 }
 
 export interface ImageURLs {
@@ -223,7 +227,15 @@ export interface DMMBaseItem {
 	date?: string
 }
 
-export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale' | 'actress' | 'genre' | 'last7days' | 'top100'
+export type ItemType =
+	| 'todaynew'
+	| 'debut'
+	| 'feature'
+	| 'sale'
+	| 'actress'
+	| 'genre'
+	| 'last7days'
+	| 'top100'
 export type CategoryType = 'style' | 'type'
 
 export interface DMMFeaturedItemProps extends DMMItemProps {

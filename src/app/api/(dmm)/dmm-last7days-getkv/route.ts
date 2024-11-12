@@ -1,10 +1,14 @@
-import { DMMItem } from '@/types/dmmtypes'
+import { DMMItem, DMMItemsKV } from '@/types/dmmtypes'
 import { revalidateTag } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 
 interface ApiResponse {
 	result: {
-		items: DMMItem[]
+		items: {
+			success: boolean
+			meta: object
+			results: DMMItemsKV[]
+		}
 	}
 }
 
@@ -48,11 +52,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 			throw new Error(`Cloudflare Workerからのデータ取得に失敗しました: ${response.status}`)
 		}
 
+		// TODO KVからのデータ取得・erice-newdebutとか、他のDMMコンテナと同じ型定義にする
 		const data: ApiResponse = await response.json()
-		const processedData = data.result.items.map(item => ({
+		const processedData = data.result.items.results.map(item => ({
 			content_id: item.content_id,
 			title: item.title,
-			affiliateURL: item.affiliateURL,
+			affiliateURL: item.affiliate_url,
 			imageURL: item.imageURL?.large ? item.imageURL?.large : item.imageURL?.small,
 			sampleImageURL:
 				item.sampleImageURL?.sample_l?.image ?? item.sampleImageURL?.sample_s?.image ?? null,
