@@ -144,10 +144,7 @@ export interface DMMItem {
 	db_id?: number
 }
 
-export interface DMMItemsKV extends DMMItem {
-	affiliate_url: string
-	
-}
+
 
 // APIレスポンス全体の型
 export interface ApiResponse {
