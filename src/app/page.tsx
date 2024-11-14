@@ -35,6 +35,8 @@ export default function HomePage({ searchParams }: HomePageProps) {
 					textGradient='from-green-500 to-blue-500'
 				/>
 
+				{/* MEMO 2024/11/13 KVへ格納するアイテムの修正 */}
+
 				{/* <DMMFeaturedItemContainer
 					from='top'
 					bgGradient='bg-gradient-to-r from-emerald-50 to-yellow-50'
