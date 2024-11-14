@@ -2,18 +2,7 @@ import { DMMItem } from '@/types/dmmtypes'
 import { NextRequest, NextResponse } from 'next/server'
 
 interface ApiResponse {
-	request: {
-		parameters: {
-			[key: string]: string
-		}
-	}
-	result: {
-		status: number
-		result_count: number
-		total_count: number
-		first_position: number
-		items: DMMItem[]
-	}
+	kvDatas: DMMItem[]
 }
 
 /**
@@ -22,7 +11,7 @@ interface ApiResponse {
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
 	const API_KEY = process.env.CLOUDFLARE_DMM_API_TOKEN
-	const WORKER_URL = process.env.DMM_TOPPAGE_WORKER_URL
+	const WORKER_URL = process.env.DMM_TOPPAGE_WORKER_URL_V2
 
 	if (!API_KEY) {
 		console.error('CLOUDFLARE_DMM_API_TOKENが設定されていません')
@@ -48,6 +37,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 				'Content-Type': 'application/json',
 				'X-API-Key': API_KEY,
 			},
+			cache: 'no-store',
 		})
 
 		if (!response.ok) {
@@ -56,7 +46,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 		}
 
 		const data: ApiResponse = await response.json()
-		const processedData = data.result.items.map(item => ({
+		const processedData = data.kvDatas.map(item => ({
 			content_id: item.content_id,
 			title: item.title,
 			affiliateURL: item.affiliateURL,

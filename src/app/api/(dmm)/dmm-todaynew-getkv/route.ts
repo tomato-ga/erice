@@ -3,18 +3,7 @@ import { revalidateTag } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 
 interface ApiResponse {
-	request: {
-		parameters: {
-			[key: string]: string
-		}
-	}
-	result: {
-		status: number
-		result_count: number
-		total_count: number
-		first_position: number
-		items: DMMItem[]
-	}
+	kvDatas: DMMItem[]
 }
 
 /**
@@ -23,7 +12,7 @@ interface ApiResponse {
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
 	const API_KEY = process.env.CLOUDFLARE_DMM_API_TOKEN
-	const WORKER_URL = process.env.DMM_TOPPAGE_WORKER_URL
+	const WORKER_URL = process.env.DMM_TOPPAGE_WORKER_URL_V2
 
 	if (!API_KEY) {
 		console.error('CLOUDFLARE_DMM_API_TOKENが設定されていません')
@@ -39,13 +28,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 			{ error: 'DMM_TOPPAGE_WORKER_URLが環境変数に設定されていません' },
 			{ status: 500 },
 		)
-	}
-
-	// 次の0時までの秒数を計算する関数
-	const getSecondsUntilMidnight = () => {
-		const now = new Date()
-		const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
-		return Math.floor((tomorrow.getTime() - now.getTime()) / 1000)
 	}
 
 	try {
@@ -65,7 +47,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 		}
 
 		const data: ApiResponse = await response.json()
-		const processedData = data.result.items.map(item => ({
+		const processedData = data.kvDatas.map(item => ({
 			content_id: item.content_id,
 			title: item.title,
 			affiliateURL: item.affiliateURL,

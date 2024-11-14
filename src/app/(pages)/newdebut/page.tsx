@@ -12,7 +12,6 @@ import {
 import { ProcessedDMMItem } from '@/types/APINewDebuttypes'
 import { formatDate, formatMMDDDate } from '@/utils/dmmUtils'
 import { Building, CalendarDays, Film, Tag, User } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
 
 async function fetchData(): Promise<ProcessedDMMItem[]> {

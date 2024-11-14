@@ -12,7 +12,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
 	return (
 		<>
 			<section className='space-y-16 py-12'>
-				<DMMFeaturedItemContainer
+				{/* <DMMFeaturedItemContainer
 					from='top'
 					bgGradient='bg-gradient-to-r from-blue-50 to-purple-50'
 					endpoint='/api/dmm-sale-getkv'
@@ -21,7 +21,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
 					linkHref='/sale'
 					umamifrom='top-sale'
 					textGradient='from-blue-500 to-purple-500'
-				/>
+				/> */}
 
 				{/* MEMO 2024/08/30 todaynewだけ別コンポーネントにして、no-storeにしている */}
 				<DMMFeaturesItemContainer
@@ -37,7 +37,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
 
 				{/* MEMO 2024/11/13 KVへ格納するアイテムの修正 */}
 
-				{/* <DMMFeaturedItemContainer
+				<DMMFeaturedItemContainer
 					from='top'
 					bgGradient='bg-gradient-to-r from-emerald-50 to-yellow-50'
 					endpoint='/api/dmm-last7days-getkv'
@@ -46,7 +46,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
 					linkHref='/last7days'
 					umamifrom='top-last7days'
 					textGradient='from-20% from-emerald-500 to-yellow-500'
-				/> */}
+				/>
 
 				<DMMFeaturedItemContainer
 					from='top'

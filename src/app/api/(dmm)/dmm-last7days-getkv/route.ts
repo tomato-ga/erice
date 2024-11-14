@@ -3,13 +3,7 @@ import { revalidateTag } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 
 interface ApiResponse {
-	result: {
-		items: {
-			success: boolean
-			meta: object
-			results: DMMItem[]
-		}
-	}
+	kvDatas: DMMItem[]
 }
 
 /**
@@ -18,7 +12,7 @@ interface ApiResponse {
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
 	const API_KEY = process.env.CLOUDFLARE_DMM_API_TOKEN
-	const WORKER_URL = process.env.DMM_TOPPAGE_WORKER_URL
+	const WORKER_URL = process.env.DMM_TOPPAGE_WORKER_URL_V2
 
 	if (!API_KEY) {
 		console.error('CLOUDFLARE_DMM_API_TOKENが設定されていません')
@@ -54,7 +48,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
 		// TODO KVからのデータ取得・erice-newdebutとか、他のDMMコンテナと同じ型定義にする
 		const data: ApiResponse = await response.json()
-		const processedData = data.result.items.results.map(item => ({
+		const processedData = data.kvDatas.map(item => ({
 			content_id: item.content_id,
 			title: item.title,
 			affiliateURL: item.affiliateURL,

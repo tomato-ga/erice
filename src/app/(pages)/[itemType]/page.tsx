@@ -13,12 +13,12 @@ export default function DMMGenericPage({ params }: { params: { itemType: string 
 
 	const pageTitles: Record<ItemType, string> = {
 		todaynew: '今日配信の新作',
-		debut: 'デビュー作品',
-		feature: '注目作品',
+		debut: 'これから3ヶ月のデビュー作品一覧',
+		feature: 'これから発売される注目作品',
 		sale: '限定セール',
 		actress: 'アクトレス',
 		genre: 'ジャンル',
-		last7days: '過去7日間の新作',
+		last7days: '過去7日間の新作一覧',
 		top100: 'TOP',
 	}
 
