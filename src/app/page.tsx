@@ -23,6 +23,28 @@ export default function HomePage({ searchParams }: HomePageProps) {
 					textGradient='from-blue-500 to-purple-500'
 				/> */}
 
+				<DMMFeaturedItemContainer
+					from='top'
+					bgGradient='bg-gradient-to-r from-yellow-50 to-red-50'
+					endpoint='/api/dmm-debut-getkv'
+					title={titles.debut}
+					linkText={linkTexts.debut}
+					linkHref='/debut'
+					umamifrom='top-debut'
+					textGradient='from-yellow-500 to-red-500'
+				/>
+
+				<DMMFeaturedItemContainer
+					from='top'
+					bgGradient='bg-gradient-to-r from-pink-50 to-purple-50'
+					endpoint='/api/dmm-feature-getkv'
+					title={titles.feature}
+					linkText={linkTexts.feature}
+					linkHref='/feature'
+					umamifrom='top-feature'
+					textGradient='from-pink-500 to-purple-500'
+				/>
+
 				{/* MEMO 2024/08/30 todaynewだけ別コンポーネントにして、no-storeにしている */}
 				<DMMFeaturesItemContainer
 					from='top'
@@ -46,28 +68,6 @@ export default function HomePage({ searchParams }: HomePageProps) {
 					linkHref='/last7days'
 					umamifrom='top-last7days'
 					textGradient='from-20% from-emerald-500 to-yellow-500'
-				/>
-
-				<DMMFeaturedItemContainer
-					from='top'
-					bgGradient='bg-gradient-to-r from-yellow-50 to-red-50'
-					endpoint='/api/dmm-debut-getkv'
-					title={titles.debut}
-					linkText={linkTexts.debut}
-					linkHref='/debut'
-					umamifrom='top-debut'
-					textGradient='from-yellow-500 to-red-500'
-				/>
-
-				<DMMFeaturedItemContainer
-					from='top'
-					bgGradient='bg-gradient-to-r from-pink-50 to-purple-50'
-					endpoint='/api/dmm-feature-getkv'
-					title={titles.feature}
-					linkText={linkTexts.feature}
-					linkHref='/feature'
-					umamifrom='top-feature'
-					textGradient='from-pink-500 to-purple-500'
 				/>
 
 				{/* <DMMItemContainer itemType="feature" from="top" bgGradient="bg-gradient-to-r from-pink-50 to-purple-50" />
