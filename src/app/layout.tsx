@@ -30,7 +30,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 					</aside>
 					<main className='order-1 md:order-2 flex-grow overflow-x-hidden'>
 						{children}
-						{/* <BottomNavigation /> */}
+						<BottomNavigation />
 					</main>
 				</div>
 				<Footer />
