@@ -193,7 +193,7 @@ export async function fetchItemDetailByContentId(
 export async function fetchRelatedItems(itemType: ItemType): Promise<DMMItemProps[]> {
 	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-${itemType}-getkv`, {
 		next: {
-			revalidate: 2592000, // 1ヶ月（30日）
+			revalidate: 21600, // 6時間
 			tags: [`item-relateditem-${itemType}`],
 		},
 	})
