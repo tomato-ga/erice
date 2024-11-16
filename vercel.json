@@ -10,6 +10,42 @@
 			]
 		},
 		{
+			"source": "/todaynew/(.*)",
+			"headers": [
+				{
+					"key": "Vercel-CDN-Cache-Control",
+					"value": "max-age=0, s-maxage=10800, stale-while-revalidate=10800"
+				}
+			]
+		},
+		{
+			"source": "/debut/(.*)",
+			"headers": [
+				{
+					"key": "Vercel-CDN-Cache-Control",
+					"value": "max-age=0, s-maxage=10800, stale-while-revalidate=10800"
+				}
+			]
+		},
+		{
+			"source": "/newdebut/(.*)",
+			"headers": [
+				{
+					"key": "Vercel-CDN-Cache-Control",
+					"value": "max-age=0, s-maxage=10800, stale-while-revalidate=10800"
+				}
+			]
+		},
+		{
+			"source": "/feature/(.*)",
+			"headers": [
+				{
+					"key": "Vercel-CDN-Cache-Control",
+					"value": "max-age=0, s-maxage=10800, stale-while-revalidate=10800"
+				}
+			]
+		},
+		{
 			"source": "/doujin/(.*)",
 			"headers": [
 				{
