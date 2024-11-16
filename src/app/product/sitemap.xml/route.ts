@@ -16,9 +16,9 @@ async function fetchTotalCount(): Promise<number> {
 	const response = await fetch(API_ENDPOINT, {
 		headers: {
 			'Content-Type': 'application/json',
-			'X-API-Key': API_KEY
+			'X-API-Key': API_KEY,
 		},
-		next: { revalidate: 3600 } // 1時間ごとに再検証
+		next: { revalidate: 3600 }, // 1時間ごとに再検証
 	})
 
 	if (!response.ok) {
@@ -39,8 +39,7 @@ export async function GET() {
 			(_, i) => `
   <sitemap>
     <loc>${BASE_URL}/product/sitemap/${i}.xml</loc>
-    <lastmod>${new Date().toISOString()}</lastmod>
-  </sitemap>`
+  </sitemap>`,
 		).join('')
 
 		const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
@@ -52,8 +51,8 @@ ${sitemaps}
 			status: 200,
 			headers: {
 				'Content-Type': 'application/xml',
-				'Cache-Control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400'
-			}
+				'Cache-Control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400',
+			},
 		})
 	} catch (error) {
 		console.error('Error generating sitemap index:', error)

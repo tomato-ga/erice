@@ -79,7 +79,6 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 				name => `
   <url>
     <loc>${BASE_URL}/actressprofile/${encodeURIComponent(name)}</loc>
-    <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>`,

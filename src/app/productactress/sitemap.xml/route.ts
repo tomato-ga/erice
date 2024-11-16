@@ -46,7 +46,6 @@ export async function GET() {
 			(_, i) => `
   <sitemap>
     <loc>${BASE_URL}/productactress/sitemap/${i}.xml</loc>
-    <lastmod>${new Date().toISOString()}</lastmod>
   </sitemap>`,
 		).join('')
 

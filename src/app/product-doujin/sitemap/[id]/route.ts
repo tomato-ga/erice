@@ -40,7 +40,6 @@ function generateUrls(start: number, end: number, includeFixedUrls = false): str
 			product => `
 	<url>
 		<loc>${BASE_URL}/doujin/itemd/${product.id}</loc>
-		<lastmod>${product.date}</lastmod>
 		<changefreq>daily</changefreq>
 		<priority>0.7</priority>
 	</url>
@@ -53,7 +52,6 @@ function generateUrls(start: number, end: number, includeFixedUrls = false): str
 				url => `
 	<url>
 		<loc>${BASE_URL}${url}</loc>
-		<lastmod>${new Date().toISOString()}</lastmod>
 		<changefreq>daily</changefreq>
 		<priority>0.7</priority>
 	</url>

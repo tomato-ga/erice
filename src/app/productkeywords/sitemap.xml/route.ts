@@ -23,7 +23,6 @@ export async function GET() {
 				keyword => `
   <url>
     <loc>${BASE_URL}/keywords/${encodeURIComponent(keyword)}</loc>
-    <lastmod>${lastMod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>`,
