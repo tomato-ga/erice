@@ -1,26 +1,52 @@
 // /Volumes/SSD_1TB/erice2/erice/src/app/(pages)/[itemType]/page.tsx
 
+export const dynamic = 'force-dynamic'
+
 import DMMFeaturedItemContainer from '@/app/components/dmmcomponents/DMMFeaturedItemContainer'
 import DMMItemContainer from '@/app/components/dmmcomponents/DMMItemContainer'
 import { ItemType } from '@/types/dmmtypes'
-import { ArrowRight } from 'lucide-react'
-import Link from 'next/link'
+import { Metadata } from 'next'
+
+const metaTitleMap: Record<ItemType, string> = {
+	sale: '今日のセール',
+	todaynew: '今日発売の最新アダルト動画一覧',
+	debut: '3ヶ月以内に発売されるデビュー作品一覧',
+	feature: 'これから発売される注目作品一覧',
+	last7days: '過去1週間以内に発売された新作アダルト動画一覧',
+	top100: `人気キーワードで選ばれたトップ100のアイテムを一挙公開！${new Date().toLocaleDateString()}時点の最新ランキングをチェックしてみよう！`,
+	actress: 'アクトレス一覧',
+	genre: 'ジャンル一覧',
+}
+
+const metaDescriptionMap: Record<ItemType, string> = {
+	sale: `本日のお得なセール中のアダルト動画を厳選ピックアップ！最新の割引情報を${new Date().toLocaleDateString()}時点でお届けします。`,
+	todaynew: `本日(${new Date().toLocaleDateString()})発売の最新アダルト動画をチェックできます。新作のアダルト動画情報を毎日更新しています。`,
+	debut: `3ヶ月以内に発売される新人セクシー女優のデビュー作品一覧をチェックできます。${new Date().toLocaleDateString()}現在の最新デビュー作を厳選してご紹介します。`,
+	feature: `これから発売される人気女優のアダルト動画を厳選してご紹介します。${new Date().toLocaleDateString()}時点でのおすすめ作品をぜひチェックしてください。`,
+	last7days: `過去1週間以内にDMMで発売された新作アダルト動画をすべてご紹介しています。${new Date().toLocaleDateString()}時点の最新情報です。`,
+	top100: `人気キーワードから選ばれたトップ100作品を一挙公開！${new Date().toLocaleDateString()}時点のランキングをお見逃しなく。`,
+	actress: 'アクトレス一覧はこちらからチェック！',
+	genre: 'ジャンル一覧を簡単に確認！',
+}
+
+export async function generateMetadata({
+	params,
+}: {
+	params: { itemType: string }
+}): Promise<Metadata> {
+	const itemType = params.itemType as ItemType
+
+	return {
+		title: metaTitleMap[itemType],
+		description: metaDescriptionMap[itemType] || 'DMMの人気アイテムをチェック！',
+	}
+}
 
 export default function DMMGenericPage({ params }: { params: { itemType: string } }) {
 	const itemType = params.itemType as ItemType
 
-	// console.log('itemType: ', itemType) // 削除
-
-	const pageTitles: Record<ItemType, string> = {
-		todaynew: '今日配信の新作',
-		debut: 'これから3ヶ月のデビュー作品一覧',
-		feature: 'これから発売される注目作品',
-		sale: '限定セール',
-		actress: 'アクトレス',
-		genre: 'ジャンル',
-		last7days: '過去7日間の新作一覧',
-		top100: 'TOP',
-	}
+	console.log('params:', params) // 取得されたパラメータを確認
+	console.log('itemType: ', itemType) // 削除
 
 	const gradients: Record<ItemType, { bg: string; text: string }> = {
 		todaynew: { bg: 'from-green-50 to-blue-50', text: 'from-green-500 to-blue-500' },
@@ -32,8 +58,11 @@ export default function DMMGenericPage({ params }: { params: { itemType: string 
 		last7days: { bg: 'from-emerald-50 to-yellow-50', text: 'from-emerald-500 to-yellow-500' }, // Updated gradient
 		top100: { bg: 'from-purple-50 to-pink-50', text: 'from-purple-500 to-pink-500' },
 	}
+	// 説明文の取得
+	const description = metaDescriptionMap[itemType]
+	console.log('description:', description)
 
-	if (!Object.keys(pageTitles).includes(itemType)) {
+	if (!Object.keys(metaTitleMap).includes(itemType)) {
 		return (
 			<div className='container mx-auto px-4 py-12'>
 				<h1 className='text-3xl font-bold text-red-600 text-center mb-4'>無効な itemType です</h1>
@@ -52,11 +81,12 @@ export default function DMMGenericPage({ params }: { params: { itemType: string 
 					from='top100'
 					bgGradient={'bg-gradient-to-r ' + gradients[itemType].bg}
 					endpoint='/api/getkv-top100?keywords=くびれ,爆乳'
-					title={pageTitles[itemType]}
+					title={metaTitleMap[itemType]}
 					linkText='すべて見る'
 					linkHref='/top100'
 					textGradient={gradients[itemType].text}
 					umamifrom={'only-' + itemType}
+					description={description}
 				/>
 			</div>
 		)
@@ -64,19 +94,20 @@ export default function DMMGenericPage({ params }: { params: { itemType: string 
 
 	// その他のページ用の既存の処理
 	return (
-		<div className='w-full'>
+		<>
 			<div className='w-full'>
 				<DMMFeaturedItemContainer
 					from='only'
 					bgGradient={`bg-gradient-to-r ${gradients[itemType].bg}`}
 					endpoint={`/api/dmm-${itemType}-getkv`}
-					title={pageTitles[itemType]}
+					title={metaTitleMap[itemType]}
 					linkText='すべて見る'
 					linkHref={`/${itemType}` as '/sale' | '/todaynew' | '/debut' | '/feature' | '/last7days'}
 					textGradient={gradients[itemType].text}
 					umamifrom={`only-${itemType}`}
+					description={description}
 				/>
 			</div>
-		</div>
+		</>
 	)
 }

@@ -1,3 +1,5 @@
+// src/app/layout.tsx
+
 import type { Metadata } from 'next'
 import Script from 'next/script'
 import './globals.css'
@@ -11,7 +13,7 @@ import BottomNavigation from './components/Banner/BottomNavigation'
 export const metadata: Metadata = {
 	title: {
 		default: 'エロコメスト',
-		template: '%s | エロコメスト',
+		template: '%s | エロ統計データのエロコメスト',
 	},
 	description:
 		'エロ動画の良かった抜き情報を共有し合うこと、そして統計データを使った客観的な数字を使うことで、新たなエロ動画体験を提供することを目指しています。',

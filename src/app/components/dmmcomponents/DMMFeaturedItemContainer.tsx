@@ -1,8 +1,8 @@
 import { GetKVTop100Response } from '@/types/dmm-keywordpage-types'
-// app/components/dmmcomponents/DMMFeaturedItemContainer.tsx
 import { DMMFeaturedItemProps } from '@/types/dmmtypes'
 import { UmamiTrackingFromType } from '@/types/umamiTypes'
 import { ArrowRight } from 'lucide-react'
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { UmamiTracking } from './UmamiTracking'
 import { fetchData } from './fetch/itemFetchers'
@@ -26,6 +26,7 @@ interface DMMFeaturedItemContainerProps<T extends DMMFeaturedItemProps> {
 	textGradient: string
 	umamifrom: UmamiTrackingFromType
 	keywords?: string[] // 追加: キーワードをオプションで受け取る
+	description?: string // 追加
 }
 
 const PriceDisplay = ({
@@ -185,51 +186,76 @@ export default async function DMMFeaturedItemContainer<T extends DMMFeaturedItem
 	linkHref,
 	textGradient,
 	umamifrom,
-	keywords, // 追加
+	keywords,
+	description,
 }: DMMFeaturedItemContainerProps<T>) {
 	let items: T[] = []
 	let createdAt: string | undefined = undefined
 
-	if (from === 'top100') {
-		try {
+	// データ取得処理
+	try {
+		if (from === 'top100') {
 			const top100Response = await fetchData<GetKVTop100Response>(
 				'/api/getkv-top100',
-				keywords ? { keywords: keywords.join(',') } : undefined, // 修正
+				keywords ? { keywords: keywords.join(',') } : undefined,
 			)
 			if (top100Response) {
 				items = top100Response.items as unknown as T[]
 				createdAt = top100Response.createdAt
 			}
-		} catch (error) {
-			console.error('Failed to fetch Top 100 data:', error)
-			items = []
+		} else {
+			const data = await fetchData<T[]>(endpoint)
+			if (data) {
+				items = data
+			}
 		}
-	} else {
-		const data = await fetchData<T[]>(endpoint)
-		if (data) {
-			items = data
-		}
+	} catch (error) {
+		console.error('Error fetching data:', {
+			error,
+			endpoint,
+			linkHref,
+			from,
+		})
 	}
 
+	console.log('DMMFeaturedItemContainer description:', description)
+
 	return (
-		<div
-			className={`bg-gradient-to-r ${bgGradient} shadow-lg p-4 sm:p-4 md:p-8 transition duration-300 ease-in-out`}>
-			<div className='text-center mb-8'>
-				<h2 className='text-4xl font-extrabold mb-4'>
-					<span className={`text-transparent bg-clip-text bg-gradient-to-r ${textGradient}`}>
-						{title}
-					</span>
-				</h2>
-				<Link
-					href={linkHref}
-					prefetch={true}
-					className={`inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r ${textGradient} shadow-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50`}>
-					{linkText}
-					<ArrowRight className='ml-2 h-5 w-5 animate-bounce' />
-				</Link>
+		<>
+			<div
+				className={`bg-gradient-to-r ${bgGradient} shadow-lg p-4 sm:p-4 md:p-8 transition duration-300 ease-in-out`}>
+				<div className='text-center mb-8'>
+					<h2 className='text-4xl font-extrabold mb-4'>
+						<span className={`text-transparent bg-clip-text bg-gradient-to-r ${textGradient}`}>
+							{title}
+						</span>
+					</h2>
+					{description && (
+						<p className='mt-3 text-xl text-gray-500 sm:mt-5 sm:text-2xl max-w-prose mx-auto text-center'>
+							{description}
+						</p>
+					)}
+					{/* 本日の新作の件数表示 */}
+					{items.length > 0 && (
+						<p className='text-gray-700 text-lg'>
+							作品が全部で
+							<span className='font-bold text-red-600'> {items.length}点</span>
+							あります。
+						</p>
+					)}
+					{from === 'top' && (
+						<Link
+							href={linkHref}
+							prefetch={true}
+							className={`inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r ${textGradient} shadow-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50`}>
+							{linkText}
+							<ArrowRight className='ml-2 h-5 w-5 animate-bounce' />
+						</Link>
+					)}
+				</div>
+				{from === 'top100' && createdAt && <p className='text-sm'>更新日時: {createdAt}</p>}
+				<DMMFeaturedItemList items={items} from={from} type={linkHref} umamifrom={umamifrom} />
 			</div>
-			{from === 'top100' && createdAt && <p className='text-sm'>更新日時: {createdAt}</p>}
-			<DMMFeaturedItemList items={items} from={from} type={linkHref} umamifrom={umamifrom} />
-		</div>
+		</>
 	)
 }

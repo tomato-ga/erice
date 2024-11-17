@@ -366,10 +366,8 @@ export async function fetchData<TResponse>(
 		}
 	}
 
-	const fetchOptions = { next: { revalidate: 43200 } }
-
 	try {
-		const response = await fetch(url.toString(), fetchOptions)
+		const response = await fetch(url.toString(), { cache: 'no-store' })
 		if (!response.ok) {
 			console.error(`Failed to fetch data from ${url}: ${response.statusText}`)
 			return null

@@ -12,6 +12,7 @@ import {
 import { ProcessedDMMItem } from '@/types/APINewDebuttypes'
 import { formatDate, formatMMDDDate } from '@/utils/dmmUtils'
 import { Building, CalendarDays, Film, Tag, User } from 'lucide-react'
+import { Metadata } from 'next'
 import Link from 'next/link'
 
 async function fetchData(): Promise<ProcessedDMMItem[]> {
@@ -37,6 +38,13 @@ async function fetchData(): Promise<ProcessedDMMItem[]> {
 	} catch (error) {
 		console.error('データの取得に失敗しました:', error)
 		return []
+	}
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+	return {
+		title: '新人セクシー女優のデビュー作品一覧',
+		description: `AVデビューした新人セクシー女優、素人女性の作品を紹介しています。 これから注目の新人セクシー女優とデビュー作品がすぐに見つかるよう随時更新しています。${new Date().toLocaleDateString()}現在の注目デビュー作品を要チェック！`,
 	}
 }
 
