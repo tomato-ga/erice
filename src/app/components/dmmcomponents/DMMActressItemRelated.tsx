@@ -3,7 +3,6 @@
 import { DMMActressProfile } from '@/types/APItypes'
 import { formatDate } from '@/utils/dmmUtils'
 import Link from 'next/link'
-import { Suspense } from 'react'
 import { z } from 'zod'
 import DMMActressStats from './DMMActressStats'
 import { fetchActressRelatedItem } from './fetch/itemFetchers'
@@ -99,14 +98,12 @@ const ActressStatsAndRelatedItemsTimeLine = async ({ actressName, actressId, pro
 
 	return (
 		<div className='bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg p-4 sm:p-4 md:p-10'>
-			<Suspense fallback={<LoadingSpinner />}>
-				<DMMActressStats
-					actress_id={actressId}
-					actress_name={actressName}
-					isSummary={true}
-					profile={profile}
-				/>
-			</Suspense>
+			<DMMActressStats
+				actress_id={actressId}
+				actress_name={actressName}
+				isSummary={true}
+				profile={profile}
+			/>
 
 			<h2 className='text-3xl font-bold mb-12 text-center'>
 				<span className='bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500'>

@@ -85,3 +85,41 @@ export const StatsSchema = z.object({
 
 // 型の抽出
 export type Stats = z.infer<typeof StatsSchema>
+
+// スリーサイズのスキーマ
+export const ThreeSizeAndHeightSchema = z.object({
+	bust: z.number().optional(),
+	waist: z.number().optional(),
+	hip: z.number().optional(),
+	height: z.number().optional(),
+})
+
+// 人気作品アイテムのスキーマ
+export const ThreeSizePopularItemSchema = z.object({
+	id: z.number(),
+	title: z.string(),
+	review_average: z.number(),
+	review_count: z.number(),
+	release_date: z.string(),
+})
+
+// スリーサイズ検索結果の各アクトレスのスキーマ
+export const ThreeSizeActressSchema = z.object({
+	id: z.number(),
+	name: z.string(),
+	bust: z.number(),
+	waist: z.number(),
+	hip: z.number(),
+	size_difference: z.number(),
+	top_3_popular_items: z.array(ThreeSizePopularItemSchema),
+})
+
+// レスポンス全体のスキーマ
+export const ThreeSizeResponseSchema = z.object({
+	threeSizeData: z.array(ThreeSizeActressSchema),
+})
+
+export type ThreeSizeAndHeight = z.infer<typeof ThreeSizeAndHeightSchema>
+export type ThreeSizePopularItem = z.infer<typeof ThreeSizePopularItemSchema>
+export type ThreeSizeActress = z.infer<typeof ThreeSizeActressSchema>
+export type ThreeSizeResponse = z.infer<typeof ThreeSizeResponseSchema>

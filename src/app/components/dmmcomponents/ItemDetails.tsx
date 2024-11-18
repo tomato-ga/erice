@@ -13,6 +13,7 @@ import React from 'react'
 
 import RelatedGenre from './RelatedGenre'
 // import DMMSeriesStats from './Stats/DMMSeriesStats'
+
 import {
 	fetchActressProfile,
 	fetchItemDetailByContentId,
@@ -21,6 +22,7 @@ import {
 
 const DynamicActressStatsAndRelatedItemsTimeLine = dynamic(() => import('./DMMActressItemRelated'))
 const DynamicDMMSeriesStats = dynamic(() => import('./Stats/DMMSeriesStats'))
+const DynamicThreeSize = dynamic(() => import('./Stats/DMMThreeSize'))
 
 interface ItemDetailsProps {
 	contentId: string
@@ -35,16 +37,17 @@ const parseActresses = (actressString: string | null | undefined): string[] => {
 		.filter(name => name.length > 0)
 }
 
+// Move the function outside of ActressProfile component
+const isPlaceholderImage = (imageUrl: string | null | undefined) => {
+	if (!imageUrl) return true
+	return imageUrl.includes('printing.jpg')
+}
+
 const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActressProfile }) => {
 	const { actress } = actressProfileData
 
 	if (!actress) {
 		return null
-	}
-
-	const isPlaceholderImage = (imageUrl: string | null | undefined) => {
-		if (!imageUrl) return true
-		return imageUrl.includes('printing.jpg')
 	}
 
 	if (isPlaceholderImage(actress.image_url_large)) {
@@ -131,29 +134,27 @@ const ActressProfile = ({ actressProfileData }: { actressProfileData: DMMActress
 }
 
 const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
+	// 最初のフェッチは他のフェッチの前提条件なので、先に実行
 	const itemDetail = await fetchItemDetailByContentId(dbId)
-	// console.time('itemdetail timelog')
-
-	if (!itemDetail) {
+	if (!itemDetail || !itemDetail.actress || !itemDetail.series) {
 		return null
 	}
 
-	// カンマ区切りの女優名を配列に変換し、最初の1名だけを取得
+	// 女優名を取得
 	const actresses = parseActresses(itemDetail.actress).slice(0, 1)
-
 	if (actresses.length === 0) {
 		return null
 	}
-
-	// 1名の女優のプロフィールをフェッチ
 	const actressName = actresses[0]
-	console.log('actressName:', actressName)
-	// console.timeLog('itemdetail timelog')
-	const actressProfiles = await fetchActressProfile(actressName)
 
-	// 有効なプロフィールの抽出
+	// 並列でフェッチを実行
+	const [actressProfiles, seriesStatsData] = await Promise.all([
+		fetchActressProfile(actressName),
+		fetchSeriesStats(itemDetail.series[0]),
+	])
+
+	// プロフィールのバリデーション
 	const actressProfileData = actressProfiles ? actressProfiles[0] : null
-
 	// 重要なデータを持つか確認
 	const hasEssentialData = (data: DMMActressProfile) => {
 		const { actress } = data
@@ -165,28 +166,23 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 		return null
 	}
 
-	// actress_id を取得
-	const actressId = actressProfileData.actress.id
-
-	// series_idを取得
-	if (!itemDetail.series) {
+	const threeSize = (
+		actressProfileData: DMMActressProfile,
+	): { bust: number; waist: number; hip: number } | null => {
+		if (
+			actressProfileData.actress.bust !== null &&
+			actressProfileData.actress.waist !== null &&
+			actressProfileData.actress.hip !== null
+		) {
+			const { bust, waist, hip } = actressProfileData.actress
+			return { bust, waist, hip }
+		}
 		return null
 	}
 
-	const seriesStatsData = await fetchSeriesStats(itemDetail.series[0])
-	// console.log('Resolved seriesStatsData:', JSON.stringify(seriesStatsData, null, 2))
+	const threeSizeData = threeSize(actressProfileData)
 
-	// プレースホルダー画像かどうかをチェックする関数
-	const isPlaceholderImage = (imageUrl: string | null | undefined) => {
-		if (!imageUrl) return true
-		return imageUrl.includes('printing.jpg')
-	}
-
-	// 構造化データの生成
-	// const personStructuredData = generatePersonStructuredData(actressProfileData)
-
-	// JSON-LDを文字列に変換
-	// const jsonLdString = JSON.stringify(personStructuredData)
+	const actressId = actressProfileData.actress.id
 
 	// ランダムなジャンルを選択する関数
 	const getRandomGenre = (genres: string[]): string | null => {
@@ -224,6 +220,8 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 					key={actressProfileData.actress.id}
 				/>
 			)}
+
+			{threeSizeData && <DynamicThreeSize threeSize={threeSizeData} />}
 
 			{/* 関連ジャンル（ランダムに選択） */}
 			{/* {randomGenre && <RelatedGenre genreName={randomGenre} />} */}
