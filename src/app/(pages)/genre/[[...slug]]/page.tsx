@@ -50,7 +50,7 @@ export function generateMetadata({ params }: PageProps): Promise<Metadata> {
 		return Promise.resolve({
 			title: pageTitle,
 			description: description,
-			robots: { index: false, follow: false }, // MEMOD 2024/11/18 genre一覧ページはnoindex, nofollow
+			// robots: { index: false, follow: false }, // MEMOD 2024/11/18 genre一覧ページはnoindex, nofollow
 			openGraph: {
 				title: pageTitle,
 				description: description,
@@ -66,7 +66,7 @@ export function generateMetadata({ params }: PageProps): Promise<Metadata> {
 		return Promise.resolve({
 			title: `${genrename} | ${SITE_NAME}`,
 			description: `${genrename} の動画一覧です。`,
-			robots: { index: false, follow: false }, // MEMOD 2024/11/18 genre一覧ページはnoindex, nofollow
+			// robots: { index: false, follow: false }, // MEMOD 2024/11/18 genre一覧ページはnoindex, nofollow
 		})
 	}
 }

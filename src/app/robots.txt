@@ -1,6 +1,12 @@
 User-Agent: *
 Disallow: /api
 
+User-agent: *
+Disallow: /keywords
+
+User-agent: *
+Disallow: /genre
+
 User-agent: SemrushBot
 Disallow: /
 
