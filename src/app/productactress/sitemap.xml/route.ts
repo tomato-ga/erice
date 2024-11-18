@@ -46,6 +46,7 @@ export async function GET() {
 			(_, i) => `
   <sitemap>
     <loc>${BASE_URL}/productactress/sitemap/${i}.xml</loc>
+		<lastmod>2024-11-10</lastmod>
   </sitemap>`,
 		).join('')
 

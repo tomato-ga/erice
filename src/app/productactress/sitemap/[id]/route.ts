@@ -81,6 +81,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     <loc>${BASE_URL}/actressprofile/${encodeURIComponent(name)}</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
+		<lastmod>2024-11-10</lastmod>
   </url>`,
 			)
 			.join('')

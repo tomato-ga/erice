@@ -58,6 +58,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 				product => `
   <url>
     <loc>${BASE_URL}/item/${product.id}</loc>
+    <lastmod>2024-11-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>`,

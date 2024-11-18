@@ -39,6 +39,7 @@ export async function GET() {
 			(_, i) => `
   <sitemap>
     <loc>${BASE_URL}/product-doujin/sitemap/${i}.xml</loc>
+    <lastmod>2024-11-15</lastmod>
   </sitemap>`,
 		).join('')
 

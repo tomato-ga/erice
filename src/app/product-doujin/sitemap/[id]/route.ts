@@ -54,6 +54,7 @@ function generateUrls(start: number, end: number, includeFixedUrls = false): str
 		<loc>${BASE_URL}${url}</loc>
 		<changefreq>daily</changefreq>
 		<priority>0.7</priority>
+		<lastmod>2024-11-15</lastmod>
 	</url>
 	`,
 			).join('')
