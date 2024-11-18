@@ -49,7 +49,7 @@ const ThreeSize = async ({
 			<div className='mt-8 p-6 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl shadow-xl'>
 				<h2 className='text-3xl font-extrabold mb-6 text-center'>
 					<span className='text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-green-500'>
-						スリーサイズが似ている女優
+						スリーサイズが似ている女優とレビュー最高評価作品
 					</span>
 				</h2>
 
