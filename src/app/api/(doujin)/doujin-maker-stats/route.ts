@@ -20,9 +20,11 @@ export async function GET(request: NextRequest) {
 	}
 
 	if (!WORKER_URL) {
-		console.error('DMM_SERIES_DETAIL_WORKER_URLが設定されていません')
+		console.error('doujin-maker-stats API route: WORKER_URLが設定されていません')
 		return NextResponse.json(
-			{ error: 'DMM_SERIES_DETAIL_WORKER_URLが環境変数に設定されていません' },
+			{
+				error: 'doujin-maker-stats API route: WORKER_URLが環境変数に設定されていません',
+			},
 			{ status: 500 },
 		)
 	}

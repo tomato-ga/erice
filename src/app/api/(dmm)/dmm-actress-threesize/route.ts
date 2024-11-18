@@ -1,4 +1,3 @@
-import { DMMActressProfile, DMMActressProfileSchema } from '@/types/APItypes'
 import { NextRequest, NextResponse } from 'next/server'
 
 type ThreeSizeAndHeight = {
@@ -8,12 +7,17 @@ type ThreeSizeAndHeight = {
 	height?: number
 }
 
+type RequestBody = {
+	threeSize: ThreeSizeAndHeight
+	actressId: number
+}
+
 // APIエンドポイント
 export async function POST(request: NextRequest): Promise<NextResponse> {
-	const { threeSize }: { threeSize: ThreeSizeAndHeight } = await request.json()
+	const { threeSize, actressId }: RequestBody = await request.json()
 
-	if (!threeSize) {
-		return NextResponse.json({ error: 'スリーサイズのデータが必要です' }, { status: 400 })
+	if (!threeSize || !actressId) {
+		return NextResponse.json({ error: 'スリーサイズとactressIdが必要です' }, { status: 400 })
 	}
 
 	// .env.localで設定された環境変数を使用
@@ -23,7 +27,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 		return NextResponse.json({ error: 'Worker URL is not configured' }, { status: 500 })
 	}
 
-	console.log('Sending data to Worker:', JSON.stringify({ threeSize }, null, 2))
+	console.log('Sending data to Worker:', JSON.stringify({ threeSize, actressId }, null, 2))
 
 	try {
 		// Workersへ転送
@@ -32,7 +36,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify(threeSize),
+			body: JSON.stringify({
+				bust: threeSize.bust,
+				waist: threeSize.waist,
+				hip: threeSize.hip,
+				actressId,
+			}),
 		})
 
 		if (!response.ok) {
@@ -48,6 +57,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 		return NextResponse.json(data)
 	} catch (error) {
 		console.error('Error fetching from worker:', error)
-		return NextResponse.json({ error: 'Failed to fetch data from worker' }, { status: 500 })
+		return NextResponse.json(
+			{ error: 'dmm-actress-threesize API route: Failed to fetch data from worker' },
+			{ status: 500 },
+		)
 	}
 }

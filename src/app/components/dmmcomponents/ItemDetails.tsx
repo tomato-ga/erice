@@ -221,7 +221,7 @@ const ItemDetails = async ({ contentId, dbId }: ItemDetailsProps) => {
 				/>
 			)}
 
-			{threeSizeData && <DynamicThreeSize threeSize={threeSizeData} />}
+			{threeSizeData && <DynamicThreeSize threeSize={threeSizeData} actressId={actressId} />}
 
 			{/* 関連ジャンル（ランダムに選択） */}
 			{/* {randomGenre && <RelatedGenre genreName={randomGenre} />} */}

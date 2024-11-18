@@ -428,7 +428,7 @@ export async function fetchTOP100KeywordData(keyword: string): Promise<GetKVTop1
 	}
 }
 
-import { Stats } from '@/_types_dmm/statstype'
+import { Stats, ThreeSizeResponseSchema } from '@/_types_dmm/statstype'
 // キャンペーン名を取得する関数
 import { cache } from 'react'
 
@@ -587,4 +587,43 @@ export const fetchRelatedGenre = async (genreName: string) => {
 	}
 	const data: DMMRelatedGenreItem = await response.json()
 	return data
+}
+
+export const fetchThreeSizeActresses = async (
+	threeSize: {
+		bust: number
+		waist: number
+		hip: number
+	},
+	actressId: number,
+) => {
+	console.log('Fetching three size data with:', threeSize, 'and actressId:', actressId)
+
+	try {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-threesize`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ threeSize, actressId }),
+			cache: 'no-store',
+		})
+
+		if (!response.ok) {
+			const errorText = await response.text()
+			console.error('Error response:', errorText)
+			throw new Error(`Failed to fetch three size data: ${response.status} ${errorText}`)
+		}
+
+		const rawData = await response.json()
+
+		// レスポンスの型検証とキャスト
+		const validatedData = ThreeSizeResponseSchema.parse(rawData)
+		console.log('Validated response data:', validatedData)
+
+		return validatedData
+	} catch (error) {
+		console.error('Fetch error:', error)
+		throw error
+	}
 }
