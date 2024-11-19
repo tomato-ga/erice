@@ -101,7 +101,7 @@ export const FetchDoujinItemSchema = z.object({
 	product_id: z.string(),
 	review_average: z.number().nullable(),
 	review_count: z.number().nullable(),
-	sampleImageURL: z.string().nullable(),
+	sampleImageURL: z.array(z.string()).nullable(),
 	series: z
 		.array(
 			z.object({
@@ -147,6 +147,11 @@ export const DoujinKobetuItemSchema = FetchDoujinItemSchema.extend({
 	makers: z.array(z.object({ id: z.number(), name: z.string() })).nullish(),
 	// 修正: series を文字列の配列からオブジェクトの配列に変更
 	series: z.array(z.object({ id: z.number(), name: z.string() })).nullish(),
+
+	// MEMO KVへDMM生データを保存したプロパティと、個別ページ(DB)で使用するプロパティを分けているため追記
+	affiliate_url: z.string(),
+	release_date: z.string(),
+	sample_images: z.array(z.string()).nullish(),
 })
 
 export type DoujinKobetuItem = z.infer<typeof DoujinKobetuItemSchema>
