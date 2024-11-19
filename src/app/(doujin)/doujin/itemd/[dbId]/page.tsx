@@ -27,6 +27,7 @@ import FanzaADBannerKobetu from '@/app/components/doujincomponents/fanzaADBanner
 import React from 'react'
 
 import MakerTimelinePage from '@/app/components/fbookscomponents/kobetu/MakerTimeline'
+import Iho from '@/app/components/iho/iho'
 import dynamic from 'next/dynamic'
 
 // 型定義をそのまま使用
@@ -157,7 +158,7 @@ const ItemDetailsTable: React.FC<{ item: DoujinKobetuItem }> = ({ item }) => {
 }
 
 // メタデータ生成の強化
-// TODO 
+// TODO
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	try {
 		const item = await fetchItemData(params.dbId)
@@ -372,6 +373,7 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 									}}
 								/>
 							)}
+							<Iho />
 							<div className='w-full text-sm text-center my-4'>
 								このページに広告を設置しています
 							</div>

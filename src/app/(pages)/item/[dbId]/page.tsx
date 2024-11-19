@@ -9,7 +9,7 @@ import {
 	fetchItemDetailByContentId,
 	fetchItemMainByContentId,
 	fetchItemMainByContentIdToActressInfo,
-	fetchRelatedItems
+	fetchRelatedItems,
 } from '@/app/components/dmmcomponents/fetch/itemFetchers'
 
 import { ExtendedDMMItem, ItemType } from '@/types/dmmtypes'
@@ -28,41 +28,48 @@ import FanzaADBannerFanzaKobetu from '@/app/components/dmmcomponents/fanzaADBann
 import dynamic from 'next/dynamic'
 
 const DynamicVideoPlayer = dynamic(() => import('@/app/components/dmmcomponents/DMMVideoPlayer'), {
-	ssr: false
+	ssr: false,
 })
 
-const DynamicCommentSection = dynamic(() => import('@/app/components/dmmcomponents/Comment/CommentSection'), {
-	ssr: false
-})
+const DynamicCommentSection = dynamic(
+	() => import('@/app/components/dmmcomponents/Comment/CommentSection'),
+	{
+		ssr: false,
+	},
+)
 
 const DynamicItemDetails = dynamic(() => import('@/app/components/dmmcomponents/ItemDetails'), {
-	ssr: true
+	ssr: true,
 })
 
-const DynamicSampleImageGallery = dynamic(() => import('@/app/components/dmmcomponents/DMMSampleImage'), {
-	ssr: false // Disables SSR for this component to load it only on the client side
-})
+const DynamicSampleImageGallery = dynamic(
+	() => import('@/app/components/dmmcomponents/DMMSampleImage'),
+	{
+		ssr: false, // Disables SSR for this component to load it only on the client side
+	},
+)
 
 const DynamicBreadcrumb = dynamic(() => import('@/app/components/dmmcomponents/DMMBreadcrumb'), {
-	ssr: false
+	ssr: false,
 })
 
 import { CampaignLinksProps } from '@/app/components/dmmcomponents/DMMCampaignNames'
 import { getItemData, preload } from '@/app/components/dmmcomponents/fetch/item-fetch-pre'
+import Iho from '@/app/components/iho/iho'
 
 // Dynamic import for CampaignLinks with explicit type
 const DynamicCampaignLinks = dynamic<CampaignLinksProps>(
 	() => import('@/app/components/dmmcomponents/DMMCampaignNames'),
 	{
-		ssr: false // クライアントサイドでのみレンダリング
-	}
+		ssr: false, // クライアントサイドでのみレンダリング
+	},
 )
 
 const DynamicButtonTest = dynamic(
 	() => import('@/app/components/dmmcomponents/ABtest/GradientButton/ButtonTestCompo'),
 	{
-		ssr: false
-	}
+		ssr: false,
+	},
 )
 
 interface Props {
@@ -71,8 +78,8 @@ interface Props {
 
 function LoadingSpinner() {
 	return (
-		<div className="flex justify-center items-center h-64" aria-label="読み込み中">
-			<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900" />
+		<div className='flex justify-center items-center h-64' aria-label='読み込み中'>
+			<div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900' />
 		</div>
 	)
 }
@@ -93,10 +100,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			if (itemDetail.date) parts.push(`${formatDate(itemDetail.date)}配信開始の、`)
 			if (itemDetail.actress) parts.push(`${itemDetail.actress}が出演するエロ動画作品`)
 			parts.push(
-				`「${itemMain.title} - (${itemMain.content_id})」のキャプチャ画面とダウンロード情報、無料サンプル動画。`
+				`「${itemMain.title} - (${itemMain.content_id})」のキャプチャ画面とダウンロード情報、無料サンプル動画。`,
 			)
 			if (itemDetail.actress)
-				parts.push(`${itemDetail.actress}さんのレビュー統計データと出演作品を発売順で紹介しています。`)
+				parts.push(
+					`${itemDetail.actress}さんのレビュー統計データと出演作品を発売順で紹介しています。`,
+				)
 			return parts.join('')
 		})()
 		title = `${itemMain.title} - ${itemMain.content_id}`
@@ -108,15 +117,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function DMMKobetuItemPage({
 	params,
-	searchParams
+	searchParams,
 }: Props & { searchParams: { itemType?: ItemType } }) {
 	// getPageDataでデータを取得
 	// const { itemMain, itemDetail, actressInfo } = await getPageData(params.dbId)
 	const { itemMain, itemDetail, actressInfo, campaignNames } = await getItemData(params.dbId)
 	if (!itemMain) {
 		return (
-			<div className="container mx-auto px-2 py-6">
-				<h1 className="text-2xl font-bold text-red-600">
+			<div className='container mx-auto px-2 py-6'>
+				<h1 className='text-2xl font-bold text-red-600'>
 					{searchParams.itemType ? searchParams.itemType : '指定された'}
 					のアイテムが見つかりませんでした
 				</h1>
@@ -127,10 +136,10 @@ export default async function DMMKobetuItemPage({
 
 	const relatedItemTypes: ItemType[] = ['todaynew', 'debut', 'feature', 'sale']
 	const relatedItemsData = await Promise.all(
-		relatedItemTypes.map(async (type) => ({
+		relatedItemTypes.map(async type => ({
 			type,
-			items: (await fetchRelatedItems(type)) as ExtendedDMMItem[]
-		}))
+			items: (await fetchRelatedItems(type)) as ExtendedDMMItem[],
+		})),
 	)
 
 	if (!itemDetail) {
@@ -144,17 +153,17 @@ export default async function DMMKobetuItemPage({
 			? [
 					{
 						name: itemDetail.actress.split(',')[0], // カンマで分割して最初の要素のみを使用
-						href: `https://erice.cloud/actressprofile/${encodeURIComponent(itemDetail.actress.split(',')[0])}`
-					}
-			  ]
+						href: `https://erice.cloud/actressprofile/${encodeURIComponent(itemDetail.actress.split(',')[0])}`,
+					},
+				]
 			: []),
-		{ name: itemMain.title, href: `https://erice.cloud/item/${params.dbId}` }
+		{ name: itemMain.title, href: `https://erice.cloud/item/${params.dbId}` },
 	]
 
 	const description = (() => {
 		const parts = []
 		parts.push(
-			`${itemMain.title} ${itemMain.content_id}の詳細情報と、サンプル画像・動画やレビュー統計データを見ることができるページです。`
+			`${itemMain.title} ${itemMain.content_id}の詳細情報と、サンプル画像・動画やレビュー統計データを見ることができるページです。`,
 		)
 
 		if (itemDetail.actress) {
@@ -180,36 +189,35 @@ export default async function DMMKobetuItemPage({
 
 	return (
 		<>
-			<div className="bg-gray-50 dark:bg-gray-900 min-h-screen">
-				<div className="container mx-auto px-2 sm:px-4 py-6 sm:py-8">
+			<div className='bg-gray-50 dark:bg-gray-900 min-h-screen'>
+				<div className='container mx-auto px-2 sm:px-4 py-6 sm:py-8'>
 					{/* Breadcrumb */}
 
 					<DynamicBreadcrumb items={breadcrumbItems} />
 
-					<article className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 space-y-6 sm:space-y-8">
-						<h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 text-center">
+					<article className='bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 space-y-6 sm:space-y-8'>
+						<h1 className='text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 text-center'>
 							{itemMain.title}
 						</h1>
-						<p className="text-gray-600 dark:text-gray-300 text-base mt-4">{description}</p>
+						<p className='text-gray-600 dark:text-gray-300 text-base mt-4'>{description}</p>
 
-						<div className="relative overflow-hidden aspect-w-16 aspect-h-9">
+						<div className='relative overflow-hidden aspect-w-16 aspect-h-9'>
 							<Suspense fallback={<LoadingSpinner />}>
 								<UmamiTracking
 									trackingData={{
 										dataType: 'combined',
 										from: 'kobetu-img-top',
 										item: itemMain,
-										actressInfo: actressInfo
-									}}
-								>
-									<Link href={itemMain.affiliateURL} target="_blank" rel="noopener noreferrer">
+										actressInfo: actressInfo,
+									}}>
+									<Link href={itemMain.affiliateURL} target='_blank' rel='noopener noreferrer'>
 										<img
 											src={itemMain.imageURL}
 											alt={`${itemMain.title}のパッケージ画像`}
-											className="w-full h-full object-contain transition-transform duration-300"
-											decoding="async"
-											loading="eager"
-											fetchPriority="high"
+											className='w-full h-full object-contain transition-transform duration-300'
+											decoding='async'
+											loading='eager'
+											fetchPriority='high'
 										/>
 									</Link>
 								</UmamiTracking>
@@ -217,7 +225,11 @@ export default async function DMMKobetuItemPage({
 						</div>
 
 						<Suspense fallback={<LoadingSpinner />}>
-							<ProductDetails title={itemMain.title} content_id={itemMain.content_id} itemDetail={itemDetail} />
+							<ProductDetails
+								title={itemMain.title}
+								content_id={itemMain.content_id}
+								itemDetail={itemDetail}
+							/>
 						</Suspense>
 
 						<Suspense fallback={<LoadingSpinner />}>
@@ -229,9 +241,11 @@ export default async function DMMKobetuItemPage({
 						</Suspense>
 
 						{/* DynamicCampaignLinksコンポーネントの呼び出し */}
-						{campaignNames && campaignNames.length > 0 && <DynamicCampaignLinks campaignNames={campaignNames} />}
+						{campaignNames && campaignNames.length > 0 && (
+							<DynamicCampaignLinks campaignNames={campaignNames} />
+						)}
 
-						<div className="w-full text-sm text-center my-4">このページに広告を設置しています</div>
+						<div className='w-full text-sm text-center my-4'>このページに広告を設置しています</div>
 
 						{itemMain.sampleImageURL && itemMain.sampleImageURL.length > 0 && (
 							<Suspense fallback={<LoadingSpinner />}>
@@ -244,13 +258,13 @@ export default async function DMMKobetuItemPage({
 						)}
 
 						{itemMain.sampleMovieURL && itemMain.sampleMovieURL.length > 0 && (
-							<div className="mt-8">
-								<h2 className="text-center font-bold mb-6">
-									<span className="text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text">
+							<div className='mt-8'>
+								<h2 className='text-center font-bold mb-6'>
+									<span className='text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text'>
 										無料のサンプル動画
 									</span>
 								</h2>
-								<div className="flex justify-center">
+								<div className='flex justify-center'>
 									<Suspense fallback={<LoadingSpinner />}>
 										<DynamicVideoPlayer src={itemMain.sampleMovieURL[0]} />
 									</Suspense>
@@ -262,9 +276,9 @@ export default async function DMMKobetuItemPage({
 							<DynamicCommentSection contentId={itemMain.content_id} />
 						</Suspense>
 
-						<div className="flex justify-center">
-							<div className="relative inline-block group">
-								<div className="absolute inset-3 rounded-full bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm z-0 pointer-events-none transform group-hover:scale-100  duration-500 ease-in-out blur-lg" />
+						<div className='flex justify-center'>
+							<div className='relative inline-block group'>
+								<div className='absolute inset-3 rounded-full bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm z-0 pointer-events-none transform group-hover:scale-100  duration-500 ease-in-out blur-lg' />
 
 								<Suspense fallback={<LoadingSpinner />}>
 									<UmamiTracking
@@ -272,17 +286,15 @@ export default async function DMMKobetuItemPage({
 											dataType: 'combined',
 											from: 'kobetu-exlink-bottom',
 											item: itemMain,
-											actressInfo: actressInfo
-										}}
-									>
+											actressInfo: actressInfo,
+										}}>
 										<Link
 											href={itemMain.affiliateURL}
-											target="_blank"
-											rel="noopener noreferrer"
-											className="relative z-10 inline-flex items-center justify-center text-xl font-semibold text-white rounded-sm shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 px-6 sm:px-8 py-3 sm:py-4 transform bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm will-change-background-position"
-										>
-											<span className="mr-2">{itemMain.title}の高画質動画を見る</span>
-											<ExternalLink className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse" />
+											target='_blank'
+											rel='noopener noreferrer'
+											className='relative z-10 inline-flex items-center justify-center text-xl font-semibold text-white rounded-sm shadow-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 px-6 sm:px-8 py-3 sm:py-4 transform bg-custom-gradient-exbutton bg-custom-gradient-exbutton--dmm will-change-background-position'>
+											<span className='mr-2'>{itemMain.title}の高画質動画を見る</span>
+											<ExternalLink className='w-5 h-5 sm:w-6 sm:h-6 animate-pulse' />
 										</Link>
 									</UmamiTracking>
 								</Suspense>
@@ -300,6 +312,8 @@ export default async function DMMKobetuItemPage({
 							dbId={params.dbId}
 						/>
 
+						<Iho />
+
 						<Suspense fallback={<LoadingSpinner />}>
 							{relatedItemsData.map(({ type, items }) => (
 								<RelatedItemsScroll
@@ -310,10 +324,10 @@ export default async function DMMKobetuItemPage({
 										type === 'todaynew'
 											? '今日配信の新作'
 											: type === 'debut'
-											? 'デビュー作品'
-											: type === 'feature'
-											? '注目作品'
-											: '限定セール'
+												? 'デビュー作品'
+												: type === 'feature'
+													? '注目作品'
+													: '限定セール'
 									}
 								/>
 							))}

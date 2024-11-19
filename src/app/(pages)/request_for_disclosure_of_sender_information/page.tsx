@@ -1,4 +1,13 @@
+import { Metadata } from 'next'
 import React from 'react'
+
+export async function generateMetadata(): Promise<Metadata> {
+	const title = '発信者情報開示請求を受けたときの話'
+	const description =
+		'違法ダウンロードで損害賠償請求を受けた経験から、後悔と反省を踏まえ、違法性のない情報を提供するサイトを開設しました。健全なアダルトコンテンツの楽しみ方を発信します。'
+
+	return { title, description }
+}
 
 const SenderInformation: React.FC = () => {
 	return (
