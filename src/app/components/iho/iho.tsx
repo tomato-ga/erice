@@ -21,7 +21,7 @@ const Iho = () => {
 						<Link
 							href='https://erice.cloud/request_for_disclosure_of_sender_information'
 							className='text-red-600 hover:text-red-800 underline font-medium'>
-							私自身が発信者情報開示請求を受けた体験談
+							私自身が発信者情報開示請求を受けた経験
 						</Link>
 					</strong>
 					から、違法行為は監視されているように思います。軽い気持ちで視聴しているだけであっても、リスクが高い行為です。
