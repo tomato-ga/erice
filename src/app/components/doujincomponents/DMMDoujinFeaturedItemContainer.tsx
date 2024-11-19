@@ -158,6 +158,7 @@ export default async function DMMDoujinFeaturedItemContainer({
 					</h2>
 					<Link
 						href={`/doujin${linkHref}`}
+						prefetch={true}
 						className={`inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r ${textGradient} shadow-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50`}>
 						{linkText}
 						<ArrowRight className='ml-2 h-5 w-5 animate-bounce' />
@@ -179,6 +180,7 @@ export default async function DMMDoujinFeaturedItemContainer({
 				</h2>
 				<Link
 					href={`/doujin${linkHref}`}
+					prefetch={true}
 					className={`inline-flex items-center px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r ${textGradient} shadow-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50`}>
 					{linkText}
 					<ArrowRight className='ml-2 h-5 w-5 animate-bounce' />
