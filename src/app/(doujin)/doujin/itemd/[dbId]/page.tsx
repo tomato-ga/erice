@@ -157,6 +157,7 @@ const ItemDetailsTable: React.FC<{ item: DoujinKobetuItem }> = ({ item }) => {
 }
 
 // メタデータ生成の強化
+// TODO 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	try {
 		const item = await fetchItemData(params.dbId)
@@ -168,20 +169,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			)
 
 			if (item.release_date) {
-				parts.push(`発売日は${formatDate(item.release_date)}です。`)
+				parts.push(`この同人作品の発売日は${formatDate(item.release_date)}。`)
 			}
 
-			if (item.makers && item.makers.length > 0) {
-				parts.push(`${item.makers[0].name}から発売されています。`)
-			}
-
-			if (item.series && item.series.length > 0) {
-				parts.push(`シリーズは「${item.series[0].name}」です。`)
-			}
-
-			if (item.genres && item.genres.length > 0) {
-				const genreNames = item.genres.map(genre => genre.name).join('、')
-				parts.push(`ジャンルは${genreNames}です。`)
+			if (item.makers && item.makers.length > 0 && item.series && item.series.length > 0) {
+				parts.push(
+					`メーカーは「${item.makers[0].name}」さんから発売されています。シリーズは「${item.series[0].name}」です。`,
+					`「${item.makers[0].name}」と「${item.series[0].name}」のレビュー統計データと出演作品を発売順タイムラインで紹介しています。`,
+				)
+			} else {
+				if (item.makers && item.makers.length > 0) {
+					parts.push(
+						`メーカーは「${item.makers[0].name}」さんから発売されています。`,
+						`「${item.makers[0].name}」さんのレビュー統計データと発売作品をタイムラインで紹介しています。`,
+					)
+				}
+				if (item.series && item.series.length > 0) {
+					parts.push(
+						`シリーズは「${item.series[0].name}」です。`,
+						`「${item.series[0].name}」シリーズのレビュー統計データと発売作品をタイムラインで紹介しています。`,
+					)
+				}
 			}
 
 			return parts.join(' ')
@@ -240,12 +248,24 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 				parts.push(`この同人作品の発売日は${formatDate(item.release_date)}。`)
 			}
 
-			if (item.makers && item.makers.length > 0) {
-				parts.push(`メーカーは${item.makers[0].name}から発売されています。`)
-			}
-
-			if (item.series && item.series.length > 0) {
-				parts.push(`シリーズは${item.series[0].name}です。`)
+			if (item.makers && item.makers.length > 0 && item.series && item.series.length > 0) {
+				parts.push(
+					`メーカーは「${item.makers[0].name}」さんから発売されています。シリーズは「${item.series[0].name}」です。`,
+					`「${item.makers[0].name}」と「${item.series[0].name}」のレビュー統計データと出演作品を発売順タイムラインで紹介しています。`,
+				)
+			} else {
+				if (item.makers && item.makers.length > 0) {
+					parts.push(
+						`メーカーは「${item.makers[0].name}」さんから発売されています。`,
+						`「${item.makers[0].name}」さんのレビュー統計データと発売作品をタイムラインで紹介しています。`,
+					)
+				}
+				if (item.series && item.series.length > 0) {
+					parts.push(
+						`シリーズは「${item.series[0].name}」です。`,
+						`「${item.series[0].name}」シリーズのレビュー統計データと発売作品をタイムラインで紹介しています。`,
+					)
+				}
 			}
 
 			return parts.join(' ')
@@ -299,6 +319,12 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 						<DynamicBreadcrumb items={breadcrumbItems} />
 
 						<article className='bg-white dark:bg-gray-800  shadow-lg p-6 sm:p-8 space-y-8'>
+							<h1 className='text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 text-center'>
+								<Link href={item.affiliate_url} className='text-blue-500 font-bold hover:underline'>
+									{item.title}
+								</Link>
+							</h1>
+							<p className='text-gray-600 dark:text-gray-300 text-base mt-4'>{description}</p>{' '}
 							<div className='relative aspect-w-16 aspect-h-9 overflow-hidden '>
 								<UmamiTracking
 									trackingData={{
@@ -315,12 +341,6 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 									</Link>
 								</UmamiTracking>
 							</div>
-							<h1 className='text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 text-center'>
-								<Link href={item.affiliate_url} className='text-blue-500 font-bold hover:underline'>
-									{item.title}
-								</Link>
-							</h1>
-							<p className='text-gray-600 dark:text-gray-300 text-base mt-4'>{description}</p>{' '}
 							<FanzaADBannerKobetu />
 							{/* Description added here */}
 							{/* Item Details Table */}
@@ -336,28 +356,6 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 									/>
 								</Suspense>
 							)}
-							{/* {item.sample_images && item.sample_images.length > 0 && (
-								<div className='mt-8'>
-									<h2 className='text-center font-bold mb-6'>
-										<span className='text-2xl bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text'>
-											サンプル画像
-										</span>
-									</h2>
-									<div className='grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4'>
-										{item.sample_images.map((imageObj, index) => (
-											<div
-												key={index}
-												className='aspect-w-16 aspect-h-9 relative overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300'>
-												<img
-													src={imageObj ? imageObj : ''}
-													alt={`${item.title} のサンプル画像 ${index + 1}`}
-													className='w-full h-full object-contain transition-transform duration-300'
-												/>
-											</div>
-										))}
-									</div>
-								</div>
-							)}*/}
 							{item.series && item.series.length > 0 && (
 								<SeriesTimelinePage
 									searchParams={{
