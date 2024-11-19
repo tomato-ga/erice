@@ -22,6 +22,13 @@ const TermsAndPrivacy: React.FC = () => {
 							</p>
 						</section>
 
+<section className='mb-8'>
+							<h2 className='text-2xl font-semibold text-gray-700 mb-4'>統計分析データの妥当性について</h2>
+							<p className='text-gray-600 leading-relaxed'>
+								統計検定2級・Pythonデータ分析資格保有者が、基本的な統計解析を実行しています。何か間違いに気づいたら、以下お問い合わせよりご連絡ください。
+							</p>
+						</section>
+
 						<section>
 							<h2 className='text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4'>
 								お問い合わせ・削除依頼
