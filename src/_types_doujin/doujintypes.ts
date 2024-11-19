@@ -48,26 +48,88 @@ const RawDMMItemSchema = z.object({
 export type RawDMMItem = z.infer<typeof RawDMMItemSchema>
 
 export const FetchDoujinItemSchema = z.object({
-	db_id: z.number(),
+	URL: z.string(),
+	affiliateURL: z.string(),
+	category_name: z.string(),
 	content_id: z.string(),
+	date: z.string(),
+	db_id: z.number(),
+	floor_code: z.string(),
+	floor_name: z.string(),
+	genres: z.array(
+		z.object({
+			id: z.number(),
+			name: z.string(),
+		}),
+	),
+	imageURL: z
+		.union([
+			z.string().transform(val => JSON.parse(val)),
+			z.object({
+				large: z.string(),
+				list: z.string(),
+				small: z.string().optional(),
+			}),
+		])
+		.nullable(),
+	makers: z
+		.array(
+			z.object({
+				id: z.number(),
+				name: z.string(),
+			}),
+		)
+		.nullable(),
+	prices: z
+		.union([
+			z.string().transform(val => JSON.parse(val)),
+			z.object({
+				deliveries: z.object({
+					delivery: z.array(
+						z.object({
+							type: z.string(),
+							list_price: z.string(),
+							price: z.string(),
+						}),
+					),
+				}),
+				list_price: z.string(),
+				price: z.string(),
+			}),
+		])
+		.nullable(),
+	product_id: z.string(),
+	review_average: z.number().nullable(),
+	review_count: z.number().nullable(),
+	sampleImageURL: z.string().nullable(),
+	series: z
+		.array(
+			z.object({
+				id: z.number(),
+				name: z.string(),
+			}),
+		)
+		.nullable(),
+	service_code: z.string(),
+	service_name: z.string(),
 	title: z.string(),
 	volume: z.string().nullish(),
-	affiliate_url: z.string(),
-	package_images: z
-		.object({
-			large: z.string(),
-		})
+	campaign: z
+		.array(
+			z.object({
+				date_begin: z.string(),
+				date_end: z.string(),
+				title: z.string(),
+			}),
+		)
 		.nullish(),
-	sample_images: z.array(z.string()).nullish(),
-	release_date: z.string().optional(),
-	review_count: z.number().nullish(),
-	review_average: z.number().nullish(),
-	prices: z.object({}).passthrough().nullish(),
-	genres: z.array(z.any()).nullish(),
-	makers: z.array(z.any()).nullish(),
-	series: z.array(z.any()).nullish(),
-	campaign: z.array(z.object({})).nullish(),
 })
+
+export const DoujinKVApiResponseSchema = z.object({
+	kvDatas: z.array(FetchDoujinItemSchema),
+})
+
+export type DoujinKVApiResponse = z.infer<typeof DoujinKVApiResponseSchema>
 
 export type FetchDoujinItem = z.infer<typeof FetchDoujinItemSchema>
 export type DoujinTopItem = z.infer<typeof FetchDoujinItemSchema>
@@ -89,15 +151,6 @@ export const DoujinKobetuItemSchema = FetchDoujinItemSchema.extend({
 
 export type DoujinKobetuItem = z.infer<typeof DoujinKobetuItemSchema>
 
-// APIレスポンスのスキーマを定義
-export const DoujinTopApiResponseSchema = z.object({
-	result: z.object({
-		items: z.array(FetchDoujinItemSchema),
-	}),
-})
-
-export type DoujinTopApiResponse = z.infer<typeof DoujinTopApiResponseSchema>
-
 export interface DoujinGenrePaginationProps {
 	db_id: number
 	content_id: string
@@ -105,7 +158,7 @@ export interface DoujinGenrePaginationProps {
 	title: string
 }
 
-export type DoujinItemType = 'newrank' | 'newrelease' | 'review' | 'sale'
+export type DoujinItemType = 'rank' | 'todaynew' | 'review' | 'sale' | 'feature' | 'last7days'
 
 // PackageImages schema
 export const PackageImagesSchema = z.object({

@@ -1,5 +1,7 @@
 // /Volumes/SSD_1TB/erice2/erice/types/dmmtypes.d.ts
 
+import { FetchDoujinItem } from "@/_types_doujin/doujintypes"
+
 // package_imagesの型定義
 interface PackageImages {
 	large: string
@@ -145,12 +147,6 @@ export interface DMMItem {
 }
 
 
-
-// APIレスポンス全体の型
-export interface ApiResponse {
-	items: DMMItem[]
-}
-
 export interface DMMSaleItem extends Omit<DMMItem, 'imageURL' | 'genre'> {
 	salecount: string
 	salePrice: string
@@ -224,15 +220,7 @@ export interface DMMBaseItem {
 	date?: string
 }
 
-export type ItemType =
-	| 'todaynew'
-	| 'debut'
-	| 'feature'
-	| 'sale'
-	| 'actress'
-	| 'genre'
-	| 'last7days'
-	| 'top100'
+export type ItemType = 'todaynew' | 'debut' | 'feature' | 'sale' | 'actress' | 'genre' | 'last7days' | 'top100'
 export type CategoryType = 'style' | 'type'
 
 export interface DMMFeaturedItemProps extends DMMItemProps {

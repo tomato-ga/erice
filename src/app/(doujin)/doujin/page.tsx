@@ -8,7 +8,7 @@ export default function DoujinHomePage({ searchParams }: HomePageProps) {
 	return (
 		<>
 			<section className='space-y-16 py-12'>
-				<DMMDoujinFeaturedItemContainer
+				{/* <DMMDoujinFeaturedItemContainer
 					from='top'
 					bgGradient='bg-gradient-to-r from-blue-50 to-purple-50'
 					endpoint='/api/doujin-get-top-sale-items'
@@ -17,15 +17,15 @@ export default function DoujinHomePage({ searchParams }: HomePageProps) {
 					linkHref='/sale'
 					umamifrom='top-doujin-sale'
 					textGradient='from-blue-500 to-purple-500'
-				/>
+				/> */}
 
 				<DMMDoujinFeaturedItemContainer
 					from='top'
 					bgGradient='bg-gradient-to-r from-blue-50 to-purple-50'
-					endpoint='/api/doujin-get-top-newrank-items'
-					title={titles.newrank}
-					linkText={linkTexts.newrank}
-					linkHref='/newrank'
+					endpoint='/api/doujin-get-top-todaynew-items'
+					title={titles.todaynew}
+					linkText={linkTexts.todaynew}
+					linkHref='/todaynew'
 					umamifrom='top-doujin-sale'
 					textGradient='from-blue-500 to-purple-500'
 				/>
@@ -33,10 +33,21 @@ export default function DoujinHomePage({ searchParams }: HomePageProps) {
 				<DMMDoujinFeaturedItemContainer
 					from='top'
 					bgGradient='bg-gradient-to-r from-blue-50 to-purple-50'
-					endpoint='/api/doujin-get-top-newrelease-items'
-					title={titles.newrelease}
-					linkText={linkTexts.newrelease}
-					linkHref='/newrelease'
+					endpoint='/api/doujin-get-top-feature-items'
+					title={titles.feature}
+					linkText={linkTexts.feature}
+					linkHref='/feature'
+					umamifrom='top-doujin-sale'
+					textGradient='from-blue-500 to-purple-500'
+				/>
+
+				<DMMDoujinFeaturedItemContainer
+					from='top'
+					bgGradient='bg-gradient-to-r from-blue-50 to-purple-50'
+					endpoint='/api/doujin-get-top-rank-items'
+					title={titles.rank}
+					linkText={linkTexts.rank}
+					linkHref='/rank'
 					umamifrom='top-doujin-sale'
 					textGradient='from-blue-500 to-purple-500'
 				/>
@@ -51,17 +62,6 @@ export default function DoujinHomePage({ searchParams }: HomePageProps) {
 					umamifrom='top-doujin-sale'
 					textGradient='from-blue-500 to-purple-500'
 				/>
-
-				{/* <DMMDoujinFeaturedItemContainer
-					from="top"
-					bgGradient="bg-gradient-to-r from-blue-50 to-purple-50"
-					endpoint="/api/doujin-get-top-popular-circles-items"
-					title={titles.circle}
-					linkText={linkTexts.circle}
-					linkHref="/doujin-sale"
-					umamifrom="top-doujin-sale"
-					textGradient="from-blue-500 to-purple-500"
-				/> */}
 			</section>
 		</>
 	)
@@ -77,19 +77,19 @@ const gradients = {
 }
 
 const titles = {
-	newrank: '人気作品',
-	newrelease: '新着作品',
+	rank: '人気作品',
+	todaynew: '新着作品',
 	review: '評価の高い作品',
 	sale: '限定セール',
-	circle: '人気サークル',
-	genre: 'ジャンル',
+	feature: 'これから発売される注目作品一覧',
+	last7days: '過去1週間以内に発売された新作アダルト動画一覧',
 }
 
 const linkTexts = {
-	newrank: '全ての人気商品を見る',
-	newrelease: '全ての新着作品を見る',
+	rank: '全ての人気商品を見る',
+	todaynew: '全ての新着作品を見る',
 	review: '全ての評価の高い作品を見る',
 	sale: '全ての限定セール商品を見る',
-	circle: '全ての人気サークルを見る',
-	genre: '全てのジャンルを見る',
+	feature: '全てのこれから発売される注目作品を見る',
+	last7days: '全ての過去1週間以内に発売された新作アダルト動画を見る',
 }

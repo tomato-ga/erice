@@ -38,10 +38,11 @@ export type UmamiFeatureType = '/sale' | '/todaynew' | '/debut' | '/feature' | '
 
 export type DMMDoujinFeaturedItemType =
 	| '/sale'
-	| '/newrank'
-	| '/newrelease'
-	| '/popular-circles'
+	| '/rank'
+	| '/todaynew'
 	| '/review'
+	| '/feature'
+	| '/last7days'
 
 export type CombinedFeatureType = UmamiFeatureType | DMMDoujinFeaturedItemType | '/top100'
 

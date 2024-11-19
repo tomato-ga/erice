@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 			return NextResponse.json({ error: 'Configuration error' }, { status: 500 })
 		}
 
-		const response = await fetch(`${WORKER_URL}?key=review`, {
+		const response = await fetch(`${WORKER_URL}?key=feature`, {
 			headers: {
 				'X-API-Key': apiKey,
 				'Content-Type': 'application/json',
