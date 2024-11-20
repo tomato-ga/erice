@@ -24,6 +24,7 @@ const VideoPlayer = ({ src }: { src: string | null | undefined }) => {
 		<div className='max-w-full' style={{ overflow: 'hidden' }}>
 			<iframe
 				src={src}
+				loading='lazy'
 				width={width}
 				height={height} // 必要に応じて高さを調整
 				allow='autoplay'
