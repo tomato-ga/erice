@@ -1,4 +1,4 @@
-import { DoujinTopItem } from '@/_types_doujin/doujintypes'
+import { DoujinKobetuItem } from '@/_types_doujin/doujintypes'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(req: NextRequest, res: NextResponse) {
@@ -22,9 +22,9 @@ export async function GET(req: NextRequest, res: NextResponse) {
 		const response = await fetch(`${WORKER_URL}/doujin?db_id=${dbId}`, {
 			headers: {
 				'Content-Type': 'application/json',
-				'X-API-Key': API_KEY
+				'X-API-Key': API_KEY,
 			},
-			cache: 'force-cache'
+			cache: 'force-cache',
 		})
 
 		if (response.status === 404) {
@@ -37,14 +37,15 @@ export async function GET(req: NextRequest, res: NextResponse) {
 			throw new Error(`Cloudflare Workerからのデータ取得に失敗しました: ${response.status}`)
 		}
 
-		const data: DoujinTopItem = await response.json()
+		const rawData: DoujinKobetuItem = await response.json()
+		console.log('Received raw data from Worker:', rawData)
 
-		// Convert DoujinItem to DoujinTopItem if necessary
-		console.log('doujin APIルート:', data)
-
-		return NextResponse.json(data)
+		return NextResponse.json({ success: true, rawData })
 	} catch (error) {
 		console.error('APIルートでエラーが発生しました:', error)
-		return NextResponse.json({ error: 'サーバー内部エラー', details: (error as Error).message }, { status: 500 })
+		return NextResponse.json(
+			{ error: 'サーバー内部エラー', details: (error as Error).message },
+			{ status: 500 },
+		)
 	}
 }

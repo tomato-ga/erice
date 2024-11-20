@@ -143,7 +143,7 @@ export default async function DMMDoujinFeaturedItemContainer({
 	const items = await fetcDoujinTopData(endpoint)
 
 	console.log('DMMDoujinFeaturedItemContainer endpoint:', endpoint)
-	console.log('DMMDoujinFeaturedItemContainer items:', items[0], items[1])
+	console.log('DMMDoujinFeaturedItemContainer items length:', items.length)
 
 	// itemsが空の場合にエラーメッセージを表示
 	if (!items || items.length === 0) {

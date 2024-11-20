@@ -158,7 +158,7 @@ const ItemDetailsTable: React.FC<{ item: DoujinKobetuItem }> = ({ item }) => {
 }
 
 // メタデータ生成の強化
-// TODO
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	try {
 		const item = await fetchItemData(params.dbId)
@@ -213,14 +213,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 // アイテムデータの取得関数
 async function fetchItemData(dbId: string): Promise<DoujinKobetuItem> {
-	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/doujin-item?db_id=${dbId}`, {
-		next: { revalidate: 3600 },
-	})
+	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/doujin-item?db_id=${dbId}`)
+	const data = await res.json()
+	console.log('/doujin/itemd/[dbId] API response data:', data)
 
-	if (!res.ok) {
+	if (!res.ok || !data || !data.success) {
 		throw new Error(`Failed to fetch item data: ${res.status} ${res.statusText}`)
 	}
-	return res.json()
+	return data.rawData
 }
 
 // ローディングスピナーのコンポーネント
@@ -237,7 +237,7 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 	try {
 		const item = await fetchItemData(params.dbId)
 
-		console.log('item', item)
+		console.log('DoujinKobetuItemPage item:', item)
 
 		const description = (() => {
 			const parts = []

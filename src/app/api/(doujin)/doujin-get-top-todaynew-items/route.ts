@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
 		}
 
 		const rawData = await response.json()
-		console.log('Raw data from Worker:', rawData.kvDatas?.[0], rawData.kvDatas?.[1])
+		
 
 		// スキーマ検証と変換
 		const validatedData = DoujinKVApiResponseSchema.safeParse(rawData)
