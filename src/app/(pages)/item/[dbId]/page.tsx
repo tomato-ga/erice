@@ -220,7 +220,7 @@ export default async function DMMKobetuItemPage({
 											alt={`${itemMain.title}のパッケージ画像`}
 											className='w-full h-full object-contain transition-transform duration-300'
 											decoding='async'
-											loading='lazy'
+											loading='eager'
 											fetchPriority='high'
 										/>
 									</Link>
