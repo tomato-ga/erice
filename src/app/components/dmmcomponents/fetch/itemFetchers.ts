@@ -116,22 +116,39 @@ export async function fetchItemMainByContentId(dbId: number): Promise<DMMItemMai
 			`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-get-one-item-main?db_id=${dbId}`,
 			{
 				next: {
-					revalidate: 2592000, // 1ヶ月（30日）
+					revalidate: 2592000,
 					tags: [`item-main-${dbId}`],
 				},
 			},
 		)
 		const data: unknown = await response.json()
 
-		// console.log('Raw API response fetchItemMainByContentId:', data)
-
-		if (typeof data === 'object' && data !== null) {
+		// 新しい形式のレスポンス構造に対応
+		if (
+			typeof data === 'object' &&
+			data !== null &&
+			'items' in data &&
+			typeof data.items === 'object' &&
+			data.items !== null &&
+			'data' in data.items &&
+			Array.isArray(data.items.data) &&
+			data.items.data.length > 0
+		) {
+			const itemData = data.items.data[0] // 最初のアイテムを取得
+			const parseResult = DMMItemMainResponseSchema.safeParse(itemData)
+			if (parseResult.success) {
+				revalidateTag(`item-main-${parseResult.data.content_id}`)
+				return parseResult.data
+			}
+		} else if (typeof data === 'object' && data !== null) {
+			// 従来の形式も維持（フォールバック）
 			const parseResult = DMMItemMainResponseSchema.safeParse(data)
 			if (parseResult.success) {
 				revalidateTag(`item-main-${parseResult.data.content_id}`)
 				return parseResult.data
 			}
 		}
+
 		console.error('Unexpected data format:', data)
 		return null
 	} catch (error) {
@@ -251,18 +268,13 @@ export async function fetchSeriesStats(seriesName: string): Promise<Stats | null
 			`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-series-stats?seriesname=${encodeURIComponent(seriesName)}`,
 		)
 
-		// リクエストが成功したかどうかをチェック
 		if (!response.ok) {
-			throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`)
+			return null
 		}
 
-		// JSONとしてレスポンスを取得
 		const data = (await response.json()) as Stats
-		// console.log('Fetched series stats data in JSON format:', JSON.stringify(data, null, 2))
-
 		return data
 	} catch (error) {
-		console.error('Failed to fetch series stats:', error)
 		return null
 	}
 }
