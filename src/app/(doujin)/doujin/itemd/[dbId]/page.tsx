@@ -337,6 +337,9 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 										<img
 											src={item.package_images?.large || ''}
 											alt={`${item.title}のパッケージ画像`}
+											decoding='async'
+											loading='lazy'
+											fetchPriority='high'
 											className='w-full h-full object-contain transition-transform duration-300'
 										/>
 									</Link>
