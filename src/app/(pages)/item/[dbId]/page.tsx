@@ -53,6 +53,10 @@ const DynamicBreadcrumb = dynamic(() => import('@/app/components/dmmcomponents/D
 	ssr: false,
 })
 
+const DynamicRelatedItemsScroll = dynamic(
+	() => import('@/app/components/dmmcomponents/Related/RelatedItemsScroll'),
+)
+
 import { CampaignLinksProps } from '@/app/components/dmmcomponents/DMMCampaignNames'
 import { getItemData, preload } from '@/app/components/dmmcomponents/fetch/item-fetch-pre'
 import Iho from '@/app/components/iho/iho'
@@ -216,7 +220,7 @@ export default async function DMMKobetuItemPage({
 											alt={`${itemMain.title}のパッケージ画像`}
 											className='w-full h-full object-contain transition-transform duration-300'
 											decoding='async'
-											loading='eager'
+											loading='lazy'
 											fetchPriority='high'
 										/>
 									</Link>
@@ -316,7 +320,7 @@ export default async function DMMKobetuItemPage({
 
 						<Suspense fallback={<LoadingSpinner />}>
 							{relatedItemsData.map(({ type, items }) => (
-								<RelatedItemsScroll
+								<DynamicRelatedItemsScroll
 									key={type}
 									items={items}
 									itemType={type}

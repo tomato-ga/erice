@@ -48,6 +48,8 @@ const RelatedItemsScroll: React.FC<RelatedItemsScrollProps> = ({ items, itemType
 										alt={item.title}
 										className='w-full h-40 object-contain'
 										loading='lazy'
+										decoding='async'
+										fetchPriority='low'
 									/>
 									<div className='p-4'>
 										<h4 className='text-sm font-semibold mb-2 line-clamp-2'>{item.title}</h4>
