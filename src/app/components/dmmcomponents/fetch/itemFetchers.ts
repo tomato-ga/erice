@@ -600,7 +600,7 @@ export const fetchThreeSizeActresses = async (
 	console.log('Fetching three size data with:', threeSize, 'and actressId:', actressId)
 
 	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-threesize`, {
+		const response = await fetch('/api/dmm-actress-threesize', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -619,7 +619,6 @@ export const fetchThreeSizeActresses = async (
 
 		// レスポンスの型検証とキャスト
 		const validatedData = ThreeSizeResponseSchema.parse(rawData)
-		console.log('Validated response data:', validatedData)
 
 		return validatedData
 	} catch (error) {
