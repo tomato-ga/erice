@@ -19,7 +19,6 @@ interface DMMDoujinFeaturedItemContainerProps {
 }
 
 async function fetcDoujinTopData(endpoint: string): Promise<DoujinTopItem[]> {
-	const fetchOptions = { next: { revalidate: 43200 } }
 	const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
 	if (!apiUrl) {
@@ -28,7 +27,7 @@ async function fetcDoujinTopData(endpoint: string): Promise<DoujinTopItem[]> {
 	}
 
 	try {
-		const response = await fetch(`${apiUrl}${endpoint}`, fetchOptions)
+		const response = await fetch(`${apiUrl}${endpoint}`, { cache: 'no-store' })
 		if (!response.ok) {
 			throw new Error(`HTTP error! status: ${response.status}`)
 		}
@@ -67,7 +66,7 @@ const DMMDoujinFeaturedItemCard = ({
 }) => {
 	return (
 		<div className='bg-white rounded-lg overflow-hidden transition duration-300 ease-in-out transform shadow-md flex flex-col h-full'>
-			<Link href={`/doujin/itemd/${item.db_id}`}>
+			<Link href={`/doujin/itemd/${item.db_id}`} prefetch={true}>
 				<div className='relative overflow-hidden bg-gray-100 p-4'>
 					<img
 						src={item.imageURL?.large || ''}
@@ -190,5 +189,3 @@ export default async function DMMDoujinFeaturedItemContainer({
 		</div>
 	)
 }
-
-export const revalidate = 43200
