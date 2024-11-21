@@ -35,6 +35,9 @@ const Timeline = ({ items, title }: TimelineProps) => {
 											<img
 												src={item.package_images.large}
 												alt={`${item.title}の画像です。`}
+												decoding='async'
+												loading='lazy'
+												fetchPriority='low'
 												className='absolute top-0 left-0 w-full h-full object-contain'
 											/>
 										)}
