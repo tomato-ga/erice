@@ -1,4 +1,9 @@
-import DMMDoujinFeaturedItemContainer from '@/app/components/doujincomponents/DMMDoujinFeaturedItemContainer'
+// import DMMDoujinFeaturedItemContainer from '@/app/components/doujincomponents/DMMDoujinFeaturedItemContainer'
+import dynamic from 'next/dynamic'
+
+const DynamicDMMDoujinFeaturedItemContainer = dynamic(
+	() => import('@/app/components/doujincomponents/DMMDoujinFeaturedItemContainer'),
+)
 
 interface HomePageProps {
 	searchParams: { page?: string }
@@ -19,7 +24,7 @@ export default function DoujinHomePage({ searchParams }: HomePageProps) {
 					textGradient='from-blue-500 to-purple-500'
 				/> */}
 
-				<DMMDoujinFeaturedItemContainer
+				<DynamicDMMDoujinFeaturedItemContainer
 					from='top'
 					bgGradient='bg-gradient-to-r from-blue-50 to-purple-50'
 					endpoint='/api/doujin-get-top-todaynew-items'
@@ -30,7 +35,7 @@ export default function DoujinHomePage({ searchParams }: HomePageProps) {
 					textGradient='from-blue-500 to-purple-500'
 				/>
 
-				<DMMDoujinFeaturedItemContainer
+				<DynamicDMMDoujinFeaturedItemContainer
 					from='top'
 					bgGradient='bg-gradient-to-r from-blue-50 to-purple-50'
 					endpoint='/api/doujin-get-top-feature-items'
@@ -41,7 +46,7 @@ export default function DoujinHomePage({ searchParams }: HomePageProps) {
 					textGradient='from-blue-500 to-purple-500'
 				/>
 
-				<DMMDoujinFeaturedItemContainer
+				<DynamicDMMDoujinFeaturedItemContainer
 					from='top'
 					bgGradient='bg-gradient-to-r from-blue-50 to-purple-50'
 					endpoint='/api/doujin-get-top-rank-items'
@@ -52,7 +57,7 @@ export default function DoujinHomePage({ searchParams }: HomePageProps) {
 					textGradient='from-blue-500 to-purple-500'
 				/>
 
-				<DMMDoujinFeaturedItemContainer
+				<DynamicDMMDoujinFeaturedItemContainer
 					from='top'
 					bgGradient='bg-gradient-to-r from-blue-50 to-purple-50'
 					endpoint='/api/doujin-get-top-review-items'

@@ -1,8 +1,10 @@
-import DMMActressItemContainer from './components/dmmcomponents/DMMActressItemContainer'
-
 // import DMMTopFeaturedItemContainer from './components/dmmcomponents/DMMFeaturedItemContainer'
+import dynamic from 'next/dynamic'
 import DMMFeaturedItemContainer from './components/dmmcomponents/DMMFeaturedItemContainer'
-import DMMFeaturesItemContainer from './components/dmmcomponents/DMMTopFeaturesItemList'
+
+const DynamicDMMFeaturedItemContainer = dynamic(
+	() => import('./components/dmmcomponents/DMMFeaturedItemContainer'),
+)
 
 interface HomePageProps {
 	searchParams: { page?: string }
@@ -23,7 +25,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
 					textGradient='from-blue-500 to-purple-500'
 				/> */}
 
-				<DMMFeaturedItemContainer
+				<DynamicDMMFeaturedItemContainer
 					from='top'
 					bgGradient='bg-gradient-to-r from-yellow-50 to-red-50'
 					endpoint='/api/dmm-debut-getkv'
@@ -34,7 +36,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
 					textGradient='from-yellow-500 to-red-500'
 				/>
 
-				<DMMFeaturedItemContainer
+				<DynamicDMMFeaturedItemContainer
 					from='top'
 					bgGradient='bg-gradient-to-r from-pink-50 to-purple-50'
 					endpoint='/api/dmm-feature-getkv'
@@ -45,7 +47,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
 					textGradient='from-pink-500 to-purple-500'
 				/>
 
-				<DMMFeaturedItemContainer
+				<DynamicDMMFeaturedItemContainer
 					from='top'
 					bgGradient='bg-gradient-to-r from-green-50 to-blue-50'
 					endpoint='/api/dmm-todaynew-getkv'
@@ -70,7 +72,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
 
 				{/* MEMO 2024/11/13 KVへ格納するアイテムの修正 */}
 
-				<DMMFeaturedItemContainer
+				<DynamicDMMFeaturedItemContainer
 					from='top'
 					bgGradient='bg-gradient-to-r from-emerald-50 to-yellow-50'
 					endpoint='/api/dmm-last7days-getkv'
