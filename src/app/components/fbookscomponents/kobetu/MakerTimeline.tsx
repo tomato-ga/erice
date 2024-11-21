@@ -1,8 +1,11 @@
 import { Stats } from '@/_types_dmm/statstype'
 // /app/maker_timeline/page.tsx
 import { TimelineApiResponse } from '@/_types_doujin/doujintypes'
-import DoujinMakerStats from '../../dmmcomponents/Stats/DoujinMakerStats'
-import Timeline from './Timeline'
+import dynamic from 'next/dynamic'
+
+
+const DynamicDoujinMakerStats = dynamic(() => import('../../dmmcomponents/Stats/DoujinMakerStats'))
+const DynamicTimeline = dynamic(() => import('./Timeline'))
 
 interface MakerTimelinePageProps {
 	searchParams: { maker_id?: string; maker_name?: string }
@@ -53,12 +56,12 @@ const MakerTimelinePage = async ({ searchParams }: MakerTimelinePageProps) => {
 
 		return (
 			<>
-				<DoujinMakerStats
+				<DynamicDoujinMakerStats
 					makerStatsData={statsData}
 					makerName={makerName || ''}
 					isSummary={false}
 				/>
-				<Timeline items={data} title={`${makerName}の発売作品タイムライン`} />
+				<DynamicTimeline items={data} title={`${makerName}の発売作品タイムライン`} />
 			</>
 		)
 	} catch (error) {

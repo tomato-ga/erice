@@ -1,8 +1,12 @@
 import { Stats } from '@/_types_dmm/statstype'
 // /app/series_timeline/page.tsx
 import { TimelineApiResponse } from '@/_types_doujin/doujintypes'
-import DoujinSeriesStats from '../../dmmcomponents/Stats/DoujinSeriesStats'
-import Timeline from './Timeline'
+import dynamic from 'next/dynamic'
+
+const DynamicDoujinSeriesStats = dynamic(
+	() => import('../../dmmcomponents/Stats/DoujinSeriesStats'),
+)
+const DynamicTimeline = dynamic(() => import('./Timeline'))
 
 interface SeriesTimelinePageProps {
 	searchParams: { series_id?: string; series_name?: string }
@@ -54,12 +58,12 @@ const SeriesTimelinePage = async ({ searchParams }: SeriesTimelinePageProps) => 
 
 		return (
 			<>
-				<DoujinSeriesStats
+				<DynamicDoujinSeriesStats
 					seriesStatsData={statsData}
 					seriesName={seriesName || ''}
 					isSummary={false}
 				/>
-				<Timeline items={data} title={`${seriesName}シリーズの発売作品タイムライン`} />
+				<DynamicTimeline items={data} title={`${seriesName}シリーズの発売作品タイムライン`} />
 			</>
 		)
 	} catch (error) {

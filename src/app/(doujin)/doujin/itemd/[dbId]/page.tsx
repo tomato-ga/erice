@@ -370,20 +370,24 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 								</Suspense>
 							)}
 							{item.series && item.series.length > 0 && (
-								<DynamicSeriesTimeline
-									searchParams={{
-										series_id: item.series[0].id.toString(),
-										series_name: item.series[0].name,
-									}}
-								/>
+								<Suspense fallback={<LoadingSpinner />}>
+									<DynamicSeriesTimeline
+										searchParams={{
+											series_id: item.series[0].id.toString(),
+											series_name: item.series[0].name,
+										}}
+									/>
+								</Suspense>
 							)}
 							{item.makers && item.makers.length > 0 && (
-								<DynamicMakerTimeline
-									searchParams={{
-										maker_id: item.makers[0].id.toString(),
-										maker_name: item.makers[0].name,
-									}}
-								/>
+								<Suspense fallback={<LoadingSpinner />}>
+									<DynamicMakerTimeline
+										searchParams={{
+											maker_id: item.makers[0].id.toString(),
+											maker_name: item.makers[0].name,
+										}}
+									/>
+								</Suspense>
 							)}
 							<Iho />
 							<div className='w-full text-sm text-center my-4'>
