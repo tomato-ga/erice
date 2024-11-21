@@ -3,7 +3,6 @@ import { Stats } from '@/_types_dmm/statstype'
 import { TimelineApiResponse } from '@/_types_doujin/doujintypes'
 import dynamic from 'next/dynamic'
 
-
 const DynamicDoujinMakerStats = dynamic(() => import('../../dmmcomponents/Stats/DoujinMakerStats'))
 const DynamicTimeline = dynamic(() => import('./Timeline'))
 
@@ -18,6 +17,7 @@ const MakerTimelinePage = async ({ searchParams }: MakerTimelinePageProps) => {
 		return
 	}
 
+	// TODO Promise.allにする
 	try {
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_API_URL}/api/doujin-maker-timeline?maker_id=${makerId}`,

@@ -20,6 +20,7 @@ const SeriesTimelinePage = async ({ searchParams }: SeriesTimelinePageProps) => 
 		return
 	}
 
+	// TODO Promise.allにする
 	try {
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_API_URL}/api/doujin-series-timeline?series_id=${seriesId}`,

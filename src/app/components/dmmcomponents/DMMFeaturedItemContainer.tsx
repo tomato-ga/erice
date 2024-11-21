@@ -8,13 +8,13 @@ import { UmamiTracking } from './UmamiTracking'
 import { fetchData } from './fetch/itemFetchers'
 
 // shuffleArray 関数を追加
-const shuffleArray = <T,>(array: T[]): T[] => {
-	for (let i = array.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1))
-		;[array[i], array[j]] = [array[j], array[i]]
-	}
-	return array
-}
+// const shuffleArray = <T,>(array: T[]): T[] => {
+// 	for (let i = array.length - 1; i > 0; i--) {
+// 		const j = Math.floor(Math.random() * (i + 1))
+// 		;[array[i], array[j]] = [array[j], array[i]]
+// 	}
+// 	return array
+// }
 
 interface DMMFeaturedItemContainerProps<T extends DMMFeaturedItemProps> {
 	from: string
@@ -101,7 +101,7 @@ const DMMFeaturedItemList = <T extends DMMFeaturedItemProps>({
 			// トップページから /last7days を呼び出す場合、16件目以降の8件を表示
 			return (
 				<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-					{shuffleArray(items)
+					{items
 						.slice(16, 24) // 16件目から24件目（8件）
 						.map(item => (
 							<div key={item.content_id}>
@@ -121,7 +121,7 @@ const DMMFeaturedItemList = <T extends DMMFeaturedItemProps>({
 		// トップページからその他のタイプを呼び出す場合、8件のみ表示
 		return (
 			<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-				{shuffleArray(items)
+				{items
 					.slice(0, 8) // 最初の8件
 					.map(item => (
 						<div key={item.content_id}>
@@ -143,7 +143,7 @@ const DMMFeaturedItemList = <T extends DMMFeaturedItemProps>({
 		// /last7days ページから呼び出す場合、全て表示
 		return (
 			<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-				{shuffleArray(items).map(item => (
+				{items.map(item => (
 					<div key={item.content_id}>
 						<DMMFeaturedItemCard
 							item={item}
@@ -162,7 +162,7 @@ const DMMFeaturedItemList = <T extends DMMFeaturedItemProps>({
 	// その他の場合は全件表示
 	return (
 		<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-			{shuffleArray(items).map(item => (
+			{items.map(item => (
 				<div key={item.content_id}>
 					<DMMFeaturedItemCard
 						item={item}
