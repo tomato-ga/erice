@@ -1,9 +1,9 @@
 // /Volumes/SSD_1TB/erice2/erice/src/app/(doujin)/doujin/itemd/[dbId]/page.tsx
 
-import { DoujinItemType, DoujinKobetuItem } from '@/_types_doujin/doujintypes'
+import { DoujinKobetuItem } from '@/_types_doujin/doujintypes'
 
 import { UmamiTracking } from '@/app/components/dmmcomponents/UmamiTracking'
-import { formatPrice } from '@/utils/typeGuards'
+// import { formatPrice } from '@/utils/typeGuards'
 import { ExternalLink } from 'lucide-react'
 import { Metadata } from 'next'
 import Link from 'next/link'
@@ -13,7 +13,9 @@ import { Suspense } from 'react'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table' // shadcnのテーブルコンポーネントをインポート
 import '@/app/_css/styles.css'
 
-import SeriesTimelinePage from '@/app/components/doujincomponents/kobetu/SeriesTimeline'
+// import SeriesTimelinePage from '@/app/components/doujincomponents/kobetu/SeriesTimeline'
+// import MakerTimelinePage from '@/app/components/fbookscomponents/kobetu/MakerTimeline'
+
 import {
 	generateDoujinBreadcrumbList,
 	generateDoujinKobetuItemStructuredData,
@@ -26,7 +28,6 @@ import FanzaADBannerKobetu from '@/app/components/doujincomponents/fanzaADBanner
 
 import React from 'react'
 
-import MakerTimelinePage from '@/app/components/fbookscomponents/kobetu/MakerTimeline'
 import Iho from '@/app/components/iho/iho'
 import dynamic from 'next/dynamic'
 
@@ -54,6 +55,14 @@ const DynamicBreadcrumb = dynamic(
 	{
 		ssr: false,
 	},
+)
+
+const DynamicSeriesTimeline = dynamic(
+	() => import('@/app/components/doujincomponents/kobetu/SeriesTimeline'),
+)
+
+const DynamicMakerTimeline = dynamic(
+	() => import('@/app/components/fbookscomponents/kobetu/MakerTimeline'),
 )
 
 const ItemDetailsTable: React.FC<{ item: DoujinKobetuItem }> = ({ item }) => {
@@ -361,7 +370,7 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 								</Suspense>
 							)}
 							{item.series && item.series.length > 0 && (
-								<SeriesTimelinePage
+								<DynamicSeriesTimeline
 									searchParams={{
 										series_id: item.series[0].id.toString(),
 										series_name: item.series[0].name,
@@ -369,7 +378,7 @@ export default async function DoujinKobetuItemPage({ params }: Props) {
 								/>
 							)}
 							{item.makers && item.makers.length > 0 && (
-								<MakerTimelinePage
+								<DynamicMakerTimeline
 									searchParams={{
 										maker_id: item.makers[0].id.toString(),
 										maker_name: item.makers[0].name,

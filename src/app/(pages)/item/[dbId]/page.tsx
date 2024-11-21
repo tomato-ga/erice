@@ -1,8 +1,6 @@
 // /app/(pages)/item/[dbId]/page.tsx
 
 import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
-import ItemDetails from '@/app/components/dmmcomponents/ItemDetails'
-import RelatedItemsScroll from '@/app/components/dmmcomponents/Related/RelatedItemsScroll'
 import { UmamiTracking } from '@/app/components/dmmcomponents/UmamiTracking'
 import {
 	fetchCampaignNames,
