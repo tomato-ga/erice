@@ -24,7 +24,8 @@ const FanzaADBannerFanzaKobetu: React.FC = () => {
 			newScript.className = 'widget-banner-script'
 			newScript.src =
 				'https://widget-view.dmm.co.jp/js/banner_placement.js?affiliate_id=kamipanmen-001&banner_id=1082_640_200'
-			newScript.async = true
+			// newScript.async = true
+			newScript.defer = true
 
 			newScript.onload = () => {
 				if (window.finzaRenderBanners) {
