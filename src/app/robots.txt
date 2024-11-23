@@ -7,6 +7,9 @@ Disallow: /keywords
 User-agent: *
 Disallow: /genre
 
+User-agent: *
+Disallow: /doujin/genre
+
 User-agent: SemrushBot
 Disallow: /
 
