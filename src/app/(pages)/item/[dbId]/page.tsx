@@ -3,6 +3,7 @@
 import ProductDetails from '@/app/components/dmmcomponents/DMMKobetuItemTable'
 import { UmamiTracking } from '@/app/components/dmmcomponents/UmamiTracking'
 import {
+	fetchActressProfile,
 	fetchCampaignNames,
 	fetchItemDetailByContentId,
 	fetchItemMainByContentId,
@@ -55,6 +56,7 @@ const DynamicRelatedItemsScroll = dynamic(
 	() => import('@/app/components/dmmcomponents/Related/RelatedItemsScroll'),
 )
 
+import { Stats } from '@/_types_dmm/statstype'
 import { CampaignLinksProps } from '@/app/components/dmmcomponents/DMMCampaignNames'
 import { getItemData, preload } from '@/app/components/dmmcomponents/fetch/item-fetch-pre'
 import Iho from '@/app/components/iho/iho'
@@ -86,17 +88,51 @@ function LoadingSpinner() {
 	)
 }
 
+// export async function generateMetadata({ params }: Props): Promise<Metadata> {
+// 	const { dbId } = params
+
+// 	preload(dbId)
+// 	const { itemMain, itemDetail } = await getItemData(dbId)
+// 	// const { itemMain, itemDetail } = await getPageData(dbId) // getPageDataで取得済みのデータを使用
+
+// 	let title = 'エロコメスト'
+// 	let description = '詳細ページ'
+
+// 	if (itemMain && itemDetail) {
+// 		const newDescription = (() => {
+// 			const parts = []
+// 			if (itemDetail.date) parts.push(`${formatDate(itemDetail.date)}配信開始の、`)
+// 			if (itemDetail.actress) parts.push(`${itemDetail.actress}が出演するエロ動画作品`)
+// 			parts.push(
+// 				`「${itemMain.title} - (${itemMain.content_id})」のキャプチャ画面とダウンロード情報、無料サンプル動画。`,
+// 			)
+// 			if (itemDetail.actress)
+// 				parts.push(
+// 					`${itemDetail.actress}さんのレビュー統計データと出演作品を発売順で紹介しています。`,
+// 				)
+// 			return parts.join('')
+// 		})()
+// 		title = `${itemMain.title} - ${itemMain.content_id}`
+// 		description = newDescription
+// 	}
+
+// 	return { title, description }
+// }
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const { dbId } = params
 
+	// 必要なデータを事前ロード
 	preload(dbId)
 	const { itemMain, itemDetail } = await getItemData(dbId)
-	// const { itemMain, itemDetail } = await getPageData(dbId) // getPageDataで取得済みのデータを使用
 
+	// デフォルトのメタデータ
 	let title = 'エロコメスト'
 	let description = '詳細ページ'
+	let robots = 'index, follow' // デフォルトはindex, follow
 
 	if (itemMain && itemDetail) {
+		// タイトルと説明文の生成（既存コード）
 		const newDescription = (() => {
 			const parts = []
 			if (itemDetail.date) parts.push(`${formatDate(itemDetail.date)}配信開始の、`)
@@ -104,17 +140,48 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			parts.push(
 				`「${itemMain.title} - (${itemMain.content_id})」のキャプチャ画面とダウンロード情報、無料サンプル動画。`,
 			)
-			if (itemDetail.actress)
+			if (itemDetail.actress) {
 				parts.push(
 					`${itemDetail.actress}さんのレビュー統計データと出演作品を発売順で紹介しています。`,
 				)
+			}
 			return parts.join('')
 		})()
 		title = `${itemMain.title} - ${itemMain.content_id}`
 		description = newDescription
+
+		// 女優名を取得
+		const actressNames = itemDetail.actress?.split(',').map(name => name.trim())
+		let actressStatsExists = false
+
+		if (actressNames && actressNames.length > 0) {
+			const actressName = actressNames[0] // 最初の女優名のみ使用
+
+			// 女優プロフィールを取得してactress_idを取得
+			const actressProfiles = await fetchActressProfile(actressName)
+			const actressProfileData = actressProfiles ? actressProfiles[0] : null
+
+			if (actressProfileData) {
+				const actressId = actressProfileData.actress.id
+
+				// actress_idを使用してactressStatsを取得
+				const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/dmm-actress-stats?actress_id=${actressId}`
+				const response = await fetch(apiUrl, { next: { revalidate: 2419200 } })
+				const actressStats = (await response.json()) as Stats
+
+				// actressStatsの存在確認
+				if (actressStats.metadata && actressStats.timeSeriesData && actressStats.annualData) {
+					actressStatsExists = true
+				}
+			}
+		}
+
+		// `robots`をactressStatsの有無に応じて設定
+		robots = actressStatsExists ? 'index, follow' : 'noindex, nofollow'
 	}
 
-	return { title, description }
+	// メタデータを返す
+	return { title, description, robots }
 }
 
 export default async function DMMKobetuItemPage({
