@@ -199,6 +199,7 @@ export interface PaginationResponse {
 	currentPage: number
 	totalPages: number
 	category?: string
+	maker_id?: number
 }
 
 // Zod schema for pagination item
@@ -215,4 +216,5 @@ export const PaginationResponseSchema = z.object({
 	currentPage: z.number(),
 	totalPages: z.number(),
 	category: z.string().optional(),
+	maker_id: z.number().optional(),
 })

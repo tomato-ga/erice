@@ -1,16 +1,20 @@
 // File: app/makers/[...slug]/page.tsx
 
+import { Stats } from '@/_types_dmm/statstype'
 import { PaginationResponse } from '@/_types_doujin/doujintypes'
 import DMMItemContainerPagination from '@/app/components/dmmcomponents/Pagination/Pagination'
 import { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
+
+const DynamicDoujinMakerStats = dynamic(
+	() => import('@/app/components/dmmcomponents/Stats/DoujinMakerStats'),
+)
 
 interface PageProps {
 	params: { slug?: string[] }
 }
-
-const SITE_NAME = 'エロコメスト'
 
 function decodeAndEncodeMakerName(encodedName: string): string {
 	try {
@@ -22,24 +26,68 @@ function decodeAndEncodeMakerName(encodedName: string): string {
 	}
 }
 
-export function generateMetadata({ params }: PageProps): Promise<Metadata> {
+// 共通の型定義
+interface MakerData {
+	paginationData: PaginationResponse
+	statsData?: Stats
+}
+
+// 共通のfetch関数
+async function fetchMakerData(makername: string, currentPage: number): Promise<MakerData> {
+	const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/doujin-maker-pagination?maker=${encodeURIComponent(
+		makername,
+	)}&page=${currentPage}`
+
+	const response = await fetch(apiUrl, { next: { revalidate: 10080 } })
+
+	if (!response.ok) {
+		throw new Error('API request failed.')
+	}
+
+	const paginationData = (await response.json()) as PaginationResponse
+
+	// statsDataの取得
+	let statsData: Stats | undefined
+	if (paginationData.maker_id) {
+		const statsResponse = await fetch(
+			`${process.env.NEXT_PUBLIC_API_URL}/api/doujin-maker-stats?maker_id=${paginationData.maker_id}`,
+			{ cache: 'force-cache' },
+		)
+		statsData = await statsResponse.json()
+	}
+
+	return { paginationData, statsData }
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	const [encodedMakerName, , page] = params.slug || []
 	const currentPage = page ? Number.parseInt(page, 10) : 1
 
 	if (!encodedMakerName) {
-		return Promise.resolve({
-			title: 'ページが見つかりません | ' + SITE_NAME,
+		return {
+			title: 'ページが見つかりません',
 			description: '指定されたページは存在しません。',
-		})
+		}
 	}
 
 	const makername = decodeURIComponent(decodeAndEncodeMakerName(encodedMakerName))
 
 	try {
-		const pageTitle = `${makername} ${currentPage > 1 ? ` - ページ ${currentPage}` : ''} | ${SITE_NAME}`
-		const description = `${makername} の作品一覧です。${currentPage}ページ目を表示しています。`
+		const { statsData } = await fetchMakerData(makername, currentPage)
 
-		return Promise.resolve({
+		const pageTitle = `${makername} ${currentPage > 1 ? ` - ページ ${currentPage}` : ''}`
+		const description = `${makername}の同人作品一覧ページです。
+		${makername}の総レビュー数は${statsData?.metadata?.total_review_count ? `${statsData.metadata.total_review_count}件、` : ''}${
+			statsData?.metadata?.overall_review_average
+				? `総レビュー平均点は${statsData.metadata.overall_review_average.toFixed(1)}点、`
+				: ''
+		}${
+			statsData?.metadata?.weighted_average
+				? `レビューの加重平均評価は${statsData.metadata.weighted_average.toFixed(1)}点です。`
+				: ''
+		}`
+
+		return {
 			title: pageTitle,
 			description: description,
 			openGraph: {
@@ -51,13 +99,13 @@ export function generateMetadata({ params }: PageProps): Promise<Metadata> {
 				title: pageTitle,
 				description: description,
 			},
-		})
+		}
 	} catch (error) {
 		console.error('[Server] Failed to fetch metadata:', error)
-		return Promise.resolve({
-			title: `${makername} | ${SITE_NAME}`,
+		return {
+			title: `${makername}`,
 			description: `${makername} の作品一覧です。`,
-		})
+		}
 	}
 }
 
@@ -84,34 +132,22 @@ export default async function MakerPaginationPage({ params }: PageProps) {
 	}
 
 	try {
-		// APIリクエストのURLを出力
-		const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/doujin-maker-pagination?maker=${encodeURIComponent(
-			makername,
-		)}&page=${currentPage}`
-		console.log('APIリクエストURL:', apiUrl) // リクエストURLを出力
-
-		const response = await fetch(apiUrl, { next: { revalidate: 10080 } })
-
-		// レスポンスのステータスコードを出力
-		console.log('メーカー レスポンスステータスコード:', response.status)
-
-		if (!response.ok) {
-			throw new Error('API request failed.')
-		}
-
-		const data = (await response.json()) as PaginationResponse
-
-		// レスポンスデータを出力
-		console.log('APIレスポンスデータ:', data) // レスポンスデータを出力
+		const { paginationData, statsData } = await fetchMakerData(makername, currentPage)
 
 		return (
 			<section className='max-w-7xl mx-auto'>
 				<Suspense fallback={<LoadingSpinner />}>
-					{/* DMMItemContainerPagination に props を渡す */}
+					{statsData && (
+						<DynamicDoujinMakerStats
+							makerStatsData={statsData}
+							makerName={makername}
+							isSummary={false}
+						/>
+					)}
 					<DMMItemContainerPagination
-						items={data.items}
-						currentPage={data.currentPage}
-						totalPages={data.totalPages}
+						items={paginationData.items}
+						currentPage={paginationData.currentPage}
+						totalPages={paginationData.totalPages}
 						category={makername}
 						categoryType='doujinpagination'
 					/>
