@@ -28,6 +28,7 @@ import FanzaADBannerKobetu from '@/app/components/doujincomponents/fanzaADBanner
 
 import React from 'react'
 
+import { Stats } from '@/_types_dmm/statstype'
 import Iho from '@/app/components/iho/iho'
 import dynamic from 'next/dynamic'
 
@@ -172,6 +173,40 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	try {
 		const item = await fetchItemData(params.dbId)
 		const title = `${item.title} - ${item.content_id}`
+
+		let makerStatsData: Stats | null = null
+		if (item.makers) {
+			try {
+				const statsResponse = await fetch(
+					`${process.env.NEXT_PUBLIC_API_URL}/api/doujin-maker-stats?maker_id=${item.makers[0].id}`,
+					{
+						cache: 'force-cache',
+					},
+				)
+				makerStatsData = await statsResponse.json()
+			} catch (error) {
+				console.error('Error fetching maker stats:', error)
+			}
+		}
+
+		let seriesStatsData: Stats | null = null
+		if (item.series) {
+			try {
+				const seriresstatsResponse = await fetch(
+					`${process.env.NEXT_PUBLIC_API_URL}/api/doujin-series-stats?series_id=${item.series[0].id}`,
+					{
+						cache: 'force-cache',
+					},
+				)
+				seriesStatsData = await seriresstatsResponse.json()
+			} catch (error) {
+				console.error('Error fetching series stats:', error)
+			}
+		}
+
+		// robotsの設定を文字列で決定
+		const robots = makerStatsData || seriesStatsData ? 'index, follow' : 'noindex, nofollow'
+
 		const description = (() => {
 			const parts = []
 			parts.push(
@@ -210,12 +245,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		return {
 			title,
 			description,
+			robots,
 		}
 	} catch (error) {
 		console.error('Error generating metadata:', error)
 		return {
 			title: 'エロコメスト - 商品詳細',
 			description: '商品詳細ページです。',
+			robots: 'noindex, nofollow',
 		}
 	}
 }
