@@ -8,6 +8,9 @@ User-agent: *
 Disallow: /genre
 
 User-agent: *
+Disallow: /post
+
+User-agent: *
 Disallow: /doujin/genre
 
 User-agent: SemrushBot
