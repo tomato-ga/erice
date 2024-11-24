@@ -11,6 +11,9 @@ User-agent: *
 Disallow: /post
 
 User-agent: *
+Disallow: /itema
+
+User-agent: *
 Disallow: /doujin/genre
 
 User-agent: SemrushBot
