@@ -11,7 +11,7 @@ import Link from 'next/link'
 async function fetchData(): Promise<ProcessedDMMItem[]> {
 	try {
 		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dmm-newdebut-getkv`, {
-			cache: 'no-cache'
+			cache: 'no-store'
 		})
 		if (!response.ok) {
 			console.error(`API response not ok: ${response.status} ${response.statusText}`)
