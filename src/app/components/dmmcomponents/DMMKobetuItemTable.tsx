@@ -36,9 +36,9 @@ const ItemDetailsTable = ({ item }: { item: ExtendedDMMItemDetailResponse }) => 
 		{
 			label: 'シリーズ',
 			value: item.series && item.series.length > 0 ? item.series : '情報なし',
-			icon: '📺',
+			icon: '📺'
 		},
-		{ label: '監督', value: item.director || '情報なし', icon: '🎬' },
+		{ label: '監督', value: item.director || '情報なし', icon: '🎬' }
 	] satisfies ItemDetailsTableProps[]
 
 	const getUmamiTrackingData = (label: string, value: string): UmamiTrackingData => {
@@ -49,8 +49,8 @@ const ItemDetailsTable = ({ item }: { item: ExtendedDMMItemDetailResponse }) => 
 			from: 'kobetu-item-detail' as UmamiTrackingFromType,
 			otherData: {
 				label,
-				value,
-			},
+				value
+			}
 		}
 	}
 
@@ -66,57 +66,51 @@ const ItemDetailsTable = ({ item }: { item: ExtendedDMMItemDetailResponse }) => 
 	}
 
 	return (
-		<Table className='w-full mt-3'>
+		<Table className="w-full mt-3">
 			<TableBody>
 				{details.map(({ label, value, icon }) => (
-					<TableRow key={label} className='bg-white dark:bg-gray-800'>
-						<TableCell className='whitespace-nowrap p-4 flex items-center'>
-							<span className='text-2xl mr-4 opacity-80' aria-hidden='true'>
+					<TableRow key={label} className="bg-white dark:bg-gray-800">
+						<TableCell className="whitespace-nowrap p-4 flex items-center">
+							<span className="text-2xl mr-4 opacity-80" aria-hidden="true">
 								{icon}
 							</span>
-							<span className='text-sm font-medium text-gray-600 dark:text-gray-400'>{label}</span>
+							<span className="text-sm font-medium text-gray-600 dark:text-gray-400">{label}</span>
 						</TableCell>
-						<TableCell className='p-4'>
+						<TableCell className="p-4">
 							{(label === '女優名' || label === 'ジャンル') && value !== '情報なし' ? (
-								<div className='flex flex-wrap gap-2'>
+								<div className="flex flex-wrap gap-2">
 									{Array.isArray(value) ? (
 										value.map((itemValue, index) => (
-											<UmamiTracking
-												key={index}
-												trackingData={getUmamiTrackingData(label, itemValue)}>
+											<UmamiTracking key={index} trackingData={getUmamiTrackingData(label, itemValue)}>
 												<Link
 													href={`/${label === '女優名' ? 'actressprofile' : 'genre'}/${encodeURIComponent(itemValue)}`}
 													className={getLinkClassName(label)}
-													prefetch={false}>
+													prefetch={false}
+												>
 													{itemValue}
 												</Link>
 											</UmamiTracking>
 										))
 									) : typeof value === 'string' ? (
 										value.split(',').map((itemValue, index) => (
-											<UmamiTracking
-												key={index}
-												trackingData={getUmamiTrackingData(label, itemValue.trim())}>
+											<UmamiTracking key={index} trackingData={getUmamiTrackingData(label, itemValue.trim())}>
 												<Link
 													href={`/${label === '女優名' ? 'actressprofile' : 'genre'}/${encodeURIComponent(
-														itemValue.trim(),
+														itemValue.trim()
 													)}`}
 													className={getLinkClassName(label)}
-													prefetch={false}>
+													prefetch={false}
+												>
 													{itemValue.trim()}
 												</Link>
 											</UmamiTracking>
 										))
 									) : (
-										<p className='text-base text-gray-900 dark:text-gray-100 break-words'>
-											情報なし
-										</p>
+										<p className="text-base text-gray-900 dark:text-gray-100 break-words">情報なし</p>
 									)}
 								</div>
 							) : (
-								<p className='text-base text-gray-900 dark:text-gray-100 break-words'>
-									{value || '情報なし'}
-								</p>
+								<p className="text-base text-gray-900 dark:text-gray-100 break-words">{value || '情報なし'}</p>
 							)}
 						</TableCell>
 					</TableRow>
@@ -146,14 +140,26 @@ export const ProductDetails = async ({ title, content_id, itemDetail }: ProductD
 	const extendedItemDetail: ExtendedDMMItemDetailResponse = {
 		title,
 		content_id,
-		...itemDetail,
+		...itemDetail
 	}
 
 	return (
-		<div className='bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 shadow-lg'>
-			<h2 className='text-center font-bold mb-6 py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text'>
-				<span className='text-2xl'>エロ動画 {title}の詳細情報</span>
+		<div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 shadow-lg">
+			<h2 className="text-center font-bold mb-6 py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text">
+				<span className="text-2xl">エロ動画「{title}」の詳細情報</span>
 			</h2>
+			<p className="text-gray-700 dark:text-gray-300 text-base mb-4 text-center">
+				「{title}」は、
+				<Link
+					href={`/actressprofile/${encodeURIComponent(itemDetail.actress?.split(',')[0] || '')}`}
+					className="text-blue-500 hover:underline"
+				>
+					{' '}
+					{itemDetail.actress?.split(',')[0]}{' '}
+				</Link>
+				さんが出演する人気作品です。下記に発売日、出演女優、ジャンル、メーカーなどの詳細情報をまとめました。
+			</p>
+
 			{/* extendedItemDetailを渡す */}
 			<ItemDetailsTable item={extendedItemDetail} />
 		</div>
