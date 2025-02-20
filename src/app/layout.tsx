@@ -19,6 +19,9 @@ export const metadata: Metadata = {
 		'エロ動画の良かった抜き情報を共有し合うこと、そして統計データを使った客観的な数字を使うことで、新たなエロ動画体験を提供することを目指しています。',
 	robots: 'index,follow',
 	referrer: 'origin-when-cross-origin',
+	other: {
+		rating: 'adult',
+	},
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
